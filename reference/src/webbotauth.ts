@@ -21,18 +21,46 @@ const MAX_CACHE = 1_000;
 const MAX_REGISTRO = 10_000;
 const TIMEOUT_DIRECTORIO_MS = 3_000;
 
-/** Hosts the gateway never fetches a key directory from: loopback, private, link-local and unique-local
- * literals. Names that resolve to such addresses (DNS rebinding) must be blocked at the egress layer. */
-export function hostInterno(host: string): boolean {
-	const h = host.toLowerCase().replace(/^\[|\]$/g, "");
-	if (h === "localhost" || h.endsWith(".localhost") || h.endsWith(".local") || h.endsWith(".internal")) return true;
-	const v4 = h.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/)?.slice(1).map(Number);
-	if (v4) {
-		const [a, b] = v4;
-		return a === 0 || a === 10 || a === 127 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || (a === 100 && b >= 64 && b <= 127) || a >= 224;
+function v4Interna([a, b]: number[]): boolean {
+	return a === 0 || a === 10 || a === 127 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || (a === 100 && b >= 64 && b <= 127) || a >= 224;
+}
+
+/** The 8 groups of an IPv6 literal (with or without an embedded IPv4 tail), or null if it is not one. */
+function grupos6(h: string): number[] | null {
+	let t = h;
+	const cola = t.match(/(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+	if (cola) {
+		const [a, b, c, d] = cola.slice(1).map(Number);
+		t = `${t.slice(0, cola.index)}${((a << 8) | b).toString(16)}:${((c << 8) | d).toString(16)}`;
 	}
-	if (h.includes(":")) return h === "::" || h === "::1" || /^f[cd]/.test(h) || /^fe[89ab]/.test(h) || h.startsWith("::ffff:");
-	return false;
+	const [izq, der, ...resto] = t.split("::");
+	if (resto.length) return null;
+	const L = izq ? izq.split(":") : [];
+	const R = der !== undefined && der !== "" ? der.split(":") : [];
+	const faltan = 8 - L.length - R.length;
+	if (der === undefined ? faltan !== 0 : faltan < 1) return null;
+	const g = [...L, ...Array(der === undefined ? 0 : faltan).fill("0"), ...R].map((x) => (/^[0-9a-f]{1,4}$/.test(x) ? parseInt(x, 16) : NaN));
+	return g.length === 8 && g.every(Number.isFinite) ? g : null;
+}
+
+/** Hosts the gateway never fetches a key directory from: loopback, private, link-local, unique-local, multicast,
+ * and IPv6 forms that embed an internal IPv4 address (mapped, compatible, NAT64, 6to4). Names that resolve to such
+ * addresses (DNS rebinding) must also be blocked at the egress layer, at connect time. */
+export function hostInterno(host: string): boolean {
+	const h = host.toLowerCase().replace(/^\[|\]$/g, "").replace(/\.+$/, "");
+	if (h === "" || h === "localhost" || h.endsWith(".localhost") || h.endsWith(".local") || h.endsWith(".internal")) return true;
+	const v4 = h.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/)?.slice(1).map(Number);
+	if (v4) return v4Interna(v4);
+	if (!h.includes(":")) return false;
+	const g = grupos6(h);
+	if (!g) return true; // an unparseable literal is refused, not guessed
+	const embebida = (alto: number, bajo: number) => v4Interna([alto >> 8, alto & 255, bajo >> 8, bajo & 255]);
+	if (g.slice(0, 7).every((x) => x === 0) && g[7] <= 1) return true; // :: and ::1
+	if (g.slice(0, 6).every((x) => x === 0)) return true; // IPv4-compatible (deprecated): never a public operator
+	if (g.slice(0, 5).every((x) => x === 0) && g[5] === 0xffff) return embebida(g[6], g[7]); // IPv4-mapped
+	if (g[0] === 0x64 && g[1] === 0xff9b && g.slice(2, 6).every((x) => x === 0)) return embebida(g[6], g[7]); // NAT64
+	if (g[0] === 0x2002) return embebida(g[1], g[2]); // 6to4
+	return (g[0] & 0xfe00) === 0xfc00 || (g[0] & 0xffc0) === 0xfe80 || (g[0] & 0xff00) === 0xff00;
 }
 
 /** Splits a top-level Structured Fields Dictionary (RFC 8941), honoring parentheses and quotes. */

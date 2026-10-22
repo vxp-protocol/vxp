@@ -27,6 +27,10 @@ test("WBA-S1 · no se pide el directorio de llaves a hosts internos ni a puertos
 	assert.deepEqual(pedidos, [], "ningún fetch");
 	assert.equal(hostInterno("operador.example"), false);
 	assert.equal(hostInterno("8.8.8.8"), false);
+	for (const h of ["localhost.", "metadata.internal.", "[::ffff:7f00:1]", "[::ffff:127.0.0.1]", "[::7f00:1]", "[64:ff9b::a9fe:a9fe]", "[2002:c0a8:101::]", "[fd00::1]", "[fe80::1]", "[ff02::1]", "[0:0:0:0:0:0:0:1]", "[1::2::3]"]) assert.equal(hostInterno(h), true, h);
+	for (const h of ["[2606:4700::1111]", "[64:ff9b::808:808]", "[2002:808:808::]", "[::ffff:808:808]"]) assert.equal(hostInterno(h), false, h);
+	// What the URL parser actually hands over is also caught.
+	for (const u of ["https://[::ffff:127.0.0.1]", "https://[::127.0.0.1]", "https://0x7f.1", "https://127.1", "https://localhost./"]) assert.equal(hostInterno(new URL(u).hostname), true, u);
 });
 
 test("WBA-S2 · un directorio que falla se recuerda un rato: una ráfaga firmada no se vuelve una ráfaga de fetch", async () => {

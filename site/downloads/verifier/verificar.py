@@ -1,17 +1,17 @@
-"""Verificador independiente de VXP Proof 0.1 (especificacion VXP, anexo normativo, seccion 9).
+"""Independent verifier for VXP Proof 0.1 (VXP specification, normative annex, section 9).
 
-No comparte codigo con el emisor: Python + la libreria `cryptography`, frente a un emisor en
-Node con node:crypto. Lee vectores-0.1.json y comprueba:
-  - las huellas recalculadas desde los insumos en claro (SPEC 9.3: siempre JCS),
-  - las cadenas V1, V2 y V3 (deben ser validas y dar el veredicto esperado),
-  - el registro Merkle (RFC 9162),
-  - que cada vector negativo falle con el codigo esperado,
-  - el anclaje del issuer (SPEC 9.9.1) en cada caso de descubrimiento.
-Uso: python verificar.py vectores-0.1.json
+Shares no code with the issuer: Python + the `cryptography` library, against an issuer in
+Node with node:crypto. Reads vectores-0.1.json and checks:
+  - the digests recomputed from the cleartext inputs (SPEC 9.3: always JCS),
+  - the V1, V2 and V3 chains (they must be valid and yield the expected verdict),
+  - the Merkle log (RFC 9162),
+  - that each negative vector fails with the expected code,
+  - the issuer anchoring (SPEC 9.9.1) in each discovery case.
+Usage: python verificar.py vectores-0.1.json
 
-Historia: se escribio antes de que existiera el emisor de reference/src/. En la correccion de
-la ronda 1 de revision (20-oct-2026) se reescribio para cerrar M1-M6 y B1; desde
-entonces no es independiente en autor de verificar_paquete.py.
+History: it was written before the issuer in reference/src/ existed. In the fixes for
+review round 1 (20-oct-2026) it was rewritten to close M1-M6 and B1; since then it is not
+author-independent from verificar_paquete.py.
 """
 import base64
 import hashlib
@@ -50,7 +50,7 @@ def b64e(b):
 
 
 def b64_estricto(s, idx):
-    """Decodifica solo si `s` es la codificacion base64url canonica de sus bytes (SPEC 9.2)."""
+    """Decodes only if `s` is the canonical base64url encoding of its bytes (SPEC 9.2)."""
     if not isinstance(s, str) or not B64URL.match(s) or len(s) % 4 == 1:
         raise Falla("non_canonical_encoding", idx)
     b = b64d(s)
@@ -68,7 +68,7 @@ def dig(b):
 
 
 def jcs(v):
-    """RFC 8785 restringido al perfil 0.1 (sin numeros no enteros, sin surrogates sueltos)."""
+    """RFC 8785 restricted to the 0.1 profile (no non-integer numbers, no lone surrogates)."""
     if v is None:
         return "null"
     if v is True:
@@ -94,12 +94,12 @@ def jcs(v):
 
 
 def huella(x):
-    """Huella de un valor JSON cualquiera: la de su JCS (SPEC 9.3)."""
+    """Digest of any JSON value: that of its JCS (SPEC 9.3)."""
     return dig(jcs(x).encode("utf-8"))
 
 
 def id_declaracion(jwt):
-    """Huella de una declaracion: SHA-256 de `encabezado.payload` (SPEC 9.2), sin la firma."""
+    """Digest of a statement: SHA-256 of `header.payload` (SPEC 9.2), without the signature."""
     h64, p64, _ = jwt.split(".")
     return dig((h64 + "." + p64).encode("ascii"))
 
@@ -124,7 +124,7 @@ def thumbprint(jwk):
 
 
 class Divulgaciones:
-    """RFC 9901 seccion 7.1, pasos 3 a 5, con el perfil 0.1 (sha-256, sal >= 128 bits)."""
+    """RFC 9901 section 7.1, steps 3 to 5, with the 0.1 profile (sha-256, salt >= 128 bits)."""
 
     def __init__(self, crudas, idx):
         self.idx = idx
@@ -249,15 +249,15 @@ def abrir(sdjwt, llaves, idx):
 
 
 class Cadena:
-    """Las reglas 5 a 9 de SPEC 9.5 como una maquina de estados."""
+    """Rules 5 to 9 of SPEC 9.5 as a state machine."""
 
     def __init__(self, empresa):
         self.empresa = empresa
-        self.fijos = None  # (op, aud, user) de seq 0
+        self.fijos = None  # (op, aud, user) from seq 0
         self.prev = None
         self.rev = 0
         self.td = None
-        self.terminos = None  # cuerpo de la ultima terms (ronda 3)
+        self.terminos = None  # body of the latest terms (round 3)
         self.aprobacion = None
         self.decision = None
         self.ejecucion = None
@@ -397,7 +397,7 @@ class Cadena:
         self.estado, self.final, self.lecturas_tras_final = st, yo, {}
 
     def observa_el_efecto(self, lectura):
-        """SPEC 9.4.7, ronda 3: cada nombre de read_back_terms esta en observed (ya procesado)."""
+        """SPEC 9.4.7, round 3: every name in read_back_terms is in observed (already processed)."""
         nombres = (self.terminos or {}).get("read_back_terms") or []
         obs = (lectura or {}).get("observed")
         return len(nombres) > 0 and type(obs) is dict and set(nombres) <= set(obs)
@@ -431,14 +431,14 @@ def verificar_cadena(cadena, llaves, empresa, custodia):
         "revision": vigente["revision"] if vigente else None,
         "approval": vigente["method"] if vigente else None,
         "derived_assurance": asegura,
-        "single_root": "operator",  # SPEC 9.6: la 0.1 no define evidencia de una segunda raiz
+        "single_root": "operator",  # SPEC 9.6: 0.1 defines no evidence of a second root
         "custody_declared": custodia,
         "logged": False,
     }
     return veredicto, procesados
 
 
-# ---------- anclaje del issuer (SPEC 9.9.1) ----------
+# ---------- issuer anchoring (SPEC 9.9.1) ----------
 
 def _bajo(base, url):
     if not isinstance(base, str) or not isinstance(url, str):
@@ -449,7 +449,7 @@ def _bajo(base, url):
 
 
 def anclar(docs, ancla):
-    """Devuelve (issuer, llaves, custodia) o levanta issuer_not_anchored."""
+    """Returns (issuer, keys, custody) or raises issuer_not_anchored."""
     def doc(url):
         if url not in docs:
             raise Falla("issuer_not_anchored")
@@ -490,7 +490,7 @@ def anclar(docs, ancla):
     return iss, llaves, t.get("custody")
 
 
-# ---------- registro ----------
+# ---------- log ----------
 
 def hoja(d):
     return sha(b"\x00" + d)
@@ -510,7 +510,7 @@ def mth(D):
 
 
 def inclusion(indice, tam, h, camino, raiz):
-    """RFC 9162 seccion 2.1.3.2."""
+    """RFC 9162 section 2.1.3.2."""
     if indice >= tam:
         return False
     fn, sn, r = indice, tam - 1, h
@@ -585,7 +585,7 @@ def main(ruta):
         r, _ = verificar_cadena(cadena + x["extra"], llaves, empresa, custodia)
         informe("cadena " + nombre.upper(), r == x["expected"], json.dumps(r, ensure_ascii=False))
 
-    # Ronda 3: V4, con la revision de la empresa exigida y aprobada antes de ejecutar.
+    # Round 3: V4, with the company review required and approved before execution.
     x = v["chain_v4"]
     r, _ = verificar_cadena(x["chain"], llaves, empresa, custodia)
     informe("cadena V4", r == x["expected"], json.dumps(r, ensure_ascii=False))

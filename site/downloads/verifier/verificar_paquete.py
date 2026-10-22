@@ -1,27 +1,27 @@
-"""Verificador independiente de VXP Proof 0.1 (especificacion VXP, anexo normativo, 9.5 y 9.9).
+"""Independent verifier for VXP Proof 0.1 (VXP specification, normative annex, 9.5 and 9.9).
 
-No comparte codigo con el emisor (reference/src/prueba.ts, TypeScript con node:crypto): Python con la
-libreria `cryptography`. Usa solo lo publico y lo ancla a la empresa (SPEC 9.9.1): parte de un
-dominio o de un issuer que el verificador ya conoce, nunca de un documento que entrega quien
-presenta el paquete; las llaves salen de la metadata RFC 8414 del issuer.
+Shares no code with the issuer (reference/src/prueba.ts, TypeScript with node:crypto): Python with the
+`cryptography` library. Uses only public material and anchors it to the company (SPEC 9.9.1): it starts
+from a domain or an issuer the verifier already knows, never from a document supplied by whoever
+presents the package; the keys come from the issuer's RFC 8414 metadata.
 
-Modos:
+Modes:
   python verificar_paquete.py vectores <vectores-0.1.json>
-      Conformidad (SPEC 15): debe dar exactamente los veredictos y codigos del apendice A.
+      Conformance (SPEC 15): must yield exactly the verdicts and codes of appendix A.
   python verificar_paquete.py vivo (--dominio D | --marca D | --as-pact I | --issuer I [--card URL])
-                                   --paquete <archivo> [--aud URL] [--operacion archivo]
-                                   [--recibo-pact archivo] [--http-local]
-      --marca: dominio de la marca (PACT 2.1: su Agent Card en /.well-known/agent-card.json).
-      --as-pact: issuer del servidor de autorizacion PACT que el agente conocio al delegar.
+                                   --paquete <file> [--aud URL] [--operacion file]
+                                   [--recibo-pact file] [--http-local]
+      --marca: the brand domain (PACT 2.1: its Agent Card at /.well-known/agent-card.json).
+      --as-pact: issuer of the PACT authorization server the agent learned when delegating.
   python verificar_paquete.py pact <vectores-pact-0.1.json>
-      Conformidad del anclaje PACT y del cruce con el recibo PACT (SPEC apendice A.9).
-      Baja el material publico por HTTP(S) y verifica un paquete.
-  python verificar_paquete.py material --material <archivo> --paquete <archivo> [--aud URL]
-                                       [--operacion archivo]
-      Igual, pero con el material publico ya bajado:
-      {"anchor": {"domain": D} | {"issuer": I, "card"?: URL}, "docs": {URL: contenido}}.
+      Conformance of the PACT anchoring and of the cross-check with the PACT receipt (SPEC appendix A.9).
+      Fetches the public material over HTTP(S) and verifies a package.
+  python verificar_paquete.py material --material <file> --paquete <file> [--aud URL]
+                                       [--operacion file]
+      Same, but with the public material already fetched:
+      {"anchor": {"domain": D} | {"issuer": I, "card"?: URL}, "docs": {URL: content}}.
 
-Salida: una linea JSON con el veredicto. Codigo de salida 0 si es valido, 1 si no.
+Output: one JSON line with the verdict. Exit code 0 if valid, 1 if not.
 """
 import argparse
 import base64
@@ -58,7 +58,7 @@ class Falla(Exception):
         self.seq = seq
 
 
-# ---------- primitivas ----------
+# ---------- primitives ----------
 
 def b64d(s):
     if not isinstance(s, str):
@@ -71,7 +71,7 @@ def b64e(b):
 
 
 def b64_canonico(seg, idx):
-    """SPEC 9.2: base64url sin relleno y canonico (los bits sobrantes en 0), o se rechaza."""
+    """SPEC 9.2: unpadded, canonical base64url (leftover bits set to 0), or it is rejected."""
     if not isinstance(seg, str) or any(c not in B64_ALFABETO for c in seg) or len(seg) % 4 == 1:
         raise Falla("non_canonical_encoding", idx)
     try:
@@ -92,7 +92,7 @@ def dig(b):
 
 
 def jcs(v):
-    """RFC 8785 con el perfil 0.1 de SPEC 9.3 (solo enteros seguros)."""
+    """RFC 8785 with the 0.1 profile of SPEC 9.3 (safe integers only)."""
     if v is None:
         return "null"
     if v is True:
@@ -119,12 +119,12 @@ def jcs(v):
 
 
 def dig_jcs(x):
-    """SPEC 9.3: la huella de cualquier valor JSON (objeto o string) es la de su JCS."""
+    """SPEC 9.3: the digest of any JSON value (object or string) is that of its JCS."""
     return dig(jcs(x).encode("utf-8"))
 
 
 def huella_declaracion(jwt):
-    """SPEC 9.2: la huella cubre lo firmado (encabezado.payload), no la firma, que es maleable."""
+    """SPEC 9.2: the digest covers what is signed (header.payload), not the signature, which is malleable."""
     return dig(jwt.rsplit(".", 1)[0].encode("ascii"))
 
 
@@ -163,7 +163,7 @@ def codigo_visible(terms_digest):
     return str(int.from_bytes(sha(terms_digest.encode("utf-8"))[:4], "big") % 1000000).zfill(6)
 
 
-# ---------- registro (RFC 9162) ----------
+# ---------- log (RFC 9162) ----------
 
 def hoja(d):
     return sha(b"\x00" + d)
@@ -185,7 +185,7 @@ def mth(D):
 
 
 def inclusion(indice, tam, h, camino, raiz):
-    """RFC 9162 seccion 2.1.3.2."""
+    """RFC 9162 section 2.1.3.2."""
     if indice >= tam:
         return False
     fn, sn, r = indice, tam - 1, h
@@ -206,7 +206,7 @@ def inclusion(indice, tam, h, camino, raiz):
 
 
 def consistencia(primero, segundo, raiz1, raiz2, camino):
-    """RFC 9162 seccion 2.1.4.2."""
+    """RFC 9162 section 2.1.4.2."""
     if primero == segundo:
         return not camino and raiz1 == raiz2
     if primero < 1 or primero > segundo:
@@ -238,11 +238,11 @@ def consistencia(primero, segundo, raiz1, raiz2, camino):
     return fr == raiz1 and sr == raiz2 and sn == 0
 
 
-# ---------- SD-JWT (RFC 9901 seccion 7.1) ----------
+# ---------- SD-JWT (RFC 9901 section 7.1) ----------
 
 def procesar_sd(payload, discl, idx):
-    """RFC 9901 7.1 pasos 2.d a 5, con el perfil 0.1 (sal de al menos 128 bits, solo sha-256).
-    Devuelve el payload procesado: cada valor divulgado en su objeto, sin `_sd` ni `_sd_alg`."""
+    """RFC 9901 7.1 steps 2.d to 5, with the 0.1 profile (salt of at least 128 bits, sha-256 only).
+    Returns the processed payload: each disclosed value in its object, without `_sd` or `_sd_alg`."""
     if "_sd_alg" in payload and payload["_sd_alg"] != "sha-256":
         raise Falla("bad_sd_alg", idx)
     por_huella = {}
@@ -285,7 +285,7 @@ def procesar_sd(payload, discl, idx):
                 for h in lista:
                     huella_nueva(h)
                     if h not in por_huella:
-                        continue  # huella senuelo o divulgacion no presentada: se ignora
+                        continue  # decoy digest or disclosure not presented: ignored
                     c = por_huella[h]
                     if not isinstance(c, list) or len(c) != 3 or not isinstance(c[1], str):
                         raise Falla("disclosure_malformed", idx)
@@ -324,11 +324,11 @@ def procesar_sd(payload, discl, idx):
     return procesado
 
 
-# ---------- cadena (SPEC 9.5) ----------
+# ---------- chain (SPEC 9.5) ----------
 
 def abrir(sdjwt, llaves, idx):
-    """Pasos 1 a 4 de SPEC 9.5 para una declaracion. `llaves`: {rol: {issuer, jwks}}.
-    Devuelve (jwt, payload procesado segun RFC 9901 7.1, rol)."""
+    """Steps 1 to 4 of SPEC 9.5 for one statement. `llaves`: {role: {issuer, jwks}}.
+    Returns (jwt, payload processed per RFC 9901 7.1, role)."""
     if not isinstance(sdjwt, str):
         raise Falla("not_sd_jwt", idx)
     partes = sdjwt.split("~")
@@ -368,24 +368,24 @@ def abrir(sdjwt, llaves, idx):
 
 
 def lectura_completa(lectura, terms):
-    """SPEC 9.4.7 (ronda 3, M1): la lectura observa, con su mismo nombre, cada termino del efecto."""
+    """SPEC 9.4.7 (round 3, M1): the read-back observes, under the same name, every term of the effect."""
     campos = terms.get("read_back_terms") if terms else None
     obs = lectura.get("observed") if isinstance(lectura, dict) else None
     return bool(campos) and isinstance(obs, dict) and all(c in obs for c in campos)
 
 
 def verificar_cadena(cadena, llaves, empresa, custodia, aud_esperado=None):
-    """SPEC 9.5 reglas 5 a 9 y 9.7. Devuelve (veredicto, jwts, payloads procesados)."""
+    """SPEC 9.5 rules 5 to 9 and 9.7. Returns (verdict, jwts, processed payloads)."""
     prev = None
     op = aud = user = None
     ultima_rev = 0
     ultimos_terminos = None
-    ultimo_terms = None  # cuerpo de la ultima `terms` (ronda 3: lo que la empresa exige y que observar)
+    ultimo_terms = None  # body of the latest `terms` (round 3: what the company requires and what to observe)
     aprobada = None
     revision_empresa = None  # None | "approved" | "denied"
     ejecutada = None
-    lectura = None  # la ultima read_back antes del outcome
-    lecturas_post = {}  # read_back emitidas despues de la ultima declaracion final: huella -> coincide
+    lectura = None  # the latest read_back before the outcome
+    lecturas_post = {}  # read_backs issued after the latest final statement: digest -> matches
     hubo_lectura_ok = False
     estado = None
     ultimo_final = None
@@ -401,7 +401,7 @@ def verificar_cadena(cadena, llaves, empresa, custodia, aud_esperado=None):
             op, aud, user = p.get("op"), p.get("aud"), p.get("user")
         if p.get("op") != op:
             raise Falla("op_mismatch", i)
-        # Replay entre agentes o usuarios (SPEC 9.5 regla 5): aud y user fijos en toda la cadena.
+        # Replay across agents or users (SPEC 9.5 rule 5): aud and user fixed across the whole chain.
         if p.get("aud") != aud or (aud_esperado is not None and aud != aud_esperado):
             raise Falla("aud_mismatch", i)
         if p.get("user") != user:
@@ -422,8 +422,8 @@ def verificar_cadena(cadena, llaves, empresa, custodia, aud_esperado=None):
         if k == "terms":
             if b.get("revision") != ultima_rev + 1 or aprobada is not None:
                 raise Falla("revision_error", i)
-            # Ronda 3 (M1, m3): la empresa declara, firmado, si exige su revision y que terminos debe
-            # observar la lectura de vuelta.
+            # Round 3 (M1, m3): the company declares, signed, whether it requires its own review and which
+            # terms the read-back must observe.
             rbt = b.get("read_back_terms")
             if (not isinstance(b.get("company_review_required"), bool) or not isinstance(rbt, list)
                     or not all(isinstance(x, str) for x in rbt) or len(set(rbt)) != len(rbt)):
@@ -447,7 +447,7 @@ def verificar_cadena(cadena, llaves, empresa, custodia, aud_esperado=None):
                 raise Falla("display_code_mismatch", i)
             aprobada = b
         elif k == "company_review":
-            # SPEC 6.5 y 9.5.7: una sola, entre user_approval y execution, sobre la revision aprobada.
+            # SPEC 6.5 and 9.5.7: exactly one, between user_approval and execution, on the approved revision.
             if aprobada is None or ejecutada is not None or revision_empresa is not None:
                 raise Falla("order_violation", i)
             if b.get("terms_digest") != aprobada["terms_digest"] or b.get("revision") != aprobada["revision"]:
@@ -458,7 +458,7 @@ def verificar_cadena(cadena, llaves, empresa, custodia, aud_esperado=None):
         elif k == "execution":
             if aprobada is None or ejecutada is not None or revision_empresa == "denied":
                 raise Falla("order_violation", i)
-            # Ronda 3 (m3): si la revision aprobada exige la de la empresa, no hay ejecucion sin ella.
+            # Round 3 (m3): if the approved revision requires the company review, there is no execution without it.
             if ultimo_terms["company_review_required"] and revision_empresa != "approved":
                 raise Falla("order_violation", i)
             if b.get("terms_digest") != aprobada["terms_digest"] or b.get("revision") != aprobada["revision"]:
@@ -478,7 +478,7 @@ def verificar_cadena(cadena, llaves, empresa, custodia, aud_esperado=None):
         elif k == "outcome":
             if ultima_rev < 1:
                 raise Falla("order_violation", i)
-            # SPEC 9.5.7: el resultado nombra siempre la ultima revision emitida, haya o no aprobacion.
+            # SPEC 9.5.7: the outcome always names the latest issued revision, with or without approval.
             if b.get("terms_digest") != ultimos_terminos or b.get("revision") != ultima_rev:
                 raise Falla("outcome_terms_mismatch", i)
             if b.get("state") not in ESTADOS:
@@ -499,13 +499,13 @@ def verificar_cadena(cadena, llaves, empresa, custodia, aud_esperado=None):
             lecturas_post = {}
         elif k in ("correction", "revocation"):
             ref = b.get("corrects") if k == "correction" else b.get("revokes")
-            # SPEC 11.1: siempre sobre la ultima declaracion final (outcome, correction o revocation).
+            # SPEC 11.1: always on the latest final statement (outcome, correction or revocation).
             if estado is None or ref != ultimo_final:
                 raise Falla("order_violation", i)
             if k == "correction":
                 if b.get("state") not in ESTADOS:
                     raise Falla("bad_state", i)
-                # SPEC 8.3 y 11.1: una correccion a succeeded cita una read_back coincidente posterior.
+                # SPEC 8.3 and 11.1: a correction to succeeded cites a later matching read_back.
                 citada = lecturas_post.get(b.get("read_back"))
                 if b["state"] == "succeeded" and (citada is None or citada[0] is not True):
                     raise Falla("correction_without_read_back", i)
@@ -522,7 +522,7 @@ def verificar_cadena(cadena, llaves, empresa, custodia, aud_esperado=None):
     if estado is None:
         raise Falla("no_outcome")
     vigente = aprobada if revision_empresa != "denied" else None
-    # SPEC 9.7: cada nivel lleva el nombre de su raiz real.
+    # SPEC 9.7: each level carries the name of its actual root.
     asegura = ["issuer_key_attested"]
     if ejecutada is not None:
         asegura.append("operator_observed")
@@ -538,8 +538,8 @@ def verificar_cadena(cadena, llaves, empresa, custodia, aud_esperado=None):
         "revision": vigente["revision"] if vigente else None,
         "approval": vigente.get("method") if vigente else None,
         "derived_assurance": asegura,
-        # SPEC 9.6: `custody` la declara el emisor; sin evidencia verificable de otra raiz (0.1 no
-        # define ninguna), la raiz unica es el operador.
+        # SPEC 9.6: `custody` is declared by the issuer; without verifiable evidence of another root (0.1
+        # defines none), the single root is the operator.
         "single_root": "operator",
         "custody_declared": custodia,
         "logged": False,
@@ -547,10 +547,10 @@ def verificar_cadena(cadena, llaves, empresa, custodia, aud_esperado=None):
     return veredicto, jwts, payloads
 
 
-# ---------- material publico y anclaje (SPEC 9.9.1) ----------
+# ---------- public material and anchoring (SPEC 9.9.1) ----------
 
 class Material:
-    """Baja (o lee de un archivo) lo publico que un tercero necesita. Nada viene del paquete."""
+    """Fetches (or reads from a file) the public material a third party needs. Nothing comes from the package."""
 
     def __init__(self, docs=None, http_local=False):
         self.docs = docs
@@ -566,9 +566,9 @@ class Material:
         return u.scheme == "https" or (self.http_local and local and u.scheme == "http")
 
     def traer(self, url, crudo=False, redirecciones=False):
-        """Ante cualquier falla (ausente, HTTP, red, JSON) responde issuer_not_anchored (SPEC 9.9.1 punto 5).
-        Sigue redirecciones solo si se pide (la Agent Card en el dominio de la marca, PACT 2.1), y solo a
-        URLs seguras."""
+        """On any failure (missing, HTTP, network, JSON) answers issuer_not_anchored (SPEC 9.9.1 point 5).
+        Follows redirects only when asked (the Agent Card on the brand domain, PACT 2.1), and only to
+        secure URLs."""
         NA = "issuer_not_anchored"
         if self.docs is not None:
             if url not in self.docs:
@@ -602,7 +602,7 @@ class Material:
 
 
 def bajo(base, url):
-    """`url` esta bajo `base`: mismo esquema y host, y su ruta empieza con la de `base` + "/"."""
+    """`url` is under `base`: same scheme and host, and its path starts with that of `base` + "/"."""
     if not isinstance(base, str) or not isinstance(url, str):
         return False
     b, u = urllib.parse.urlparse(base), urllib.parse.urlparse(url)
@@ -616,13 +616,13 @@ def bajo(base, url):
 
 
 def url_metadata(issuer):
-    """RFC 8414 seccion 3.1: el well-known va entre el host y la ruta del issuer."""
+    """RFC 8414 section 3.1: the well-known goes between the host and the issuer path."""
     u = urllib.parse.urlparse(issuer)
     return "%s://%s/.well-known/oauth-authorization-server%s" % (u.scheme, u.netloc, u.path.rstrip("/"))
 
 
 def anclar(material, ancla):
-    """SPEC 9.9.1. Devuelve (bloque de confianza, issuer, perfil, tipo de ancla)."""
+    """SPEC 9.9.1. Returns (trust block, issuer, profile, anchor type)."""
     return anclar_ext(material, ancla)[:4]
 
 
@@ -634,7 +634,7 @@ def interfaz_http_json(card):
 
 
 def confianza_de(material, issuer):
-    """Metadata RFC 8414 del issuer (3.1), con issuer identico (3.3), y su bloque de confianza."""
+    """The issuer's RFC 8414 metadata (3.1), with an identical issuer (3.3), and its trust block."""
     if not isinstance(issuer, str) or not issuer.startswith(("https://", "http://")):
         raise Falla("issuer_not_anchored")
     meta = material.traer(url_metadata(issuer))
@@ -644,10 +644,10 @@ def confianza_de(material, issuer):
 
 
 def anclar_pact(material, ancla):
-    """Perfil PACT (SPEC 9.9.1, punto 1). Ata en las dos direcciones, como Poppy 3: el servidor de
-    autorizacion PACT (o la Agent Card del dominio de la marca) nombra a la empresa, y la metadata de la
-    empresa nombra a ese servidor y a esa interfaz (y al dominio de la marca). Devuelve
-    (issuer de la empresa, copia del perfil, {interface, authorization_server, jwks_uri}, tipo)."""
+    """PACT profile (SPEC 9.9.1, point 1). Binds in both directions, like Poppy 3: the PACT authorization
+    server (or the Agent Card of the brand domain) names the company, and the company's metadata names
+    that server and that interface (and the brand domain). Returns
+    (company issuer, profile copy, {interface, authorization_server, jwks_uri}, type)."""
     NA = "issuer_not_anchored"
     if ancla.get("brand_domain"):
         marca = ancla["brand_domain"]
@@ -677,7 +677,7 @@ def anclar_pact(material, ancla):
         raise Falla(NA)
     vinculos = [x for x in confianza.get("pact") or [] if isinstance(x, dict)]
     if tipo == "brand_domain":
-        # La empresa reconoce ese dominio de marca y esa interfaz: la Card sola no basta (ronda 2, M1).
+        # The company recognizes that brand domain and that interface: the Card alone is not enough (round 2, M1).
         if marca.lower() not in [str(x).lower() for x in confianza.get("domains") or []]:
             raise Falla(NA)
         v = next((x for x in vinculos if x.get("interface") == interfaz), None)
@@ -701,8 +701,8 @@ def anclar_pact(material, ancla):
 
 
 def anclar_ext(material, ancla):
-    """SPEC 9.9.1. `ancla`: {"domain": D} (Poppy), {"brand_domain": D} o {"pact_issuer": I} (PACT), o
-    {"issuer": I, "card"?: URL} (autonomo). Devuelve (bloque, issuer, perfil, tipo, pact o None)."""
+    """SPEC 9.9.1. `ancla`: {"domain": D} (Poppy), {"brand_domain": D} or {"pact_issuer": I} (PACT), or
+    {"issuer": I, "card"?: URL} (standalone). Returns (block, issuer, profile, type, pact or None)."""
     NA = "issuer_not_anchored"
     dominio = ancla.get("domain")
     bloque_perfil = None
@@ -714,7 +714,7 @@ def anclar_ext(material, ancla):
         doc = material.traer("%s://%s/.well-known/poppy.json" % (material.esquema(dominio), dominio))
         org = (doc.get("organization") or {}).get("domain")
         if not isinstance(org, str) or org.lower() != dominio.lower():
-            raise Falla(NA)  # Poppy 3, regla 1: el documento habla por el host que lo sirvio
+            raise Falla(NA)  # Poppy 3, rule 1: the document speaks for the host that served it
         issuer = (doc.get("auth") or {}).get("issuer")
         if ancla.get("issuer") is not None and ancla["issuer"] != issuer:
             raise Falla(NA)
@@ -736,9 +736,9 @@ def anclar_ext(material, ancla):
         raise Falla(NA)
     meta = material.traer(url_metadata(issuer))
     if meta.get("issuer") != issuer:
-        raise Falla(NA)  # RFC 8414 seccion 3.3
+        raise Falla(NA)  # RFC 8414 section 3.3
     if dominio and dominio.lower() not in [str(x).lower() for x in meta.get("poppy_domains") or []]:
-        raise Falla(NA)  # Poppy 3, regla 2
+        raise Falla(NA)  # Poppy 3, rule 2
     confianza = meta.get(META_PRUEBA)
     if not isinstance(confianza, dict) or confianza.get("company") != issuer:
         raise Falla(NA)
@@ -748,12 +748,12 @@ def anclar_ext(material, ancla):
     if bloque_perfil is not None:
         for m in MIEMBROS_DE_CONFIANZA:
             if jcs(bloque_perfil.get(m)) != jcs(confianza.get(m)):
-                raise Falla(NA)  # la copia del perfil (poppy.json o Agent Card) no es la del issuer
+                raise Falla(NA)  # the profile copy (poppy.json or Agent Card) is not the issuer's
     return confianza, issuer, perfil, tipo, pact
 
 
 def verificar_recibo_pact(material, pact, recibo):
-    """Recibo PACT (PACT 5.6) con las llaves del servidor de autorizacion PACT anclado."""
+    """PACT receipt (PACT 5.6) with the keys of the anchored PACT authorization server."""
     if not isinstance(recibo, dict) or not isinstance(recibo.get("jws"), str) or recibo["jws"].count(".") != 2:
         raise Falla("pact_receipt_invalid", 0)
     h64, p64, s64 = recibo["jws"].split(".")
@@ -764,7 +764,7 @@ def verificar_recibo_pact(material, pact, recibo):
     except Exception:
         raise Falla("pact_receipt_invalid", 0)
     if header.get("alg") != "ES256":
-        raise Falla("pact_receipt_invalid", 0)  # la 0.1 solo verifica ES256; PACT admite tambien RS256
+        raise Falla("pact_receipt_invalid", 0)  # 0.1 only verifies ES256; PACT also allows RS256
     jwks = material.traer(pact["jwks_uri"])
     jwk = next((k for k in (jwks or {}).get("keys", []) if k.get("kid") == header.get("kid")), None)
     if jwk is None or not verificar_es256(jwk, (h64 + "." + p64).encode("ascii"), firma):
@@ -773,14 +773,14 @@ def verificar_recibo_pact(material, pact, recibo):
 
 
 def cruzar_recibo_pact(payloads, material, pact, recibo):
-    """SPEC 9.9, paso 4 bis: la cita `request.body.pact_proposal_receipt` contra el recibo PACT."""
+    """SPEC 9.9, step 4 bis: the `request.body.pact_proposal_receipt` citation against the PACT receipt."""
     cita = payloads[0]["body"].get("pact_proposal_receipt")
     if cita is None:
         if recibo is not None:
-            raise Falla("pact_receipt_mismatch", 0)  # se presento un recibo que la cadena no cita
+            raise Falla("pact_receipt_mismatch", 0)  # a receipt was presented that the chain does not cite
         return {}
     if not isinstance(cita, dict) or cita.get("argsHash") != payloads[0]["body"].get("request_digest"):
-        raise Falla("pact_receipt_mismatch", 0)  # argsHash DEBE ser la huella de lo pedido (SPEC 9.4.1)
+        raise Falla("pact_receipt_mismatch", 0)  # argsHash MUST be the digest of the request (SPEC 9.4.1)
     if recibo is None:
         return {"pact_receipt": "not_presented"}
     if pact is None:
@@ -818,7 +818,7 @@ def verificar_jws(jws, jwks, typ):
 
 
 def verificar_registro(paquete, jwts, bloque, material):
-    """SPEC 9.8 y 9.9 paso 3. Devuelve un informe; levanta Falla si algo no calza."""
+    """SPEC 9.8 and 9.9 step 3. Returns a report; raises Falla if anything does not match."""
     log = paquete.get("log")
     if not log:
         return {"log_inclusion": "absent"}
@@ -839,7 +839,7 @@ def verificar_registro(paquete, jwts, bloque, material):
             raise Falla("log_bad_leaf", seq)
         if not inclusion(x["leaf_index"], tam, hoja(entrada), [b64d(p) for p in x["path"]], raiz):
             raise Falla("log_inclusion_failed", seq)
-    # El checkpoint que el verificador ve por su cuenta debe ser el mismo arbol o uno que lo extiende.
+    # The checkpoint the verifier sees on its own must be the same tree or one that extends it.
     vivo = verificar_jws(material.traer(bloque["log"]["checkpoint_url"], crudo=True).strip(), jwks_log, "vxp-checkpoint+jwt")
     if vivo is None:
         raise Falla("checkpoint_signature_invalid")
@@ -859,14 +859,14 @@ def verificar_registro(paquete, jwts, bloque, material):
         "tree_size": tam,
         "live_tree_size": t2,
         "consistency": "ok",
-        # Sin un testigo ajeno al operador que cofirme, no hay `logged` (SPEC 9.7); la cofirma no
-        # esta implementada en la 0.1.
+        # Without a witness independent of the operator that cosigns, there is no `logged` (SPEC 9.7);
+        # cosigning is not implemented in 0.1.
         "witnesses": len(testigos),
     }
 
 
 def cruzar_operacion(operacion, empresa, payloads, veredicto):
-    """Ata la cadena a la operacion Poppy (o `vxpprotocol.org/operation` de PACT) que vio el agente."""
+    """Binds the chain to the Poppy operation (or PACT's `vxpprotocol.org/operation`) the agent saw."""
     if operacion.get("operation_id") != payloads[0]["op"]:
         raise Falla("operation_id_mismatch")
     terms = [p for p in payloads if p["kind"] == "terms" and p["body"]["revision"] == operacion.get("revision")]
@@ -883,8 +883,8 @@ def cruzar_operacion(operacion, empresa, payloads, veredicto):
     })
     if calculada != terms[-1]["body"]["terms_digest"]:
         raise Falla("operation_terms_mismatch")
-    # SPEC 9.3 (ronda 3, m2): los terminos llevan una sal de 128 bits o mas, para que la huella no
-    # confirme datos personales a quien sospecha su valor.
+    # SPEC 9.3 (round 3, m2): the terms carry a salt of 128 bits or more, so the digest does not
+    # confirm personal data to someone who guesses its value.
     sal = (operacion.get("terms") or {}).get("vxp_salt") if isinstance(operacion.get("terms"), dict) else None
     try:
         sal_ok = isinstance(sal, str) and b64e(b64d(sal)) == sal and len(b64d(sal)) >= 16
@@ -892,7 +892,7 @@ def cruzar_operacion(operacion, empresa, payloads, veredicto):
         sal_ok = False
     if not sal_ok:
         raise Falla("weak_terms_salt")
-    # SPEC 9.4.7: lo observado (con lo divulgado ya en su lugar) coincide con los terminos del mismo nombre.
+    # SPEC 9.4.7: what was observed (with disclosures already in place) matches the terms of the same name.
     terminos = operacion.get("terms") or {}
     for p in payloads:
         if p["kind"] != "read_back" or p["body"].get("matches_terms") is not True:
@@ -902,8 +902,8 @@ def cruzar_operacion(operacion, empresa, payloads, veredicto):
                 raise Falla("read_back_terms_mismatch", p["seq"])
     estado = operacion.get("state")
     finales = [p for p in payloads if p["kind"] in ("outcome", "correction")]
-    # VXP Proof: lo vigente es el ULTIMO final (outcome o correction, SPEC 11.1), no el primer outcome.
-    # Una operacion abierta (in_progress) solo calza con un ultimo final `unknown` o con ninguno.
+    # VXP Proof: what stands is the LATEST final (outcome or correction, SPEC 11.1), not the first outcome.
+    # An open operation (in_progress) only matches a latest final `unknown`, or none.
     if estado in ESTADO_POPPY:
         if not finales or finales[-1]["body"]["state"] != ESTADO_POPPY[estado]:
             raise Falla("operation_state_mismatch")
@@ -925,14 +925,14 @@ def verificar_paquete(paquete, material, ancla, aud=None, operacion=None, recibo
     estados = paquete.get("statements") or []
     if not estados:
         raise Falla("no_outcome")
-    # Sin resultado se trata como `unknown` (SPEC 9.5 regla 9): `main` lo informa asi.
+    # No outcome is treated as `unknown` (SPEC 9.5 rule 9): `main` reports it that way.
     veredicto, jwts, payloads = verificar_cadena(estados, llaves, empresa, bloque.get("custody"), aud)
     if paquete.get("op") != payloads[0]["op"]:
         raise Falla("op_mismatch")
     veredicto["company"] = empresa
     veredicto["anchor"] = tipo
-    # Las llaves vienen del jwks_uri vivo que nombra la metadata del issuer: ancladas al issuer,
-    # no a su historia (SPEC 9.6: las hojas de llaves del registro no existen en la 0.1).
+    # The keys come from the live jwks_uri named by the issuer metadata: anchored to the issuer,
+    # not to its history (SPEC 9.6: key leaves in the log do not exist in 0.1).
     veredicto["key_source"] = "issuer_metadata_live"
     veredicto["profile"] = perfil
     veredicto["statements"] = len(estados)
@@ -945,7 +945,7 @@ def verificar_paquete(paquete, material, ancla, aud=None, operacion=None, recibo
     return veredicto
 
 
-# ---------- modo vectores (SPEC apendice A) ----------
+# ---------- vectors mode (SPEC appendix A) ----------
 
 CLAVES_VEREDICTO = ("valid", "final_state", "revision", "approval", "derived_assurance", "single_root", "custody_declared", "logged")
 
@@ -978,7 +978,7 @@ def modo_vectores(ruta):
         resultados.append(ok)
         print(("OK   " if ok else "FALLA") + " " + nombre + (" - " + detalle if detalle else ""))
 
-    # Huellas recalculadas desde los insumos en claro (SPEC 9.3: siempre JCS, tambien de strings).
+    # Digests recomputed from the cleartext inputs (SPEC 9.3: always JCS, strings included).
     informe("terms_digest_1", dig_jcs(ins["terminos1"]) == ins["terms_digest_1"])
     informe("terms_digest_2", dig_jcs(ins["terminos2"]) == ins["terms_digest_2"])
     informe("display_code_2", codigo_visible(ins["terms_digest_2"]) == ins["display_code_2"])
@@ -1000,13 +1000,13 @@ def modo_vectores(ruta):
         x = v["chain_" + nombre]
         ver2, _, _ = verificar_cadena(cadena + x["extra"], llaves, empresa, custodia)
         informe(nombre.upper(), {k: ver2[k] for k in CLAVES_VEREDICTO} == x["expected"], json.dumps({k: ver2[k] for k in CLAVES_VEREDICTO}))
-    # Ronda 3: V4, con la revision de la empresa exigida (company_review_required) y aprobada.
+    # Round 3: V4, with the company review required (company_review_required) and approved.
     x = v["chain_v4"]
     ver4, _, _ = verificar_cadena(x["chain"], llaves, empresa, custodia)
     informe("V4", {k: ver4[k] for k in CLAVES_VEREDICTO} == x["expected"], json.dumps({k: ver4[k] for k in CLAVES_VEREDICTO}))
     for s4, d4 in zip(x["chain"], x["digests"]):
         informe("V4 huella seq %d" % x["chain"].index(s4), huella_declaracion(s4.split("~")[0]) == d4)
-    # Ronda 3: la cadena junto a la operacion que vio el agente (SPEC 9.9 paso 4).
+    # Round 3: the chain together with the operation the agent saw (SPEC 9.9 step 4).
     for caso in v.get("operation_cases", []):
         try:
             ver5, _, procesados5 = verificar_cadena(caso["chain"], llaves, empresa, custodia)
@@ -1047,7 +1047,7 @@ def modo_vectores(ruta):
 
 
 def modo_pact(ruta):
-    """SPEC apendice A.9: anclaje PACT y cruce con el recibo PACT, con material ya bajado."""
+    """SPEC appendix A.9: PACT anchoring and cross-check with the PACT receipt, with material already fetched."""
     v = json.load(open(ruta, encoding="utf-8"))
     fallas = 0
     for caso in v["cases"]:

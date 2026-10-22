@@ -21,8 +21,20 @@ const MAX_CACHE = 1_000;
 const MAX_REGISTRO = 10_000;
 const TIMEOUT_DIRECTORIO_MS = 3_000;
 
-function v4Interna([a, b]: number[]): boolean {
-	return a === 0 || a === 10 || a === 127 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || (a === 100 && b >= 64 && b <= 127) || a >= 224;
+/** IANA IPv4 special-purpose ranges (RFC 6890 and updates) plus multicast and reserved: never a public operator. */
+function v4Interna([a, b, c]: number[]): boolean {
+	return (
+		a === 0 || a === 10 || a === 127 || a >= 224 ||
+		(a === 100 && b >= 64 && b <= 127) ||
+		(a === 169 && b === 254) ||
+		(a === 172 && b >= 16 && b <= 31) ||
+		(a === 192 && b === 168) ||
+		(a === 192 && b === 0 && (c === 0 || c === 2)) ||
+		(a === 192 && b === 88 && c === 99) ||
+		(a === 198 && (b === 18 || b === 19)) ||
+		(a === 198 && b === 51 && c === 100) ||
+		(a === 203 && b === 0 && c === 113)
+	);
 }
 
 /** The 8 groups of an IPv6 literal (with or without an embedded IPv4 tail), or null if it is not one. */
@@ -44,7 +56,7 @@ function grupos6(h: string): number[] | null {
 }
 
 /** Hosts the gateway never fetches a key directory from: loopback, private, link-local, unique-local, multicast,
- * and IPv6 forms that embed an internal IPv4 address (mapped, compatible, NAT64, 6to4). Names that resolve to such
+ * anything outside IPv6 global unicast, and IPv6 forms that embed an internal IPv4 (NAT64, 6to4). Names that resolve to such
  * addresses (DNS rebinding) must also be blocked at the egress layer, at connect time. */
 export function hostInterno(host: string): boolean {
 	const h = host.toLowerCase().replace(/^\[|\]$/g, "").replace(/\.+$/, "");
@@ -55,12 +67,14 @@ export function hostInterno(host: string): boolean {
 	const g = grupos6(h);
 	if (!g) return true; // an unparseable literal is refused, not guessed
 	const embebida = (alto: number, bajo: number) => v4Interna([alto >> 8, alto & 255, bajo >> 8, bajo & 255]);
-	if (g.slice(0, 7).every((x) => x === 0) && g[7] <= 1) return true; // :: and ::1
-	if (g.slice(0, 6).every((x) => x === 0)) return true; // IPv4-compatible (deprecated): never a public operator
-	if (g.slice(0, 5).every((x) => x === 0) && g[5] === 0xffff) return embebida(g[6], g[7]); // IPv4-mapped
-	if (g[0] === 0x64 && g[1] === 0xff9b && g.slice(2, 6).every((x) => x === 0)) return embebida(g[6], g[7]); // NAT64
+	// Deny by default: only global unicast (2000::/3) can be a public operator, and inside it the transition
+	// prefixes count only if the IPv4 address they carry is public.
+	if (g[0] === 0x64 && g[1] === 0xff9b && g.slice(2, 6).every((x) => x === 0)) return embebida(g[6], g[7]); // NAT64 64:ff9b::/96
 	if (g[0] === 0x2002) return embebida(g[1], g[2]); // 6to4
-	return (g[0] & 0xfe00) === 0xfc00 || (g[0] & 0xffc0) === 0xfe80 || (g[0] & 0xff00) === 0xff00;
+	if ((g[0] & 0xe000) !== 0x2000) return true; // outside 2000::/3: mapped, compatible, ULA, link-local, site-local, multicast, other NAT64
+	if (g[0] === 0x2001 && (g[1] === 0 || g[1] === 0xdb8 || (g[1] & 0xfff0) === 0x10 || (g[1] & 0xfff0) === 0x20)) return true; // Teredo, documentation, ORCHID
+	if (g[0] === 0x3fff && g[1] <= 0x0fff) return true; // documentation 3fff::/20
+	return false;
 }
 
 /** Splits a top-level Structured Fields Dictionary (RFC 8941), honoring parentheses and quotes. */

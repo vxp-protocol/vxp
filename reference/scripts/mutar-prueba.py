@@ -23,7 +23,7 @@ M = [
     ("P5 revisión nueva sin firmar sus términos", "src/nucleo.ts",
      "\t\t\t\tthis.firmarTerminos(actor.tenantId, existente);\n", ""),
     ("P6 el operador firma todo con su llave (sin separación de roles)", "src/prueba.ts",
-     "firmarJws(rol === \"empresa\" ? e.llave : this.operador,", "firmarJws(this.operador,"),
+     "firmarJws(rol === \"empresa\" ? e.anillo.actual : this.operador.actual,", "firmarJws(this.operador.actual,"),
     ("P7 dirección en claro en la lectura de vuelta", "src/nucleo.ts",
      "observed: observado },\n\t\t\t\t{ observed: { direccion: leido.direccion } },",
      "observed: { ...observado, direccion: leido.direccion } },\n\t\t\t\t{},"),

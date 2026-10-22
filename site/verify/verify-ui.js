@@ -53,6 +53,7 @@ function pintar(veredicto) {
 		? `Approval ${veredicto.approval} · single_root ${veredicto.single_root} · logged ${veredicto.logged} · ${veredicto.statements} statements`
 		: String(veredicto.error).startsWith("operation_") ? "The signed chain checks out; the operation shown to the agent does not match what was signed."
 		: veredicto.seq === null || veredicto.seq === undefined ? "Stopped before reading the statements." : `Stopped at statement seq ${veredicto.seq}.`;
+	resumen(veredicto);
 	const lista = $(".vchecks");
 	lista.replaceChildren(
 		...explain(veredicto).map((c) => {
@@ -70,6 +71,33 @@ function pintar(veredicto) {
 		}),
 	);
 	$(".vraw pre").textContent = tapar(verdictJson(veredicto));
+}
+
+// Five questions a verdict answers, kept apart (spec §10, Reading a verdict): a valid signature, the
+// operator's testimony and an independent confirmation are different things.
+function resumen(v) {
+	let dl = $(".vsum");
+	if (!dl) {
+		dl = document.createElement("dl");
+		dl.className = "vsum";
+		$(".vverdict").append(dl);
+	}
+	const filas = [["Integrity", v.valid ? "Intact, complete and ordered: no statement changed, missing or out of place." : `Broken: ${v.error}${v.seq === null || v.seq === undefined ? "" : ` at seq ${v.seq}`}.`]];
+	if (v.valid) {
+		filas.push(
+			["Provenance", `${v.company} · anchored by ${v.anchor} · keys from ${v.key_source}.`],
+			["Authority", `Revision ${v.revision} approved · method ${v.approval}.`],
+			["Declared result", `${v.final_state}, as the company asserts it.`],
+			["Corroboration", `${(v.derived_assurance ?? []).join(", ") || "none"} · single_root ${v.single_root} · logged ${v.logged}.${v.single_root === "operator" ? " No independent confirmation: every signature traces back to the operator." : ""}`],
+		);
+	}
+	dl.replaceChildren(...filas.flatMap(([k, t]) => {
+		const dt = document.createElement("dt");
+		dt.textContent = k;
+		const dd = document.createElement("dd");
+		dd.textContent = tapar(t);
+		return [dt, dd];
+	}));
 }
 
 async function verificar() {

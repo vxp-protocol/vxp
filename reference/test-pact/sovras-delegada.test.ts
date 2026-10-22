@@ -109,7 +109,7 @@ describe.sequential("SOVRAS · PACT Delegated", () => {
 		expect(enMarca.status).toBe(302);
 		expect(enMarca.headers.get("location")).toBe(`${provider}/a2a/${FERRETERIA}/.well-known/agent-card.json`);
 		// Round 2 (m1): the endpoint the Card advertises is the PACT interface's, not Poppy's.
-		expect(extension!.params.endpoint).toBe(`${url}/sovras/proof`);
+		expect(extension!.params.endpoint).toBe(`${url}/vxp/proof`);
 	});
 
 	it("A2A: la respuesta lista la extensión si el cliente la activa; un DataPart da CONTENT_TYPE_NOT_SUPPORTED (PACT §4.1)", async () => {

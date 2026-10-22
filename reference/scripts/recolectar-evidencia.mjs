@@ -103,7 +103,7 @@ const atribucion = [...actores.values()].map((x) => ({ ...x, user_agents: [...x.
 guardar("atribucion.json", atribucion);
 
 // Log checkpoint and, if requested, an RFC 3161 timestamp.
-const cp = await fetch(`${BASE}/sovras/log/checkpoint`).then((r) => r.text());
+const cp = await fetch(`${BASE}/vxp/log/checkpoint`).then((r) => r.text());
 guardar("checkpoint.jwt", cp);
 let selloInfo = "no pedido";
 if (SELLO) {

@@ -251,7 +251,7 @@ class UsuarioPoppy {
 		return this.pedir("GET", `${this.iss}/poppy/operaciones/${id}`);
 	}
 	paquete(id: string) {
-		return this.pedir("GET", `${this.iss}/sovras/proof/operations/${id}`);
+		return this.pedir("GET", `${this.iss}/vxp/proof/operations/${id}`);
 	}
 }
 

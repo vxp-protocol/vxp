@@ -139,7 +139,7 @@ export class CaraPoppy {
 	private operacionVisible(e: Empresa, op: Operacion, conPrueba: boolean) {
 		const visible: Record<string, unknown> = this.nucleo.visible(op);
 		const latest = this.nucleo.pruebas?.ultima(e.tenantId, op.operation_id);
-		if (conPrueba && latest) visible[EXT_PRUEBA] = { latest, bundle_url: `${this.issuer(e)}/sovras/proof/operations/${op.operation_id}` };
+		if (conPrueba && latest) visible[EXT_PRUEBA] = { latest, bundle_url: `${this.issuer(e)}/vxp/proof/operations/${op.operation_id}` };
 		return visible;
 	}
 

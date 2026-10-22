@@ -140,7 +140,7 @@ class Usuario {
 		return this.pedir("POST", `${this.issuer}/poppy/operaciones/${op.operation_id}/confirm`, { revision, approved_by: "user" });
 	}
 	async paquete(opId: string) {
-		const r = await this.pedir("GET", `${this.issuer}/sovras/proof/operations/${opId}`);
+		const r = await this.pedir("GET", `${this.issuer}/vxp/proof/operations/${opId}`);
 		return r;
 	}
 }
@@ -205,9 +205,9 @@ async function verificar(
 // ── What a dishonest operator could sign (it holds every key under `operator_hosted`) ──────────
 
 type LlaveInterna = { privateKey: KeyObject; publica: { kid: string } };
-const llaveOperador = () => Reflect.get(puerta.pruebas, "operador") as LlaveInterna;
-const llaveEmpresa = (tenant: string) => (Reflect.get(puerta.pruebas, "empresas") as Map<string, { llave: LlaveInterna }>).get(tenant)!.llave;
-const llaveRegistro = () => Reflect.get(puerta.pruebas, "registro") as LlaveInterna;
+const llaveOperador = () => (Reflect.get(puerta.pruebas, "operador") as { actual: LlaveInterna }).actual;
+const llaveEmpresa = (tenant: string) => (Reflect.get(puerta.pruebas, "empresas") as Map<string, { anillo: { actual: LlaveInterna } }>).get(tenant)!.anillo.actual;
+const llaveRegistro = () => (Reflect.get(puerta.pruebas, "registro") as { actual: LlaveInterna }).actual;
 const b64u = (b: Buffer | string) => Buffer.from(b).toString("base64url");
 function firmar(llave: LlaveInterna, payload: Record<string, unknown>, typ = "vxp-stmt+sd-jwt"): string {
 	const h = b64u(jcs({ alg: "ES256", kid: llave.publica.kid, typ }));
@@ -255,9 +255,9 @@ test("feliz: propuesta → contrapropuesta → revisión 2 → confirmar → lec
 	assert.equal(op1.revision, 1);
 	const m1 = op1[EXT] as { latest: string; bundle_url: string };
 	assert.equal(decodificar(m1.latest).kind, "terms", "la operación propuesta ya trae los términos firmados por la empresa");
-	assert.equal(m1.bundle_url, `${FERRETERIA}/sovras/proof/operations/${op1.operation_id}`);
+	assert.equal(m1.bundle_url, `${FERRETERIA}/vxp/proof/operations/${op1.operation_id}`);
 
-	const c = await ana.pedir("POST", `${FERRETERIA}/sovras/proof/operations/${op1.operation_id}/counter`, {
+	const c = await ana.pedir("POST", `${FERRETERIA}/vxp/proof/operations/${op1.operation_id}/counter`, {
 		base_revision: 1,
 		proposed_terms: { despacho_nuevo: "2026-10-28" },
 		note: "Puede ser un día después.",
@@ -265,7 +265,7 @@ test("feliz: propuesta → contrapropuesta → revisión 2 → confirmar → lec
 	assert.equal(c.status, 200, JSON.stringify(c.body));
 	assert.equal(c.body.revision, 2);
 	assert.match(String(c.body.summary), /2026-10-28/);
-	const vieja = await ana.pedir("POST", `${FERRETERIA}/sovras/proof/operations/${op1.operation_id}/counter`, { base_revision: 1, proposed_terms: { despacho_nuevo: "2026-10-26" } });
+	const vieja = await ana.pedir("POST", `${FERRETERIA}/vxp/proof/operations/${op1.operation_id}/counter`, { base_revision: 1, proposed_terms: { despacho_nuevo: "2026-10-26" } });
 	assert.equal(vieja.status, 409);
 	assert.equal(vieja.body.error, "counter_rejected");
 	assert.equal((await interno("sistema?tenant=t_ferreteria_demo")).find((p: { id: string }) => p.id === "P-1042").despacho, "2026-10-24", "una contrapropuesta no ejecuta nada");
@@ -563,4 +563,63 @@ test("una revisión nueva que cruza el umbral exige revisión de la empresa aunq
 	const pend = await interno("revisiones?tenant=t_ferreteria_demo");
 	assert.ok(pend.some((x: { huella: string }) => x.huella), "quedó en la bandeja de la empresa");
 	for (const x of pend) await interno(`revisiones/${x.review_id}`, { tenant: "t_ferreteria_demo", decision: "rechazada" });
+});
+
+test("rutas: el material de prueba vive bajo /vxp/ y /sovras/ sigue como alias del mismo contenido (compatibilidad con material capturado antes de la revisión de la tarde del 22-oct)", async () => {
+	const id = (opFinal as { operation_id: string }).operation_id;
+	const nueva = await ana.pedir("GET", `${FERRETERIA}/vxp/proof/operations/${id}`);
+	const vieja = await ana.pedir("GET", `${FERRETERIA}/sovras/proof/operations/${id}`);
+	assert.equal(nueva.status, 200);
+	// The checkpoint is signed again on each read (ECDSA): what must match is the chain and the log it belongs to.
+	assert.deepEqual(vieja.body.statements, nueva.body.statements);
+	assert.equal(vieja.body.log.origin, nueva.body.log.origin);
+	const meta = await (await red(`${AUTH}/.well-known/oauth-authorization-server/e/ferreteria-demo`)).json();
+	assert.match(meta.vxp_proof.jwks_uri, /\/vxp\/proof-jwks\.json$/);
+	assert.match(meta.vxp_proof.log.checkpoint_url, /\/vxp\/log\/checkpoint$/);
+	assert.doesNotMatch(JSON.stringify(meta.vxp_proof), /\/sovras\//,"ninguna ruta del bloque de confianza queda bajo /sovras/");
+});
+
+test("llaves: tras rotar, una constancia anterior sigue verificando con la llave anterior publicada; al retirarla, sólo verifica con material guardado antes (verificación histórica)", async () => {
+	const id1 = (opFinal as { operation_id: string }).operation_id;
+	const p1 = (await ana.paquete(id1)).body;
+	const kidEmpresa1 = llaveEmpresa("t_ferreteria_demo").publica.kid;
+	// Material saved while the first keys are the current ones: what an auditor keeps.
+	const guardado = await material(DESC_FERRETERIA, p1 as { log?: { checkpoint: string } });
+
+	const kidNuevo = puerta.pruebas.rotarEmpresa("t_ferreteria_demo");
+	puerta.pruebas.rotarOperador();
+	assert.notEqual(kidNuevo, kidEmpresa1);
+	const jwks = puerta.pruebas.jwksEmpresa("t_ferreteria_demo");
+	assert.deepEqual(jwks.keys.map((k) => k.kid), [kidNuevo, kidEmpresa1], "la llave anterior sigue publicada, después de la actual");
+	assert.ok(jwks.keys.every((k) => !("d" in k)), "ninguna llave privada se publica");
+
+	// A new operation is signed with the new keys and verifies.
+	const op2 = await ana.proponer("Cambia el despacho del P-1043 al 2026-12-10");
+	const r2 = await ana.confirmar(op2, op2.revision as number);
+	// Earlier tests leave a company-review rule on this order, so it may wait for that review; what matters is who signed it.
+	assert.ok(["succeeded", "failed", "in_progress"].includes(String(r2.body.state)), JSON.stringify(r2.body));
+	// An earlier test leaves a company-review rule in force: approve that review so the operation reaches its outcome.
+	if (r2.body.state === "in_progress") {
+		const revs = (await interno("revisiones?tenant=t_ferreteria_demo")) as { review_id: string; operation_id?: string }[];
+		for (const rv of revs) await interno(`revisiones/${rv.review_id}`, { tenant: "t_ferreteria_demo", decision: "aprobada" });
+	}
+	const p2 = (await ana.paquete(String(op2.operation_id))).body;
+	const kids2 = (p2 as { statements: string[] }).statements.map((s) => JSON.parse(Buffer.from(s.split(".")[0], "base64url").toString()).kid);
+	assert.ok(kids2.includes(kidNuevo), JSON.stringify(kids2));
+	assert.ok(!kids2.includes(kidEmpresa1));
+	const v2 = await verificar(p2);
+	assert.equal(v2.valid, true, JSON.stringify(v2));
+
+	// The earlier proof still verifies against live material: its key is still published.
+	const v1 = await verificar(p1);
+	assert.equal(v1.valid, true, JSON.stringify(v1));
+
+	// Retiring the earlier key: live material no longer anchors it…
+	assert.equal(puerta.pruebas.retirarLlaveEmpresa("t_ferreteria_demo", kidEmpresa1), true);
+	const sinLlave = await verificar(p1);
+	assert.equal(sinLlave.valid, false);
+	assert.equal(sinLlave.error, "unknown_key");
+	// …but the material saved while it was published still verifies it: historical verification.
+	const historico = await verificar(p1, { ajustar: (m) => { m.anchor = guardado.anchor; m.docs = guardado.docs; } });
+	assert.equal(historico.valid, true, JSON.stringify(historico));
 });

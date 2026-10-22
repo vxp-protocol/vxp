@@ -1,7 +1,7 @@
 # VXP reference implementation
 
-A company gateway that receives personal agents over Poppy draft 0.2, PACT 1.0 (A2A 1.0.1) and the
-native VXP profile (experimental), on one operational core held in memory. It serves three
+A company gateway that receives personal agents over the native VXP profile (experimental) and,
+optionally, Poppy draft 0.2 and PACT 1.0 (A2A 1.0.1), on one operational core held in memory. It serves three
 fictitious test companies: Ferretería Demo (store), Hotel Demo (on another host) and Librería Demo.
 Inventory, payments, the company system and the WhatsApp line are simulated.
 Identifiers and customer-facing strings are in Spanish, as in the Chilean test companies; comments
@@ -11,9 +11,11 @@ Requirements: Node.js 22.18 or newer (TypeScript runs natively), Python 3 with `
 for the independent verifier (`../verifier/verificar_paquete.py`, called by several tests).
 
 ```sh
-npm test                 # test/*.test.ts: 141 tests, in process
-npm run test:network     # test-red/*.test.ts: 3 tests over TCP (ports 3610, 3614, 3630, 3632, 3634)
+npm test                 # test/*.test.ts, in process
+npm run test:network     # test-red/*.test.ts, over TCP (ports 3610, 3614, 3630, 3632, 3634)
 npm start                # local gateway on :3100 (PORT, PA_PORT, PUBLIC_ORIGIN, HOTEL_ORIGIN)
+VXP_ADAPTERS=none npm start            # native profile only: no poppy.json, Agent Card, A2A or Poppy routes
+VXP_KEYS_DIR=<dir> npm start           # persistent proof keys (operator, log, one per company)
 ```
 
 Directories:
@@ -32,5 +34,10 @@ Directories:
 - `vendor/poppy-kit/`: the official Poppy company kit, unmodified, Apache 2.0 (see its README).
 
 Mutation switches are read from the `SOVRAS_MUTAR` environment variable (`src/mutar.ts`); without
-it no protection is switched off. The `x-sovras-*` header and the `/sovras/...` paths are the
-operator's own surface in this implementation, not part of the protocol.
+it no protection is switched off. The `x-sovras-*` headers and the `/interno/` routes are this
+implementation's own test surface, and the `/vxp/...` proof paths (with `/sovras/...` kept as an alias)
+are discovered through the issuer metadata: none of them is part of the protocol.
+
+The internal controls that enforce the operation requirements (catalog, prior read, policy, commitment,
+single execution, read-back) live in `src/nucleo.ts`; SOVRAS calls them its Capability Gate. They are
+one way to meet O1 to O7, not part of VXP.

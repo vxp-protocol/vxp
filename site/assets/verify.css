@@ -39,3 +39,8 @@
 .copy { justify-self: end; margin: 8px 0 -4px; height: 28px; padding: 0 10px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--paper); font: 400 12px var(--sans); cursor: pointer; }
 @media (max-width: 900px) { .vgrid, .vabout { grid-template-columns: 1fr; } .vout { position: static; } }
 .vown[hidden] { display: none; }
+
+.vsum { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 10px 0 0; font-size: 14px; line-height: 1.45; }
+.vsum dt { font: 500 12px var(--mono); color: var(--ink-soft); padding-top: 2px; }
+.vsum dd { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 560px) { .vsum { grid-template-columns: 1fr; gap: 2px; } .vsum dd { margin-bottom: 8px; } }

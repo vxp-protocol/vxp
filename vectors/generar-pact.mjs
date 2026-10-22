@@ -44,15 +44,15 @@ const jws = (key, header, payload) => {
 	return h + "." + p + "." + b64u(sign("sha256", Buffer.from(h + "." + p, "ascii"), { key: key.privateKey, dsaEncoding: "ieee-p1363" }));
 };
 
-const kEmpresa = llave("SOVRAS-PROOF-0.1 PRUEBA llave de empresa ferreteria-demo");
-const kOperador = llave("SOVRAS-PROOF-0.1 PRUEBA llave del operador");
-const kAs = llave("SOVRAS-PROOF-0.1 PRUEBA llave del servidor de autorizacion PACT de ferreteria-demo");
-const kOtro = llave("SOVRAS-PROOF-0.1 PRUEBA llave de otro proveedor que se presenta como la marca");
+const kEmpresa = llave("VXP-PROOF-0.1 PRUEBA llave de empresa ferreteria-demo");
+const kOperador = llave("VXP-PROOF-0.1 PRUEBA llave del operador");
+const kAs = llave("VXP-PROOF-0.1 PRUEBA llave del servidor de autorizacion PACT de ferreteria-demo");
+const kOtro = llave("VXP-PROOF-0.1 PRUEBA llave de otro proveedor que se presenta como la marca");
 
-const EMPRESA = "https://auth.sovras.io/e/ferreteria-demo";
-const OPERADOR = "https://sovras.io/operador";
+const EMPRESA = "https://auth.operator.example/e/ferreteria-demo";
+const OPERADOR = "https://operator.example/op";
 const MARCA = "ferreteria-demo.example";
-const IFACE = "https://provider.sovras.io/a2a/t_ferreteria_demo";
+const IFACE = "https://provider.operator.example/a2a/t_ferreteria_demo";
 const AS = IFACE + "/oauth";
 const AGENTE = "https://pa.example"; // PACT: the agent's client_id = its issuer (PACT §5.4)
 const USUARIO = "cli_a_demo"; // PACT: the delegation's `sub` (SPEC §6.2)
@@ -112,13 +112,13 @@ const reciboAlterado = { jws: rh + "." + b64u(jcs({ ...recibo.claims, grantId: "
 
 // ---------- public documents ----------
 const confianza = {
-	version: "0.1", company: EMPRESA, jwks_uri: `${EMPRESA}/sovras/proof-jwks.json`,
+	version: "0.1", company: EMPRESA, jwks_uri: `${EMPRESA}/vxp/proof-jwks.json`,
 	operator: { issuer: OPERADOR, jwks_uri: `${OPERADOR}/proof-jwks.json` }, custody: "operator_hosted",
-	log: { origin: "log.sovras.io/proof/v0.1", checkpoint_url: "https://log.sovras.io/proof/v0.1/checkpoint", consistency_url: "https://log.sovras.io/proof/v0.1/consistency", jwks_uri: "https://log.sovras.io/proof/v0.1/jwks.json", witnesses: [] },
+	log: { origin: "log.operator.example/proof/v0.1", checkpoint_url: "https://log.operator.example/proof/v0.1/checkpoint", consistency_url: "https://log.operator.example/proof/v0.1/consistency", jwks_uri: "https://log.operator.example/proof/v0.1/jwks.json", witnesses: [] },
 	domains: [MARCA],
 	pact: [{ interface: IFACE, authorization_server: AS }],
 };
-const bloque = { ...confianza, endpoint: `${IFACE}/sovras/proof`, approval_channels: ["whatsapp"], capabilities: [{ name: "pedido.reprogramar_despacho", effect: "write", max_assurance: ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], third_party: [] }] };
+const bloque = { ...confianza, endpoint: `${IFACE}/vxp/proof`, approval_channels: ["whatsapp"], capabilities: [{ name: "pedido.reprogramar_despacho", effect: "write", max_assurance: ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], third_party: [] }] };
 const card = (iface, params) => ({
 	name: "Ferretería Demo",
 	supportedInterfaces: [{ url: iface, protocolBinding: "HTTP+JSON", protocolVersion: "1.0" }],
@@ -129,7 +129,7 @@ const card = (iface, params) => ({
 const OTRO = "https://otro-proveedor.example";
 const OTRA_EMPRESA = `${OTRO}/e/demo`;
 const OTRA_IFACE = `${OTRO}/a2a/demo`;
-const confianzaOtra = { ...confianza, company: OTRA_EMPRESA, jwks_uri: `${OTRA_EMPRESA}/sovras/proof-jwks.json`, operator: { issuer: `${OTRO}/op`, jwks_uri: `${OTRO}/op/proof-jwks.json` }, domains: ["otro-proveedor.example"], pact: [{ interface: OTRA_IFACE, authorization_server: `${OTRA_IFACE}/oauth` }] };
+const confianzaOtra = { ...confianza, company: OTRA_EMPRESA, jwks_uri: `${OTRA_EMPRESA}/vxp/proof-jwks.json`, operator: { issuer: `${OTRO}/op`, jwks_uri: `${OTRO}/op/proof-jwks.json` }, domains: ["otro-proveedor.example"], pact: [{ interface: OTRA_IFACE, authorization_server: `${OTRA_IFACE}/oauth` }] };
 const AS_FALSO = `${OTRO}/a2a/demo-falso/oauth`;
 
 const docs = {
@@ -165,12 +165,12 @@ const casos = [
 	{ id: "PD7", expect: "issuer_not_anchored", anchor: { brand_domain: "copia-distinta.ferreteria-demo.example" }, docs_override: { [metaUrl(EMPRESA)]: { issuer: EMPRESA, vxp_proof: confianzaPd7 }, [metaUrl(AS)]: { issuer: AS, jwks_uri: `${AS}/jwks.json`, vxp_proof: confianzaPd7 } }, note: "La copia de la Card no es idéntica a la metadata de la empresa" },
 	{ id: "PD8", expect: "issuer_not_anchored", anchor: { brand_domain: MARCA }, docs_override: { [metaUrl(AS)]: { issuer: AS, jwks_uri: `${AS}/jwks.json`, vxp_proof: { ...confianza, jwks_uri: `${AS}/otras-llaves.json` } } }, note: "La copia del bloque en la metadata del AS de PACT no es la de la empresa" },
 	{ id: "PD9", expect: "issuer_not_anchored", anchor: { pact_issuer: AS }, docs_override: { [metaUrl(AS)]: { issuer: AS, jwks_uri: "https://cdn.otro.example/jwks.json", vxp_proof: confianza } }, note: "El jwks_uri del AS de PACT (llaves de los recibos) no está bajo su issuer" },
-	{ id: "PD10", expect: "issuer_not_anchored", anchor: { brand_domain: MARCA }, docs_override: { [`https://${MARCA}/.well-known/agent-card.json`]: card("https://provider.sovras.io/a2a/otra-interfaz", bloque) }, note: "La Card del dominio apunta a una interfaz que la empresa no lista en `pact`" },
+	{ id: "PD10", expect: "issuer_not_anchored", anchor: { brand_domain: MARCA }, docs_override: { [`https://${MARCA}/.well-known/agent-card.json`]: card("https://provider.operator.example/a2a/otra-interfaz", bloque) }, note: "La Card del dominio apunta a una interfaz que la empresa no lista en `pact`" },
 	{ id: "R1", expect: "pact_receipt_invalid", seq: 0, anchor: { brand_domain: MARCA }, receipt: reciboDe(kOtro), note: "Recibo firmado con una llave que no está en el jwks_uri del AS de PACT anclado" },
 	{ id: "R2", expect: "pact_receipt_invalid", seq: 0, anchor: { brand_domain: MARCA }, receipt: reciboAlterado, note: "Claims del recibo alterados sin volver a firmar" },
 	{ id: "R3", expect: "pact_receipt_mismatch", seq: 0, anchor: { brand_domain: MARCA }, receipt: reciboDe(kAs, { grantId: "a2agrant_OTRO" }), note: "Recibo válido de otra delegación" },
 	{ id: "R4", expect: "pact_receipt_mismatch", seq: 0, anchor: { brand_domain: MARCA }, receipt: reciboDe(kAs, { actions: [{ tool: "pedido.reprogramar_despacho.preparar", argsHash: dig({ binding: "pact.message", text: "Cambia el despacho del P-1043 al 2026-10-30" }) }] }), note: "Recibo válido de otra petición" },
-	{ id: "R5", expect: "pact_receipt_mismatch", seq: 0, anchor: { brand_domain: MARCA }, receipt: reciboDe(kAs, { brand: "https://provider.sovras.io/a2a/t_libreria_demo" }), note: "Recibo de otra marca" },
+	{ id: "R5", expect: "pact_receipt_mismatch", seq: 0, anchor: { brand_domain: MARCA }, receipt: reciboDe(kAs, { brand: "https://provider.operator.example/a2a/t_libreria_demo" }), note: "Recibo de otra marca" },
 	{ id: "R6", expect: "pact_receipt_mismatch", seq: 0, anchor: { brand_domain: MARCA }, receipt: reciboDe(kAs, { actions: [{ tool: "pedido.reprogramar_despacho.preparar", argsHash: OTRO_HASH }] }), package: cadena({ grantId: GRANT, argsHash: OTRO_HASH }), note: "La request y el recibo coinciden entre sí, pero el argsHash no es la huella de lo pedido (request_digest, SPEC §9.4.1): nadie podría recalcularlo" },
 ];
 

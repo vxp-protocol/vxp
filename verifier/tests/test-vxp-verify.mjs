@@ -7,7 +7,7 @@
 // Paths are relative to the repository. Set VXP_PY_LEGACY to the pre-rename reference verifier to
 // also run the legacy-0.1 naming checks; without it those checks are skipped.
 import { spawnSync } from "node:child_process";
-import { readFileSync, writeFileSync, mkdtempSync, mkdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync, mkdtempSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -78,12 +78,19 @@ function flipSignature(sd) {
 }
 const clone = (x) => JSON.parse(JSON.stringify(x));
 
-const REAL = [
-  { id: "pact-run/pact-op_01NpsuOhdE3C", pkg: join(PACT, "pact-op_01NpsuOhdE3C.json"), mat: join(PACT, "pact-op_01NpsuOhdE3C.material.json"), receipt: join(PACT, "pact-op_01NpsuOhdE3C.recibo.json") },
-  { id: "pact-run/pact-op_kXk0fUY1M3Eq", pkg: join(PACT, "pact-op_kXk0fUY1M3Eq.json"), mat: join(PACT, "pact-op_kXk0fUY1M3Eq.material.json"), op: join(PACT, "pact-op_kXk0fUY1M3Eq.op.json") },
-  { id: "captura/op_B6__ICZlCe_c", pkg: join(CAP, "paquete-op_B6__ICZlCe_c.json"), mat: join(CAP, "material-op_B6__ICZlCe_c.json"), op: join(CAP, "operacion-op_B6__ICZlCe_c.json") },
-  { id: "captura/op_NBbN47CrhrtM", pkg: join(CAP, "paquete-op_NBbN47CrhrtM.json"), mat: join(CAP, "material-op_NBbN47CrhrtM.json"), op: join(CAP, "operacion-op_NBbN47CrhrtM.json") },
-];
+// Every published run under site/downloads: native runs (paquete-/material-/operacion-<op>.json) and PACT runs
+// (pact-op_<id>.json with .material.json, and .recibo.json or .op.json when present).
+const existe = (p) => existsSync(p) ? p : undefined;
+const REAL = readdirSync(DL).filter((d) => /^(native|pact)-run-/.test(d)).sort().flatMap((d) => {
+  const dir = join(DL, d);
+  return readdirSync(dir).sort().flatMap((f) => {
+    let m = f.match(/^paquete-(op_.+)\.json$/);
+    if (m) return [{ id: `${d}/${m[1]}`, pkg: join(dir, f), mat: join(dir, `material-${m[1]}.json`), op: existe(join(dir, `operacion-${m[1]}.json`)) }];
+    m = f.match(/^(pact-op_[^.]+)\.json$/);
+    if (m) return [{ id: `${d}/${m[1]}`, pkg: join(dir, f), mat: join(dir, `${m[1]}.material.json`), receipt: existe(join(dir, `${m[1]}.recibo.json`)), op: existe(join(dir, `${m[1]}.op.json`)) }];
+    return [];
+  });
+});
 
 function variants(c) {
   const pkg = JSON.parse(read(c.pkg));
@@ -147,7 +154,7 @@ say("[material] real proofs: " + REAL.length + " captured proofs, " + realCount 
 // ---------- explain() smoke check on a real verdict ----------
 {
   const c = REAL[2];
-  const v = await verifyPackage({ package: read(c.pkg), material: read(c.mat), operation: read(c.op) });
+  const v = await verifyPackage({ package: read(c.pkg), material: read(c.mat), operation: c.op ? read(c.op) : undefined });
   const e = explain(v);
   say("[explain] " + c.id + ": " + e.length + " controls; " + e.filter((x) => x.status === "pass").length + " pass, " + e.filter((x) => x.status === "fail").length + " fail");
   for (const x of e) say("    " + x.status.padEnd(11) + x.control + ": " + x.text);

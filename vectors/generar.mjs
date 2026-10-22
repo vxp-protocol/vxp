@@ -83,18 +83,18 @@ if (b64u(sha256(Buffer.from(rfcDisc, "ascii"))) !== "X9yH0Ajrdm1Oij4tWso9UzzKJvP
 	throw new Error("hash de divulgación no coincide con RFC 9901 §4.2.3");
 
 // ---------- scenario ----------
-const EMPRESA = "https://auth.sovras.io/e/ferreteria-demo";
-const OPERADOR = "https://sovras.io/operador";
+const EMPRESA = "https://auth.operator.example/e/ferreteria-demo";
+const OPERADOR = "https://operator.example/op";
 const AGENTE = "https://pa.example/agent.json";
 const USUARIO = "u_9d2c41"; // Poppy User ID: a pseudonym stable only for this company
 const OP = "op_P1042_desp";
 const t = (iso) => Math.floor(Date.parse(iso) / 1000);
 
-const kEmpresa = llave("SOVRAS-PROOF-0.1 PRUEBA llave de empresa ferreteria-demo");
-const kOperador = llave("SOVRAS-PROOF-0.1 PRUEBA llave del operador");
-const kOtra = llave("SOVRAS-PROOF-0.1 PRUEBA llave de empresa libreria-demo");
-const kAtacante = llave("SOVRAS-PROOF-0.1 PRUEBA llave de un tercero que se hace pasar por la empresa");
-const kTag = sha256("SOVRAS-PROOF-0.1 PRUEBA llave de etiqueta ferreteria-demo");
+const kEmpresa = llave("VXP-PROOF-0.1 PRUEBA llave de empresa ferreteria-demo");
+const kOperador = llave("VXP-PROOF-0.1 PRUEBA llave del operador");
+const kOtra = llave("VXP-PROOF-0.1 PRUEBA llave de empresa libreria-demo");
+const kAtacante = llave("VXP-PROOF-0.1 PRUEBA llave de un tercero que se hace pasar por la empresa");
+const kTag = sha256("VXP-PROOF-0.1 PRUEBA llave de etiqueta ferreteria-demo");
 
 const base = (seq, iss, iat, prev, kind, body) => ({
 	v: "0.1", kind, iss, company: EMPRESA, op: OP, seq, prev, iat, aud: AGENTE, user: USUARIO, body,
@@ -333,17 +333,17 @@ nc("N31", "bad_approval_method", extender(S.slice(0, 4), [[kOperador, "user_appr
 const DOMINIO = "agentes.ferreteria-demo.example";
 const metaUrl = (iss) => { const u = new URL(iss); return `${u.origin}/.well-known/oauth-authorization-server${u.pathname.replace(/\/$/, "")}`; };
 const confianza = {
-	version: "0.1", company: EMPRESA, jwks_uri: `${EMPRESA}/sovras/proof-jwks.json`,
+	version: "0.1", company: EMPRESA, jwks_uri: `${EMPRESA}/vxp/proof-jwks.json`,
 	operator: { issuer: OPERADOR, jwks_uri: `${OPERADOR}/proof-jwks.json` }, custody: "operator_hosted",
-	log: { origin: "log.sovras.io/proof/v0", checkpoint_url: "https://log.sovras.io/proof/v0/checkpoint", consistency_url: "https://log.sovras.io/proof/v0/consistency", jwks_uri: "https://log.sovras.io/proof/v0/jwks.json", witnesses: [] },
+	log: { origin: "log.operator.example/proof/v0", checkpoint_url: "https://log.operator.example/proof/v0/checkpoint", consistency_url: "https://log.operator.example/proof/v0/consistency", jwks_uri: "https://log.operator.example/proof/v0/jwks.json", witnesses: [] },
 };
-const bloque = { ...confianza, endpoint: `https://${DOMINIO}/sovras/proof`, approval_channels: ["whatsapp"], capabilities: [{ name: "pedido.reprogramar_despacho", effect: "write", max_assurance: NIVELES_V1, third_party: [] }] };
+const bloque = { ...confianza, endpoint: `https://${DOMINIO}/vxp/proof`, approval_channels: ["whatsapp"], capabilities: [{ name: "pedido.reprogramar_despacho", effect: "write", max_assurance: NIVELES_V1, third_party: [] }] };
 const docs = {
 	[`https://${DOMINIO}/.well-known/poppy.json`]: { protocol_version: "0.2", organization: { name: "Ferretería Demo", domain: DOMINIO }, auth: { issuer: EMPRESA }, extensions: { "vxpprotocol.org/proof": bloque } },
 	[metaUrl(EMPRESA)]: { issuer: EMPRESA, poppy_domains: [DOMINIO], vxp_proof: confianza },
 	[confianza.jwks_uri]: { keys: [kEmpresa.publicJwk] },
 	[confianza.operator.jwks_uri]: { keys: [kOperador.publicJwk] },
-	"https://provider.sovras.io/a2a/t_ferreteria_demo/.well-known/agent-card.json": { name: "Ferretería Demo", capabilities: { extensions: [{ uri: "https://vxpprotocol.org/ext/proof/v0.1", required: false, params: bloque }] } },
+	"https://provider.operator.example/a2a/t_ferreteria_demo/.well-known/agent-card.json": { name: "Ferretería Demo", capabilities: { extensions: [{ uri: "https://vxpprotocol.org/ext/proof/v0.1", required: false, params: bloque }] } },
 	// B1: a third party publishes on its domain an Agent Card that claims to be Ferretería Demo, with its own keys and custody customer_managed.
 	"https://atacante.example/.well-known/agent-card.json": { name: "Ferretería Demo", capabilities: { extensions: [{ uri: "https://vxpprotocol.org/ext/proof/v0.1", required: false, params: { ...bloque, jwks_uri: "https://atacante.example/e.json", operator: { issuer: "https://atacante.example/op", jwks_uri: "https://atacante.example/op/jwks.json" }, custody: "customer_managed" } }] } },
 	"https://atacante.example/e.json": { keys: [kAtacante.publicJwk] },
@@ -351,20 +351,20 @@ const docs = {
 	"https://copia.example/.well-known/poppy.json": { protocol_version: "0.2", organization: { name: "Ferretería Demo", domain: DOMINIO }, auth: { issuer: EMPRESA }, extensions: { "vxpprotocol.org/proof": bloque } },
 	"https://ferreteria-falsa.example/.well-known/poppy.json": { protocol_version: "0.2", organization: { name: "Ferretería Demo", domain: "ferreteria-falsa.example" }, auth: { issuer: EMPRESA }, extensions: { "vxpprotocol.org/proof": bloque } },
 	// Misconfigured issuers.
-	[metaUrl("https://auth.sovras.io/e/llave-ajena")]: { issuer: "https://auth.sovras.io/e/llave-ajena", vxp_proof: { ...confianza, company: "https://auth.sovras.io/e/llave-ajena", jwks_uri: "https://cdn.otro.example/jwks.json" } },
-	[metaUrl("https://auth.sovras.io/e/otro-issuer")]: { issuer: "https://auth.sovras.io/e/distinto", vxp_proof: { ...confianza, company: "https://auth.sovras.io/e/otro-issuer" } },
-	[metaUrl("https://auth.sovras.io/e/sin-bloque")]: { issuer: "https://auth.sovras.io/e/sin-bloque" },
+	[metaUrl("https://auth.operator.example/e/llave-ajena")]: { issuer: "https://auth.operator.example/e/llave-ajena", vxp_proof: { ...confianza, company: "https://auth.operator.example/e/llave-ajena", jwks_uri: "https://cdn.otro.example/jwks.json" } },
+	[metaUrl("https://auth.operator.example/e/otro-issuer")]: { issuer: "https://auth.operator.example/e/distinto", vxp_proof: { ...confianza, company: "https://auth.operator.example/e/otro-issuer" } },
+	[metaUrl("https://auth.operator.example/e/sin-bloque")]: { issuer: "https://auth.operator.example/e/sin-bloque" },
 };
 const casos = [
 	{ id: "D1", expect: "valid", anchor: { domain: DOMINIO }, note: "Poppy: dominio → poppy.json → issuer → metadata RFC 8414 → llaves" },
-	{ id: "D2", expect: "valid", anchor: { issuer: EMPRESA, card: "https://provider.sovras.io/a2a/t_ferreteria_demo/.well-known/agent-card.json" }, note: "A2A: issuer conocido + Agent Card del proveedor, cuya copia coincide con la metadata" },
+	{ id: "D2", expect: "valid", anchor: { issuer: EMPRESA, card: "https://provider.operator.example/a2a/t_ferreteria_demo/.well-known/agent-card.json" }, note: "A2A: issuer conocido + Agent Card del proveedor, cuya copia coincide con la metadata" },
 	{ id: "D3", expect: "issuer_not_anchored", anchor: { issuer: EMPRESA, card: "https://atacante.example/.well-known/agent-card.json" }, note: "B1: la Agent Card de un tercero no es la copia del issuer" },
 	{ id: "D4", expect: "issuer_not_anchored", anchor: { domain: "copia.example" }, note: "Poppy 3 regla 1: organization.domain no es el host que sirvió el documento" },
 	{ id: "D5", expect: "issuer_not_anchored", anchor: { domain: "ferreteria-falsa.example" }, note: "Poppy 3 regla 2: el issuer no lista ese dominio en poppy_domains" },
-	{ id: "D6", expect: "issuer_not_anchored", anchor: { issuer: "https://auth.sovras.io/e/llave-ajena" }, note: "jwks_uri fuera del issuer" },
-	{ id: "D7", expect: "issuer_not_anchored", anchor: { issuer: "https://auth.sovras.io/e/otro-issuer" }, note: "RFC 8414 3.3: la metadata trae otro issuer" },
-	{ id: "D8", expect: "issuer_not_anchored", anchor: { issuer: "https://auth.sovras.io/e/sin-bloque" }, note: "La metadata del issuer no publica vxp_proof" },
-	{ id: "D9", expect: "issuer_not_anchored", anchor: { issuer: "https://auth.sovras.io/e/sin-metadata" }, note: "Ronda 2 (m4): la metadata del issuer no existe (404); el verificador responde issuer_not_anchored, no se cae" },
+	{ id: "D6", expect: "issuer_not_anchored", anchor: { issuer: "https://auth.operator.example/e/llave-ajena" }, note: "jwks_uri fuera del issuer" },
+	{ id: "D7", expect: "issuer_not_anchored", anchor: { issuer: "https://auth.operator.example/e/otro-issuer" }, note: "RFC 8414 3.3: la metadata trae otro issuer" },
+	{ id: "D8", expect: "issuer_not_anchored", anchor: { issuer: "https://auth.operator.example/e/sin-bloque" }, note: "La metadata del issuer no publica vxp_proof" },
+	{ id: "D9", expect: "issuer_not_anchored", anchor: { issuer: "https://auth.operator.example/e/sin-metadata" }, note: "Ronda 2 (m4): la metadata del issuer no existe (404); el verificador responde issuer_not_anchored, no se cae" },
 ];
 
 const veredicto = (final_state, extra = {}) => ({ valid: true, final_state, revision: 2, approval: "company_channel", derived_assurance: NIVELES_V1, single_root: "operator", custody_declared: "operator_hosted", logged: false, ...extra });
@@ -374,7 +374,7 @@ const salida = {
 	keys: {
 		company: { jwks: { keys: [kEmpresa.publicJwk] }, custody: "operator_hosted", d_TEST_ONLY: kEmpresa.d, issuer: EMPRESA },
 		operator: { jwks: { keys: [kOperador.publicJwk] }, d_TEST_ONLY: kOperador.d, issuer: OPERADOR },
-		other_company: { jwks: { keys: [kOtra.publicJwk] }, d_TEST_ONLY: kOtra.d, issuer: "https://auth.sovras.io/e/libreria-demo" },
+		other_company: { jwks: { keys: [kOtra.publicJwk] }, d_TEST_ONLY: kOtra.d, issuer: "https://auth.operator.example/e/libreria-demo" },
 		attacker: { jwks: { keys: [kAtacante.publicJwk] }, d_TEST_ONLY: kAtacante.d },
 	},
 	inputs: { solicitud, idempotency_key: idempotencia, release_closure: cierreRelease, terminos1, contra, terminos2, resumenResultado, nota, jcs_terms2: jcs(terminos2), terms_digest_1: td1, terms_digest_2: td2, display_code_2: codigo(td2) },

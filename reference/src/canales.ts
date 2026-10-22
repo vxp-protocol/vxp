@@ -37,7 +37,7 @@ export type Senal = { tipo: string; peso: "fuerte" | "debil"; detalle: string };
 export type Deteccion = { probable_agente: boolean; senales: Senal[]; prueba_identidad: false };
 
 const AUTODECLARACION = /\b(soy|habla|le escribe|te escribe)\s+(un|una|el|la|tu|su)?\s*(asistente|agente)\b|\ben (nombre|representaci[oó]n) de\b|\bon behalf of\b|\bAI (assistant|agent)\b|\basistente (de IA|virtual|personal)\b/i;
-const PROTOCOLO = /poppy\.json|agent-card|\bA2A\b|\bPACT\b|sovras\.json|\bMCP\b|\bPoppy\b/i;
+const PROTOCOLO = /poppy\.json|agent-card|\bA2A\b|\bPACT\b|sovras\.json|vxp\.json|\bMCP\b|\bPoppy\b/i;
 const UA_AUTOMATIZADO = /bot|agent|headless|python-requests|curl|openai|chatgpt|meta-externalagent|perplexity/i;
 // Write on the account = a change verb ON an existing order. Quoting or ordering something new is not one.
 const ESCRITURA = /\b(c[aá]mbi|reprogram|cancel|anul|modific|mu[eé]v|mover|posterg|adelant|devol|devuelv|reembols|agreg|añad|anad)/i;

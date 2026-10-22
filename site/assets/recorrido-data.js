@@ -1,7 +1,7 @@
 // Generado por captura/construir_datos.py desde captura/recorrido.json. No editar a mano.
 export const RECORRIDO = {
- "captured": "2026-10-22",
- "source": "Reference implementation (reference/), native profile, test company «Ferretería Demo»",
+ "captured": "2026-10-22, evening run",
+ "source": "Reference implementation (reference/), native-only gateway (no Poppy, no PACT), persistent keys, test company «Ferretería Demo»",
  "steps": [
   {
    "id": "discover",
@@ -76,7 +76,7 @@ export const RECORRIDO = {
     "DPoP": "eyJ0eXAiOiJkcG9wK2p3dC…"
    },
    "response": {
-    "access_token": "nt_6E1g…",
+    "access_token": "nt_UtuI…",
     "token_type": "DPoP",
     "expires_in": 3600
    }
@@ -94,7 +94,7 @@ export const RECORRIDO = {
     }
    },
    "response": {
-    "request_id": "req_AQFXz9wmuQpS",
+    "request_id": "req_-vyAp7zx7DAE",
     "operation": "pedido.reprogramar_despacho",
     "target": {
      "order_ref": "P-1042"
@@ -123,7 +123,7 @@ export const RECORRIDO = {
     "authorization_details": "[{\"type\":\"https://vxpprotocol.org/rar/capability\",\"actions\":[\"pedido.reprogramar_despacho\"],\"identifier\":\"P-1042\"},{\"type\":\"https://vxpprotocol.org/rar/relationship\",\"actions\":[\"despacho.proponer_cambio\"],\"identifier\":\"relationship\",\"limits\":{\"max_per_day\":2,\"duration_seconds\":3600}}]"
    },
    "token": {
-    "access_token": "nt_hbbt…",
+    "access_token": "nt_-dzl…",
     "token_type": "DPoP",
     "expires_in": 3600,
     "authorization_details": [
@@ -137,7 +137,7 @@ export const RECORRIDO = {
     ],
     "relationships": [
      {
-      "relationship_id": "rel_JFmlHKqmlCA7",
+      "relationship_id": "rel_ayzZTfb3pINy",
       "state": "active",
       "actions": [
        "despacho.proponer_cambio"
@@ -145,7 +145,7 @@ export const RECORRIDO = {
       "limits": {
        "max_per_day": 2
       },
-      "expires_at": "2026-10-22T07:09:18.000Z",
+      "expires_at": "2026-10-22T23:09:52.000Z",
       "agreement": "eyJhbGciO…"
      }
     ]
@@ -155,20 +155,20 @@ export const RECORRIDO = {
    "id": "context",
    "request": "POST /e/ferreteria-demo/v1/requests  (same Idempotency-Key)",
    "response": {
-    "request_id": "req_AQFXz9wmuQpS",
+    "request_id": "req_-vyAp7zx7DAE",
     "state": "proposed",
     "projections": {
      "poppy": "proposed",
      "a2a": "TASK_STATE_INPUT_REQUIRED"
     },
-    "operation_id": "op_B6__ICZlCe_c"
+    "operation_id": "op_aYpChVup-9Cw"
    }
   },
   {
    "id": "operate",
    "request": "POST /e/ferreteria-demo/v1/proposals/{id}/accept",
    "proposal": {
-    "id": "prop_op_B6__ICZlCe_c_r1",
+    "id": "prop_op_aYpChVup-9Cw_r1",
     "revision": 1,
     "state": "proposed",
     "summary": "Cambiar el despacho del pedido P-1042 (Taladro percutor 800 W) del 2026-10-24 al 2026-10-28, a Calle Ejemplo 100, Santiago, sin costo.",
@@ -182,13 +182,13 @@ export const RECORRIDO = {
       "amount": "0",
       "currency": "CLP"
      },
-     "vxp_salt": "bWCQmiSHNOYk-wXlrNRRSw"
+     "vxp_salt": "p2ej7qNL99V3o8lvKGQ2MA"
     },
     "commitment": {
      "mode": "firm",
      "requires": []
     },
-    "expires_at": "2026-10-22T06:24:18.141Z",
+    "expires_at": "2026-10-22T22:24:52.047Z",
     "user_approval_required": true,
     "limits": {
      "max_revisions": 3,
@@ -228,7 +228,7 @@ export const RECORRIDO = {
      }
     },
     "reason": "read_back_matches",
-    "proof_url": "https://store.example/e/ferreteria-demo/v1/requests/req_AQFXz9wmuQpS/proof"
+    "proof_url": "https://store.example/e/ferreteria-demo/v1/requests/req_-vyAp7zx7DAE/proof"
    },
    "chain": [
     {
@@ -246,7 +246,7 @@ export const RECORRIDO = {
      "seq": 1,
      "kind": "terms",
      "signer": "company",
-     "prev": "sha-256:oq0I675QY_V6b1b3FEjWtOQU5Aq92yhHUd0bBelTpdM",
+     "prev": "sha-256:cqjp7_jwKGs9M62p1ve9doGfv3UH4c6bmsw_a-JEiD0",
      "body": {
       "capability": "pedido.reprogramar_despacho",
       "commitment": {
@@ -254,13 +254,13 @@ export const RECORRIDO = {
        "requires": []
       },
       "company_review_required": false,
-      "expires_at": "2026-10-22T06:24:18.141Z",
+      "expires_at": "2026-10-22T22:24:52.047Z",
       "read_back_terms": [
        "pedido",
        "despacho_nuevo"
       ],
       "revision": 1,
-      "terms_digest": "sha-256:Bzey-n1cnkgQgkXMl7paOcbWV13hZ2LMgyWQd0lKDoE",
+      "terms_digest": "sha-256:qGM1Z7pJRDYnsRlDNFA0RcuouxQLU9Eu9Fsa3H00I-I",
       "user_approval_required": true
      }
     },
@@ -268,37 +268,37 @@ export const RECORRIDO = {
      "seq": 2,
      "kind": "user_approval",
      "signer": "operator",
-     "prev": "sha-256:SJeiKmU1vdiXcKielWp9JoqvtQ_NY3MytuNOmqpW4e0",
+     "prev": "sha-256:rn-zRY18ZNpTclvZWr45HXGMSw0YBzpbeo1O88oE8UI",
      "body": {
       "method": "agent_asserted",
       "revision": 1,
-      "terms_digest": "sha-256:Bzey-n1cnkgQgkXMl7paOcbWV13hZ2LMgyWQd0lKDoE"
+      "terms_digest": "sha-256:qGM1Z7pJRDYnsRlDNFA0RcuouxQLU9Eu9Fsa3H00I-I"
      }
     },
     {
      "seq": 3,
      "kind": "execution",
      "signer": "operator",
-     "prev": "sha-256:6Xnb9LZkwF9AY3TbmNSKBX37g7WnCecK6VyVrM9TU_I",
+     "prev": "sha-256:N6SEdktNzLwm_tsJrxtjVEkg3PILszucEochXOxcIlY",
      "body": {
       "attempt": 1,
       "capability": "pedido.reprogramar_despacho",
       "release": "sha-256:u1TBBxJXTKta36K5UI_j_myhQaHzbPP2HcF4rBKGxPA",
       "revision": 1,
-      "terms_digest": "sha-256:Bzey-n1cnkgQgkXMl7paOcbWV13hZ2LMgyWQd0lKDoE"
+      "terms_digest": "sha-256:qGM1Z7pJRDYnsRlDNFA0RcuouxQLU9Eu9Fsa3H00I-I"
      }
     },
     {
      "seq": 4,
      "kind": "read_back",
      "signer": "operator",
-     "prev": "sha-256:YODOxyFcs7NEMSud9v7eDJqGvptF9PCf4aGL6BEEPfM",
+     "prev": "sha-256:OpYdkWqWVTiASFXItE8Vo0d4IkD4vAeuPGvCBIfAkkk",
      "body": {
       "matches_terms": true,
       "method": "system_read_back",
       "observed": {
        "_sd": [
-        "3dZK7r9IlLqVnsEb1FgqYMfInwyVFUSjhkgNh6Yu68w"
+        "NFzOJz6ouQ75UiPZGE_mmLihy4yFL5L4Lu57b7reCg4"
        ],
        "despacho_nuevo": "2026-10-28",
        "pedido": "P-1042"
@@ -310,7 +310,7 @@ export const RECORRIDO = {
      "seq": 5,
      "kind": "outcome",
      "signer": "company",
-     "prev": "sha-256:wBMpHI0fyUske4OnhBHjSe-5m6377OQ6GIR5E4012Oc",
+     "prev": "sha-256:0bN89b_4AjQkH2sualzrsxn65lvMZ1EYxdjLyw5EMA8",
      "body": {
       "claimed_assurance": [
        "issuer_key_attested",
@@ -321,7 +321,7 @@ export const RECORRIDO = {
       "result_summary_digest": "sha-256:aKs3uy77c1osgD7qSgTqNJ0_YITroc5iwoYHqFmSl6s",
       "revision": 1,
       "state": "succeeded",
-      "terms_digest": "sha-256:Bzey-n1cnkgQgkXMl7paOcbWV13hZ2LMgyWQd0lKDoE",
+      "terms_digest": "sha-256:qGM1Z7pJRDYnsRlDNFA0RcuouxQLU9Eu9Fsa3H00I-I",
       "third_party": []
      }
     }
@@ -356,7 +356,7 @@ export const RECORRIDO = {
   {
    "id": "relate",
    "relationship": {
-    "relationship_id": "rel_JFmlHKqmlCA7",
+    "relationship_id": "rel_ayzZTfb3pINy",
     "state": "active",
     "actions": [
      "despacho.proponer_cambio"
@@ -364,20 +364,20 @@ export const RECORRIDO = {
     "limits": {
      "max_per_day": 2
     },
-    "expires_at": "2026-10-22T07:09:18.000Z",
+    "expires_at": "2026-10-22T23:09:52.000Z",
     "agreement": "eyJhbGciO…"
    },
    "outbox": {
-    "outbox_id": "out_fQu1FIVuaYQN",
+    "outbox_id": "out_wORHkFRMVtz6",
     "delivery": "entregado",
     "http": 202,
     "content": {
-     "request_id": "req_lXXONI2mL8vd",
-     "request_url": "https://store.example/e/ferreteria-demo/v1/requests/req_lXXONI2mL8vd",
-     "proposal_id": "prop_op_NBbN47CrhrtM_r1",
-     "operation_id": "op_NBbN47CrhrtM",
+     "request_id": "req_E7B4ubQ9OKNH",
+     "request_url": "https://store.example/e/ferreteria-demo/v1/requests/req_E7B4ubQ9OKNH",
+     "proposal_id": "prop_op_Qz06acebNGWJ_r1",
+     "operation_id": "op_Qz06acebNGWJ",
      "summary": "Cambiar el despacho del pedido P-1043 (Escalera de aluminio 6 peldaños) del 2026-10-27 al 2026-10-30, a Calle Ejemplo 100, Santiago, sin costo.",
-     "terms_digest": "sha-256:oduNxopNIIA-Iv1iqMDfnh_6QOQXtz0Zg6h34VN2z0g"
+     "terms_digest": "sha-256:x2gr6M6U_AmbsawG13Cj7pl3DUuetAxLpovH8sPjAxw"
     }
    },
    "accepted": {

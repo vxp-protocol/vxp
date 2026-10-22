@@ -13,7 +13,9 @@
 //
 // node:crypto only. No parameter properties or enums (Node in type-stripping mode).
 
-import { createHash, createHmac, generateKeyPairSync, type KeyObject, randomBytes, sign } from "node:crypto";
+import { createHash, createHmac, createPrivateKey, generateKeyPairSync, type KeyObject, randomBytes, sign } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 
 export type JwkPublica = { kty: "EC"; crv: "P-256"; x: string; y: string; kid: string; alg: "ES256"; use: "sig" };
 
@@ -77,12 +79,67 @@ export function huellaTerminos(t: {
 
 type Llave = { privateKey: KeyObject; publica: JwkPublica };
 
-function nuevaLlave(): Llave {
-	const { privateKey, publicKey } = generateKeyPairSync("ec", { namedCurve: "P-256" });
-	const j = publicKey.export({ format: "jwk" }) as { x: string; y: string };
+function deLlavePrivada(privateKey: KeyObject): Llave {
+	const j = privateKey.export({ format: "jwk" }) as { x: string; y: string };
 	const miembros = { crv: "P-256", kty: "EC", x: j.x, y: j.y };
 	const kid = b64u(sha(jcs(miembros))); // RFC 7638: required members, lexicographic order
 	return { privateKey, publica: { kty: "EC", crv: "P-256", x: j.x, y: j.y, kid, alg: "ES256", use: "sig" } };
+}
+
+function nuevaLlave(): Llave {
+	return deLlavePrivada(generateKeyPairSync("ec", { namedCurve: "P-256" }).privateKey);
+}
+
+/**
+ * A key ring: the current signing key plus the earlier public keys, which stay published so that statements
+ * signed before a rotation still verify. Without a directory it lives in memory (one per process, as before
+ * the evening revision of 22 Oct 2026). With a directory it survives restarts: `<dir>/<name>.json` holds the current private key
+ * (JWK) and the earlier public keys. A key removed from the ring is no longer published; statements it
+ * signed then verify only against material saved while it was published (historical verification).
+ */
+class Anillo {
+	actual: Llave;
+	anteriores: JwkPublica[] = [];
+	extra: Record<string, string> = {};
+	private readonly ruta: string | null;
+
+	constructor(dir: string | null, nombre: string) {
+		this.ruta = dir ? join(dir, `${nombre}.json`) : null;
+		if (this.ruta && existsSync(this.ruta)) {
+			const d = JSON.parse(readFileSync(this.ruta, "utf8")) as { current: JsonWebKey; previous?: JwkPublica[]; extra?: Record<string, string> };
+			this.actual = deLlavePrivada(createPrivateKey({ key: d.current, format: "jwk" }));
+			this.anteriores = d.previous ?? [];
+			this.extra = d.extra ?? {};
+		} else {
+			this.actual = nuevaLlave();
+			this.guardar();
+		}
+	}
+
+	publicas(): JwkPublica[] {
+		return [this.actual.publica, ...this.anteriores];
+	}
+
+	rotar(): string {
+		this.anteriores.unshift(this.actual.publica);
+		this.actual = nuevaLlave();
+		this.guardar();
+		return this.actual.publica.kid;
+	}
+
+	retirar(kid: string): boolean {
+		const antes = this.anteriores.length;
+		this.anteriores = this.anteriores.filter((k) => k.kid !== kid);
+		this.guardar();
+		return this.anteriores.length < antes;
+	}
+
+	guardar(): void {
+		if (!this.ruta) return;
+		mkdirSync(join(this.ruta, ".."), { recursive: true });
+		const current = this.actual.privateKey.export({ format: "jwk" });
+		writeFileSync(this.ruta, JSON.stringify({ current, previous: this.anteriores, extra: this.extra }, null, 1), { encoding: "utf8", mode: 0o600 });
+	}
 }
 
 function firmarJws(llave: Llave, typ: string, payload: Record<string, unknown>): string {
@@ -109,14 +166,14 @@ export function bloqueConfianza(p: { issuer: string; authOrigin: string; operado
 		version: VERSION_PRUEBA,
 		company: p.issuer,
 		...(p.vinculos ? { domains: p.vinculos.domains, pact: p.vinculos.pact } : {}),
-		jwks_uri: `${p.issuer}/sovras/proof-jwks.json`,
+		jwks_uri: `${p.issuer}/vxp/proof-jwks.json`,
 		operator: { issuer: p.operadorIssuer, jwks_uri: `${p.operadorIssuer}/proof-jwks.json` },
 		custody: "operator_hosted",
 		log: {
 			origin: p.origenRegistro,
-			checkpoint_url: `${p.authOrigin}/sovras/log/checkpoint`,
-			consistency_url: `${p.authOrigin}/sovras/log/consistency`,
-			jwks_uri: `${p.authOrigin}/sovras/log/jwks.json`,
+			checkpoint_url: `${p.authOrigin}/vxp/log/checkpoint`,
+			consistency_url: `${p.authOrigin}/vxp/log/consistency`,
+			jwks_uri: `${p.authOrigin}/vxp/log/jwks.json`,
 			witnesses: [],
 		},
 	};
@@ -139,7 +196,7 @@ export function bloqueOutcomeProof(p: {
 }) {
 	return {
 		...bloqueConfianza(p),
-		endpoint: p.endpoint ?? `${p.issuer}/sovras/proof`,
+		endpoint: p.endpoint ?? `${p.issuer}/vxp/proof`,
 		approval_channels: p.canales,
 		capabilities: p.capacidades.map((c) => ({
 			name: c.name,
@@ -210,27 +267,50 @@ type Declaracion = {
 
 type Cadena = { tenantId: string; company: string; op: string; aud: string; user: string; declaraciones: Declaracion[] };
 
-type EmpresaPrueba = { issuer: string; llave: Llave; etiqueta: Buffer; vinculos: Vinculos };
+type EmpresaPrueba = { issuer: string; anillo: Anillo; etiqueta: Buffer; vinculos: Vinculos };
 
 export class EmisorPruebas {
 	readonly operadorIssuer: string;
 	readonly origenRegistro: string;
-	private readonly operador: Llave;
-	private readonly registro: Llave;
+	private readonly operador: Anillo;
+	private readonly registro: Anillo;
+	/** Where the key rings persist; null keeps them in memory. */
+	readonly dirLlaves: string | null;
 	private readonly empresas = new Map<string, EmpresaPrueba>();
 	private readonly cadenas = new Map<string, Cadena>();
 	private readonly hojas: Buffer[] = [];
 
-	constructor(operadorIssuer: string, origenRegistro: string) {
+	constructor(operadorIssuer: string, origenRegistro: string, dirLlaves: string | null = null) {
 		this.operadorIssuer = operadorIssuer;
 		this.origenRegistro = origenRegistro;
+		this.dirLlaves = dirLlaves;
 		// One key per purpose: none of these signs Poppy tokens or PACT receipts (§4.2).
-		this.operador = nuevaLlave();
-		this.registro = nuevaLlave();
+		this.operador = new Anillo(dirLlaves, "operator");
+		this.registro = new Anillo(dirLlaves, "log");
 	}
 
 	registrarEmpresa(tenantId: string, issuer: string, vinculos: Vinculos = { domains: [], pact: [] }): void {
-		if (!this.empresas.has(tenantId)) this.empresas.set(tenantId, { issuer, llave: nuevaLlave(), etiqueta: randomBytes(32), vinculos });
+		if (this.empresas.has(tenantId)) return;
+		const anillo = new Anillo(this.dirLlaves, `company-${tenantId}`);
+		// The tag key (unlinkable log tags) persists with the company's ring.
+		if (!anillo.extra.tag) {
+			anillo.extra.tag = b64u(randomBytes(32));
+			anillo.guardar();
+		}
+		this.empresas.set(tenantId, { issuer, anillo, etiqueta: Buffer.from(anillo.extra.tag, "base64url"), vinculos });
+	}
+
+	/** Rotates the company's signing key. The earlier public key stays in its JWKS. Returns the new kid. */
+	rotarEmpresa(tenantId: string): string {
+		return this.empresa(tenantId).anillo.rotar();
+	}
+	/** Rotates the operator's signing key, keeping the earlier public key published. */
+	rotarOperador(): string {
+		return this.operador.rotar();
+	}
+	/** Stops publishing an earlier company key (for example, after a compromise). */
+	retirarLlaveEmpresa(tenantId: string, kid: string): boolean {
+		return this.empresa(tenantId).anillo.retirar(kid);
 	}
 
 	vinculos(tenantId: string): Vinculos {
@@ -248,13 +328,13 @@ export class EmisorPruebas {
 	}
 
 	jwksEmpresa(tenantId: string) {
-		return { keys: [this.empresa(tenantId).llave.publica] };
+		return { keys: this.empresa(tenantId).anillo.publicas() };
 	}
 	jwksOperador() {
-		return { keys: [this.operador.publica] };
+		return { keys: this.operador.publicas() };
 	}
 	jwksRegistro() {
-		return { keys: [this.registro.publica] };
+		return { keys: this.registro.publicas() };
 	}
 
 	/** Opens an operation's chain. `aud` is the agent's client_id; `user`, its per-company pseudonym. */
@@ -316,7 +396,7 @@ export class EmisorPruebas {
 			user: c.user,
 			body: cuerpo,
 		};
-		const jwt = firmarJws(rol === "empresa" ? e.llave : this.operador, "vxp-stmt+sd-jwt", payload);
+		const jwt = firmarJws(rol === "empresa" ? e.anillo.actual : this.operador.actual, "vxp-stmt+sd-jwt", payload);
 		const sdjwt = `${jwt}~${divulgaciones.map((d) => `${d}~`).join("")}`;
 		// Blinded leaf (§9.8): salted commitment ‖ per-company HMAC tag. The log sees no content.
 		const salt = randomBytes(32);
@@ -347,7 +427,7 @@ export class EmisorPruebas {
 	/** Signed log checkpoint: {origin, tree_size, root_hash, iat}. */
 	checkpoint(tamano = this.hojas.length): string {
 		const D = this.hojas.slice(0, tamano);
-		return firmarJws(this.registro, "vxp-checkpoint+jwt", {
+		return firmarJws(this.registro.actual, "vxp-checkpoint+jwt", {
 			origin: this.origenRegistro,
 			tree_size: D.length,
 			root_hash: b64u(mth(D)),

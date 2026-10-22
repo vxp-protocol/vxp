@@ -146,7 +146,7 @@ class Usuario {
 		return (await this.pedir("GET", `${FERRETERIA}/poppy/operaciones/${id}`)).body;
 	}
 	async paquete(id: unknown) {
-		return (await this.pedir("GET", `${FERRETERIA}/sovras/proof/operations/${id}`)).body;
+		return (await this.pedir("GET", `${FERRETERIA}/vxp/proof/operations/${id}`)).body;
 	}
 }
 
@@ -184,8 +184,8 @@ async function verificar(paquete: unknown, operacion?: unknown) {
 }
 
 type LlaveInterna = { privateKey: KeyObject; publica: { kid: string } };
-const llaveOperador = () => Reflect.get(puerta.pruebas, "operador") as LlaveInterna;
-const llaveEmpresa = () => (Reflect.get(puerta.pruebas, "empresas") as Map<string, { llave: LlaveInterna }>).get(T)!.llave;
+const llaveOperador = () => (Reflect.get(puerta.pruebas, "operador") as { actual: LlaveInterna }).actual;
+const llaveEmpresa = () => (Reflect.get(puerta.pruebas, "empresas") as Map<string, { anillo: { actual: LlaveInterna } }>).get(T)!.anillo.actual;
 const b64u = (b: Buffer | string) => Buffer.from(b).toString("base64url");
 function firmar(llave: LlaveInterna, payload: Record<string, unknown>): string {
 	const h = b64u(jcs({ alg: "ES256", kid: llave.publica.kid, typ: "vxp-stmt+sd-jwt" }));

@@ -138,7 +138,7 @@ export class CaraPact {
 			vinculos: this.nucleo.pruebas?.vinculos(e.tenantId),
 			// Under PACT the endpoint is the interface's one, with PACT credentials (§12.2.7); the Poppy one
 			// requires a DPoP Session Token that a PACT client does not have.
-			endpoint: `${this.iface(e)}/sovras/proof`,
+			endpoint: `${this.iface(e)}/vxp/proof`,
 			capacidades: e.release.capacidades
 				.filter((c) => c.efecto === "write")
 				.map((c) => ({ name: c.id, effect: c.efecto, aprobacion: "operator_reported_channel_approval" as const })),
@@ -150,7 +150,7 @@ export class CaraPact {
 	private metaPrueba(e: Empresa, op: Operacion): Record<string, unknown> {
 		const latest = this.nucleo.pruebas?.ultima(e.tenantId, op.operation_id);
 		if (!latest) return {};
-		return { [EXT_PRUEBA_URI]: { operation_id: op.operation_id, latest, bundle_url: `${this.iface(e)}/sovras/proof/operations/${op.operation_id}` } };
+		return { [EXT_PRUEBA_URI]: { operation_id: op.operation_id, latest, bundle_url: `${this.iface(e)}/vxp/proof/operations/${op.operation_id}` } };
 	}
 
 	/** Package over the same PACT credentials: agent JWT + delegation (SPEC §12.2.7). */
@@ -162,7 +162,7 @@ export class CaraPact {
 		const del = await this.delegado(req, e, quien);
 		if (del instanceof Response) return del;
 		if (!del) return noAutenticado(', error="invalid_token"');
-		const id = decodeURIComponent(ruta.slice("sovras/proof/operations/".length).replace(/\/counter$/, ""));
+		const id = decodeURIComponent(ruta.replace(/^(?:vxp|sovras)\/proof\/operations\//, "").replace(/\/counter$/, ""));
 		const op = this.nucleo.operacionDe(del, id, null);
 		if (typeof op === "string" || !this.nucleo.pruebas?.tiene(e.tenantId, id)) return json(404, { error: "operation_not_found" });
 		if (contra) return this.contrapropuesta(req, e, del, op);
@@ -275,7 +275,7 @@ export class CaraPact {
 			return e ? json(200, this.card(e)) : vacio(404);
 		}
 		if (ruta.startsWith("oauth/")) return this.oauth(req, e, ruta.slice(6));
-		if (/^sovras\/proof\/operations\/[^/]+(\/counter)?$/.test(ruta)) return e ? this.paquete(req, e, ruta) : vacio(404);
+		if (/^(?:vxp|sovras)\/proof\/operations\/[^/]+(\/counter)?$/.test(ruta)) return e ? this.paquete(req, e, ruta) : vacio(404);
 		const match = RUTAS.find(([re]) => re.test(ruta));
 		if (!match) return vacio(404);
 		if (!match[1].includes(req.method)) return vacio(405);

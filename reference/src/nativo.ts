@@ -144,7 +144,7 @@ export class CaraNativa {
 
 	// ── Discovery ───────────────────────────────────────────────────────────────────────────
 
-	sovrasJson(e: Empresa) {
+	vxpJson(e: Empresa) {
 		const lim = this.nucleo.limites(e.tenantId);
 		return {
 			protocol: "vxp",
@@ -164,8 +164,8 @@ export class CaraNativa {
 			limits: lim,
 			// Keys and custody do NOT go here: the verifier takes them from the RFC 8414 metadata.
 			outcome_proof: { version: "0.1", trust: "issuer_metadata" },
-			// VXP: this document and the /v1 endpoints are the EXPERIMENTAL native profile. An agent that speaks
-			// Poppy or PACT does not need them; reference discovery remains poppy.json and the Agent Card.
+			// VXP's own discovery and the /v1 endpoints: the EXPERIMENTAL native profile. A gateway can serve only
+			// this profile; an agent that speaks Poppy or PACT can use those adapters instead.
 			status: "experimental",
 			vxp: {
 				version: "0.1",

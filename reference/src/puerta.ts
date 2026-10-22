@@ -59,22 +59,32 @@ export type Config = {
 	carriles?: Carriles | null;
 	/** Lifetime of the native pass in seconds (access ramp). */
 	ttlPase?: number;
+	/** Directory where the proof key rings persist (operator, log, one per company). Without it, keys live in memory. */
+	dirLlaves?: string | null;
+	/**
+	 * Which interoperability adapters this gateway serves. Both default to on. With both off the gateway is a
+	 * native-only VXP implementation: no poppy.json, no Agent Card, no A2A service, no Poppy endpoints, and an
+	 * issuer metadata without Poppy members. Proof and Relationship work the same.
+	 */
+	adaptadores?: { poppy?: boolean; pact?: boolean };
 };
 
 const json = (status: number, body: unknown, headers: Record<string, string> = {}) =>
 	new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json", ...headers } });
 
 export function crearPuerta(cfg: Config) {
+	const conPoppy = cfg.adaptadores?.poppy !== false;
+	const conPact = cfg.adaptadores?.pact !== false;
 	// Outcome proof (SPEC §9): one operator key per environment, one per company and one for the
 	// log. Each company's issuer is the same one its poppy.json publishes.
-	const pruebas = new EmisorPruebas(`${cfg.authOrigin}/sovras/operador`, `${new URL(cfg.authOrigin).host}/sovras/log/v0`);
+	const pruebas = new EmisorPruebas(`${cfg.authOrigin}/vxp/operator`, `${new URL(cfg.authOrigin).host}/vxp/log/v0`, cfg.dirLlaves ?? null);
 	// Bindings the company declares in its metadata (SPEC §9.9.1): its brand domain and, if it offers
 	// PACT delegation, the interface and authorization server that may cite its block.
 	for (const e of cfg.empresas) {
 		const iface = `${cfg.providerOrigin}/a2a/${e.tenantId}`;
 		pruebas.registrarEmpresa(e.tenantId, `${cfg.authOrigin}/e/${e.slug}`, {
 			domains: [e.dominio],
-			pact: cfg.pactDelegada.includes(e.tenantId) ? [{ interface: iface, authorization_server: `${iface}/oauth` }] : [],
+			pact: conPact && cfg.pactDelegada.includes(e.tenantId) ? [{ interface: iface, authorization_server: `${iface}/oauth` }] : [],
 		});
 	}
 	const nucleo = new Nucleo(cfg.empresas, pruebas);
@@ -353,6 +363,11 @@ export function crearPuerta(cfg: Config) {
 					return json(429, { error: "rate_limited", lane: carril, retry_after: espera }, { "retry-after": String(espera) });
 				}
 			}
+			// Adapters switched off: their discovery and endpoints do not exist on this gateway.
+			if (!conPoppy && (url.pathname === "/.well-known/poppy.json" || (partes[0] === "e" && (partes[2] === "poppy" || ((partes[2] === "vxp" || partes[2] === "sovras") && partes[3] === "proof")))))
+				return new Response(null, { status: 404 });
+			if (!conPact && (url.pathname === "/.well-known/agent-card.json" || partes[0] === "a2a" || url.pathname.startsWith("/.well-known/oauth-authorization-server/a2a/")))
+				return new Response(null, { status: 404 });
 			// poppy.json is served on the company's subdomain (CNAME to SOVRAS).
 			if (url.pathname === "/.well-known/poppy.json") {
 				const e = [...nucleo.empresas.values()].find((x) => x.dominio.toLowerCase() === url.host.toLowerCase());
@@ -363,7 +378,7 @@ export function crearPuerta(cfg: Config) {
 			// Native VXP profile (design 0.1 §3.A), on the same company domain.
 			if (url.pathname === "/.well-known/vxp.json") {
 				const e = [...nucleo.empresas.values()].find((x) => x.dominio.toLowerCase() === url.host.toLowerCase());
-				return e ? json(200, nativo.sovrasJson(e), { "cache-control": "max-age=300" }) : new Response(null, { status: 404 });
+				return e ? json(200, nativo.vxpJson(e), { "cache-control": "max-age=300" }) : new Response(null, { status: 404 });
 			}
 			if (url.pathname === "/.well-known/agent-card.json") {
 				const e = [...nucleo.empresas.values()].find((x) => x.dominio.toLowerCase() === url.host.toLowerCase());
@@ -378,7 +393,9 @@ export function crearPuerta(cfg: Config) {
 			if (url.pathname.startsWith("/.well-known/oauth-authorization-server/e/")) {
 				const e = nucleo.porSlug(partes[3]);
 				if (!e || partes.length !== 4) return new Response(null, { status: 404 });
-				const m = poppy.metadata(e);
+				// The issuer's RFC 8414 metadata is shared by every entry; Poppy members appear only with that adapter.
+				const { poppy_domains, ...comun } = poppy.metadata(e);
+				const m = conPoppy ? { ...comun, poppy_domains } : comun;
 				// VXP Relationship: the relationship's RAR type and the key the company signs what it initiates with,
 				// anchored to the issuer just like the proof (RFC 8414 §2, additional parameters).
 				return json(200, {
@@ -387,10 +404,12 @@ export function crearPuerta(cfg: Config) {
 					vxp_relationship: { version: "0.1", jwks_uri: `${m.issuer}/vxp/relationship-jwks.json`, company_initiated_actions: nativo.accionesEmpresa(e) },
 				});
 			}
-			// Public proof material: operator and log JWKS, checkpoint and consistency.
-			if (partes[0] === "sovras" && req.method === "GET") {
+			// Public proof material: operator and log JWKS, checkpoint and consistency. These paths belong to this
+			// implementation and are discovered through the issuer metadata; `/sovras/…` is kept as an alias for
+			// clients and material captured before the evening revision of 22 Oct 2026.
+			if ((partes[0] === "vxp" || partes[0] === "sovras") && req.method === "GET") {
 				const ruta = partes.slice(1).join("/");
-				if (ruta === "operador/proof-jwks.json") return json(200, pruebas.jwksOperador(), { "cache-control": "max-age=300" });
+				if (ruta === "operator/proof-jwks.json" || ruta === "operador/proof-jwks.json") return json(200, pruebas.jwksOperador(), { "cache-control": "max-age=300" });
 				if (ruta === "log/jwks.json") return json(200, pruebas.jwksRegistro(), { "cache-control": "max-age=300" });
 				if (ruta === "log/checkpoint") return new Response(pruebas.checkpoint(), { headers: { "content-type": "application/jwt", "cache-control": "no-store" } });
 				if (ruta === "log/consistency") {
@@ -419,6 +438,8 @@ export function crearPuerta(cfg: Config) {
 						const form = new URLSearchParams(texto);
 						const copia = new Request(req.url, { method: "POST", headers: req.headers, body: texto });
 						if (form.get("resource") === nativo.endpoint(e)) return recurso === "token" ? nativo.token(copia, e, form) : nativo.device(e, form);
+						// Native-only gateway: a request without the native resource has no other profile to go to (RFC 8707 §2).
+						if (!conPoppy) return json(400, { error: "invalid_target", error_description: `resource must be ${nativo.endpoint(e)}` });
 						if (recurso === "token") return poppy.token(copia, e);
 						return poppy.device(copia, e);
 					}
@@ -428,9 +449,9 @@ export function crearPuerta(cfg: Config) {
 				if (zona === "poppy" && recurso === "conversaciones") return poppy.conversaciones(req, e, resto);
 				if (zona === "poppy" && recurso === "operaciones") return poppy.operaciones(req, e, resto);
 				if (zona === "poppy" && recurso === "feedback" && req.method === "POST") return poppy.feedback(req, e);
-				if (zona === "sovras" && recurso === "proof-jwks.json" && req.method === "GET")
+				if ((zona === "vxp" || zona === "sovras") && recurso === "proof-jwks.json" && req.method === "GET")
 					return json(200, pruebas.jwksEmpresa(e.tenantId), { "cache-control": "max-age=300" });
-				if (zona === "sovras" && recurso === "proof") return poppy.prueba(req, e, resto);
+				if ((zona === "vxp" || zona === "sovras") && recurso === "proof") return poppy.prueba(req, e, resto);
 				if (zona === "vxp" && recurso === "relationship-jwks.json" && req.method === "GET")
 					return json(200, nativo.relaciones.jwks(e.tenantId), { "cache-control": "max-age=300" });
 				// The company's web chat (traditional channel): usable by a person or an agent.

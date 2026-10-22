@@ -60,6 +60,10 @@ const puerta = crearPuerta({
 	// VXP_CARRILES=1: lanes and anti-persistence caps active (public sandbox). The Poppy and PACT contract
 	// suites run without them because they repeat linkings of the same number within seconds.
 	carriles: process.env.VXP_CARRILES === "1" ? new Carriles() : null,
+	// Persistent proof keys: with VXP_KEYS_DIR, the operator, log and company keys survive restarts and rotations keep earlier public keys published.
+	dirLlaves: process.env.VXP_KEYS_DIR ?? null,
+	// VXP_ADAPTERS=none serves the native profile only (no poppy.json, Agent Card, A2A or Poppy endpoints); "poppy" or "pact" keeps just that one.
+	adaptadores: process.env.VXP_ADAPTERS === undefined ? undefined : { poppy: /poppy/.test(process.env.VXP_ADAPTERS), pact: /pact/.test(process.env.VXP_ADAPTERS) },
 });
 
 async function leer(req: IncomingMessage): Promise<Buffer> {

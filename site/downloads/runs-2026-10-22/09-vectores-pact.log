@@ -1,0 +1,20 @@
+== 09-vectores-pact · 2026-10-22T06:12:13Z · python verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json (vectores publicados, datos neutros)
+OK    PD1 - {"valid": true, "company": "https://auth.sovras.io/e/ferreteria-demo", "anchor": "brand_domain", "final_state": "succeeded", "pact_receipt": "verified"}
+OK    PD2 - {"valid": true, "company": "https://auth.sovras.io/e/ferreteria-demo", "anchor": "pact_issuer", "final_state": "succeeded", "pact_receipt": "not_presented"}
+OK    PD3 - issuer_not_anchored en seq None; esperado issuer_not_anchored
+OK    PD4 - issuer_not_anchored en seq None; esperado issuer_not_anchored
+OK    PD5 - company_mismatch en seq None; esperado company_mismatch
+OK    PD6 - issuer_not_anchored en seq None; esperado issuer_not_anchored
+OK    PD7 - issuer_not_anchored en seq None; esperado issuer_not_anchored
+OK    PD8 - issuer_not_anchored en seq None; esperado issuer_not_anchored
+OK    PD9 - issuer_not_anchored en seq None; esperado issuer_not_anchored
+OK    PD10 - issuer_not_anchored en seq None; esperado issuer_not_anchored
+OK    R1 - pact_receipt_invalid en seq 0; esperado pact_receipt_invalid
+OK    R2 - pact_receipt_invalid en seq 0; esperado pact_receipt_invalid
+OK    R3 - pact_receipt_mismatch en seq 0; esperado pact_receipt_mismatch
+OK    R4 - pact_receipt_mismatch en seq 0; esperado pact_receipt_mismatch
+OK    R5 - pact_receipt_mismatch en seq 0; esperado pact_receipt_mismatch
+OK    R6 - pact_receipt_mismatch en seq 0; esperado pact_receipt_mismatch
+
+16 comprobaciones, 0 fallas
+exit 0

@@ -1,0 +1,41 @@
+/* Página del verificador. */
+.v-top { padding-top: clamp(56px, 7vw, 96px); }
+.vgrid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+.vin { display: grid; gap: 22px; }
+.vex { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; }
+.vex legend { font-weight: 500; margin-bottom: 8px; padding: 0; }
+.vex label { display: grid; grid-template-columns: 20px 1fr; gap: 8px; align-items: start; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer; font-size: 14.5px; color: var(--ink-soft); }
+.vex label:has(input:checked) { border-color: var(--ink); color: var(--ink); }
+.vex label:has(input:disabled) { opacity: 0.45; cursor: not-allowed; }
+.vex input { margin: 3px 0 0; accent-color: var(--ink); }
+.vown { display: grid; gap: 8px; font-size: 14px; }
+.vown textarea { width: 100%; font: 400 12.5px/1.5 var(--mono); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px; resize: vertical; background: var(--soft); color: var(--ink); }
+.vnaming { display: flex; gap: 8px; align-items: center; color: var(--ink-soft); }
+.vout { border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; background: var(--paper); position: sticky; top: 84px; }
+.vverdict { padding: 22px; border-bottom: 1px solid var(--line); display: grid; gap: 6px; }
+.vverdict__big { font-size: clamp(24px, 2.4vw, 32px); letter-spacing: -0.035em; line-height: 1.1; }
+.vverdict__sub { font: 400 13px var(--mono); color: var(--ink-soft); }
+.vverdict[data-state="valid"] { border-left: 3px solid var(--ok); }
+.vverdict[data-state="valid"] .vverdict__big { color: #2e7556; }
+.vverdict[data-state="invalid"] { border-left: 3px solid var(--stop); }
+.vverdict[data-state="invalid"] .vverdict__big { color: #9c3f2b; }
+.vchecks { list-style: none; margin: 0; padding: 0; max-height: 520px; overflow: auto; }
+.vchecks li { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 2px 12px; padding: 12px 22px; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--ink-soft); }
+.vchecks li b { color: var(--ink); font-weight: 500; }
+.vchecks li > span:last-child { grid-column: 2; }
+.vchecks__s { grid-row: span 2; font: 500 11.5px var(--mono); padding-top: 3px; }
+.vchecks li[data-status="pass"] .vchecks__s { color: #2e7556; }
+.vchecks li[data-status="fail"] { background: #fbf3f0; }
+.vchecks li[data-status="fail"] .vchecks__s { color: #9c3f2b; }
+.vchecks li[data-status="info"] .vchecks__s { color: var(--permit); }
+.vchecks li[data-status="not_reached"] { opacity: 0.55; }
+.vraw { padding: 14px 22px; font-size: 14px; }
+.vraw summary { cursor: pointer; color: var(--ink-soft); }
+.vraw pre { white-space: pre-wrap; word-break: break-all; font-size: 12px; background: var(--soft); padding: 12px; border-radius: var(--r-sm); margin: 10px 0 0; }
+.vabout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px clamp(32px, 5vw, 72px); }
+.vabout > div { display: grid; gap: 10px; align-content: start; }
+.linkbtn { all: unset; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; color: var(--ink); }
+.linkbtn:focus-visible { outline: 2px solid var(--permit); }
+.copy { justify-self: end; margin: 8px 0 -4px; height: 28px; padding: 0 10px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--paper); font: 400 12px var(--sans); cursor: pointer; }
+@media (max-width: 900px) { .vgrid, .vabout { grid-template-columns: 1fr; } .vout { position: static; } }
+.vown[hidden] { display: none; }

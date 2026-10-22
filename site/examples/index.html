@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Examples · VXP</title>
+<meta name="description" content="VXP examples, each labeled: pedagogical objects from the specification and test vectors, the captured native run, the operations real personal agents ran on 21 October 2026, and scenarios not yet executed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/vxp.css">
+<link rel="stylesheet" href="../assets/pages.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../architecture/">Architecture</a></li>
+			<li><a href="../spec/">Specification</a></li>
+			<li><a href="../examples/" aria-current="page">Examples</a></li>
+			<li><a href="../verify/">Verify</a></li>
+			<li><a href="../conformance/">Conformance</a></li>
+			<li><a href="../implement/">Implement</a></li>
+			<li><a href="../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../status/">Draft 0.1</a>
+	</div>
+</header>
+
+<main id="main">
+<section class="page-head">
+	<div class="wrap">
+		<p class="kicker">Examples</p>
+		<h1>Four kinds of example, each labeled for what it is</h1>
+		<p class="lead">Objects written to teach the format, a run captured from the reference implementation, operations that real personal agents ran against test companies, and scenarios that have not run yet.</p>
+		<ul class="toc" aria-label="On this page">
+			<li><a href="#pedagogical">a · Pedagogical examples</a></li>
+			<li><a href="#native">b · The captured native run</a></li>
+			<li><a href="#real">c · Demonstrations with real agents</a></li>
+			<li><a href="#future">d · Future scenarios</a></li>
+		</ul>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="ctx-h">
+	<div class="wrap">
+		<h2 class="sub-h" id="ctx-h">Context for everything on this page</h2>
+		<div class="ctx">
+			<ul>
+				<li><b>The companies are test companies configured in SOVRAS:</b> a hardware store and a hotel, with fictitious names. Their inventory, payments and WhatsApp line are simulated. On the WhatsApp line, the operator reads the one-time code.</li>
+				<li><b>The agents in section c are running personal agents:</b> Nova AI (SOVRAS's personal agent, beta) and one third-party web agent, Grok. Their decisions were their own.</li>
+				<li><b>No operation was anchored in a public log.</b> A Rekor entry exists for an earlier test log, from before all of these operations.</li>
+				<li><b>Re-verified with signatures:</b> OP-5 from 21 October, re-verified on 22 October, and the two operations of the native run captured on 22 October. The other proofs were signed with ephemeral keys from test servers that no longer run.</li>
+				<li>On this page, customers appear as Customer A and Customer B, and phone numbers, addresses, IP addresses, codes and the agents' tunnel hosts are left out. Downloaded proofs keep their signed content unchanged.</li>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="pedagogical" style="background:var(--soft)">
+	<div class="wrap">
+		<div class="sec__head sec__head--sm">
+			<p class="kicker">a · Pedagogical examples</p>
+			<h2 class="h3" id="pedagogical">Objects that teach the format</h2>
+			<p class="lead">The first comes from the specification. The others come from the test vectors: a chain signed with test keys for an order whose delivery moves from 24 to 28 October. Nothing here happened to a customer.</p>
+		</div>
+		<div class="ex-grid">
+			<figure class="codebox">
+				<figcaption>Pedagogical · specification §3.1 · the agent asks for a relationship</figcaption>
+<pre data-copy>{ "type": "https://vxpprotocol.org/rar/relationship",
+  "actions": ["despacho.proponer_cambio", "incidencia.avisar"],
+  "identifier": "relationship",
+  "limits": { "max_per_day": 2, "duration_seconds": 2592000 } }</pre>
+				<p>An <code>authorization_details</code> entry (RFC 9396) inside the device authorization (RFC 8628). The actions must be a subset of what the company publishes in <code>vxp_relationship.company_initiated_actions</code> (R1).</p>
+			</figure>
+			<figure class="codebox">
+				<figcaption>Pedagogical · test vector · <code>inputs.terminos2</code> · terms of revision 2</figcaption>
+<pre data-copy>{
+  "company": "https://auth.sovras.io/e/ferreteria-demo",
+  "operation_id": "op_P1042_desp",
+  "revision": 2,
+  "summary": "Cambiar el despacho del pedido P-1042 (Taladro percutor 800 W) del 2026-10-24 al 2026-10-28, sin costo.",
+  "terms": {
+    "pedido": "P-1042",
+    "despacho_actual": "2026-10-24",
+    "despacho_nuevo": "2026-10-28",
+    "cargo": { "amount": "0", "currency": "CLP" },
+    "vxp_salt": "Kxybdnv8N4fxCv24PWZmpw"
+  },
+  "expires_at": "2026-10-20T15:19:00Z",
+  "user_approval_required": true
+}</pre>
+				<p>The exact terms the person approves. Their JCS digest is the <code>terms_digest</code> that every later statement repeats.</p>
+			</figure>
+			<figure class="codebox">
+				<figcaption>Pedagogical · test vector · <code>chain_v1</code> seq 4 · <code>user_approval</code></figcaption>
+<pre data-copy>{
+  "aud": "https://pa.example/agent.json",
+  "body": {
+    "channel": "whatsapp",
+    "display_code": "320843",
+    "evidence": { "_sd": ["uimZkZ0L8irgdpQUgiVGfNTZy3cJ2znjLJknO0Swegk",
+                          "xeiLLGi9xL0CPmZoMNOxbJVB9Zq8d5odupJ9jmTg3Rw"] },
+    "method": "company_channel",
+    "poppy_confirmation": { "approved_by": "user", "confirmed_at": "2026-10-20T15:06:20Z" },
+    "revision": 2,
+    "terms_digest": "sha-256:kSSoz4FsthDnb19yhxdW8L7zqYUHvH7tEywdaLNL6Do"
+  },
+  "company": "https://auth.sovras.io/e/ferreteria-demo",
+  "iss": "https://sovras.io/operador",
+  "kind": "user_approval",
+  "op": "op_P1042_desp",
+  "prev": "sha-256:jlRQrbPuPEr1qDB9ezWoBGuNhOf3R_TPqbqX27OtitI",
+  "seq": 4, "user": "u_9d2c41", "v": "0.1", "iat": 1792508760
+}</pre>
+				<p>Approval through a channel the company controls: the <code>display_code</code> is derived from the digest (P2). The evidence travels as selective disclosures.</p>
+			</figure>
+			<figure class="codebox">
+				<figcaption>Pedagogical · test vector · <code>chain_v1</code> seq 6 · <code>read_back</code></figcaption>
+<pre data-copy>{
+  "aud": "https://pa.example/agent.json",
+  "body": {
+    "matches_terms": true,
+    "method": "system_read_back",
+    "observed": { "_sd": ["Jy-aobcmQu-2oAYVDbz4d6o6b3uiK9a_RHfAom2Lje0"],
+                  "despacho_nuevo": "2026-10-28", "pedido": "P-1042" },
+    "source": "company_system"
+  },
+  "company": "https://auth.sovras.io/e/ferreteria-demo",
+  "iss": "https://sovras.io/operador",
+  "kind": "read_back",
+  "op": "op_P1042_desp",
+  "prev": "sha-256:xiKeZWxzywDlnKgNwOQOihwY4x3VmUV6DBppRnjrZKQ",
+  "seq": 6, "user": "u_9d2c41", "v": "0.1", "iat": 1792508784
+}</pre>
+				<p>What the company's system showed after the execution, named term by term. With <code>matches_terms: false</code>, the outcome stays <code>unknown</code> (P5).</p>
+			</figure>
+			<figure class="codebox">
+				<figcaption>Pedagogical · test vector · <code>chain_v1</code> seq 7 · <code>outcome</code></figcaption>
+<pre data-copy>{
+  "aud": "https://pa.example/agent.json",
+  "body": {
+    "claimed_assurance": ["issuer_key_attested", "operator_observed",
+                          "operator_reported_read_back", "operator_reported_channel_approval"],
+    "result_summary_digest": "sha-256:AFR7pCmurIbva9n9M7WkKUJTB8CKuZOcU0MNSNpEXcw",
+    "revision": 2,
+    "state": "succeeded",
+    "terms_digest": "sha-256:kSSoz4FsthDnb19yhxdW8L7zqYUHvH7tEywdaLNL6Do",
+    "third_party": []
+  },
+  "company": "https://auth.sovras.io/e/ferreteria-demo",
+  "iss": "https://auth.sovras.io/e/ferreteria-demo",
+  "kind": "outcome",
+  "op": "op_P1042_desp",
+  "prev": "sha-256:2-_Y69mBzglRQrF6Bmu3cGL6xrl_PcSYEdWmW2_1_D8",
+  "seq": 7, "user": "u_9d2c41", "v": "0.1", "iat": 1792508785
+}</pre>
+				<p>Signed by the company. The issuer claims an assurance; the verifier derives its own (P7).</p>
+			</figure>
+			<figure class="codebox">
+				<figcaption>Pedagogical · test vector · <code>expected_v1</code> · the verdict the chain must produce</figcaption>
+<pre data-copy>{
+  "valid": true,
+  "final_state": "succeeded",
+  "revision": 2,
+  "approval": "company_channel",
+  "derived_assurance": ["issuer_key_attested", "operator_observed",
+                        "operator_reported_read_back", "operator_reported_channel_approval"],
+  "single_root": "operator",
+  "custody_declared": "operator_hosted",
+  "logged": false
+}</pre>
+				<p><code>single_root: operator</code> and <code>logged: false</code> say it plainly: an attestation by the operator, with no external witnesses. File: <a href="../downloads/vectors/vectores-0.1.json">vectores-0.1.json</a>.</p>
+			</figure>
+		</div>
+		<p class="small" style="margin-top:22px">JSON reformatted for reading; values unchanged. The vector file carries test-only keys derived from public phrases.</p>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="native">
+	<div class="wrap">
+		<div class="sec__head sec__head--sm">
+			<p class="kicker">b · The captured native run</p>
+			<h2 class="h3" id="native">One run of the native profile, captured on 22 October 2026</h2>
+			<p class="lead">The run shown step by step on the <a href="../#run">home page</a>. The reference implementation ran on a local server against the test hardware store, with a test agent process written by SOVRAS. It was captured with neutral test data from 06:09:17 to 06:09:21 UTC. Every HTTP exchange of the agent was saved.</p>
+		</div>
+		<div class="ops">
+			<article class="op">
+				<p class="op__top"><b>op_B6__ICZlCe_c</b><span>native profile · test agent</span></p>
+				<h3>The agent asks to move a delivery</h3>
+				<dl>
+					<dt>Operation</dt><dd><code>pedido.reprogramar_despacho</code>: order P-1042 from 24 to 28 October, no cost</dd>
+					<dt>Authority</dt><dd>Per-request <code>authorization_details</code>, after linking the account with a code</dd>
+					<dt>Approval</dt><dd><code>agent_asserted</code></dd>
+					<dt>System</dt><dd>Read back from the store's simulated ERP: delivery on 2026-10-28</dd>
+				</dl>
+				<p class="op__proof">Re-verified with signatures, offline, with the saved material: valid · <a href="../downloads/native-run-2026-10-22/paquete-op_B6__ICZlCe_c.json">package</a> · <a href="../downloads/native-run-2026-10-22/material-op_B6__ICZlCe_c.json">material</a> · <a href="../downloads/native-run-2026-10-22/operacion-op_B6__ICZlCe_c.json">operation</a></p>
+			</article>
+			<article class="op">
+				<p class="op__top"><b>op_NBbN47CrhrtM</b><span>native profile · test agent</span></p>
+				<h3>The company proposes a change within a relationship</h3>
+				<dl>
+					<dt>Operation</dt><dd><code>pedido.reprogramar_despacho</code>: order P-1043 from 27 to 30 October, no cost</dd>
+					<dt>Authority</dt><dd>A relationship approved together with the account link. The test triggered the company's request through the operator's internal route; it was delivered signed to the agent's HTTP inbox, and the agent accepted the proposal</dd>
+					<dt>Approval</dt><dd><code>agent_asserted</code></dd>
+					<dt>System</dt><dd>Read back from the store's simulated ERP: delivery on 2026-10-30</dd>
+				</dl>
+				<p class="op__proof">Re-verified with signatures, offline, with the saved material: valid · <a href="../downloads/native-run-2026-10-22/paquete-op_NBbN47CrhrtM.json">package</a> · <a href="../downloads/native-run-2026-10-22/material-op_NBbN47CrhrtM.json">material</a> · <a href="../downloads/native-run-2026-10-22/operacion-op_NBbN47CrhrtM.json">operation</a></p>
+			</article>
+		</div>
+		<p class="small" style="margin-top:18px">Command and verdict format in the <a href="../downloads/README.txt">README</a>. The verdict reports <code>single_root: operator</code> and <code>logged: false</code>.</p>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="real" style="background:var(--soft)">
+	<div class="wrap">
+		<div class="sec__head sec__head--sm">
+			<p class="kicker">c · Demonstrations with real agents</p>
+			<h2 class="h3" id="real">What Nova AI and one third-party web agent (Grok) ran on 21 October 2026</h2>
+			<p class="lead">Eight operations with an effect on a test store and a test hotel, and one company-initiated request within a relationship. Every field comes from the server's evidence. Times are UTC, with Chile time (UTC−3) in parentheses.</p>
+		</div>
+		<div class="ops">
+			<article class="op">
+				<p class="op__top"><b>OP-1</b><span>05:07:38 UTC (02:07)</span></p>
+				<h3>A purchase with a volume discount</h3>
+				<dl>
+					<dt>Scenario</dt><dd>Test store · purchase with a volume discount</dd>
+					<dt>Agent</dt><dd>Nova AI (temporary identity 1)</dd>
+					<dt>Path</dt><dd>Poppy adapter: its own Client ID Metadata Document, device sign-in, conversation</dd>
+					<dt>Authorization</dt><dd>Linked with <code>pedidos:leer</code> at 05:01:41; expanded to <code>compras:crear</code> at 05:05:44</dd>
+					<dt>Operation</dt><dd><code>pedido.crear</code></dd>
+					<dt>Terms</dt><dd>3 drills at CLP 50,591 each (8% discount) = CLP 151,773</dd>
+					<dt>Approval</dt><dd><code>agent_asserted</code>, inferred from the Poppy path: there is no package to read it from</dd>
+					<dt>States</dt><dd><code>tool.previewed</code> 05:07:29 → <code>customer.approved</code> and <code>tool.verified</code> (read-back) 05:07:38. State events were not saved</dd>
+					<dt>Recorded by</dt><dd>Simulated ERP: order for 3 drills, CLP 151,773, status <code>preparando</code></dd>
+					<dt>Money</dt><dd>None: payment pending on delivery or by transfer</dd>
+				</dl>
+				<p class="op__proof">Proof not saved · only the events · no verification possible</p>
+			</article>
+			<article class="op">
+				<p class="op__top"><b>OP-2</b><span>05:44:43 UTC (02:44)</span></p>
+				<h3>A purchase under a standing permission with a cap</h3>
+				<dl>
+					<dt>Scenario</dt><dd>Test store · purchase under a standing permission</dd>
+					<dt>Agent</dt><dd>Nova AI (temporary identity 2)</dd>
+					<dt>Path</dt><dd>Poppy adapter</dd>
+					<dt>Authorization</dt><dd><code>pedidos:leer compras:crear compras:sin_confirmar</code> (05:42:19), with a cap of CLP 200,000</dd>
+					<dt>Operation</dt><dd><code>pedido.crear</code></dd>
+					<dt>Terms</dt><dd>3 drills at CLP 51,141 each (7% discount) = CLP 153,423; <code>user_approval_required: false</code></dd>
+					<dt>Approval</dt><dd><code>agent_asserted</code>, in the package's <code>user_approval</code> statement</dd>
+					<dt>States</dt><dd><code>tool.previewed</code> 05:44:05 → <code>customer.approved</code> and <code>tool.verified</code> 05:44:43; <code>state: succeeded</code></dd>
+					<dt>Recorded by</dt><dd>Simulated ERP: order of CLP 153,423</dd>
+					<dt>Money</dt><dd>None: payment on delivery</dd>
+				</dl>
+				<p class="op__proof">Proof saved: request, terms, user_approval, execution, read_back, outcome · chain consistent, checked on 22 Oct without signatures · signature cannot be re-verified: ephemeral keys</p>
+			</article>
+			<article class="op">
+				<p class="op__top"><b>OP-3</b><span>05:50:24 UTC (02:50)</span></p>
+				<h3>Quote, negotiate and buy from the web</h3>
+				<dl>
+					<dt>Scenario</dt><dd>Test store · quote, negotiate and buy</dd>
+					<dt>Agent</dt><dd>Grok</dd>
+					<dt>Path</dt><dd>Neither protocol: the store's web chat, a quote held for the customer, then the store's approval page <code>/aprobar</code></dd>
+					<dt>Authorization</dt><dd>No grant. Principal: Customer A</dd>
+					<dt>Operation</dt><dd><code>pedido.crear</code></dd>
+					<dt>Terms</dt><dd>3 drills at CLP 52,241 each (5% discount) = CLP 156,723</dd>
+					<dt>Approval</dt><dd><code>company_channel</code>, channel <code>whatsapp</code> (simulated)</dd>
+					<dt>States</dt><dd><code>quote.issued</code> 05:47:15 → <code>quote.held_for_customer_approval</code> 05:47:20 → <code>customer.approved</code> and <code>tool.verified</code> 05:50:24</dd>
+					<dt>Recorded by</dt><dd>Simulated ERP: order of CLP 156,723</dd>
+					<dt>Money</dt><dd>None</dd>
+				</dl>
+				<p class="op__proof">Proof saved · chain consistent, checked on 22 Oct without signatures · signature cannot be re-verified: ephemeral keys</p>
+			</article>
+			<article class="op">
+				<p class="op__top"><b>OP-4</b><span>06:00:36 UTC (03:00)</span></p>
+				<h3>A delivery date moved, after a misread proposal</h3>
+				<dl>
+					<dt>Scenario</dt><dd>Test store · after-sales: change of delivery date</dd>
+					<dt>Agent</dt><dd>Nova AI (temporary identity 3)</dd>
+					<dt>Path</dt><dd>Poppy adapter</dd>
+					<dt>Authorization</dt><dd><code>pedidos:leer pedidos:modificar</code> (05:59:23)</dd>
+					<dt>Operation</dt><dd><code>pedido.reprogramar_despacho</code></dd>
+					<dt>Terms</dt><dd>Revision 1 («from the 24th to the 24th», misread) → counter → revision 2: order P-1042 from 24 to 28 October, no cost</dd>
+					<dt>Approval</dt><dd><code>agent_asserted</code>, on revision 2</dd>
+					<dt>States</dt><dd><code>tool.previewed</code> 05:59:35 → <code>counter</code> and new <code>terms</code> 06:00:28 → <code>customer.approved</code> and <code>tool.verified</code> 06:00:36</dd>
+					<dt>Recorded by</dt><dd>Simulated ERP: P-1042 with delivery on 2026-10-28</dd>
+					<dt>Money</dt><dd>Not applicable</dd>
+				</dl>
+				<p class="op__proof">Proof saved, with the counter and both terms · chain consistent, checked on 22 Oct without signatures · signature cannot be re-verified: ephemeral keys</p>
+			</article>
+			<article class="op">
+				<p class="op__top"><b>OP-5</b><span>06:23:01 UTC (03:23)</span></p>
+				<h3>A delivery date moved from the web</h3>
+				<dl>
+					<dt>Scenario</dt><dd>Test store · after-sales: change of delivery date</dd>
+					<dt>Agent</dt><dd>Grok</dd>
+					<dt>Path</dt><dd>The store's web chat, then its change page <code>/cambiar</code></dd>
+					<dt>Authorization</dt><dd>No grant. Principal: Customer A</dd>
+					<dt>Operation</dt><dd><code>pedido.reprogramar_despacho</code></dd>
+					<dt>Terms</dt><dd>Order P-1043 from 27 to 30 October, no cost</dd>
+					<dt>Approval</dt><dd><code>company_channel</code> (simulated WhatsApp)</dd>
+					<dt>States</dt><dd><code>tool.previewed</code> 06:23:00 → <code>customer.approved</code> and <code>tool.verified</code> 06:23:01</dd>
+					<dt>Recorded by</dt><dd>Simulated ERP: P-1043 with delivery on 2026-10-30</dd>
+					<dt>Money</dt><dd>Not applicable</dd>
+				</dl>
+				<p class="op__proof">Re-verified with signatures on 22 Oct 2026, with the public material saved from the server that issued it: valid · it carries earlier test data, so it is not published for download · the package is available on request</p>
+			</article>
+			<article class="op">
+				<p class="op__top"><b>OP-6</b><span>06:47:39 UTC (03:47)</span></p>
+				<h3>A hotel booking from the hotel's chat</h3>
+				<dl>
+					<dt>Scenario</dt><dd>Test hotel · standard double, 2 adults, 2 nights with breakfast</dd>
+					<dt>Agent</dt><dd>«Grok», attributed by the session that ran the test; the server saw a browser user agent with no signature</dd>
+					<dt>Path</dt><dd>The hotel's chat, which hands over to its authorization page <code>/autorizar</code></dd>
+					<dt>Authorization</dt><dd>No grant. Principal: the hotel's Customer A</dd>
+					<dt>Operation</dt><dd><code>reserva.crear</code></dd>
+					<dt>Terms</dt><dd>14 to 16 November: room CLP 167,700 + breakfast 4 × CLP 12,000 = CLP 215,700, VAT included. Guarantee: CLP 215,700</dd>
+					<dt>Approval</dt><dd><code>company_channel</code></dd>
+					<dt>States</dt><dd><code>received</code> → <code>proposed</code> 06:47:37 → <code>accepted</code> → <code>executing</code> → <code>succeeded</code> 06:47:39</dd>
+					<dt>Recorded by</dt><dd>Simulated PMS: booking R-4001. Simulated payments: authorization of CLP 215,700</dd>
+					<dt>Money</dt><dd>Simulated pre-authorization of CLP 215,700; captured 0</dd>
+				</dl>
+				<p class="op__proof">Proof saved · chain consistent, checked on 22 Oct without signatures · signature cannot be re-verified: ephemeral keys</p>
+			</article>
+			<article class="op">
+				<p class="op__top"><b>OP-7</b><span>07:11:11 UTC (04:11)</span></p>
+				<h3>The same booking, through Poppy</h3>
+				<dl>
+					<dt>Scenario</dt><dd>Test hotel · the same booking</dd>
+					<dt>Agent</dt><dd>Nova AI (temporary identity 4)</dd>
+					<dt>Path</dt><dd>Poppy adapter, on the hotel's domain</dd>
+					<dt>Authorization</dt><dd><code>reservas:leer reservas:crear</code></dd>
+					<dt>Operation</dt><dd><code>reserva.crear</code></dd>
+					<dt>Terms</dt><dd>The same terms, CLP 215,700, «in the name of the holder of the linked account»</dd>
+					<dt>Approval</dt><dd><code>agent_asserted</code></dd>
+					<dt>States</dt><dd><code>received</code> → <code>proposed</code> 07:10:58 → <code>accepted</code> → <code>executing</code> → <code>succeeded</code> 07:11:11</dd>
+					<dt>Recorded by</dt><dd>Simulated PMS: R-4001, on another start of the server. Payments: authorization of CLP 215,700</dd>
+					<dt>Money</dt><dd>Simulated pre-authorization of CLP 215,700</dd>
+					<dt>Before</dt><dd>Nova AI had proposed an earlier booking that stayed <code>proposed</code>. Three <code>message.approval_text_ignored</code> events, 06:49 to 06:51: typing «I approve» in the chat does not approve</dd>
+				</dl>
+				<p class="op__proof">Proof saved · chain consistent, checked on 22 Oct without signatures · signature cannot be re-verified: ephemeral keys</p>
+			</article>
+			<article class="op">
+				<p class="op__top"><b>OP-8</b><span>13:59:26 UTC (10:59)</span></p>
+				<h3>The rate went up between quote and booking</h3>
+				<dl>
+					<dt>Scenario</dt><dd>Test hotel · booking with the rate changed midway</dd>
+					<dt>Agent</dt><dd>«Grok», attributed by the session that ran the test; the server saw a browser user agent with no signature</dd>
+					<dt>Path</dt><dd>The hotel's chat (quote), then its authorization page: phone, code, decision</dd>
+					<dt>Authorization</dt><dd>No grant. Principal: Customer B</dd>
+					<dt>Operation</dt><dd><code>reserva.crear</code></dd>
+					<dt>Terms</dt><dd>Quote issued at 13:54:44 with the old rate: nights CLP 89,700 + CLP 78,000 + breakfast = CLP 215,700. The rate rose at 13:55:07 (<code>sandbox.condition_applied</code>)</dd>
+					<dt>Approval</dt><dd><code>company_channel</code></dd>
+					<dt>States</dt><dd><code>received</code> → <code>proposed</code> 13:58:15 → <code>accepted</code> 13:59:26.061 → <code>executing</code> → <code>succeeded</code> 13:59:26.064</dd>
+					<dt>Recorded by</dt><dd>Simulated PMS: R-4001 for CLP 215,700. A new quote at 13:59:39 for the same stay: CLP 260,850</dd>
+					<dt>Money</dt><dd>Simulated pre-authorization of CLP 215,700; captured 0</dd>
+					<dt>After</dt><dd>The server logged three discount requests at 13:59:45 and 13:59:46, all declined, with no quoted rate recorded</dd>
+				</dl>
+				<p class="op__proof">Proof not saved · no verification possible</p>
+			</article>
+			<article class="op op--wide">
+				<p class="op__top"><b>Relationship</b><span>14:01 to 14:11 UTC (11:01 to 11:11)</span></p>
+				<h3>The hotel asked the guest's agent, within an approved relationship</h3>
+				<dl>
+					<dt>Scenario</dt><dd>Test hotel · keep or release a booking for Customer A</dd>
+					<dt>Agent</dt><dd>Nova AI (temporary identity 5)</dd>
+					<dt>Path</dt><dd>VXP Relationship over the Poppy conversation (§3.4): born on the hotel's page <code>/relacion</code>, carried by the Poppy conversation. The signed <code>reply_url</code> points to the native profile endpoint <code>/v1/relationships/{id}/replies</code></dd>
+					<dt>Authorization</dt><dd>Account linked with <code>reservas:leer</code>; relationship with the actions <code>incidencia.avisar</code> and <code>alerta.mantener_o_liberar</code>, at most 3 per day, expiring on 2026-11-20</dd>
+					<dt>Operation</dt><dd>Company request <code>alerta.mantener_o_liberar</code> on booking R-3003, options «mantener» (keep) and «liberar» (release), signed as <code>vxp-company-request+jwt</code></dd>
+					<dt>Approval</dt><dd>The person approved the relationship on the hotel's page with a code; the agent answered on its own (<code>human_involved: false</code>)</dd>
+					<dt>Recorded by</dt><dd>Simulated PMS: R-3003 kept by the guest's assistant (late arrival)</dd>
+					<dt>Money</dt><dd>None</dd>
+				</dl>
+				<ol class="timeline" aria-label="Relationship timeline">
+					<li><time>14:01:02 to 14:02:34</time><span>Customer A's account is linked with <code>reservas:leer</code>, through the hotel's linking forms, from a desktop browser: the person.</span></li>
+					<li><time>14:03:12</time><span>The agent opens its Poppy conversation.</span></li>
+					<li><time>14:03:57</time><span>It asks to cancel: <code>policy.denied</code>, missing <code>reservas:cancelar</code>. Nothing runs.</span></li>
+					<li><time>14:04:17</time><span><code>reserva.consultar</code> returns two rows.</span></li>
+					<li><time>14:08:36 to 14:09:20</time><span>On the hotel's relationship page: phone, code, decision.</span></li>
+					<li><time>14:09:20</time><span><code>relationship.created</code>, delivery by Poppy conversation.</span></li>
+					<li><time>14:09:42</time><span>The company's request is delivered. The operator triggered it through an internal route, and its text came in the parameters: it did not come from a hotel event.</span></li>
+					<li><time>14:11:23</time><span>The agent answers «mantener» (keep). R-3003 stays booked.</span></li>
+					<li><time>14:11:30</time><span>It asks to cancel again: <code>policy.denied</code>.</span></li>
+				</ol>
+				<p class="op__proof">Reply recorded as a server event · the signed reply receipt and the signed agreement were written into the Poppy conversation and not saved · the company's signed message was saved, and its key no longer exists, so its signature cannot be checked today · its signed summary carries an encoding error (U+FFFD in place of «í»)</p>
+			</article>
+		</div>
+		<div class="ctx" style="margin-top:28px">
+			<p><b>On the web operations (OP-3, OP-5, OP-6, OP-8).</b> <code>company_channel</code> shows that the code sent to the customer's registered number was used. In OP-6 and OP-8, the requests to the authorization page carry the same user agent as the chat, so the evidence does not show that a person saw the page.</p>
+			<p><b>Payments.</b> Only the hotel made simulated pre-authorizations. The store's orders recorded no charge.</p>
+			<p><b>No agent used PACT or the native profile on 21 October.</b> The access log of the hotel session has no <code>/a2a</code> or <code>/v1</code> request from an agent.</p>
+		</div>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="future">
+	<div class="wrap">
+		<div class="sec__head sec__head--sm">
+			<p class="kicker">d · Future scenarios</p>
+			<h2 class="h3" id="future">Scenarios that have not been executed</h2>
+			<p class="lead">Each is pending in the specification (<a href="../status/#pending">Status</a>). They describe what the protocol allows; none has run with a third party.</p>
+		</div>
+		<div class="ops">
+			<article class="op op--future"><p class="op__top"><b>Not executed</b><span>native profile</span></p><h3>A third-party agent on the native profile</h3><p class="body-soft">An agent that speaks neither Poppy nor PACT discovers <code>vxp.json</code>, receives per-request authority, operates and gets the proof. Today only SOVRAS's test agent has run this cycle.</p></article>
+			<article class="op op--future"><p class="op__top"><b>Not executed</b><span>VXP Relationship over HTTP</span></p><h3>A company proposal to the agent's own inbox</h3><p class="body-soft">The company signs a proposal and delivers it to an <code>inbox_uri</code> the agent publishes; the person approves and the agent accepts. Today tested only with SOVRAS's own inbox.</p></article>
+			<article class="op op--future"><p class="op__top"><b>Not executed</b><span>PACT adapter</span></p><h3>A PACT agent from outside SOVRAS</h3><p class="body-soft">A third-party PACT agent delegates by device code, operates, and receives both its PACT receipt and the VXP proof bound to it.</p></article>
+			<article class="op op--future"><p class="op__top"><b>Not executed</b><span>relationship over PACT</span></p><h3>A relationship carried over A2A</h3><p class="body-soft">The company-initiated request travelling over PACT. Its specification and tests are still to be written.</p></article>
+			<article class="op op--future op--wide"><p class="op__top"><b>Not executed</b><span>VXP Proof</span></p><h3>A proof that does not rest on the operator alone</h3><p class="body-soft">An operation with persistent keys, its proof anchored in a public log with external witnesses and a second independent issuer, so the verifier can derive more than an operator attestation.</p></article>
+		</div>
+	</div>
+</section>
+</main>
+
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
+		<div><b>Protocol</b><ul><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li></ul></div>
+	</div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

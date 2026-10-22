@@ -1,0 +1,53 @@
+== 10-cruce · 2026-10-22T04:53:16Z · python scripts/cruce-verificadores.py
+IGUAL    V1 -> {"approval": "company_channel", "custody_declared": "operator_hosted", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "final_state": "succeeded", "logged": false, "revision": 2, "single_root": "operator", "valid": true}
+IGUAL    V2 -> {"approval": "company_channel", "custody_declared": "operator_hosted", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "final_state": "failed", "logged": false, "revision": 2, "single_root": "operator", "valid": true}
+IGUAL    V3 -> {"approval": "company_channel", "custody_declared": "operator_hosted", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "final_state": "succeeded", "logged": false, "revision": 2, "single_root": "operator", "valid": true}
+IGUAL    V1 firma maleada -> {"approval": "company_channel", "custody_declared": "operator_hosted", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "final_state": "succeeded", "logged": false, "revision": 2, "single_root": "operator", "valid": true}
+IGUAL    V4 -> {"approval": "company_channel", "custody_declared": "operator_hosted", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "final_state": "succeeded", "logged": false, "revision": 2, "single_root": "operator", "valid": true}
+IGUAL    N1 -> RECHAZA signature_invalid seq=3
+IGUAL    N2 -> RECHAZA approval_not_latest_revision seq=4
+IGUAL    N3 -> RECHAZA unknown_key seq=7
+IGUAL    N4 -> RECHAZA non_canonical_payload seq=7
+IGUAL    N5 -> RECHAZA chain_broken seq=7
+IGUAL    N6 -> RECHAZA op_mismatch seq=7
+IGUAL    N7 -> RECHAZA disclosure_digest_mismatch seq=6
+IGUAL    N8 -> RECHAZA succeeded_without_matching_read_back seq=7
+IGUAL    N9 -> RECHAZA execution_terms_mismatch seq=5
+IGUAL    N10 -> RECHAZA correction_without_read_back seq=7
+IGUAL    N11 -> RECHAZA bad_state seq=8
+IGUAL    N12 -> RECHAZA order_violation seq=7
+IGUAL    N13 -> RECHAZA outcome_after_denial seq=6
+IGUAL    N14 -> RECHAZA outcome_terms_mismatch seq=4
+IGUAL    N15 -> RECHAZA succeeded_without_matching_read_back seq=7
+IGUAL    N16 -> RECHAZA order_violation seq=9
+IGUAL    N17 -> RECHAZA sd_digest_repeated seq=6
+IGUAL    N18 -> RECHAZA disclosure_repeated seq=6
+IGUAL    N19 -> RECHAZA disclosure_claim_exists seq=6
+IGUAL    N20 -> RECHAZA disclosure_bad_name seq=6
+IGUAL    N21 -> RECHAZA disclosure_bad_name seq=6
+IGUAL    N22 -> RECHAZA bad_sd_alg seq=6
+IGUAL    N23 -> RECHAZA bad_sd_alg seq=6
+IGUAL    N24 -> RECHAZA non_canonical_encoding seq=7
+IGUAL    N25 -> RECHAZA aud_mismatch seq=7
+IGUAL    N26 -> RECHAZA user_mismatch seq=7
+IGUAL    N27 -> RECHAZA order_violation seq=5
+IGUAL    N28 -> RECHAZA display_code_mismatch seq=4
+IGUAL    N29 -> RECHAZA order_violation seq=6
+IGUAL    N30 -> RECHAZA order_violation seq=5
+IGUAL    N32 -> RECHAZA read_back_incomplete seq=7
+IGUAL    N33 -> RECHAZA bad_terms seq=1
+IGUAL    N34 -> RECHAZA order_violation seq=5
+IGUAL    N35 -> RECHAZA read_back_incomplete seq=10
+IGUAL    N31 -> RECHAZA bad_approval_method seq=4
+IGUAL    D1 -> {"approval": "company_channel", "custody_declared": "operator_hosted", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "final_state": "succeeded", "logged": false, "revision": 2, "single_root": "operator", "valid": true}
+IGUAL    D2 -> {"approval": "company_channel", "custody_declared": "operator_hosted", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "final_state": "succeeded", "logged": false, "revision": 2, "single_root": "operator", "valid": true}
+IGUAL    D3 -> RECHAZA issuer_not_anchored seq=None
+IGUAL    D4 -> RECHAZA issuer_not_anchored seq=None
+IGUAL    D5 -> RECHAZA issuer_not_anchored seq=None
+IGUAL    D6 -> RECHAZA issuer_not_anchored seq=None
+IGUAL    D7 -> RECHAZA issuer_not_anchored seq=None
+IGUAL    D8 -> RECHAZA issuer_not_anchored seq=None
+IGUAL    D9 -> RECHAZA issuer_not_anchored seq=None
+
+casos: 49, discrepancias: 0
+exit 0

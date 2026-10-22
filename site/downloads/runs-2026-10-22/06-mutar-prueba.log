@@ -1,0 +1,45 @@
+== 06-mutar-prueba · 2026-10-22T04:56:04Z · PYTHONIOENCODING=utf-8 python scripts/mutar-prueba.py
+DETECTADA    P1 sin lectura de vuelta (no se emite read_back) -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 2 - M1: una lectura de vuelta firmada que contradice la fecha aprobada no; 3 - M1: una lectura de vuelta que no observa el efecto aprobado no respal
+DETECTADA    P2 lectura que no calza igual da succeeded -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 2 - M1: una lectura de vuelta firmada que contradice la fecha aprobada no; 3 - M1: una lectura de vuelta que no observa el efecto aprobado no respal
+DETECTADA    P3 sin encadenar (prev siempre null) -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 4 - M2: otro sub u otro agente del mismo cliente no reescribe la operació; 26 - feliz: propuesta → contrapropuesta → revisión 2 → confirmar → lectur
+DETECTADA    P4 huella de términos sin summary -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 2 - M1: una lectura de vuelta firmada que contradice la fecha aprobada no; 4 - M2: otro sub u otro agente del mismo cliente no reescribe la operació
+  (ancla repetida 2 veces; se muta la primera) P5 revisión nueva sin firmar sus términos
+DETECTADA    P5 revisión nueva sin firmar sus términos -> 5 - M2: una revisión nueva pedida por el agente queda registrada en la ca; 26 - feliz: propuesta → contrapropuesta → revisión 2 → confirmar → lectur; 27 - privacidad: la dirección y el teléfono no viajan en claro; la direcc
+DETECTADA    P6 el operador firma todo con su llave (sin separación de roles) -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 4 - M2: otro sub u otro agente del mismo cliente no reescribe la operació; 26 - feliz: propuesta → contrapropuesta → revisión 2 → confirmar → lectur
+DETECTADA    P7 dirección en claro en la lectura de vuelta -> 27 - privacidad: la dirección y el teléfono no viajan en claro; la direcc
+DETECTADA    P8 aud fijo (no el client_id del agente) -> 26 - feliz: propuesta → contrapropuesta → revisión 2 → confirmar → lectur; 34 - negativo: otra empresa — un paquete de [test bookshop] no valida co
+DETECTADA    P9 kid que no es el thumbprint RFC 7638 -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 2 - M1: una lectura de vuelta firmada que contradice la fecha aprobada no; 3 - M1: una lectura de vuelta que no observa el efecto aprobado no respal
+DETECTADA    P10 payload sin canonicalizar (JSON.stringify en orden de inserción) -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 4 - M2: otro sub u otro agente del mismo cliente no reescribe la operació; 26 - feliz: propuesta → contrapropuesta → revisión 2 → confirmar → lectur
+DETECTADA    P11 no se registra la hoja en el registro -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 4 - M2: otro sub u otro agente del mismo cliente no reescribe la operació; 26 - feliz: propuesta → contrapropuesta → revisión 2 → confirmar → lectur
+DETECTADA    P12 paquete sin regla de dueño -> 37 - negativo: el paquete de una operación no se le entrega a otra person
+DETECTADA    P13 miembro de la extensión también a quien no la lista -> 38 - un agente que no lista la extensión no recibe el miembro en la opera; 39 - un agente que lista otra versión de la extensión (Poppy §3.3: la may
+DETECTADA    P14 revisión nueva no reevalúa la regla de la empresa -> 44 - una revisión nueva que cruza el umbral exige revisión de la empresa 
+DETECTADA    P15 el emisor deja firmar cualquier kind a cualquier rol -> 43 - el emisor no deja que un rol firme lo que es del otro (SPEC §9.5 reg
+DETECTADA    P16 la metadata del issuer no publica el ancla (B1) -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 2 - M1: una lectura de vuelta firmada que contradice la fecha aprobada no; 3 - M1: una lectura de vuelta que no observa el efecto aprobado no respal
+DETECTADA    P17 la copia de poppy.json nombra otro jwks_uri que la metadata (B1) -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 2 - M1: una lectura de vuelta firmada que contradice la fecha aprobada no; 3 - M1: una lectura de vuelta que no observa el efecto aprobado no respal
+DETECTADA    P18 la huella de la declaracion cubre la firma (m1) -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 4 - M2: otro sub u otro agente del mismo cliente no reescribe la operació; 5 - M2: una revisión nueva pedida por el agente queda registrada en la ca
+DETECTADA    P19 se ignora la version que lista el agente (m5) -> 39 - un agente que lista otra versión de la extensión (Poppy §3.3: la may
+DETECTADA    P20 la metadata no declara los vinculos de marca y PACT (M1) -> 29 - ronda 2 (M1): un cliente sólo-PACT ancla la prueba con lo que PACT l
+DETECTADA    P21 el AS de PACT no publica la copia del bloque (M1) -> 29 - ronda 2 (M1): un cliente sólo-PACT ancla la prueba con lo que PACT l
+DETECTADA    P22 lo observado vuelve a llamarse `despacho` (M1) -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 2 - M1: una lectura de vuelta firmada que contradice la fecha aprobada no; 3 - M1: una lectura de vuelta que no observa el efecto aprobado no respal
+DETECTADA    P23 la revision no declara que terminos observar (M1) -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 2 - M1: una lectura de vuelta firmada que contradice la fecha aprobada no; 3 - M1: una lectura de vuelta que no observa el efecto aprobado no respal
+DETECTADA    P24 reutilizar sin el dueno completo (M2) -> 4 - M2: otro sub u otro agente del mismo cliente no reescribe la operació
+DETECTADA    P25 revision nueva sin registrar la peticion (M2) -> 5 - M2: una revisión nueva pedida por el agente queda registrada en la ca
+DETECTADA    P26 sin precondicion antes de ejecutar (M3) -> 4 - M2: otro sub u otro agente del mismo cliente no reescribe la operació
+DETECTADA    P27 sin bloqueo de una operacion en curso por pedido (M3) -> 6 - M3: dos operaciones sobre el mismo pedido no terminan las dos en `suc
+DETECTADA    P28 nivel con el nombre retirado (m1) -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el
+  (ancla repetida 2 veces; se muta la primera) P29 terminos sin sal (m2)
+DETECTADA    P29 terminos sin sal (m2) -> 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el; 2 - M1: una lectura de vuelta firmada que contradice la fecha aprobada no; 4 - M2: otro sub u otro agente del mismo cliente no reescribe la operació
+DETECTADA    P30 la revision no declara si la empresa exige la suya (m3) -> 7 - m3: si la empresa exige revisión, un operador que la omite no produce
+DETECTADA    P31 WhatsApp acepta sin mirar el estado ni la confirmacion (m4, sus dos defensas) -> 9 - m4: una respuesta por WhatsApp a una operación vencida no se informa 
+DETECTADA    P32 la autoridad agente_personal no pide revision con `toda_escritura` (M1) -> 45 - M1: con `toda_escritura`, Policy (agente_personal) pide revisión y h
+DETECTADA    P33 la decision del cliente no lleva su principal (M1) -> 45 - M1: con `toda_escritura`, Policy (agente_personal) pide revisión y h
+DETECTADA    P34 la verdad de la operacion vuelve a salir de `outcome.verified` (M3) -> 47 - M3: dos operaciones en un mismo Case dan dos verificaciones y dos re
+DETECTADA    P35 sin ventana de 24 h: siempre texto libre (M5) -> 48 - M5: fuera de la ventana de 24 h y sin plantilla, la aprobación no se; 49 - M5: fuera de la ventana, con plantilla aprobada sale la plantilla; s
+DETECTADA    P36 la aprobacion sale sin consentimiento de servicio (M5) -> 49 - M5: fuera de la ventana, con plantilla aprobada sale la plantilla; s
+DETECTADA    P37 la aprobacion no entregada igual queda esperando un codigo (M5) -> 48 - M5: fuera de la ventana de 24 h y sin plantilla, la aprobación no se
+DETECTADA    P38 la lectura filtra por el id de SOVRAS y no por el vinculo con el ERP (M6) -> 50 - M6: el dueño sale del vínculo con el ERP; sin vínculo, nada; lo ajen
+DETECTADA    P39 sin vinculo con el ERP se escribe igual (M6) -> 50 - M6: el dueño sale del vínculo con el ERP; sin vínculo, nada; lo ajen
+
+39/39 detectadas
+exit 0

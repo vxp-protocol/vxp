@@ -1,0 +1,8 @@
+== 17-fuzz-web · 2026-10-22T05:34:01.212Z · node fuzz-vxp-verify.mjs 3000 20261022 (v22.20.0)
+generator: verifier/tests/fuzz_vxp_gen.py (reuses reference/scripts/fuzz-diferencial.py: cadena, guion, cuerpo, test keys)
+chains: 3000 (1200 from fuzz-diferencial.cadena unchanged, 750 guided protocol chains, 1050 mutated), valid per reference: 747, reference exceptions: 2
+primitives: b64d 3000, leer_json 3000
+verdicts: {"revision_error":564,"order_violation":319,"valid:failed":213,"valid:unknown":212,"bad_terms":181,"disclosure_malformed":179,"user_mismatch":143,"valid:succeeded":121,"weak_salt":117,"unknown_key":114,"valid:revoked":114,"non_canonical_encoding":95,"bad_approval_method":61,"display_code_mismatch":50,"valid:cancelled":46,"disclosure_repeated":45,"valid:expired":41,"non_canonical_payload":40,"bad_sd_alg":35,"succeeded_without_matching_read_back":30,"read_back_incomplete":28,"disclosure_bad_name":26,"approval_not_latest_revision":23,"not_sd_jwt":23,"approval_terms_mismatch":22,"outcome_terms_mismatch":19,"disclosure_digest_mismatch":17,"sd_digest_repeated":17,"disclosure_claim_exists":16,"bad_read_back":13,"bad_state":13,"bad_header":13,"number_out_of_profile":9,"execution_terms_mismatch":8,"bad_decision":6,"correction_without_read_back":6,"duplicate_member":5,"no_outcome":4,"after_final":3,"lone_surrogate":3,"outcome_after_denial":2,"python_exception":2,"signature_invalid":2}
+distinct verdicts: 43 · seconds: 21.9
+
+TOTAL: 9000 differential cases (3000 chains + 6000 primitive inputs), 0 discrepancies

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify a proof · VXP</title>
+<meta name="description" content="Check a VXP proof in your browser: signatures, chain, approved terms, read-back and final state, with valid and tampered examples.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/vxp.css">
+<link rel="stylesheet" href="../assets/verify.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../architecture/">Architecture</a></li>
+			<li><a href="../spec/">Specification</a></li>
+			<li><a href="../examples/">Examples</a></li>
+			<li><a href="../verify/" aria-current="page">Verify</a></li>
+			<li><a href="../conformance/">Conformance</a></li>
+			<li><a href="../implement/">Implement</a></li>
+			<li><a href="../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../status/">Draft 0.1</a>
+	</div>
+</header>
+
+<main id="main">
+<section class="sec v-top">
+	<div class="wrap">
+		<div class="sec__head">
+			<p class="kicker">Verifier</p>
+			<h1 class="h2">Check a proof without trusting whoever hands it to you</h1>
+			<p class="lead">This page runs an independent VXP Proof verifier in your browser. It takes the keys from the company's published metadata, checks every signed statement and its order, compares the approved terms with what the company's system showed afterwards, and derives the assurance level on its own. Nothing is sent anywhere.</p>
+		</div>
+
+		<div class="vgrid">
+			<div class="vin">
+				<fieldset class="vex">
+					<legend>1. Choose a proof</legend>
+					<label><input type="radio" name="ex" value="native" checked> <span><b>Delivery change, native profile</b> · captured 22 Oct 2026 from the reference implementation; the issuer is the local test server it ran on, <code>localhost:3730</code></span></label>
+					<label><input type="radio" name="ex" value="channel"> <span><b>Delivery change approved on the company's page</b> · PACT adapter run, 22 Oct 2026, approval through the company's channel (<code>company_channel</code>)</span></label>
+					<label><input type="radio" name="ex" value="own"> <span><b>Your own proof</b> · paste the package and the public material</span></label>
+				</fieldset>
+
+				<fieldset class="vex">
+					<legend>2. Tamper with it, or leave it intact</legend>
+					<label><input type="radio" name="tm" value="none" checked> <span>Leave it intact</span></label>
+					<label><input type="radio" name="tm" value="outcome"> <span>Edit the signed outcome: change <code>succeeded</code> to <code>failed</code> without re-signing</span></label>
+					<label><input type="radio" name="tm" value="swap"> <span>Swap two statements in the chain</span></label>
+					<label><input type="radio" name="tm" value="term"> <span>Show the agent a different delivery date than the one approved</span></label>
+					<label><input type="radio" name="tm" value="aud"> <span>Replay it to another agent</span></label>
+				</fieldset>
+
+				<div class="vown" hidden>
+					<label for="in-pkg">Package (<code>{"v","company","op","statements","log"}</code>)</label>
+					<textarea id="in-pkg" spellcheck="false" rows="6"></textarea>
+					<label for="in-mat">Public material (<code>{"anchor","docs"}</code>), downloaded from the company's own domain</label>
+					<textarea id="in-mat" spellcheck="false" rows="6"></textarea>
+					<label for="in-op">Operation the agent saw (optional)</label>
+					<textarea id="in-op" spellcheck="false" rows="4"></textarea>
+					<label class="vnaming"><input type="checkbox" id="in-legacy"> Issued before 22 Oct 2026 (legacy <code>sovras-*</code> naming)</label>
+				</div>
+
+				<button class="btn btn--solid" type="button" id="run">Verify</button>
+			</div>
+
+			<div class="vout" aria-live="polite">
+				<div class="vverdict" data-state="idle">
+					<p class="vverdict__big">Choose a proof and press Verify.</p>
+					<p class="vverdict__sub"></p>
+				</div>
+				<ol class="vchecks"></ol>
+				<details class="vraw"><summary>Verdict as JSON</summary><pre data-copy></pre></details>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="sec">
+	<div class="wrap vabout">
+		<div>
+			<h2 class="h3">What goes in</h2>
+			<p class="body-soft">A package with the signed statements of one operation, and the public material of the company: its discovery document, its RFC 8414 metadata and the key sets named there. The verifier anchors the issuer from that material and never takes keys from the package.</p>
+		</div>
+		<div>
+			<h2 class="h3">What it checks</h2>
+			<p class="body-soft">ES256 signatures and canonical JSON (RFC 8785); who signs each kind of statement; the chain of <code>seq</code> and <code>prev</code>; that the approval names the latest revision of the exact terms; that <code>succeeded</code> only follows a read-back that matches those terms; the last final statement; log inclusion; and, if given, that the operation the agent saw is the one that was signed.</p>
+		</div>
+		<div>
+			<h2 class="h3">What it cannot prove</h2>
+			<p class="body-soft">A valid signature proves who signed which bytes, not that the claim is true. Approvals and read-backs are statements by the operator. With no external witness, the verifier reports one root of trust, the operator, and <code>logged: false</code>. That limit is part of every verdict.</p>
+		</div>
+		<div>
+			<h2 class="h3">How it was tested</h2>
+			<p class="body-soft">It gives the same verdict and error code as the reference verifier in Python on every test vector and on real proofs, intact and tampered, and in a differential fuzz with no discrepancies. <a href="../conformance/">See the runs</a> or <button type="button" class="linkbtn" id="vectors">run the 92 vector checks here</button>. <span id="vectors-out" class="mono"></span></p>
+		</div>
+	</div>
+</section>
+</main>
+
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
+		<div><b>Protocol</b><ul><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li></ul></div>
+	</div>
+</footer>
+<script type="module" src="verify-ui.js"></script>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

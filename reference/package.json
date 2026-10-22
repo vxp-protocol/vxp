@@ -1,0 +1,14 @@
+{
+  "name": "vxp-reference",
+  "version": "0.1.0-draft",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "VXP reference implementation: a company gateway that receives personal agents over Poppy, PACT and the native VXP profile, on one operational core.",
+  "engines": { "node": ">=22.18" },
+  "scripts": {
+    "start": "node src/main.ts",
+    "test": "node --test test/*.test.ts",
+    "test:network": "node --test test-red/*.test.ts"
+  }
+}

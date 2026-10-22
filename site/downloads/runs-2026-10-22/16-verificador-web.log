@@ -1,0 +1,103 @@
+== 16-verificador-web · 2026-10-22T06:12:14.378Z · node test-vxp-verify.mjs (v22.20.0)
+module: verifier/tests/vxp-verify.js · reference: verifier/verificar_paquete.py · legacy reference: <legacy-0.1 verifier>
+[vectores] vectores-0.1.json: python "92 comprobaciones, 0 fallas" (exit 0) · js "92 comprobaciones, 0 fallas" · 92 checks compared line by line, 0 discrepancies
+[pact] vectores-pact-0.1.json: python "16 comprobaciones, 0 fallas" (exit 0) · js "16 comprobaciones, 0 fallas" · 16 checks compared line by line, 0 discrepancies
+SAME pact-run/pact-op_01NpsuOhdE3C · as captured · vxp naming -> valid:true final_state=succeeded issuer_key_attested,operator_observed,operator_reported_read_back,operator_reported_channel_approval single_root=operator logged=false
+SAME pact-run/pact-op_01NpsuOhdE3C · as captured · legacy 0.1 naming (must reject) -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_01NpsuOhdE3C · aud of another agent · vxp naming -> valid:false aud_mismatch seq=0
+SAME pact-run/pact-op_01NpsuOhdE3C · signature of the last statement altered · vxp naming -> valid:false signature_invalid seq=7
+SAME pact-run/pact-op_01NpsuOhdE3C · signed terms digest altered (term changed in the statement) · vxp naming -> valid:false signature_invalid seq=1
+SAME pact-run/pact-op_01NpsuOhdE3C · order: statements 2 and 3 swapped · vxp naming -> valid:false seq_error seq=2
+SAME pact-run/pact-op_01NpsuOhdE3C · last statement dropped · vxp naming -> valid:false no_outcome
+SAME pact-run/pact-op_01NpsuOhdE3C · only the request · vxp naming -> valid:false no_outcome
+SAME pact-run/pact-op_01NpsuOhdE3C · log inclusion of seq 0 removed · vxp naming -> valid:false log_inclusion_missing seq=0
+SAME pact-run/pact-op_01NpsuOhdE3C · log inclusion path cut · vxp naming -> valid:false log_inclusion_failed seq=1
+SAME pact-run/pact-op_01NpsuOhdE3C · anchor to another domain · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_01NpsuOhdE3C · metadata issuer not identical · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_01NpsuOhdE3C · company key in material altered · vxp naming -> valid:false unknown_key seq=1
+SAME pact-run/pact-op_01NpsuOhdE3C · unreferenced disclosure appended · vxp naming -> valid:false disclosure_digest_mismatch seq=1
+SAME pact-run/pact-op_01NpsuOhdE3C · with PACT receipt (Poppy anchor) · vxp naming -> valid:false pact_receipt_not_anchored seq=0
+SAME pact-run/pact-op_kXk0fUY1M3Eq · as captured · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · as captured · legacy 0.1 naming (must reject) -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · aud of another agent · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · signature of the last statement altered · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · signed terms digest altered (term changed in the statement) · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · operation term 'pedido' changed · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · operation state changed · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · order: statements 2 and 3 swapped · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · last statement dropped · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · only the request · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · log inclusion of seq 0 removed · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · log inclusion path cut · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · anchor to another domain · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run/pact-op_kXk0fUY1M3Eq · unreferenced disclosure appended · vxp naming -> valid:false issuer_not_anchored
+SAME captura/op_B6__ICZlCe_c · as captured · vxp naming -> valid:true final_state=succeeded issuer_key_attested,operator_observed,operator_reported_read_back,operator_reported_agent_approval single_root=operator logged=false
+SAME captura/op_B6__ICZlCe_c · as captured · legacy 0.1 naming (must reject) -> valid:false issuer_not_anchored
+SAME captura/op_B6__ICZlCe_c · aud of another agent · vxp naming -> valid:false aud_mismatch seq=0
+SAME captura/op_B6__ICZlCe_c · signature of the last statement altered · vxp naming -> valid:false signature_invalid seq=5
+SAME captura/op_B6__ICZlCe_c · signed terms digest altered (term changed in the statement) · vxp naming -> valid:false signature_invalid seq=1
+SAME captura/op_B6__ICZlCe_c · operation term 'pedido' changed · vxp naming -> valid:false operation_terms_mismatch
+SAME captura/op_B6__ICZlCe_c · operation state changed · vxp naming -> valid:false operation_state_mismatch
+SAME captura/op_B6__ICZlCe_c · order: statements 2 and 3 swapped · vxp naming -> valid:false seq_error seq=2
+SAME captura/op_B6__ICZlCe_c · last statement dropped · vxp naming -> valid:false no_outcome
+SAME captura/op_B6__ICZlCe_c · only the request · vxp naming -> valid:false no_outcome
+SAME captura/op_B6__ICZlCe_c · log inclusion of seq 0 removed · vxp naming -> valid:false log_inclusion_missing seq=0
+SAME captura/op_B6__ICZlCe_c · log inclusion path cut · vxp naming -> valid:false log_inclusion_failed seq=1
+SAME captura/op_B6__ICZlCe_c · anchor to another domain · vxp naming -> valid:false issuer_not_anchored
+SAME captura/op_B6__ICZlCe_c · metadata issuer not identical · vxp naming -> valid:false issuer_not_anchored
+SAME captura/op_B6__ICZlCe_c · company key in material altered · vxp naming -> valid:false unknown_key seq=1
+SAME captura/op_B6__ICZlCe_c · unreferenced disclosure appended · vxp naming -> valid:false disclosure_digest_mismatch seq=1
+SAME captura/op_NBbN47CrhrtM · as captured · vxp naming -> valid:true final_state=succeeded issuer_key_attested,operator_observed,operator_reported_read_back,operator_reported_agent_approval single_root=operator logged=false
+SAME captura/op_NBbN47CrhrtM · as captured · legacy 0.1 naming (must reject) -> valid:false issuer_not_anchored
+SAME captura/op_NBbN47CrhrtM · aud of another agent · vxp naming -> valid:false aud_mismatch seq=0
+SAME captura/op_NBbN47CrhrtM · signature of the last statement altered · vxp naming -> valid:false signature_invalid seq=5
+SAME captura/op_NBbN47CrhrtM · signed terms digest altered (term changed in the statement) · vxp naming -> valid:false signature_invalid seq=1
+SAME captura/op_NBbN47CrhrtM · operation term 'pedido' changed · vxp naming -> valid:false operation_terms_mismatch
+SAME captura/op_NBbN47CrhrtM · operation state changed · vxp naming -> valid:false operation_state_mismatch
+SAME captura/op_NBbN47CrhrtM · order: statements 2 and 3 swapped · vxp naming -> valid:false seq_error seq=2
+SAME captura/op_NBbN47CrhrtM · last statement dropped · vxp naming -> valid:false no_outcome
+SAME captura/op_NBbN47CrhrtM · only the request · vxp naming -> valid:false no_outcome
+SAME captura/op_NBbN47CrhrtM · log inclusion of seq 0 removed · vxp naming -> valid:false log_inclusion_missing seq=0
+SAME captura/op_NBbN47CrhrtM · log inclusion path cut · vxp naming -> valid:false log_inclusion_failed seq=1
+SAME captura/op_NBbN47CrhrtM · anchor to another domain · vxp naming -> valid:false issuer_not_anchored
+SAME captura/op_NBbN47CrhrtM · metadata issuer not identical · vxp naming -> valid:false issuer_not_anchored
+SAME captura/op_NBbN47CrhrtM · company key in material altered · vxp naming -> valid:false unknown_key seq=1
+SAME captura/op_NBbN47CrhrtM · unreferenced disclosure appended · vxp naming -> valid:false disclosure_digest_mismatch seq=1
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · as captured · legacy 0.1 naming -> valid:true final_state=succeeded issuer_key_attested,operator_observed,operator_reported_read_back,operator_reported_channel_approval single_root=operator logged=false
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · as captured · vxp naming (must reject) -> valid:false issuer_not_anchored
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · aud of another agent · legacy 0.1 naming -> valid:false aud_mismatch seq=0
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · signature of the last statement altered · legacy 0.1 naming -> valid:false signature_invalid seq=5
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · signed terms digest altered (term changed in the statement) · legacy 0.1 naming -> valid:false signature_invalid seq=1
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · operation term 'pedido' changed · legacy 0.1 naming -> valid:false operation_terms_mismatch
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · operation state changed · legacy 0.1 naming -> valid:false operation_state_mismatch
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · order: statements 2 and 3 swapped · legacy 0.1 naming -> valid:false seq_error seq=2
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · last statement dropped · legacy 0.1 naming -> valid:false no_outcome
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · only the request · legacy 0.1 naming -> valid:false no_outcome
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · log inclusion of seq 0 removed · legacy 0.1 naming -> valid:false log_inclusion_missing seq=0
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · log inclusion path cut · legacy 0.1 naming -> valid:false log_inclusion_failed seq=1
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · anchor to another domain · legacy 0.1 naming -> valid:false issuer_not_anchored
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · metadata issuer not identical · legacy 0.1 naming -> valid:false issuer_not_anchored
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · company key in material altered · legacy 0.1 naming -> valid:false unknown_key seq=1
+SAME op5-reverificacion (21-oct, legacy 0.1 naming) · unreferenced disclosure appended · legacy 0.1 naming -> valid:false disclosure_digest_mismatch seq=1
+[material] real proofs: 5 captured proofs, 77 verdicts compared (captured + altered + cross-naming)
+[explain] captura/op_B6__ICZlCe_c: 18 controls; 16 pass, 0 fail
+    pass       anchor: Anchored to http://localhost:3730/e/ferreteria-demo via poppy_domain (profile poppy).
+    pass       keys: Company and operator keys taken from the issuer's RFC 8414 metadata (issuer_metadata_live), never from the package.
+    pass       package: Version 0.1, company and op match the chain.
+    pass       statement_format: All 6 statements passed this check.
+    pass       issuer_and_key: All 6 statements passed this check.
+    pass       signature: All 6 statements passed this check.
+    pass       canonical_payload: All 6 statements passed this check.
+    pass       role: All 6 statements passed this check.
+    pass       selective_disclosure: All 6 statements passed this check.
+    pass       chain_binding: All 6 statements passed this check.
+    pass       chain_order: All 6 statements passed this check.
+    pass       terms_and_approval: All 6 statements passed this check.
+    pass       execution_and_read_back: All 6 statements passed this check.
+    pass       final_state: Final state: succeeded; approval agent_asserted on revision 1.
+    pass       log: Every statement is included in the log checkpoint (tree 6, live tree 6, consistent). Witnesses: 0, so not `logged`.
+    pass       operation: The operation the agent saw hashes to the signed terms, and its state is the last final statement.
+    info       pact_receipt: No PACT receipt cited.
+    info       assurance: Derived by this verifier, never by the issuer: issuer_key_attested = a final statement is signed by the key anchored to the company issuer (whoever controls that key; not that the claim is true); operator_observed = the operator signed an execution (the operator's word, not the company system's); operator_reported_read_back = the operator reports a system read-back that matches the terms (reported, not signed by the system of record); operator_reported_agent_approval = the operator reports that the agent said the user approved (nothing signed by the agent). single_root: operator (no evidence of a second, independent root); logged: false (no external witness). A valid signature does not prove the claim is true.
+
+TOTAL: 189 comparisons with the Python reference, 0 discrepancies

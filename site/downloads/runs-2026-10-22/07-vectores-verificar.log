@@ -1,0 +1,91 @@
+== 07-vectores-verificar · 2026-10-22T06:12:11Z · python verifier/verificar.py vectors/vectores-0.1.json (vectores publicados, datos neutros)
+OK    terms_digest_2 recalculado
+OK    jcs(terminos2) identico al del emisor
+OK    display_code recalculado - 320843
+OK    request_digest = huella JCS del insumo
+OK    idempotency_key_digest = huella JCS del insumo
+OK    counter_digest = huella JCS del insumo
+OK    release = huella JCS del insumo
+OK    result_summary_digest = huella JCS del insumo
+OK    cadena V1 valida y veredicto esperado - {"valid": true, "final_state": "succeeded", "revision": 2, "approval": "company_channel", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "single_root": "operator", "custody_declared": "operator_hosted", "logged": false}
+OK    huella seq 0
+OK    huella seq 1
+OK    huella seq 2
+OK    huella seq 3
+OK    huella seq 4
+OK    huella seq 5
+OK    huella seq 6
+OK    huella seq 7
+OK    divulgacion de la direccion, en su objeto
+OK    firma maleada: misma huella
+OK    cadena V2 - {"valid": true, "final_state": "failed", "revision": 2, "approval": "company_channel", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "single_root": "operator", "custody_declared": "operator_hosted", "logged": false}
+OK    cadena V3 - {"valid": true, "final_state": "succeeded", "revision": 2, "approval": "company_channel", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "single_root": "operator", "custody_declared": "operator_hosted", "logged": false}
+OK    cadena V4 - {"valid": true, "final_state": "succeeded", "revision": 2, "approval": "company_channel", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "single_root": "operator", "custody_declared": "operator_hosted", "logged": false}
+OK    huella V4 seq 0
+OK    huella V4 seq 1
+OK    huella V4 seq 2
+OK    huella V4 seq 3
+OK    huella V4 seq 4
+OK    huella V4 seq 5
+OK    huella V4 seq 6
+OK    huella V4 seq 7
+OK    huella V4 seq 8
+OK    raiz Merkle
+OK    hoja seq 0 = compromiso + etiqueta
+OK    hoja seq 1 = compromiso + etiqueta
+OK    hoja seq 2 = compromiso + etiqueta
+OK    hoja seq 3 = compromiso + etiqueta
+OK    hoja seq 4 = compromiso + etiqueta
+OK    hoja seq 5 = compromiso + etiqueta
+OK    hoja seq 6 = compromiso + etiqueta
+OK    hoja seq 7 = compromiso + etiqueta
+OK    inclusion seq 7
+OK    inclusion seq 3
+OK    inclusion falla con otra hoja
+OK    N1 - obtuvo signature_invalid en seq 3; esperado signature_invalid
+OK    N2 - obtuvo approval_not_latest_revision en seq 4; esperado approval_not_latest_revision
+OK    N3 - obtuvo unknown_key en seq 7; esperado unknown_key
+OK    N4 - obtuvo non_canonical_payload en seq 7; esperado non_canonical_payload
+OK    N5 - obtuvo chain_broken en seq 7; esperado chain_broken
+OK    N6 - obtuvo op_mismatch en seq 7; esperado op_mismatch
+OK    N7 - obtuvo disclosure_digest_mismatch en seq 6; esperado disclosure_digest_mismatch
+OK    N8 - obtuvo succeeded_without_matching_read_back en seq 7; esperado succeeded_without_matching_read_back
+OK    N9 - obtuvo execution_terms_mismatch en seq 5; esperado execution_terms_mismatch
+OK    N10 - obtuvo correction_without_read_back en seq 7; esperado correction_without_read_back
+OK    N11 - obtuvo bad_state en seq 8; esperado bad_state
+OK    N12 - obtuvo order_violation en seq 7; esperado order_violation
+OK    N13 - obtuvo outcome_after_denial en seq 6; esperado outcome_after_denial
+OK    N14 - obtuvo outcome_terms_mismatch en seq 4; esperado outcome_terms_mismatch
+OK    N15 - obtuvo succeeded_without_matching_read_back en seq 7; esperado succeeded_without_matching_read_back
+OK    N16 - obtuvo order_violation en seq 9; esperado order_violation
+OK    N17 - obtuvo sd_digest_repeated en seq 6; esperado sd_digest_repeated
+OK    N18 - obtuvo disclosure_repeated en seq 6; esperado disclosure_repeated
+OK    N19 - obtuvo disclosure_claim_exists en seq 6; esperado disclosure_claim_exists
+OK    N20 - obtuvo disclosure_bad_name en seq 6; esperado disclosure_bad_name
+OK    N21 - obtuvo disclosure_bad_name en seq 6; esperado disclosure_bad_name
+OK    N22 - obtuvo bad_sd_alg en seq 6; esperado bad_sd_alg
+OK    N23 - obtuvo bad_sd_alg en seq 6; esperado bad_sd_alg
+OK    N24 - obtuvo non_canonical_encoding en seq 7; esperado non_canonical_encoding
+OK    N25 - obtuvo aud_mismatch en seq 7; esperado aud_mismatch
+OK    N26 - obtuvo user_mismatch en seq 7; esperado user_mismatch
+OK    N27 - obtuvo order_violation en seq 5; esperado order_violation
+OK    N28 - obtuvo display_code_mismatch en seq 4; esperado display_code_mismatch
+OK    N29 - obtuvo order_violation en seq 6; esperado order_violation
+OK    N30 - obtuvo order_violation en seq 5; esperado order_violation
+OK    N32 - obtuvo read_back_incomplete en seq 7; esperado read_back_incomplete
+OK    N33 - obtuvo bad_terms en seq 1; esperado bad_terms
+OK    N34 - obtuvo order_violation en seq 5; esperado order_violation
+OK    N35 - obtuvo read_back_incomplete en seq 10; esperado read_back_incomplete
+OK    N31 - obtuvo bad_approval_method en seq 4; esperado bad_approval_method
+OK    D1 - https://auth.sovras.io/e/ferreteria-demo
+OK    D2 - https://auth.sovras.io/e/ferreteria-demo
+OK    D3 - obtuvo issuer_not_anchored; esperado issuer_not_anchored
+OK    D4 - obtuvo issuer_not_anchored; esperado issuer_not_anchored
+OK    D5 - obtuvo issuer_not_anchored; esperado issuer_not_anchored
+OK    D6 - obtuvo issuer_not_anchored; esperado issuer_not_anchored
+OK    D7 - obtuvo issuer_not_anchored; esperado issuer_not_anchored
+OK    D8 - obtuvo issuer_not_anchored; esperado issuer_not_anchored
+OK    D9 - obtuvo issuer_not_anchored; esperado issuer_not_anchored
+
+0 fallas
+exit 0

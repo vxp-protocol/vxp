@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VXP Specification · draft 0.1</title>
+<meta name="description" content="The VXP specification, draft 0.1: Capability Gate, VXP Relationship, VXP Proof, the experimental native profile and the adapters for Poppy draft 0.2 and PACT 1.0.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/vxp.css">
+<link rel="stylesheet" href="../assets/docs.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../architecture/">Architecture</a></li>
+			<li><a href="../spec/" aria-current="page">Specification</a></li>
+			<li><a href="../examples/">Examples</a></li>
+			<li><a href="../verify/">Verify</a></li>
+			<li><a href="../conformance/">Conformance</a></li>
+			<li><a href="../implement/">Implement</a></li>
+			<li><a href="../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../status/">Draft 0.1</a>
+	</div>
+</header>
+
+<main id="main">
+<section class="dochead">
+	<div class="wrap">
+		<p class="kicker">Specification · draft 0.1</p>
+		<h1 class="h1">VXP specification</h1>
+		<p class="lead">Thirteen sections that define the Capability Gate, VXP Relationship and VXP Proof, the native profile and the adapters for Poppy and PACT. Requirements carry stable identifiers you can link to.</p>
+		<p class="dochead__meta"><span>Draft 0.1 · 21 October 2026, revised 22 October 2026</span><span>Tested against Poppy draft 0.2, PACT 1.0 and A2A 1.0.1</span><span>Code license proposed: Apache 2.0</span></p>
+	</div>
+</section>
+
+<div class="doc">
+<nav class="toc" aria-label="Specification contents">
+	<details open>
+		<summary>Contents</summary>
+		<ol>
+			<li><a href="#what-is-vxp"><span>1</span>Introduction</a></li>
+			<li><a href="#why-vxp"><span>2</span>Why VXP exists</a></li>
+			<li><a href="#scope"><span>3</span>Principles and scope</a></li>
+			<li><a href="#architecture"><span>4</span>Architecture</a>
+				<ol><li><a href="#interoperability-rules">Interoperability rules</a></li><li><a href="#states">States</a></li></ol></li>
+			<li><a href="#identities"><span>5</span>Identity model</a></li>
+			<li><a href="#proof"><span>6</span>VXP Proof</a>
+				<ol><li><a href="#proof-statement-kinds">Statement kinds</a></li><li><a href="#proof-rules">Rules P1 to P8</a></li><li><a href="#company-channel-approval">Approval through the company</a></li><li><a href="#corrections">Corrections</a></li></ol></li>
+			<li><a href="#relationship"><span>7</span>VXP Relationship</a>
+				<ol><li><a href="#relationship-birth">Birth</a></li><li><a href="#company-initiated">Company-initiated requests</a></li><li><a href="#relationship-revocation">Revocation and HTTP answers</a></li><li><a href="#relationship-poppy-conversation">Over a Poppy conversation</a></li></ol></li>
+			<li><a href="#native-profile"><span>8</span>Native profile and adapters</a>
+				<ol><li><a href="#native-discovery">Discovery</a></li><li><a href="#native-endpoints">Endpoints</a></li><li><a href="#adapters">Adapters</a></li><li><a href="#renamed-identifiers">Renamed identifiers</a></li></ol></li>
+			<li><a href="#capability-gate"><span>9</span>Capability Gate, security and privacy</a>
+				<ol><li><a href="#gate-rules">Gate rules</a></li><li><a href="#security">Security</a></li><li><a href="#errors">Errors</a></li></ol></li>
+			<li><a href="#verification"><span>10</span>Independent verification</a></li>
+			<li><a href="#examples"><span>11</span>Examples</a></li>
+			<li><a href="#conformance"><span>12</span>Tests and conformance</a></li>
+			<li><a href="#versions"><span>13</span>Specification and versions</a></li>
+		</ol>
+	</details>
+</nav>
+
+<article class="doc__body">
+
+<!-- ═══ 1 ═══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="what-is-vxp" aria-labelledby="what-is-vxp-h">
+	<h2 id="what-is-vxp-h"><span class="n">1</span>Introduction<a class="anchor" href="#what-is-vxp" aria-label="Link to section 1">#</a></h2>
+	<p>VXP is an open standard for work that personal agents do for people inside companies. Any company or developer can implement it without hiring SOVRAS. It has its own profile (<a href="#native-profile">§8</a>, experimental) and interoperates with Poppy and PACT through adapters.</p>
+	<p>VXP defines three capabilities of its own: the Capability Gate as a behaviour contract, and two public contracts with a format on the wire.</p>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Capability</th><th>Kind</th><th>What it defines</th></tr></thead>
+		<tbody>
+			<tr><td><a href="#capability-gate"><b>Capability Gate</b></a></td><td>Behaviour contract, no endpoint</td><td>The rules every implementation <span class="kw">MUST</span> enforce where an external request becomes an operation. How it is built inside is up to the implementer.</td></tr>
+			<tr><td><a href="#relationship"><b>VXP Relationship</b></a></td><td>Public contract</td><td>The authorized relationship between a personal agent and a company: the identity of both parties, the actions allowed in each direction, limits, validity and revocation. It includes requests that the company starts.</td></tr>
+			<tr><td><a href="#proof"><b>VXP Proof</b></a></td><td>Public contract</td><td>Signed evidence a third party can verify. By digest, it binds the exact terms of each revision, the approval given on them, the execution, the later read of the company's system and the declared outcome, and it states the level of evidence available.</td></tr>
+		</tbody>
+	</table></div>
+	<div class="callout"><p><b>What a proof proves.</b> An intact chain does not prove that the operation was fulfilled. VXP Proof proves who asserted what, over which exact terms, in which order, and what was observed when reading the company's system, with its root of trust named.</p></div>
+
+	<h3 id="prior-art">Prior art<a class="anchor" href="#prior-art" aria-label="Link to Prior art">#</a></h3>
+	<p>These techniques have precedents in Poppy operations, in payments and in 2026 IETF drafts: Schrock <em>outcome-binding</em>, Dogru <em>Cedulon</em>, and the AUDIT group being formed. VXP combines them in its contracts, with its own profile and adapters to Poppy and PACT.</p>
+
+	<h3 id="conventions">Conventions<a class="anchor" href="#conventions" aria-label="Link to Conventions">#</a></h3>
+	<p>The key words <span class="kw">MUST</span>, <span class="kw">MUST NOT</span>, <span class="kw">SHOULD</span>, <span class="kw">SHOULD NOT</span> and <span class="kw">MAY</span> are to be interpreted as described in BCP 14 (RFC 2119 and RFC 8174) when, and only when, they appear in capitals.</p>
+	<ul>
+		<li><span class="mk mk--norm">Normative</span> text is the contract. Each requirement carries an identifier: I1 to I5, ID1 to ID3, E1 to E3, R1 to R17, P1 to P8, and the named Gate rules.</li>
+		<li><span class="mk mk--info">Informative</span> blocks describe the reference implementation by SOVRAS. They show one way to meet the contract and add no requirement.</li>
+		<li><span class="mk mk--exp">Experimental</span> marks parts that pass their tests and that no third-party agent uses yet.</li>
+		<li><span class="mk mk--pend">Pending</span> marks parts that are specified or announced and not yet done.</li>
+	</ul>
+	<p>VXP Proof inherits its statement format, canonicalization, chain, levels, log and anchoring from §9 of the normative annex, the VXP design draft 0.1. That annex passed five rounds of critical review, each with its corrections. Identifiers the annex names with “sovras” are used as listed in <a href="#renamed-identifiers">Renamed identifiers</a>.</p>
+</section>
+
+<!-- ═══ 2 ═══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="why-vxp" aria-labelledby="why-vxp-h">
+	<h2 id="why-vxp-h"><span class="n">2</span>Why VXP exists<a class="anchor" href="#why-vxp" aria-label="Link to section 2">#</a></h2>
+	<p>SOVRAS builds agents that change orders, deliveries and reservations inside companies' systems. After each of those operations, the same questions come back:</p>
+	<ol>
+		<li>Who asked, and on whose behalf?</li>
+		<li>Which exact terms did the person approve, and through which channel?</li>
+		<li>What ran, and how many times?</li>
+		<li>What did the company's system record afterwards?</li>
+	</ol>
+	<p>When the request comes from a person's own agent, the company did not build that agent and cannot see its conversation. The answers have to travel with the operation. VXP writes them into contracts that any company and any agent can implement.</p>
+</section>
+
+<!-- ═══ 3 ═══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="scope" aria-labelledby="scope-h">
+	<h2 id="scope-h"><span class="n">3</span>Principles and scope<a class="anchor" href="#scope" aria-label="Link to section 3">#</a></h2>
+	<p>Every part below is in VXP. The table says what kind of contract each one is.</p>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Part</th><th>Kind</th><th>Section</th></tr></thead>
+		<tbody>
+			<tr><td>VXP Relationship</td><td>Public contract, format on the wire</td><td><a href="#relationship">§7</a></td></tr>
+			<tr><td>VXP Proof</td><td>Public contract, format on the wire</td><td><a href="#proof">§6</a></td></tr>
+			<tr><td>Capability Gate</td><td>Behaviour contract that every implementation <span class="kw">MUST</span> enforce; no endpoint</td><td><a href="#capability-gate">§9</a></td></tr>
+			<tr><td>Native profile: <code>vxp.json</code> and <code>/v1</code></td><td>VXP's own discovery and endpoints <span class="mk mk--exp">Experimental</span></td><td><a href="#native-profile">§8</a></td></tr>
+			<tr><td>Poppy and PACT adapters</td><td>The external contracts, used literally</td><td><a href="#adapters">§8</a></td></tr>
+		</tbody>
+	</table></div>
+
+	<h3 id="principles">Principles<a class="anchor" href="#principles" aria-label="Link to Principles">#</a></h3>
+	<ul>
+		<li>An external protocol is spoken as it is written (<a href="#i1">I1</a>).</li>
+		<li>Whatever the entry, one enterprise execution per resource (<a href="#i2">I2</a>).</li>
+		<li>A channel identifier, a customer account and a delegation stay separate (<a href="#identities">§5</a>).</li>
+		<li>What is not known is signed as unknown (<a href="#p3">P3</a>).</li>
+		<li>The verifier derives the level of evidence; the issuer never declares it (<a href="#p7">P7</a>).</li>
+	</ul>
+
+	<h3 id="out-of-scope">Out of scope<a class="anchor" href="#out-of-scope" aria-label="Link to Out of scope">#</a></h3>
+	<ul>
+		<li>Payments: referenced (AP2, x402, Pix), not defined.</li>
+		<li>Agent identity and user sign-in: they belong to Poppy, PACT and OAuth.</li>
+		<li>Disputes and their resolution: each company's policy.</li>
+		<li>Proof that the person read something: the most that is proven is that they answered from the linked channel.</li>
+	</ul>
+
+	<div class="info" id="traditional-channels">
+		<span class="mk mk--info">Informative · SOVRAS capability</span>
+		<h4 style="margin:0">Access through traditional channels</h4>
+		<p>Access by agents through WhatsApp, web chat or voice is a capability of SOVRAS, not part of VXP. SOVRAS detects a probable agent without treating that as identity (its output says <code>prueba_identidad: false</code>), offers the move to a structured, authenticated connection on the company's domain (<code>vxp.json</code>, <code>poppy.json</code> or the PACT Agent Card), and limits what a suspected agent can do in the channel. A write never runs in the channel. For the company to contact the agent, VXP Relationship is used, never the traditional channel.</p>
+	</div>
+</section>
+
+<!-- ═══ 4 ═══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="architecture" aria-labelledby="architecture-h">
+	<h2 id="architecture-h"><span class="n">4</span>Architecture<a class="anchor" href="#architecture" aria-label="Link to section 4">#</a></h2>
+	<p>Several entries end in one normalized request, one Capability Gate and one enterprise execution. VXP Proof and VXP Relationship come out of it. Diagrams of each part are in <a href="../architecture/">Architecture</a>.</p>
+	<div class="code code--plain"><pre tabindex="0" aria-label="Architecture outline">Personal agent (VXP native, experimental · Poppy · PACT · traditional channel)
+        │
+        ├── VXP native (EXPERIMENTAL): /.well-known/vxp.json + /v1
+        ├── Poppy ── adapter (Poppy draft 0.2 contract, literal)
+        ├── PACT ─── A2A adapter (PACT 1.0 contract, literal)
+        └── WhatsApp · web chat · voice ── SOVRAS channels, outside VXP
+        │
+   Normalized operational request
+   (identity · authority · company · operation · correlation)
+        │
+   Capability Gate (§9) → one enterprise execution → read of the system
+        │
+   VXP Proof (signed chain)     VXP Relationship (agreements, signed outbound)</pre></div>
+
+	<h3 id="interoperability-rules">Interoperability rules<a class="anchor" href="#interoperability-rules" aria-label="Link to Interoperability rules">#</a></h3>
+	<div class="reqs">
+		<div class="req" id="i1"><a class="req__id" href="#i1">I1</a><div><p>An adapter <span class="kw">MUST</span> respect the external contract literally: its objects, states, errors and discovery. Inside an adapter, VXP <span class="kw">MUST NOT</span> alter, extend or duplicate the discovery, authorization, operations or states of Poppy or PACT. The native profile (<a href="#native-profile">§8</a>) is VXP's own form and coexists with the adapters on the same issuer, without replacing them.</p></div></div>
+		<div class="req" id="i2"><a class="req__id" href="#i2">I2</a><div><p>Whatever adapters exist, the enterprise execution <span class="kw">MUST</span> be one per resource. The entries produce separate operations, one per identity, and only one can take effect: the first that passes the precondition. The others end <code>failed</code>, without effect and with their evidence.</p></div></div>
+		<div class="req" id="i3"><a class="req__id" href="#i3">I3</a><div><p>The company does not need a conversational agent of its own: a deterministic intermediary serves the PACT A2A service and the Poppy API.</p></div></div>
+		<div class="req" id="i4"><a class="req__id" href="#i4">I4</a><div><p>What VXP adds travels in each protocol's extension points: a domain-named member in Poppy (Poppy §3.3) and <code>metadata</code> or extensions in A2A. Never as new values of their enums.</p></div></div>
+		<div class="req" id="i5"><a class="req__id" href="#i5">I5</a><div><p>Items specific to VXP <span class="kw">MUST NOT</span> leak into the catalogs of Poppy or PACT. For example, the relationship checkbox is not a scope of the Agent Card.</p></div></div>
+	</div>
+
+	<h3 id="states">States: one internal model, each protocol's own enum outside<a class="anchor" href="#states" aria-label="Link to States">#</a></h3>
+	<div class="reqs">
+		<div class="req" id="e1"><a class="req__id" href="#e1">E1</a><div><p>The ten states of design draft 0.1, plus <code>expired</code>, are the internal model: <code>received</code>, <code>authorization_required</code>, <code>proposed</code>, <code>accepted</code>, <code>waiting_human</code>, <code>executing</code>, <code>pending_verification</code>, <code>succeeded</code>, <code>failed</code>, <code>cancelled</code> and <code>expired</code>. The last four are final.</p></div></div>
+		<div class="req" id="e2"><a class="req__id" href="#e2">E2</a><div><p>Outside, each protocol sees its own enum: Poppy with <code>proposed</code>, <code>in_progress</code>, <code>succeeded</code>, <code>failed</code>, <code>cancelled</code> and <code>expired</code>; A2A with <code>TaskState</code>. In A2A, the internal state can travel in <code>metadata</code>.</p></div></div>
+		<div class="req" id="e3"><a class="req__id" href="#e3">E3</a><div><p><code>waiting_human</code> covers two cases: the company's review before executing, and a contradiction after executing (<a href="#p5">P5</a>).</p></div></div>
+	</div>
+
+	<h4 id="state-transitions">Legal transitions</h4>
+	<p class="body-soft" style="margin-top:8px">Any other transition <span class="kw">MUST</span> be rejected.</p>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>From</th><th>To</th></tr></thead>
+		<tbody>
+			<tr><td>(start)</td><td><code>received</code></td></tr>
+			<tr><td><code>received</code></td><td><code>authorization_required</code>, <code>proposed</code>, <code>failed</code></td></tr>
+			<tr><td><code>authorization_required</code></td><td><code>proposed</code>, <code>cancelled</code>, <code>expired</code>, <code>failed</code></td></tr>
+			<tr><td><code>proposed</code></td><td><code>proposed</code> (new revision), <code>accepted</code>, <code>cancelled</code>, <code>expired</code>, <code>failed</code></td></tr>
+			<tr><td><code>accepted</code></td><td><code>waiting_human</code>, <code>executing</code>, <code>cancelled</code> (before executing), <code>failed</code> (permissions or precondition no longer hold)</td></tr>
+			<tr><td><code>waiting_human</code></td><td><code>executing</code>, <code>pending_verification</code>, <code>succeeded</code>, <code>failed</code>, <code>cancelled</code></td></tr>
+			<tr><td><code>executing</code></td><td><code>pending_verification</code>, <code>succeeded</code>, <code>failed</code></td></tr>
+			<tr><td><code>pending_verification</code></td><td><code>succeeded</code>, <code>failed</code>, <code>cancelled</code> (stop confirmed), <code>waiting_human</code> (escalation)</td></tr>
+		</tbody>
+	</table></div>
+
+	<h4 id="state-projection">Projection</h4>
+	<p class="body-soft" style="margin-top:8px">In each profile the visible state <span class="kw">MUST</span> be the projection of the internal one, and a value outside that profile's enum <span class="kw">MUST NOT</span> be used. Under A2A and PACT, the internal state <span class="kw">MUST</span> travel in <code>metadata["https://vxpprotocol.org/ext/native/v0.1"]</code> as <code>{"state", "a2a_state"}</code>; under Poppy it <span class="kw">MUST NOT</span> go in the operation's <code>state</code>.</p>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Internal</th><th>Poppy operations</th><th>A2A 1.0.1 <code>TaskState</code></th></tr></thead>
+		<tbody>
+			<tr><td><code>received</code></td><td>no operation yet</td><td><code>TASK_STATE_SUBMITTED</code></td></tr>
+			<tr><td><code>authorization_required</code></td><td>no operation yet</td><td><code>TASK_STATE_AUTH_REQUIRED</code></td></tr>
+			<tr><td><code>proposed</code></td><td><code>proposed</code></td><td><code>TASK_STATE_INPUT_REQUIRED</code></td></tr>
+			<tr><td><code>accepted</code>, <code>waiting_human</code>, <code>executing</code>, <code>pending_verification</code></td><td><code>in_progress</code></td><td><code>TASK_STATE_WORKING</code></td></tr>
+			<tr><td><code>succeeded</code></td><td><code>succeeded</code></td><td><code>TASK_STATE_COMPLETED</code></td></tr>
+			<tr><td><code>failed</code></td><td><code>failed</code></td><td><code>TASK_STATE_FAILED</code></td></tr>
+			<tr><td><code>cancelled</code></td><td><code>cancelled</code></td><td><code>TASK_STATE_CANCELED</code></td></tr>
+			<tr><td><code>expired</code></td><td><code>expired</code></td><td><code>TASK_STATE_CANCELED</code>, with the internal state in <code>metadata</code></td></tr>
+		</tbody>
+	</table></div>
+	<ul>
+		<li>The state <span class="kw">MUST NOT</span> move to <code>failed</code> while it is not known whether the effect happened. That is <code>pending_verification</code>.</li>
+		<li>A read by the agent <span class="kw">MUST NOT</span> change the state by itself. It <span class="kw">MAY</span> trigger reconciliation against the system of record, and reconciliation <span class="kw">MUST NOT</span> repeat the action.</li>
+	</ul>
+</section>
+
+<!-- ═══ 5 ═══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="identities" aria-labelledby="identities-h">
+	<h2 id="identities-h"><span class="n">5</span>Identity model<a class="anchor" href="#identities" aria-label="Link to section 5">#</a></h2>
+	<p>Three different things that <span class="kw">MUST NOT</span> be merged:</p>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>What</th><th>Example</th><th>What it establishes</th></tr></thead>
+		<tbody>
+			<tr><td><b>Channel identifier</b></td><td>A WhatsApp number</td><td>That someone controls that channel. It identifies no single person when two customers share it.</td></tr>
+			<tr><td><b>Customer's identity at the company</b></td><td>The canonical customer, linked with evidence to the customer in the ERP</td><td>Which account, and which resources, are theirs in the company's system.</td></tr>
+			<tr><td><b>Authorization delegated to the agent</b></td><td>A grant with <code>client_id</code>, <code>sub</code>, scopes and <code>authorization_details</code></td><td>What that agent may ask, for that person, over which resources.</td></tr>
+		</tbody>
+	</table></div>
+	<div class="reqs">
+		<div class="req" id="id1"><a class="req__id" href="#id1">ID1</a><div><p>An account is associated with an agent only through an authentication the company controls (today, a one-time code over the company's WhatsApp line), and evidence of it is kept. It <span class="kw">MUST NOT</span> be associated by a matching name, email or phone number.</p></div></div>
+		<div class="req" id="id2"><a class="req__id" href="#id2">ID2</a><div><p>An identifier that corresponds to more than one account <span class="kw">MUST NOT</span> be used on its own to link or to give out data.</p></div></div>
+		<div class="req" id="id3"><a class="req__id" href="#id3">ID3</a><div><p>The owner of an operation is the tuple <code>(profile, client_id, sub, account)</code>. Another DPoP key, another <code>sub</code> or another <code>client_id</code> neither sees it nor is accepted on it. An operation of one profile <span class="kw">MUST NOT</span> be read, confirmed, cancelled or reused from another profile, even when <code>client_id</code> and subject match.</p></div></div>
+	</div>
+</section>
+
+<!-- ═══ 6 ═══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="proof" aria-labelledby="proof-h">
+	<h2 id="proof-h"><span class="n">6</span>VXP Proof<a class="anchor" href="#proof" aria-label="Link to section 6">#</a></h2>
+	<p>Each operation produces a chain of signed statements. Each statement names the previous one by its digest, and is signed by the role that observed it: the company signs what it offers and what it asserts as the result; the operator signs what it received, what it executed and what it read back. A verifier therefore knows who said what at each link.</p>
+
+	<h3 id="proof-statement-format">Format<a class="anchor" href="#proof-statement-format" aria-label="Link to Format">#</a></h3>
+	<ul>
+		<li><b>Serialization:</b> one SD-JWT per statement (RFC 9901 §4), signed with ES256, without a Key Binding JWT in 0.1. Header <code>{"alg":"ES256","kid":"&lt;RFC 7638 thumbprint&gt;","typ":"vxp-stmt+sd-jwt"}</code>.</li>
+		<li><b>Canonical bytes:</b> the payload <span class="kw">MUST</span> be exactly its JCS form (RFC 8785, integers only, amounts as strings), and every base64url segment <span class="kw">MUST</span> be canonical.</li>
+		<li><b>Common members:</b> <code>v</code>, <code>kind</code>, <code>iss</code>, <code>company</code>, <code>op</code>, <code>seq</code>, <code>prev</code>, <code>iat</code>, <code>aud</code> (the agent's <code>client_id</code>), <code>user</code> (a per-company pseudonym) and <code>body</code>.</li>
+		<li><b>Digest of a statement:</b> SHA-256 over the JWS signing input, header and payload, without the signature and without disclosures.</li>
+		<li><b>Digest of terms:</b> the digest of <code>{company, operation_id, revision, summary, terms, expires_at, user_approval_required}</code>. <code>terms</code> <span class="kw">MUST</span> carry a fresh <code>vxp_salt</code> of at least 128 bits in each revision.</li>
+		<li><b>Personal data</b> travels as selective disclosures, never in clear.</li>
+	</ul>
+
+	<h3 id="proof-statement-kinds">Statement kinds<a class="anchor" href="#proof-statement-kinds" aria-label="Link to Statement kinds">#</a></h3>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th><code>kind</code></th><th>Signed by</th><th>What it records</th></tr></thead>
+		<tbody>
+			<tr><td><code>request</code></td><td>Operator</td><td>At <code>seq</code> 0: channel, <code>client_id</code>, digest of what was asked, optional idempotency key digest</td></tr>
+			<tr><td><code>terms</code></td><td>Company</td><td>Each revision: <code>terms_digest</code>, <code>capability</code>, <code>commitment</code>, <code>expires_at</code>, <code>company_review_required</code>, <code>read_back_terms</code></td></tr>
+			<tr><td><code>counter</code></td><td>Operator</td><td>A counter-proposal from the agent, by digest</td></tr>
+			<tr><td><code>user_approval</code></td><td>Operator</td><td>Approval of the latest revision and its <code>method</code></td></tr>
+			<tr><td><code>company_review</code></td><td>Company</td><td>A decision by a person at the company, by role, after the customer's approval and before execution</td></tr>
+			<tr><td><code>execution</code></td><td>Operator</td><td>The single execution, on the approved revision and digest</td></tr>
+			<tr><td><code>read_back</code></td><td>Operator</td><td>What the company's system showed afterwards, named by term</td></tr>
+			<tr><td><code>outcome</code></td><td>Company</td><td>The result: <code>succeeded</code>, <code>failed</code>, <code>cancelled</code>, <code>expired</code> or <code>unknown</code></td></tr>
+			<tr><td><code>correction</code>, <code>revocation</code></td><td>Company</td><td>What became known after the final state (<a href="#corrections">Corrections</a>)</td></tr>
+		</tbody>
+	</table></div>
+
+	<h3 id="proof-chain-rules">Chain rules<a class="anchor" href="#proof-chain-rules" aria-label="Link to Chain rules">#</a></h3>
+	<p>A verifier <span class="kw">MUST</span> check these in order, for each <code>seq</code>; the first failure decides the error code and its <code>seq</code>. Two conforming verifiers <span class="kw">MUST</span> return the same verdict on any chain.</p>
+	<ol>
+		<li>SD-JWT format, canonical base64url, header, known <code>kid</code> for the <code>iss</code>, valid signature.</li>
+		<li>Canonical payload.</li>
+		<li><code>kind</code> allowed for the signer's role.</li>
+		<li>SD-JWT processing as in RFC 9901 §7.1.</li>
+		<li><code>v</code>, <code>company</code>, <code>op</code>, <code>aud</code> and <code>user</code> equal across the chain.</li>
+		<li><code>seq</code> without gaps and <code>prev</code> equal to the digest of the previous statement.</li>
+		<li>After a final statement, only <code>read_back</code>, <code>correction</code> and <code>revocation</code>.</li>
+		<li>Semantic order by <code>kind</code>: one approval of the latest revision, one execution after it, <code>succeeded</code> only after a matching system read-back.</li>
+		<li>There is an <code>outcome</code>; a package without one is treated as <code>unknown</code>.</li>
+	</ol>
+
+	<h3 id="proof-rules">Rules P1 to P8<a class="anchor" href="#proof-rules" aria-label="Link to Rules P1 to P8">#</a></h3>
+	<div class="reqs">
+		<div class="req" id="p1"><a class="req__id" href="#p1">P1</a><div><p>Binding by digest:</p><ul><li><code>terms</code>: the digest of the exact revision, including its <code>commitment</code>;</li><li><code>user_approval</code>: the same digest and the approval method;</li><li><code>execution</code>: the same digest;</li><li><code>read_back</code>: what was observed, with the name of each term;</li><li><code>outcome</code> or <code>correction</code>: the digest of the summary.</li></ul></div></div>
+		<div class="req" id="p2"><a class="req__id" href="#p2">P2</a><div><p>Approval through a channel the company controls, when it applies: <code>method: company_channel</code>, with a <code>display_code</code> derived from the digest (<a href="#company-channel-approval">below</a>). In the native profile and in Poppy, approval is <code>agent_asserted</code>, and the evidence says so by the name of its root. <span class="mk mk--pend">Pending</span> <code>company_channel</code> in the native profile and in Poppy.</p></div></div>
+		<div class="req" id="p3"><a class="req__id" href="#p3">P3</a><div><p>Unknown: if it is not known whether the effect happened, the company <span class="kw">MUST</span> sign <code>outcome.state = "unknown"</code>. It <span class="kw">MUST NOT</span> stay silent or sign <code>failed</code>. Poppy sees <code>in_progress</code> and the operation stays open.</p></div></div>
+		<div class="req" id="p4"><a class="req__id" href="#p4">P4</a><div><p>What becomes known later <span class="kw">MUST</span> go as a <code>correction</code> on the latest final result, never as a second <code>outcome</code>. A correction to <code>succeeded</code> <span class="kw">MUST</span> cite, by digest, a later matching <code>read_back</code>.</p></div></div>
+		<div class="req" id="p5"><a class="req__id" href="#p5">P5</a><div><p>Contradiction: if it ran and the later read does not match what was approved (another value, or the resource is gone):</p><ul><li>the <code>read_back</code> <span class="kw">MUST</span> be signed with <code>matches_terms: false</code> and what was observed;</li><li>the result stays <code>unknown</code>;</li><li>the operation moves to <code>waiting_human</code>;</li><li>it is not retried and no success is declared.</li></ul><p>The verifier does not grant the read-back level.</p></div></div>
+		<div class="req" id="p6"><a class="req__id" href="#p6">P6</a><div><p>Not checkable: a capability without read-back <span class="kw">MUST NOT</span> emit <code>succeeded</code>. It signs <code>read_back.method = "none"</code> and <code>outcome = unknown</code>, once, and reading again adds no assertions.</p></div></div>
+		<div class="req" id="p7"><a class="req__id" href="#p7">P7</a><div><p>Level of evidence: the verifier derives it, and the issuer never declares it. As implemented today, without external witnesses and with the company's key held by the operator, the evidence is an attestation signed by the operator: intact and ordered, and not independent of SOVRAS. The verifier says so: <code>single_root: operator</code>, <code>logged: false</code>.</p></div></div>
+		<div class="req" id="p8"><a class="req__id" href="#p8">P8</a><div><p>Cross-check with the operation: the verifier <span class="kw">MUST</span> compare the visible state of the operation with the latest final statement (<code>outcome</code> or <code>correction</code>), not with the first <code>outcome</code>.</p></div></div>
+	</div>
+
+	<h3 id="company-channel-approval">Approval through the company's channel<a class="anchor" href="#company-channel-approval" aria-label="Link to Approval through the company's channel">#</a></h3>
+	<p>A <code>user_approval</code> records one of two methods:</p>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th><code>method</code></th><th>Meaning</th><th>What it proves</th></tr></thead>
+		<tbody>
+			<tr><td><code>agent_asserted</code></td><td>The agent said the user approved</td><td>Only that the agent asserted it, with its DPoP key and in its session</td></tr>
+			<tr><td><code>company_channel</code></td><td>The user answered from the channel the company already has linked to them</td><td>That whoever controls that channel answered that revision. It does not prove civil identity.</td></tr>
+		</tbody>
+	</table></div>
+	<ul>
+		<li>The outgoing message <span class="kw">MUST</span> name the company and the requesting agent, and carry the revision's <code>summary</code> and its <code>display_code</code>.</li>
+		<li><code>display_code</code> is the first four bytes of SHA-256 over the UTF-8 <code>terms_digest</code>, read as an unsigned big-endian integer, modulo 1&nbsp;000&nbsp;000, padded to six digits. It is not a secret: it ties an answer to one revision.</li>
+		<li>The answer <span class="kw">MUST</span> come from the identifier linked to the user at the company, contain the <code>display_code</code>, be single-use and arrive before <code>expires_at</code>. The operator <span class="kw">MUST</span> limit attempts.</li>
+		<li>A message that could not be delivered approves nothing: the operation <span class="kw">MUST</span> stay <code>proposed</code> and <span class="kw">MUST NOT</span> run.</li>
+		<li>Under PACT every write <span class="kw">MUST</span> require <code>company_channel</code>.</li>
+	</ul>
+
+	<h3 id="corrections">Corrections and revocations<a class="anchor" href="#corrections" aria-label="Link to Corrections">#</a></h3>
+	<p>A final state never changes. Later facts live in the chain and never rewrite it. A statement is never edited or deleted.</p>
+	<ul>
+		<li><code>correction</code>: <code>{corrects, state, reason, note_digest?, read_back?}</code>. <code>corrects</code> always points to the latest final statement, and its <code>state</code> becomes the current state for the verifier.</li>
+		<li><code>revocation</code>: <code>{revokes, reason}</code>, when the referred statement was wrong. The verifier reports <code>final_state: "revoked"</code>.</li>
+	</ul>
+</section>
+
+<!-- ═══ 7 ═══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="relationship" aria-labelledby="relationship-h">
+	<h2 id="relationship-h"><span class="n">7</span>VXP Relationship<a class="anchor" href="#relationship" aria-label="Link to section 7">#</a></h2>
+	<p>A relationship lets a company start a request toward the person's agent, within an agreement the person approved first. It always starts from a prior authorization by the user.</p>
+
+	<h3 id="relationship-birth">Birth<a class="anchor" href="#relationship-birth" aria-label="Link to Birth">#</a></h3>
+	<p>The agent asks for the relationship in the Device Authorization (RFC 8628), with an <code>authorization_details</code> entry (RFC 9396) of this type:</p>
+	<div class="code"><div class="code__head"><b>authorization_details · relationship</b><span>JSON</span></div><pre data-copy tabindex="0">{ "type": "https://vxpprotocol.org/rar/relationship",
+  "actions": ["despacho.proponer_cambio", "incidencia.avisar"],
+  "identifier": "relationship",
+  "limits": { "max_per_day": 2, "duration_seconds": 2592000 } }</pre></div>
+	<div class="reqs">
+		<div class="req" id="r1"><a class="req__id" href="#r1">R1</a><div><p><code>actions</code> <span class="kw">MUST</span> be a subset of the actions the company publishes in <code>vxp_relationship.company_initiated_actions</code>, inside its RFC 8414 metadata. The company <span class="kw">MUST</span> cap the limits at its own maximums (in 0.1: 10 per day and 90 days).</p></div></div>
+		<div class="req" id="r2"><a class="req__id" href="#r2">R2</a><div><p>The agent <span class="kw">MUST</span> declare its inbox in its Client ID Metadata Document, in <code>extensions["vxpprotocol.org/relationship"].inbox_uri</code>, on the same origin as its <code>client_id</code>. Without an inbox, the company <span class="kw">MUST</span> reject with <code>invalid_authorization_details</code>. <span class="mk mk--exp">Experimental</span></p></div></div>
+		<div class="req" id="r3"><a class="req__id" href="#r3">R3</a><div><p>The consent screen <span class="kw">MUST</span> show the relationship in business language: the company, the actions, the limit and the validity. The relationship <span class="kw">MUST</span> have its own checkbox; if the person unchecks it, the relationship is not created.</p></div></div>
+		<div class="req" id="r4"><a class="req__id" href="#r4">R4</a><div><p>On grant, the token response <span class="kw">MUST</span> carry <code>relationships[]</code> with <code>relationship_id</code>, <code>state</code>, <code>actions</code>, <code>limits</code> and <code>expires_at</code>, and the signed <code>agreement</code>: a JWS with <code>typ: vxp-relationship+jwt</code>, <code>iss</code> = the company's issuer, <code>aud</code> = <code>client_id</code>, <code>sub</code>, <code>rel</code>, <code>actions</code>, <code>limits</code>, <code>iat</code>, <code>exp</code> and <code>jti</code>.</p></div></div>
+		<div class="req" id="r5"><a class="req__id" href="#r5">R5</a><div><p>The relationship key <span class="kw">MUST</span> be published in the issuer metadata, in <code>vxp_relationship.jwks_uri</code>, and <span class="kw">MUST</span> be different from the proof keys and from the Poppy and PACT keys.</p></div></div>
+	</div>
+
+	<h3 id="company-initiated">Company-initiated requests<a class="anchor" href="#company-initiated" aria-label="Link to Company-initiated requests">#</a></h3>
+	<div class="reqs">
+		<div class="req" id="r6"><a class="req__id" href="#r6">R6</a><div><p>The company <span class="kw">MAY</span> start a request only if all of these hold; otherwise it <span class="kw">MUST</span> reject before signing or sending anything:</p><ul><li>the relationship exists and is in force;</li><li>the delegation that created it is still in force;</li><li>the action is in the relationship;</li><li>the daily limit has not been exceeded;</li><li>the resource belongs to that relationship's customer.</li></ul>
+			<div class="tbl tbl--fit" style="margin-top:6px"><table><thead><tr><th>Situation</th><th>Error</th></tr></thead><tbody>
+				<tr><td>The relationship does not exist</td><td><code>relationship_not_found</code></td></tr>
+				<tr><td>The relationship or its delegation was revoked</td><td><code>relationship_revoked</code></td></tr>
+				<tr><td>The relationship expired</td><td><code>relationship_expired</code></td></tr>
+				<tr><td>The action is not in the relationship</td><td><code>action_not_authorized</code></td></tr>
+				<tr><td>The daily limit was exceeded</td><td><code>relationship_limit_exceeded</code></td></tr>
+				<tr><td>The resource is not the customer's</td><td><code>target_not_found</code></td></tr>
+			</tbody></table></div></div></div>
+		<div class="req" id="r7"><a class="req__id" href="#r7">R7</a><div><p>The message <span class="kw">MUST</span> be a JWS with <code>typ: vxp-company-request+jwt</code> carrying <code>iss</code>, <code>aud</code> (the agent), <code>sub</code>, <code>rel</code>, <code>action</code>, <code>content</code>, <code>iat</code>, <code>exp</code> (in 0.1: one hour) and <code>jti</code>. It is delivered by <code>POST {inbox_uri}</code> with <code>{"message": "&lt;jws&gt;"}</code>, and the company <span class="kw">MUST</span> record the outbound message and its HTTP result. The agent <span class="kw">MUST</span> verify the signature with the key anchored to the issuer and <span class="kw">SHOULD</span> reject a repeated <code>jti</code>. <span class="mk mk--exp">Experimental</span> <span class="mk mk--pend">Pending · jti check on the agent side</span></p></div></div>
+		<div class="req" id="r8"><a class="req__id" href="#r8">R8</a><div><p>A request that proposes a change (<code>despacho.proponer_cambio</code>) <span class="kw">MUST</span> create a normal operation: a revision with terms signed by the company, <code>user_approval_required: true</code> and its VXP Proof chain. The message cites <code>request_url</code>, <code>proposal_id</code> and <code>terms_digest</code>. Proposing <span class="kw">MUST NOT</span> execute. The agent accepts, with the user's approval, through the accept endpoint.</p></div></div>
+		<div class="req" id="r9"><a class="req__id" href="#r9">R9</a><div><p>Accepting a proposal from the relationship <span class="kw">MUST</span> check again that the relationship and the delegation are still in force. If the person revoked in the meantime, the answer is <code>403 relationship_revoked</code> and there is no effect.</p></div></div>
+	</div>
+
+	<h3 id="relationship-revocation">Revocation, expiry and HTTP answers<a class="anchor" href="#relationship-revocation" aria-label="Link to Revocation and expiry">#</a></h3>
+	<div class="reqs">
+		<div class="req" id="r10"><a class="req__id" href="#r10">R10</a><div><p>Revocation <span class="kw">MAY</span> come from the user (console or company channel), from the company or from the agent (<code>DELETE /v1/relationships/{id}</code>). Revoking the delegation revokes the relationship. Once expired or revoked, no request goes through. <span class="mk mk--exp">Experimental route</span></p></div></div>
+		<div class="req" id="r11"><a class="req__id" href="#r11">R11</a><div><p>The agent <span class="kw">MAY</span> read its relationship with <code>GET /v1/relationships/{id}</code>; another <code>sub</code> of the same agent gets 404. <span class="mk mk--exp">Experimental route</span></p></div></div>
+		<div class="req" id="r17"><a class="req__id" href="#r17">R17</a><div><p><b>Answering a closed question over HTTP.</b> When the company's request is a closed question, its content carries <code>alert_id</code>, <code>options</code>, <code>reply_url</code> = <code>/v1/relationships/{id}/replies</code> and <code>expires_at</code>. The agent answers with <code>POST {reply_url}</code> and <code>{"alert_id", "decision"}</code>. The company <span class="kw">MUST</span> check, in this order:</p><ul><li>that the relationship belongs to that <code>client_id</code> and <code>sub</code> (otherwise <code>404 relationship_not_found</code>);</li><li>that the relationship and the delegation are still in force (<code>403</code> with the error of <a href="#r6">R6</a>);</li><li>that the question exists in that relationship (<code>404 alert_not_found</code>);</li><li>that it was not answered before (<code>409 already_answered</code>);</li><li>that it has not expired (<code>410 alert_expired</code>);</li><li>that <code>decision</code> is one of the <code>options</code> (<code>400 option_not_allowed</code>).</li></ul><p>A successful answer is <code>200 {alert_id, decision, receipt}</code>, where <code>receipt</code> is a JWS <code>vxp-reply-receipt+jwt</code>, and produces only the effect of that option. The path over a Poppy conversation (<a href="#r16">R16</a>) applies the same checks. <span class="mk mk--exp">Experimental route</span></p></div></div>
+	</div>
+
+	<h3 id="relationship-poppy-conversation">Relationship over a Poppy conversation<a class="anchor" href="#relationship-poppy-conversation" aria-label="Link to Relationship over a Poppy conversation">#</a></h3>
+	<p>A Poppy agent today declares no <code>inbox_uri</code> and asks for no <code>authorization_details</code>, so under R2 it could not have a relationship. For such an agent, the relationship is asked for, received and answered inside its Poppy conversation (Poppy §7), without touching the Poppy contract: these are messages with <code>data</code>, and the agent reads them like any other event. Nova AI (SOVRAS's personal agent, beta) has run this path; no third-party agent has run it yet.</p>
+	<div class="reqs">
+		<div class="req" id="r12"><a class="req__id" href="#r12">R12</a><div><p><b>Asking.</b> The agent asks in its own words in the conversation, with the account already linked. The company answers with a message whose <code>data["vxpprotocol.org/relationship"]</code> is <code>{type: "relationship_offer", approval_url, actions, limits}</code>. The actions <span class="kw">MUST</span> be only those the agent asked for and the company offers; if it named none, the closed question of its industry. Without a linked account, the answer asks to link it (<code>sign_in_required</code>).</p></div></div>
+		<div class="req" id="r13"><a class="req__id" href="#r13">R13</a><div><p><b>Approving.</b> <code>approval_url</code> <span class="kw">MUST</span> be on the company's own domain and not reveal the agreement until the person identifies with a code sent to their WhatsApp. Only the customer of the account linked to that session <span class="kw">MAY</span> approve it; another number receives no code. The agreement is shown in the industry's words (actions, limit and validity). On approval, the delegation <span class="kw">MUST</span> still be in force.</p></div></div>
+		<div class="req" id="r14"><a class="req__id" href="#r14">R14</a><div><p><b>Creation.</b> The relationship is bound to that session's <code>client_id</code>, <code>sub</code> and delegation, with inbox <code>poppy:conversation</code>. The company writes in the conversation a message with <code>{type: "relationship_agreement", relationship_id, actions, limits, expires_at, agreement}</code>; <code>agreement</code> is the JWS of <a href="#r4">R4</a>.</p></div></div>
+		<div class="req" id="r15"><a class="req__id" href="#r15">R15</a><div><p><b>Receiving.</b> What the company starts (<a href="#r6">R6</a> to <a href="#r8">R8</a>, unchanged) is delivered as a <code>message</code> event with <code>role: company</code> in the agent's most recent open conversation: the text of the question and <code>{type: "company_request", relationship_id, action, …content, message}</code> with the JWS of <a href="#r7">R7</a>. Without an open conversation, the delivery is recorded as failed in the outbox.</p></div></div>
+		<div class="req" id="r16"><a class="req__id" href="#r16">R16</a><div><p><b>Answering.</b> The agent answers in the same conversation with one of the options, as text or as <code>data["vxpprotocol.org/relationship"] = {alert_id?, decision}</code>. Once, before it expires, and with the relationship and the delegation in force. If the text matches more than one option, the company asks it to choose one. The company replies with <code>{type: "reply_receipt", alert_id, decision, receipt}</code>, where <code>receipt</code> is a JWS <code>vxp-reply-receipt+jwt</code>. Once the relationship is revoked, a late answer does not count.</p></div></div>
+	</div>
+	<p>Closed-question actions in 0.1, each offered only in its industry: <code>alerta.confirmar_o_bloquear</code> (commerce: “block” holds the dispatch) and <code>alerta.mantener_o_liberar</code> (hotels: “release” lets the booking go).</p>
+
+	<div class="pending" id="relationship-pending">
+		<span class="mk mk--pend">Pending</span>
+		<ul>
+			<li>A third-party HTTP inbox. The inbox of R2 has been tested only with a server of SOVRAS's own; the running agent on Poppy, Nova AI, used the conversation path.</li>
+			<li>Delivery retries with backoff.</li>
+			<li>The relationship over PACT (A2A).</li>
+			<li>Notifying the person when the agent is not reading its conversation.</li>
+		</ul>
+		<p>Reading, revoking and answering over HTTP (R10, R11, R17) and the HTTP inbox (R2, R7) use routes of the native profile, so VXP Relationship over HTTP has the same experimental maturity.</p>
+	</div>
+</section>
+
+<!-- ═══ 8 ═══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="native-profile" aria-labelledby="native-profile-h">
+	<h2 id="native-profile-h"><span class="n">8</span>Native profile and adapters <span class="mk mk--exp">Experimental</span><a class="anchor" href="#native-profile" aria-label="Link to section 8">#</a></h2>
+	<p><code>/.well-known/vxp.json</code> and the endpoints <code>/v1/requests</code>, <code>/v1/proposals/{id}/accept|counter</code>, <code>/v1/requests/{id}/cancel|events|proof</code> and <code>/v1/relationships/{id}</code> are experimental, and the document says so with <code>"status": "experimental"</code>. They are VXP's own form: an agent that speaks neither Poppy nor PACT goes through the whole cycle with them. It discovers the company, identifies with <code>private_key_jwt</code> and DPoP, receives per-request authority with <code>authorization_details</code>, asks, receives a proposal, accepts, follows events, cancels, obtains the proof and keeps the relationship.</p>
+	<ul>
+		<li>The company <span class="kw">MAY</span> publish <code>vxp.json</code>, <code>poppy.json</code> and the PACT Agent Card at the same time.</li>
+		<li>The issuer, the authorization server and the metadata are the same for the three entries.</li>
+		<li>An agent that speaks Poppy or PACT does not need the native profile.</li>
+	</ul>
+	<p><span class="mk mk--pend">Pending</span> Adoption of the native profile by a third-party agent.</p>
+
+	<h3 id="native-discovery">Discovery<a class="anchor" href="#native-discovery" aria-label="Link to Discovery">#</a></h3>
+	<p><code>https://&lt;domain&gt;/.well-known/vxp.json</code> on the company's domain.</p>
+	<ul>
+		<li><code>organization.domain</code> <span class="kw">MUST</span> be the host that served the document, and that domain <span class="kw">MUST</span> be listed in <code>vxp_proof.domains</code> of the issuer's RFC 8414 metadata.</li>
+		<li>If <code>poppy.json</code> exists, its <code>auth.issuer</code> <span class="kw">MUST</span> be the same.</li>
+		<li><code>vxp.json</code> <span class="kw">MUST NOT</span> carry the proof's trust members; the verifier <span class="kw">MUST</span> take them only from the issuer metadata.</li>
+		<li><code>capabilities</code> lists only what the company decided to offer to external agents. <code>access</code> is <code>public</code> or <code>delegated</code>; <code>admission</code> is <code>static</code> (the grant is enough) or <code>dynamic</code> (the company decides per request: owner, precondition, policy).</li>
+	</ul>
+	<div class="code"><div class="code__head"><b>GET /.well-known/vxp.json</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "protocol": "vxp",
+  "version": "0.1",
+  "organization": {
+    "name": "Ferretería Demo",
+    "domain": "store.example"
+  },
+  "issuer": "https://store.example/e/ferreteria-demo",
+  "endpoint": "https://store.example/e/ferreteria-demo/v1",
+  "capabilities": [
+    {
+      "id": "pedido.consultar",
+      "effect": "read",
+      "access": "delegated",
+      "admission": "static",
+      "authorization_details_type": "https://vxpprotocol.org/rar/capability"
+    },
+    {
+      "id": "pedido.reprogramar_despacho",
+      "effect": "write",
+      "access": "delegated",
+      "admission": "dynamic",
+      "authorization_details_type": "https://vxpprotocol.org/rar/capability",
+      "commitment_modes": [
+        "firm",
+        "conditional"
+      ],
+      "outcome_proof": true
+    }
+  ],
+  "limits": {
+    "max_revisions": 3,
+    "proposal_ttl_seconds": 900,
+    "max_accept_attempts": 3
+  },
+  "outcome_proof": {
+    "version": "0.1",
+    "trust": "issuer_metadata"
+  },
+  "status": "experimental",
+  "vxp": {
+    "version": "0.1",
+    "relationship": {
+      "authorization_details_type": "https://vxpprotocol.org/rar/relationship",
+      "company_initiated_actions": [
+        "despacho.proponer_cambio",
+        "incidencia.avisar",
+        "alerta.confirmar_o_bloquear"
+      ]
+    },
+    "proof": {
+      "trust": "issuer_metadata"
+    }
+  }
+}</pre></div>
+
+	<h3 id="native-authorization">Authorization<a class="anchor" href="#native-authorization" aria-label="Link to Authorization">#</a></h3>
+	<ul>
+		<li>The authorization server is the issuer's, the same as Poppy's when there is one.</li>
+		<li>Native requests <span class="kw">MUST</span> carry <code>resource</code> = <code>endpoint</code> (RFC 8707).</li>
+		<li>The client authenticates with <code>private_key_jwt</code> over its Client ID Metadata Document, and the token <span class="kw">MUST</span> be bound with DPoP (RFC 9449, ES256). The agent's User ID for the company travels as an RFC 7523 assertion.</li>
+		<li>To operate on a resource, the grant <span class="kw">MUST</span> carry <code>authorization_details</code> (RFC 9396) of type <code>https://vxpprotocol.org/rar/capability</code>. The consent screen <span class="kw">MUST</span> show each <code>identifier</code> in business language; the authorization server <span class="kw">MUST</span> check that each <code>identifier</code> belongs to the linked account, or answer <code>invalid_authorization_details</code>; the token response <span class="kw">MUST</span> return the details granted.</li>
+		<li>The type <code>vxpprotocol.org/operation</code> is the grant of one revision. The two are complementary: the first authorizes asking, the second approving one exact revision.</li>
+	</ul>
+	<div class="code"><div class="code__head"><b>authorization_details · capability</b><span>JSON</span></div><pre data-copy tabindex="0">{ "type": "https://vxpprotocol.org/rar/capability",
+  "actions": ["pedido.reprogramar_despacho"],
+  "identifier": "P-1042" }</pre></div>
+
+	<h3 id="native-endpoints">Endpoints<a class="anchor" href="#native-endpoints" aria-label="Link to Endpoints">#</a></h3>
+	<p>All with <code>Authorization: DPoP</code> and a DPoP proof.</p>
+	<div class="tbl"><table>
+		<thead><tr><th>Method and path</th><th>What it does</th><th>Responses</th></tr></thead>
+		<tbody>
+			<tr><td><code>POST /v1/requests</code></td><td>Creates a request <code>{operation, target, parameters}</code>. <span class="kw">MUST</span> carry <code>Idempotency-Key</code></td><td>201 <code>proposed</code>; 202 <code>authorization_required</code> with what is missing; 400 <code>idempotency_key_required</code>, <code>invalid_request</code>; 404 <code>target_not_found</code>; 409 <code>idempotency_key_reused</code>, <code>request_exists</code>, <code>resource_busy</code></td></tr>
+			<tr><td><code>GET /v1/requests/{id}</code></td><td>Internal state, <code>projections {poppy, a2a}</code>, <code>proposal</code>, <code>effects</code>, <code>cancellation</code>, <code>result</code>, <code>proof_url</code></td><td>200; 404 <code>request_not_found</code></td></tr>
+			<tr><td><code>GET /v1/requests/{id}/events</code></td><td>Transitions <code>{seq, from, to, at, reason, poppy, a2a}</code></td><td>200</td></tr>
+			<tr><td><code>POST /v1/proposals/{id}/accept</code></td><td>Accepts that revision (<code>{approved_by}</code>)</td><td>202 if not final; 200 if finished; 409 <code>terms_changed</code>, <code>proposal_expired</code>, <code>proposal_not_acceptable</code>, <code>attempt_limit_exceeded</code>; 403 <code>authorization_required</code></td></tr>
+			<tr><td><code>POST /v1/proposals/{id}/counter</code></td><td>Counter-proposal <code>{proposed_terms, note?}</code></td><td>200 with the new revision; 409 <code>counter_rejected</code>, <code>negotiation_limit_exceeded</code></td></tr>
+			<tr><td><code>POST /v1/requests/{id}/cancel</code></td><td>Asks to stop (<a href="#cancellation">Cancellation</a>)</td><td>200, 202</td></tr>
+			<tr><td><code>GET /v1/requests/{id}/proof</code></td><td>The proof package</td><td>200</td></tr>
+			<tr><td><code>GET</code>, <code>DELETE /v1/relationships/{id}</code></td><td>Reads or revokes the agent's relationship (<a href="#r10">R10</a>, <a href="#r11">R11</a>)</td><td>200; 404 <code>relationship_not_found</code></td></tr>
+			<tr><td><code>POST /v1/relationships/{id}/replies</code></td><td>Answers a closed question <code>{alert_id, decision}</code> (<a href="#r17">R17</a>)</td><td>200 <code>{alert_id, decision, receipt}</code>; 404 <code>relationship_not_found</code>, <code>alert_not_found</code>; 403 with the error of R6; 409 <code>already_answered</code>; 410 <code>alert_expired</code>; 400 <code>option_not_allowed</code></td></tr>
+		</tbody>
+	</table></div>
+
+	<h3 id="native-idempotency">Idempotency and re-verification<a class="anchor" href="#native-idempotency" aria-label="Link to Idempotency">#</a></h3>
+	<ul>
+		<li>The key is scoped to <code>(issuer, client_id, User ID, Idempotency-Key)</code>. Same key and same body (the JCS digest of <code>{operation, target, parameters}</code>) return the same request. A request waiting in <code>authorization_required</code> <span class="kw">MUST</span> be re-evaluated with the current token, without creating another.</li>
+		<li>Same key with another body: 409 <code>idempotency_key_reused</code>.</li>
+		<li>The key's digest <span class="kw">MUST</span> go in <code>request.body.idempotency_key_digest</code>.</li>
+		<li><code>accept</code> and <code>cancel</code> are idempotent by revision and by state, without a key.</li>
+		<li>Before executing, the operator <span class="kw">MUST</span> re-evaluate, with the token of the <code>accept</code> call, the resource grant, the policy and the precondition. If anything fails, it does not execute.</li>
+	</ul>
+
+	<h3 id="commitment">Commitment of a revision<a class="anchor" href="#commitment" aria-label="Link to Commitment">#</a></h3>
+	<p>Every revision issued <span class="kw">MUST</span> declare its commitment: <code>{"mode": "firm" | "conditional", "requires": [...]}</code>.</p>
+	<ul>
+		<li><code>firm</code>: if accepted and executed, the company expects to fulfil the terms without depending on a third party. <code>requires</code> <span class="kw">MUST</span> be empty.</li>
+		<li><code>conditional</code>: the result depends on each condition in <code>requires</code>, which <span class="kw">MUST NOT</span> be empty. Each condition is the name of a term, and the read-back <span class="kw">MUST</span> observe it.</li>
+		<li>The mode <span class="kw">MUST</span> come from what the capability can execute and verify, never from what the agent asks. A capability whose effect depends on a system the company does not control <span class="kw">MUST</span> be proposed <code>conditional</code>.</li>
+	</ul>
+
+	<h3 id="negotiation-limits">Negotiation limits<a class="anchor" href="#negotiation-limits" aria-label="Link to Negotiation limits">#</a></h3>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Limit</th><th>Meaning</th><th>When exceeded</th></tr></thead>
+		<tbody>
+			<tr><td><code>max_revisions</code></td><td>Highest revision number</td><td>No further revision; the request ends <code>failed</code> without effect (<code>negotiation_limit_exceeded</code>)</td></tr>
+			<tr><td><code>proposal_ttl_seconds</code></td><td>Validity of each revision</td><td>The revision expires; a later <code>accept</code> gets 409 <code>proposal_expired</code></td></tr>
+			<tr><td><code>max_accept_attempts</code></td><td><code>accept</code> calls on a revision that is not current</td><td>409 <code>terms_changed</code> up to the limit; then the request ends <code>failed</code> without effect (<code>attempt_limit_exceeded</code>)</td></tr>
+		</tbody>
+	</table></div>
+	<p>The limits <span class="kw">MUST NOT</span> allow more than one automatic execution attempt per accepted revision.</p>
+
+	<h3 id="cancellation">Cancellation<a class="anchor" href="#cancellation" aria-label="Link to Cancellation">#</a></h3>
+	<p>Cancelling is asking to stop.</p>
+	<ul>
+		<li>In <code>received</code>, <code>authorization_required</code> or <code>proposed</code>: <code>cancelled</code>, without effect.</li>
+		<li>In <code>accepted</code> or <code>waiting_human</code>, before execution starts: <code>cancelled</code>, without effect.</li>
+		<li>In <code>executing</code> or <code>pending_verification</code>: a request to stop. The state <span class="kw">MUST NOT</span> change because of it. The response <span class="kw">MUST</span> be 202 with <code>cancellation: {requested_at, status: "requested", reversal_promised: false}</code> and the known <code>effects</code>.</li>
+		<li>In a final state: returned as it is.</li>
+	</ul>
+	<p>The company and the operator <span class="kw">MUST NOT</span> claim that an effect was reverted unless it was reverted and read back. A request that ends <code>failed</code> or <code>cancelled</code> after execution started <span class="kw">MUST</span> carry <code>effects[]</code> with <code>{system, change, applied, reverted?, status?}</code>.</p>
+
+	<h3 id="adapters">Adapters<a class="anchor" href="#adapters" aria-label="Link to Adapters">#</a></h3>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Adapter</th><th>Discovery and identity</th><th>Where VXP travels</th></tr></thead>
+		<tbody>
+			<tr><td><b>Poppy draft 0.2</b></td><td><code>poppy.json</code>, Poppy sign-in, sessions, conversations and Operations, as written</td><td>The extension <code>vxpprotocol.org/proof</code> in <code>poppy.json</code> and in the agent's client metadata; a domain-named member in each operation with effect, only for an agent that lists the extension</td></tr>
+			<tr><td><b>PACT 1.0 over A2A 1.0.1</b></td><td>Agent Card, PACT agent identity and delegated authority, as written</td><td><code>capabilities.extensions[]</code> with <code>https://vxpprotocol.org/ext/proof/v0.1</code>, <code>required: false</code>; <code>message.metadata</code> next to <code>pact.receipt</code>, which is not touched</td></tr>
+		</tbody>
+	</table></div>
+	<p>In both, the proof's trust members are published in the issuer's RFC 8414 metadata as <code>vxp_proof</code>, and any copy in <code>poppy.json</code> or the Agent Card <span class="kw">MUST</span> be identical in those members.</p>
+
+	<h3 id="renamed-identifiers">Renamed identifiers<a class="anchor" href="#renamed-identifiers" aria-label="Link to Renamed identifiers">#</a></h3>
+	<p>VXP is independent of SOVRAS. The protocol identifiers that the annex names with “sovras” are used as follows, from 22 October 2026. Paths of the reference implementation, such as <code>/sovras/log/</code>, belong to SOVRAS as operator and are not part of the protocol.</p>
+	<div class="tbl"><table>
+		<thead><tr><th>Annex 0.1</th><th>VXP 0.1</th></tr></thead>
+		<tbody>
+			<tr><td><code>/.well-known/sovras.json</code>, <code>"protocol": "sovras"</code></td><td><code>/.well-known/vxp.json</code>, <code>"protocol": "vxp"</code></td></tr>
+			<tr><td><code>sovras_outcome_proof</code> (RFC 8414 metadata)</td><td><code>vxp_proof</code></td></tr>
+			<tr><td><code>typ: sovras-stmt+sd-jwt</code></td><td><code>typ: vxp-stmt+sd-jwt</code></td></tr>
+			<tr><td><code>typ: sovras-checkpoint+jwt</code></td><td><code>typ: vxp-checkpoint+jwt</code></td></tr>
+			<tr><td><code>sovras_salt</code> (in the terms)</td><td><code>vxp_salt</code></td></tr>
+			<tr><td><code>binding: sovras.request</code>, <code>sovras.intent</code></td><td><code>vxp.request</code>, <code>vxp.intent</code></td></tr>
+			<tr><td><code>sovras.io/outcome-proof</code>, <code>https://sovras.io/ext/outcome-proof/v0.1</code></td><td><code>vxpprotocol.org/proof</code>, <code>https://vxpprotocol.org/ext/proof/v0.1</code></td></tr>
+			<tr><td><code>https://sovras.io/rar/capability</code>, <code>https://sovras.io/vxp/rar/relationship</code></td><td><code>https://vxpprotocol.org/rar/capability</code>, <code>https://vxpprotocol.org/rar/relationship</code></td></tr>
+		</tbody>
+	</table></div>
+	<p><span class="mk mk--pend">Pending</span> <code>vxpprotocol.org</code> was registered on 22 October 2026 and is under SOVRAS's control, so these identifiers use a domain the publisher controls, as Poppy requires. Still to do: publish the site and these documents on that domain.</p>
+</section>
+
+<!-- ═══ 9 ═══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="capability-gate" aria-labelledby="capability-gate-h">
+	<h2 id="capability-gate-h"><span class="n">9</span>Capability Gate, security and privacy<a class="anchor" href="#capability-gate" aria-label="Link to section 9">#</a></h2>
+	<p>The Capability Gate is the boundary where an external request becomes an authorized, verifiable operation. A valid identity is a starting point: what passes is the intersection of what the person delegated, what the company allows and what the resource admits. VXP defines no endpoint for the Gate. It defines the rules every implementation <span class="kw">MUST</span> enforce at that boundary, all of them written elsewhere in this specification.</p>
+
+	<h3 id="gate-rules">Gate rules<a class="anchor" href="#gate-rules" aria-label="Link to Gate rules">#</a></h3>
+	<div class="reqs">
+		<div class="req" id="gate-identity"><a class="req__id" href="#gate-identity">Owner</a><div><p><b>Identity and owner.</b> The account is associated only through an authentication the company controls; an ambiguous identifier does not link; the owner of an operation is <code>(profile, client_id, sub, account)</code>. <a href="#id1">ID1</a> to <a href="#id3">ID3</a>.</p></div></div>
+		<div class="req" id="gate-scope"><a class="req__id" href="#gate-scope">Scope</a><div><p><b>Scope.</b> What is asked fits in the delegation (per-request <code>authorization_details</code>, RFC 9396) and in what the company publishes; without scope, <code>authorization_required</code>. <a href="#native-authorization">§8</a>.</p></div></div>
+		<div class="req" id="gate-resource"><a class="req__id" href="#gate-resource">Resource</a><div><p><b>Own resource.</b> Someone else's resource, a missing one and an unlinked one answer the same way (<code>operation_not_found</code> or <code>target_not_found</code>). <a href="#r6">R6</a>.</p></div></div>
+		<div class="req" id="gate-terms"><a class="req__id" href="#gate-terms">Terms</a><div><p><b>Terms and commitment.</b> The company signs the exact revision with its <code>commitment</code> (<code>firm</code> or <code>conditional</code>); a change of terms is a new revision, approved again. <a href="#p1">P1</a>, <a href="#commitment">Commitment</a>.</p></div></div>
+		<div class="req" id="gate-review"><a class="req__id" href="#gate-review">Review</a><div><p><b>Company review.</b> When its rule requires it, a person at the company decides on the same digest, after the person. <a href="#e3">E3</a>.</p></div></div>
+		<div class="req" id="gate-once"><a class="req__id" href="#gate-once">Once</a><div><p><b>One execution.</b> Per resource, even when several entries arrive; with a precondition and <code>Idempotency-Key</code>. <a href="#i2">I2</a>.</p></div></div>
+		<div class="req" id="gate-read-back"><a class="req__id" href="#gate-read-back">Read-back</a><div><p><b>Read-back.</b> Without a read-back there is no <code>succeeded</code>; a contradiction moves to <code>waiting_human</code>. <a href="#p5">P5</a>, <a href="#p6">P6</a>.</p></div></div>
+	</div>
+
+	<div class="info" id="gate-reference">
+		<span class="mk mk--info">Informative · reference implementation</span>
+		<p>In the reference implementation the Gate is composed of pieces that already exist:</p>
+		<div class="tbl tbl--fit"><table>
+			<thead><tr><th>Step</th><th>What it does</th></tr></thead>
+			<tbody>
+				<tr><td>Catalog</td><td>The capabilities the company released, and the actions it lets itself start</td></tr>
+				<tr><td>Prior read</td><td>Whether the resource belongs to the linked customer in the ERP</td></tr>
+				<tr><td>Policy</td><td>Personal-agent authority: scope ∩ released capabilities ∩ owner; company review by its rule</td></tr>
+				<tr><td>Commitment</td><td><code>firm</code> or <code>conditional</code>, from what the capability can execute and verify</td></tr>
+				<tr><td>Execution</td><td>One, with a precondition</td></tr>
+				<tr><td>Read-back</td><td>Checks the effect in the system</td></tr>
+				<tr><td>Projection</td><td>From the internal state to Poppy and A2A</td></tr>
+			</tbody>
+		</table></div>
+	</div>
+
+	<h3 id="security">Security<a class="anchor" href="#security" aria-label="Link to Security">#</a></h3>
+	<p>Threats covered by the proof and how, with what remains open.</p>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Threat</th><th>How it is covered</th></tr></thead>
+		<tbody>
+			<tr><td>Forgery by an outsider</td><td>Signature, RFC 7638 <code>kid</code> and anchoring of keys to the company's issuer (<a href="#issuer-anchoring">§10</a>)</td></tr>
+			<tr><td>Forgery by the operator on the company's behalf</td><td><code>single_root: "operator"</code> unless there is verifiable evidence otherwise. Residual: with the operator holding the keys and no witnesses, the operator could sign a complete alternative chain</td></tr>
+			<tr><td>The company lies about its ERP</td><td>No signature solves it. Read-back, third-party evidence and an honest level label</td></tr>
+			<tr><td>Replay</td><td><code>op</code>, <code>seq</code>, <code>prev</code>, <code>aud</code> and <code>user</code> equal across the chain and verified</td></tr>
+			<tr><td>Terms changed after approval</td><td><code>terms_digest</code> covers <code>summary</code> and <code>terms</code>; approval and execution must match it</td></tr>
+			<tr><td>Approval diverted to another revision</td><td><code>display_code</code> bound to the digest, single use, attempt limit</td></tr>
+			<tr><td>Two contradictory <code>succeeded</code> on one resource</td><td>Precondition before executing and one operation in progress per resource. Residual: across separate packages, only a log with witnesses</td></tr>
+			<tr><td>Another agent or <code>sub</code> rewrites an operation</td><td>Full owner on reuse (<a href="#id3">ID3</a>) and a <code>counter</code> for each revision the agent originates</td></tr>
+			<tr><td>A digest that confirms a suspected personal value</td><td><code>vxp_salt</code> in the terms. Residual: <code>request_digest</code> has no salt</td></tr>
+			<tr><td>“The user approved” said by the agent</td><td><code>agent_asserted</code> is labelled as such, with the level <code>operator_reported_agent_approval</code></td></tr>
+		</tbody>
+	</table></div>
+
+	<h3 id="privacy">Privacy<a class="anchor" href="#privacy" aria-label="Link to Privacy">#</a></h3>
+	<ul>
+		<li>The log keeps no personal data: only blinded leaves and unlinkable tags.</li>
+		<li>The <code>user</code> member is a pseudonym per company. A pseudonym is still personal data while the extra information exists.</li>
+		<li>Everything personal travels as a selective disclosure; the agent reveals to a third party only what its user decides.</li>
+		<li>The read-back keeps the values that are compared, not the body of the system's response.</li>
+		<li>Keys, issuers, pseudonyms and tags are per company. A statement of one company <span class="kw">MUST NOT</span> validate with another company's key, and a statement of another operation <span class="kw">MUST NOT</span> be inserted into a chain.</li>
+	</ul>
+
+	<h3 id="errors">Errors<a class="anchor" href="#errors" aria-label="Link to Errors">#</a></h3>
+	<div class="tbl"><table>
+		<thead><tr><th>Where</th><th>Codes</th></tr></thead>
+		<tbody>
+			<tr><td>Native requests</td><td><code>idempotency_key_required</code>, <code>invalid_request</code>, <code>target_not_found</code>, <code>idempotency_key_reused</code>, <code>request_exists</code>, <code>resource_busy</code>, <code>request_not_found</code>, <code>authorization_required</code></td></tr>
+			<tr><td>Proposals</td><td><code>terms_changed</code>, <code>proposal_expired</code>, <code>proposal_not_acceptable</code>, <code>attempt_limit_exceeded</code>, <code>counter_rejected</code>, <code>negotiation_limit_exceeded</code></td></tr>
+			<tr><td>Authorization</td><td><code>invalid_authorization_details</code></td></tr>
+			<tr><td>Relationship</td><td><code>relationship_not_found</code>, <code>relationship_revoked</code>, <code>relationship_expired</code>, <code>action_not_authorized</code>, <code>relationship_limit_exceeded</code>, <code>target_not_found</code></td></tr>
+			<tr><td>Closed-question answers</td><td><code>alert_not_found</code>, <code>already_answered</code>, <code>alert_expired</code>, <code>option_not_allowed</code></td></tr>
+			<tr><td>Proof endpoints</td><td><code>operation_not_found</code>: someone else's and a missing operation answer the same way</td></tr>
+			<tr><td>Poppy adapter</td><td><code>extension_required</code> (HTTP 403), the Poppy §3.3 mechanism</td></tr>
+			<tr><td>Verifier</td><td>The codes of the chain rules, plus <code>issuer_not_anchored</code>, <code>pact_receipt_mismatch</code>, <code>pact_receipt_invalid</code> and <code>pact_receipt_not_anchored</code></td></tr>
+		</tbody>
+	</table></div>
+</section>
+
+<!-- ═══ 10 ══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="verification" aria-labelledby="verification-h">
+	<h2 id="verification-h"><span class="n">10</span>Independent verification<a class="anchor" href="#verification" aria-label="Link to section 10">#</a></h2>
+	<p>Anyone can check a proof package: the agent, a bank, an arbitrator, an auditor. The verifier receives the package, an anchor it knows on its own account (the company's domain or issuer, never a document handed over by whoever presents the package), and its own policy.</p>
+
+	<h3 id="issuer-anchoring">Anchoring the issuer and its keys<a class="anchor" href="#issuer-anchoring" aria-label="Link to Anchoring">#</a></h3>
+	<ol>
+		<li>Start from the anchor, with what each protocol gives the agent: the company's domain under Poppy, the brand's domain or the PACT authorization server under PACT, or the issuer the verifier already knows.</li>
+		<li>Fetch the issuer's RFC 8414 metadata and require its <code>issuer</code> to be identical, character by character.</li>
+		<li>Take the trust members from that metadata (<code>vxp_proof</code>), with the keys under the issuer.</li>
+		<li>Require any copy in <code>poppy.json</code> or the Agent Card to be identical in those members.</li>
+		<li>On any failure, including a missing or malformed document, answer <code>issuer_not_anchored</code> and keep running.</li>
+	</ol>
+	<p>This anchors keys to whoever controls the issuer, not to the company as a legal person.</p>
+
+	<h3 id="proof-verification">Algorithm and output<a class="anchor" href="#proof-verification" aria-label="Link to Algorithm">#</a></h3>
+	<ol>
+		<li>Anchor the issuer.</li>
+		<li>Apply the <a href="#proof-chain-rules">chain rules</a> to the whole chain; reject on the first failure with its code.</li>
+		<li>Derive the levels from the chain, not from <code>claimed_assurance</code>.</li>
+		<li>With the operation the agent saw: recompute <code>terms_digest</code>, require the salt, compare state and summary digest, and check observed values against the terms of the same name (<a href="#p8">P8</a>).</li>
+		<li>With a log: verify inclusion and consistency, and at least one cosignature by a witness that is not the operator. Only then grant <code>logged</code>.</li>
+		<li>Report <code>single_root: "operator"</code> unless there is verifiable evidence of another root.</li>
+	</ol>
+	<p>Output: <code>{valid, company, anchor, key_source, final_state, revision, approval, derived_assurance[], single_root, custody_declared, logged}</code>, plus <code>pact_interface</code> and <code>pact_receipt</code> with a PACT anchor or a receipt citation.</p>
+
+	<h3 id="proof-assurance-levels">Assurance levels<a class="anchor" href="#proof-assurance-levels" aria-label="Link to Assurance levels">#</a></h3>
+	<p>Each level is named by its real root: who asserts it with their signature. No field says <code>verified: true</code>; a verifier states its policy in these terms.</p>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Level</th><th>Granted when</th><th>Root of trust</th></tr></thead>
+		<tbody>
+			<tr><td><code>issuer_key_attested</code></td><td><code>outcome</code> validly signed by the key anchored to the company's issuer</td><td>Whoever controls that key</td></tr>
+			<tr><td><code>operator_observed</code></td><td>There is an <code>execution</code> signed by the operator</td><td>The operator</td></tr>
+			<tr><td><code>operator_reported_read_back</code></td><td>A <code>read_back</code> with <code>system_read_back</code> and <code>matches_terms: true</code></td><td>The operator, who asserts it read the company's system</td></tr>
+			<tr><td><code>operator_reported_channel_approval</code></td><td><code>user_approval.method = company_channel</code></td><td>The operator, who asserts the answer arrived from the linked number</td></tr>
+			<tr><td><code>operator_reported_agent_approval</code></td><td><code>user_approval.method = agent_asserted</code></td><td>The operator, who asserts the agent said the user approved</td></tr>
+			<tr><td><code>logged</code> <span class="mk mk--pend">Pending</span></td><td>Inclusion in a checkpoint cosigned by at least one witness outside the operator</td><td>That a witness is honest</td></tr>
+			<tr><td><code>time_stamped</code> <span class="mk mk--pend">Pending</span></td><td>An RFC 3161 stamp from an external authority</td><td>The time-stamping authority</td></tr>
+			<tr><td><code>third_party_signed</code> <span class="mk mk--pend">Pending</span></td><td>A third-party artifact verified against its digest</td><td>The third party</td></tr>
+			<tr><td><code>third_party_reference</code> <span class="mk mk--pend">Pending</span></td><td>A third-party identifier that can be queried again</td><td>The third party, when someone queries</td></tr>
+			<tr><td><code>user_confirmed</code> <span class="mk mk--pend">Pending</span></td><td>Later confirmation by the user through the company's channel</td><td>The user</td></tr>
+		</tbody>
+		<caption>The first five are implemented. The last five are specified, and no verifier grants them yet.</caption>
+	</table></div>
+
+	<h3 id="what-is-established">What a verifier can conclude today<a class="anchor" href="#what-is-established" aria-label="Link to What a verifier can conclude today">#</a></h3>
+	<div class="split">
+		<div><h4>Established, as an operator attestation</h4><ul><li>The chain has not changed since the verifier received it.</li><li>It is coherent and ordered, and each link was signed by the stated role.</li><li>The execution was on the approved revision.</li><li>Nobody other than whoever controls the issuer assembled it.</li></ul></div>
+		<div><h4>Not established yet</h4><ul><li>Independence from the operator: there are no external witnesses, the operator holds the company's key, and there is no second independent issuer.</li><li>That what was read in the company's system is true, or that a channel approval happened, without trusting the named root.</li></ul></div>
+	</div>
+	<p>The reference implementation includes two verifiers written in Python with no code shared with the emitter. Their results are in <a href="../conformance/">Conformance</a>, and a verifier you can run in the browser is in <a href="../verify/">Verify</a>.</p>
+</section>
+
+<!-- ═══ 11 ══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="examples" aria-labelledby="examples-h">
+	<h2 id="examples-h"><span class="n">11</span>Examples<a class="anchor" href="#examples" aria-label="Link to section 11">#</a></h2>
+	<p>Every object in this section was captured from the reference implementation on 22 October 2026, running the native profile against a test company. Hosts are shown as <code>store.example</code> and <code>agent.example</code>, and long tokens are shortened. Operations run by live agents on 21 October 2026, Nova AI and one third-party web agent (Grok), are documented in <a href="../examples/">Examples</a>.</p>
+
+	<h3 id="example-authority">Asking without authority<a class="anchor" href="#example-authority" aria-label="Link to Asking without authority">#</a></h3>
+	<p><code>POST /v1/requests</code> without a grant for the order returns <code>authorization_required</code> with exactly what is missing.</p>
+	<div class="code"><div class="code__head"><b>POST …/v1/requests → 202</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "request_id": "req_AQFXz9wmuQpS",
+  "operation": "pedido.reprogramar_despacho",
+  "target": {
+    "order_ref": "P-1042"
+  },
+  "state": "authorization_required",
+  "projections": {
+    "poppy": null,
+    "a2a": "TASK_STATE_AUTH_REQUIRED"
+  },
+  "authorization": {
+    "error": "authorization_required",
+    "authorization_details": [
+      {
+        "type": "https://vxpprotocol.org/rar/capability",
+        "actions": [
+          "pedido.reprogramar_despacho"
+        ],
+        "identifier": "P-1042"
+      }
+    ],
+    "device_authorization_endpoint": "https://store.example/e/ferreteria-demo/oauth/device",
+    "resource": "https://store.example/e/ferreteria-demo/v1"
+  }
+}</pre></div>
+	<div class="code"><div class="code__head"><b>Token response after the person approves</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "access_token": "nt_hbbt…",
+  "token_type": "DPoP",
+  "expires_in": 3600,
+  "authorization_details": [
+    {
+      "type": "https://vxpprotocol.org/rar/capability",
+      "actions": [
+        "pedido.reprogramar_despacho"
+      ],
+      "identifier": "P-1042"
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_id": "rel_JFmlHKqmlCA7",
+      "state": "active",
+      "actions": [
+        "despacho.proponer_cambio"
+      ],
+      "limits": {
+        "max_per_day": 2
+      },
+      "expires_at": "2026-10-22T07:09:18.000Z",
+      "agreement": "eyJhbGciO…"
+    }
+  ]
+}</pre></div>
+
+	<h3 id="example-proposal">A signed proposal<a class="anchor" href="#example-proposal" aria-label="Link to A signed proposal">#</a></h3>
+	<div class="code"><div class="code__head"><b>Proposal, revision 1</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "id": "prop_op_B6__ICZlCe_c_r1",
+  "revision": 1,
+  "state": "proposed",
+  "summary": "Cambiar el despacho del pedido P-1042 (Taladro percutor 800 W) del 2026-10-24 al 2026-10-28, a Calle Ejemplo 100, Santiago, sin costo.",
+  "terms": {
+    "pedido": "P-1042",
+    "producto": "Taladro percutor 800 W",
+    "despacho_actual": "2026-10-24",
+    "despacho_nuevo": "2026-10-28",
+    "direccion": "Calle Ejemplo 100, Santiago",
+    "costo": {
+      "amount": "0",
+      "currency": "CLP"
+    },
+    "vxp_salt": "bWCQmiSHNOYk-wXlrNRRSw"
+  },
+  "commitment": {
+    "mode": "firm",
+    "requires": []
+  },
+  "expires_at": "2026-10-22T06:24:18.141Z",
+  "user_approval_required": true,
+  "limits": {
+    "max_revisions": 3,
+    "revisions_left": 2,
+    "max_accept_attempts": 3,
+    "accept_attempts_left": 3
+  }
+}</pre></div>
+
+	<h3 id="example-chain">The chain and the verdict<a class="anchor" href="#example-chain" aria-label="Link to The chain and the verdict">#</a></h3>
+	<p>Six statements, shown as processed payload bodies. Statements signed by the company and by the operator alternate as in <a href="#proof-statement-kinds">Statement kinds</a>.</p>
+	<div class="code"><div class="code__head"><b>Proof chain (processed)</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">[
+  {
+    "seq": 0,
+    "kind": "request",
+    "signer": "operator",
+    "prev": null,
+    "body": {
+      "channel": "vxp",
+      "client_id": "https://agent.example/agent.json",
+      "request_digest": "sha-256:mfJleoso5oEyt_pqJS3OtbmYam7cyncRBrAcqbKfIrI"
+    }
+  },
+  {
+    "seq": 1,
+    "kind": "terms",
+    "signer": "company",
+    "prev": "sha-256:oq0I675QY_V6b1b3FEjWtOQU5Aq92yhHUd0bBelTpdM",
+    "body": {
+      "capability": "pedido.reprogramar_despacho",
+      "commitment": {
+        "mode": "firm",
+        "requires": []
+      },
+      "company_review_required": false,
+      "expires_at": "2026-10-22T06:24:18.141Z",
+      "read_back_terms": [
+        "pedido",
+        "despacho_nuevo"
+      ],
+      "revision": 1,
+      "terms_digest": "sha-256:Bzey-n1cnkgQgkXMl7paOcbWV13hZ2LMgyWQd0lKDoE",
+      "user_approval_required": true
+    }
+  },
+  {
+    "seq": 2,
+    "kind": "user_approval",
+    "signer": "operator",
+    "prev": "sha-256:SJeiKmU1vdiXcKielWp9JoqvtQ_NY3MytuNOmqpW4e0",
+    "body": {
+      "method": "agent_asserted",
+      "revision": 1,
+      "terms_digest": "sha-256:Bzey-n1cnkgQgkXMl7paOcbWV13hZ2LMgyWQd0lKDoE"
+    }
+  },
+  {
+    "seq": 3,
+    "kind": "execution",
+    "signer": "operator",
+    "prev": "sha-256:6Xnb9LZkwF9AY3TbmNSKBX37g7WnCecK6VyVrM9TU_I",
+    "body": {
+      "attempt": 1,
+      "capability": "pedido.reprogramar_despacho",
+      "release": "sha-256:u1TBBxJXTKta36K5UI_j_myhQaHzbPP2HcF4rBKGxPA",
+      "revision": 1,
+      "terms_digest": "sha-256:Bzey-n1cnkgQgkXMl7paOcbWV13hZ2LMgyWQd0lKDoE"
+    }
+  },
+  {
+    "seq": 4,
+    "kind": "read_back",
+    "signer": "operator",
+    "prev": "sha-256:YODOxyFcs7NEMSud9v7eDJqGvptF9PCf4aGL6BEEPfM",
+    "body": {
+      "matches_terms": true,
+      "method": "system_read_back",
+      "observed": {
+        "_sd": [
+          "3dZK7r9IlLqVnsEb1FgqYMfInwyVFUSjhkgNh6Yu68w"
+        ],
+        "despacho_nuevo": "2026-10-28",
+        "pedido": "P-1042"
+      },
+      "source": "company_system"
+    }
+  },
+  {
+    "seq": 5,
+    "kind": "outcome",
+    "signer": "company",
+    "prev": "sha-256:wBMpHI0fyUske4OnhBHjSe-5m6377OQ6GIR5E4012Oc",
+    "body": {
+      "claimed_assurance": [
+        "issuer_key_attested",
+        "operator_observed",
+        "operator_reported_read_back",
+        "operator_reported_agent_approval"
+      ],
+      "result_summary_digest": "sha-256:aKs3uy77c1osgD7qSgTqNJ0_YITroc5iwoYHqFmSl6s",
+      "revision": 1,
+      "state": "succeeded",
+      "terms_digest": "sha-256:Bzey-n1cnkgQgkXMl7paOcbWV13hZ2LMgyWQd0lKDoE",
+      "third_party": []
+    }
+  }
+]</pre></div>
+	<div class="code"><div class="code__head"><b>Verifier verdict</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "valid": true,
+  "final_state": "succeeded",
+  "revision": 1,
+  "approval": "agent_asserted",
+  "derived_assurance": [
+    "issuer_key_attested",
+    "operator_observed",
+    "operator_reported_read_back",
+    "operator_reported_agent_approval"
+  ],
+  "single_root": "operator",
+  "custody_declared": "operator_hosted",
+  "logged": false,
+  "company": "https://store.example/e/ferreteria-demo",
+  "anchor": "issuer",
+  "key_source": "issuer_metadata_live",
+  "profile": "issuer",
+  "statements": 6,
+  "log_inclusion": "ok",
+  "tree_size": 6,
+  "live_tree_size": 6,
+  "consistency": "ok",
+  "witnesses": 0,
+  "operation": "matches"
+}</pre></div>
+
+	<h3 id="example-relationship">A company-initiated request<a class="anchor" href="#example-relationship" aria-label="Link to A company-initiated request">#</a></h3>
+	<p>The relationship as granted in the token, and the company's request delivered to the agent's HTTP inbox (<span class="mk mk--exp">Experimental</span>). The <code>delivery</code> value is the reference implementation's own outbox label.</p>
+	<div class="code"><div class="code__head"><b>Relationship and outbound request</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "relationship": {
+    "relationship_id": "rel_JFmlHKqmlCA7",
+    "state": "active",
+    "actions": [
+      "despacho.proponer_cambio"
+    ],
+    "limits": {
+      "max_per_day": 2
+    },
+    "expires_at": "2026-10-22T07:09:18.000Z",
+    "agreement": "eyJhbGciO…"
+  },
+  "delivery": {
+    "outbox_id": "out_fQu1FIVuaYQN",
+    "delivery": "entregado",
+    "http": 202,
+    "content": {
+      "request_id": "req_lXXONI2mL8vd",
+      "request_url": "https://store.example/e/ferreteria-demo/v1/requests/req_lXXONI2mL8vd",
+      "proposal_id": "prop_op_NBbN47CrhrtM_r1",
+      "operation_id": "op_NBbN47CrhrtM",
+      "summary": "Cambiar el despacho del pedido P-1043 (Escalera de aluminio 6 peldaños) del 2026-10-27 al 2026-10-30, a Calle Ejemplo 100, Santiago, sin costo.",
+      "terms_digest": "sha-256:oduNxopNIIA-Iv1iqMDfnh_6QOQXtz0Zg6h34VN2z0g"
+    }
+  }
+}</pre></div>
+</section>
+
+<!-- ═══ 12 ══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="conformance" aria-labelledby="conformance-h">
+	<h2 id="conformance-h"><span class="n">12</span>Tests and conformance<a class="anchor" href="#conformance" aria-label="Link to section 12">#</a></h2>
+	<h3 id="conformance-roles">Conformance by role<a class="anchor" href="#conformance-roles" aria-label="Link to Conformance by role">#</a></h3>
+	<ul>
+		<li><b>Conforming issuer</b> (company and operator): emits the chain with the chain rules; publishes the trust members with a truthful <code>custody</code>; never emits <code>succeeded</code> without a matching read-back; puts no personal data in clear; and keeps the official tools of Poppy and PACT passing with the extension active.</li>
+		<li><b>Conforming verifier:</b> implements SD-JWT processing (RFC 9901 §7.1), the chain rules and the verification algorithm with anchoring, and obtains exactly the results of the test vectors, including the codes and the <code>seq</code> of the negative cases.</li>
+		<li><b>Conforming agent</b> (<span class="kw">SHOULD</span>): lists the extension, verifies each package, keeps it with its inclusion proofs, and shows the user the derived level, not the claimed one.</li>
+	</ul>
+	<p>For PACT, the official tool used is the Identity suite. The official delegated suite runs only against its demo airline, so the delegated flow is checked with a test written by SOVRAS using the official PACT client. For Poppy, the official validator covers discovery and conversations; it does not check sign-in or the Operations extension.</p>
+
+	<h3 id="how-to-run">How to run the checks<a class="anchor" href="#how-to-run" aria-label="Link to How to run the checks">#</a></h3>
+	<p>From the root of the reference implementation, to be published with the test vectors and the verifiers. Results, with their logs, are in <a href="../conformance/">Conformance</a>.</p>
+	<div class="code"><div class="code__head"><b>Reference implementation · shell</b><span>bash</span></div><pre data-copy tabindex="0">npm test
+node --test test-red/vxp-red.test.ts test-red/exigencia-red.test.ts
+node scripts/mutar-vxp.mjs
+node scripts/mutar-nativo.mjs
+node scripts/mutar-exigencia.mjs
+PYTHONIOENCODING=utf-8 python scripts/mutar-prueba.py
+python ../verifier/verificar.py ../vectors/vectores-0.1.json
+python ../verifier/verificar_paquete.py vectores ../vectors/vectores-0.1.json
+python ../verifier/verificar_paquete.py pact ../vectors/vectores-pact-0.1.json
+python scripts/cruce-verificadores.py
+python scripts/fuzz-diferencial.py 20000</pre></div>
+	<p><span class="mk mk--pend">Pending</span> A conformance kit that lets a third party check its own implementation.</p>
+</section>
+
+<!-- ═══ 13 ══════════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="versions" aria-labelledby="versions-h">
+	<h2 id="versions-h"><span class="n">13</span>Specification and versions<a class="anchor" href="#versions" aria-label="Link to section 13">#</a></h2>
+	<p>Draft 0.1, 21 October 2026, revised 22 October 2026 (names <code>vxp</code>, rule I1, Capability Gate, Poppy §4.4 conformance).</p>
+	<ul>
+		<li><b>Poppy draft 0.2</b>, official kit at commit <code>39b35bd</code>. Poppy can break compatibility before its 1.0.</li>
+		<li><b>PACT 1.0 over A2A 1.0.1</b>, official suite at commit <code>838c6bd</code>.</li>
+	</ul>
+	<h3 id="versioning">Versioning<a class="anchor" href="#versioning" aria-label="Link to Versioning">#</a></h3>
+	<p>The extension has one version, and it <span class="kw">MUST</span> be the same in three places: <code>version</code> of the trust block, the A2A extension URI (<code>https://vxpprotocol.org/ext/proof/v0.1</code>) and <code>v</code> of each statement and package. While VXP is a 0.x draft, every new draft is treated as incompatible with the previous one. A verifier <span class="kw">MUST</span> reject a <code>v</code> it does not know.</p>
+
+	<h3 id="status">Status of each part<a class="anchor" href="#status" aria-label="Link to Status of each part">#</a></h3>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Part</th><th>State in 0.1</th></tr></thead>
+		<tbody>
+			<tr><td>VXP Proof</td><td>Specified, implemented and tested. An operator attestation until there are witnesses and a second issuer</td></tr>
+			<tr><td>VXP Relationship over a Poppy conversation</td><td>Implemented and run with Nova AI, SOVRAS's own agent, on 21 October 2026; no third-party agent yet</td></tr>
+			<tr><td>VXP Relationship over an HTTP inbox</td><td><span class="mk mk--exp">Experimental</span> Tested only against a server of SOVRAS's own</td></tr>
+			<tr><td>Native profile, <code>vxp.json</code> and <code>/v1</code></td><td><span class="mk mk--exp">Experimental</span> Declared so in the document itself</td></tr>
+			<tr><td>Poppy draft 0.2 adapter</td><td>Official validator for discovery and conversations; run with Nova AI, SOVRAS's own agent; no third-party agent yet</td></tr>
+			<tr><td>PACT 1.0 adapter</td><td>Official Identity suite and a delegated test written by SOVRAS with the official client; no third-party PACT agent yet</td></tr>
+			<tr><td>Relationship over PACT</td><td><span class="mk mk--pend">Pending</span></td></tr>
+		</tbody>
+	</table></div>
+
+	<h3 id="open-items">Open items<a class="anchor" href="#open-items" aria-label="Link to Open items">#</a></h3>
+	<div class="pending">
+		<span class="mk mk--pend">Pending</span>
+		<ul>
+			<li>A third-party agent on the Poppy adapter, the PACT adapter or the native profile, and an agent with a stable identity.</li>
+			<li>A third party that implements the HTTP inbox of the relationship.</li>
+			<li>Independent evidence: external log witnesses, company key custody outside the operator, a second independent issuer.</li>
+			<li>Approval through the company's channel in the native profile and in Poppy, which today use <code>agent_asserted</code>.</li>
+			<li>Independent review of VXP Relationship and of the changes to VXP Proof.</li>
+			<li>Parts of Poppy draft 0.2 not implemented: the person's direct conversation with the company, streaming, DPoP nonce, web browsing with a shared session, OpenAPI and MCP, Direct and Mediated Sign-In, and a screen where the person sees and disconnects their agents.</li>
+			<li>Registering <code>vxpprotocol.org</code>.</li>
+			<li>The <code>LICENSE</code> file in the published repository. Apache 2.0 is the proposed license.</li>
+		</ul>
+	</div>
+
+	<div class="doc-next">
+		<p>See how the parts fit together, with diagrams.</p>
+		<a class="btn btn--solid" href="../architecture/">Architecture</a>
+	</div>
+</section>
+
+</article>
+</div>
+</main>
+
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
+		<div><b>Protocol</b><ul><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li></ul></div>
+	</div>
+</footer>
+<script src="../assets/site.js" defer></script>
+<script src="../assets/docs.js" defer></script>
+</body>
+</html>

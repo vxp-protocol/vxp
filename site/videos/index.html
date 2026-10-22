@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Videos · VXP</title>
+<meta name="description" content="A series of eight short videos on how VXP works: the full operation, discovery, the Capability Gate, proof, relationships, interoperability, verification and failures.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/vxp.css">
+<style>
+	.series { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); counter-reset: ep; }
+	.ep { display: grid; grid-template-columns: 56px minmax(0, 5fr) minmax(0, 4fr) 150px; gap: 20px; padding: 26px 0; border-bottom: 1px solid var(--line); align-items: start; }
+	.ep__n { font: 400 13px var(--mono); color: var(--mute); padding-top: 6px; }
+	.ep h2 { font-size: clamp(22px, 2.2vw, 28px); letter-spacing: -0.03em; line-height: 1.1; }
+	.ep p { color: var(--ink-soft); font-size: 15px; }
+	.ep__st { font: 400 12.5px var(--mono); color: var(--ink-soft); text-align: right; display: grid; gap: 4px; }
+	.ep__st b { font-weight: 500; color: var(--ink); }
+	.ep video { width: 100%; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--deep); grid-column: 2 / -1; margin-top: 8px; }
+	@media (max-width: 820px) { .ep { grid-template-columns: 40px 1fr; } .ep > p, .ep__st { grid-column: 2; text-align: left; } }
+</style>
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../architecture/">Architecture</a></li>
+			<li><a href="../spec/">Specification</a></li>
+			<li><a href="../examples/">Examples</a></li>
+			<li><a href="../verify/">Verify</a></li>
+			<li><a href="../conformance/">Conformance</a></li>
+			<li><a href="../implement/">Implement</a></li>
+			<li><a href="../videos/" aria-current="page">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../status/">Draft 0.1</a>
+	</div>
+</header>
+<main id="main">
+<section class="sec">
+	<div class="wrap">
+		<div class="sec__head">
+			<p class="kicker">Videos</p>
+			<h1 class="h2">Eight short videos, one operation at a time</h1>
+			<p class="lead">Each video explains one idea with the objects the protocol actually exchanges. Real data carries its source on screen, and anything illustrative is labeled as such. Narration is recorded only after the content is approved; until then, the previews run with subtitles.</p>
+		</div>
+		<ol class="series">
+			<li class="ep" id="v1"><span class="ep__n">1</span><h2>What VXP is</h2><p>An operation inside a company that has to end in a change anyone can check: the person, the agent, the company and its system, and the seven steps working together.</p><span class="ep__st"><b data-state>Storyboard ready</b>3:10 · 9:16 cut 0:45</span></li>
+			<li class="ep" id="v2"><span class="ep__n">2</span><h2>Finding the company and getting in</h2><p>Discovery, the agent's own identity, linking the person's account and asking for permission, in VXP's native profile and through adapters.</p><span class="ep__st"><b data-state>Storyboard ready</b>2:45 · 0:35</span></li>
+			<li class="ep" id="v3"><span class="ep__n">3</span><h2>What fits</h2><p>The Capability Gate: a valid identity meets the person's delegation, the company's rules and the resource itself. Scope, amount, expiry, refusal and revocation.</p><span class="ep__st"><b data-state>Storyboard ready</b>3:00 · 0:40</span></li>
+			<li class="ep" id="v4"><span class="ep__n">4</span><h2>One operation, end to end</h2><p>Terms, approval and its channel, one execution, the read-back from the company's system and the signed chain, statement by statement, from a captured run.</p><span class="ep__st"><b data-state>Storyboard ready</b>3:40 · 0:45</span></li>
+			<li class="ep" id="v5"><span class="ep__n">5</span><h2>When the company asks</h2><p>A request started by the company toward the person's agent, inside an agreement the person approved, with the hotel case where the agent answered «keep».</p><span class="ep__st"><b data-state>Storyboard ready</b>3:10 · 0:40</span></li>
+			<li class="ep" id="v6"><span class="ep__n">6</span><h2>Three protocols, one execution</h2><p>Where Poppy draft 0.2 and PACT 1.0 fit, how the adapters share one issuer and one execution, and what has been tested in each version.</p><span class="ep__st"><b data-state>Storyboard ready</b>2:40 · 0:35</span></li>
+			<li class="ep" id="v7"><span class="ep__n">7</span><h2>Checking a proof</h2><p>A valid proof, the same proof tampered with in several ways, and the control of the verifier that catches each change.</p><span class="ep__st"><b data-state>Storyboard ready</b>2:50 · 0:40</span></li>
+			<li class="ep" id="v8"><span class="ep__n">8</span><h2>When something fails</h2><p>Missing permission, changed terms, a retried operation, an unknown result, a tampered proof and a person from the company stepping in.</p><span class="ep__st"><b data-state>Storyboard ready</b>3:30 · 0:45</span></li>
+		</ol>
+	</div>
+</section>
+</main>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
+		<div><b>Protocol</b><ul><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li></ul></div>
+	</div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

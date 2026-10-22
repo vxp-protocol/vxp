@@ -1,0 +1,4 @@
+== 11-fuzz · 2026-10-22T04:53:17Z · python scripts/fuzz-diferencial.py 20000
+cadenas: 20000, validas: 279, discrepancias: 0
+veredictos: {"revision_error": 7709, "order_violation": 3774, "bad_terms": 2205, "user_mismatch": 1532, "unknown_key": 1064, "display_code_mismatch": 780, "bad_approval_method": 668, "approval_not_latest_revision": 348, "succeeded_without_matching_read_back": 335, "approval_terms_mismatch": 294, "outcome_terms_mismatch": 264, "bad_read_back": 217, "bad_state": 199, "execution_terms_mismatch": 115, "valida:unknown": 97, "bad_decision": 95, "valida:cancelled": 80, "valida:failed": 68, "after_final": 41, "no_outcome": 33, "correction_without_read_back": 31, "valida:revoked": 27, "read_back_incomplete": 9, "outcome_after_denial": 8, "valida:succeeded": 7}
+exit 0

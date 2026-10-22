@@ -1,0 +1,5 @@
+{
+    "name": "poppy-validator",
+    "private": true,
+    "type": "module"
+}

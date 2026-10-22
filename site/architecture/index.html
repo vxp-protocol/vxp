@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VXP Architecture</title>
+<meta name="description" content="How VXP fits together: participants, identities, discovery, entries and adapters, the Capability Gate, Relationship, Proof, execution, states, recovery and trust boundaries.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/vxp.css">
+<link rel="stylesheet" href="../assets/docs.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+<!-- Glifos de los actores: misma geometría que la portada (persona círculo, agente rombo, empresa cuadrado, sistema barras). -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+	<symbol id="g-person" viewBox="-20 -20 40 40"><circle r="13" fill="none" stroke="var(--person)" stroke-width="2"/></symbol>
+	<symbol id="g-agent" viewBox="-20 -20 40 40"><rect x="-10" y="-10" width="20" height="20" rx="2" transform="rotate(45)" fill="var(--agent)"/></symbol>
+	<symbol id="g-company" viewBox="-20 -20 40 40"><rect x="-13" y="-13" width="26" height="26" rx="3" fill="var(--company)"/></symbol>
+	<symbol id="g-system" viewBox="-20 -20 40 40"><rect x="-15" y="-11" width="30" height="5" rx="1" fill="none" stroke="var(--on-deep-soft)" stroke-width="1.3"/><rect x="-15" y="-2.5" width="30" height="5" rx="1" fill="none" stroke="var(--on-deep-soft)" stroke-width="1.3"/><rect x="-15" y="6" width="30" height="5" rx="1" fill="none" stroke="var(--on-deep-soft)" stroke-width="1.3"/></symbol>
+	<symbol id="g-operator" viewBox="-20 -20 40 40"><rect x="-13" y="-13" width="26" height="26" rx="3" fill="none" stroke="var(--operator)" stroke-width="2"/><rect x="-5" y="-5" width="10" height="10" rx="1.5" fill="var(--operator)"/></symbol>
+	<symbol id="g-verifier" viewBox="-20 -20 40 40"><circle r="13" fill="none" stroke="var(--ok)" stroke-width="2"/><path d="M-6 0.5 L-1.5 5 L6.5 -4.5" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+	<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--on-deep-soft)"/></marker>
+</svg>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../architecture/" aria-current="page">Architecture</a></li>
+			<li><a href="../spec/">Specification</a></li>
+			<li><a href="../examples/">Examples</a></li>
+			<li><a href="../verify/">Verify</a></li>
+			<li><a href="../conformance/">Conformance</a></li>
+			<li><a href="../implement/">Implement</a></li>
+			<li><a href="../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../status/">Draft 0.1</a>
+	</div>
+</header>
+
+<main id="main">
+<section class="dochead">
+	<div class="wrap">
+		<p class="kicker">Architecture · draft 0.1</p>
+		<h1 class="h1">How VXP fits together</h1>
+		<p class="lead">Who takes part, which identities stay apart, where a request enters, what the company checks before anything runs, and who signs each piece of evidence. Every diagram separates what the specification requires from how the reference implementation does it.</p>
+		<p class="dochead__meta"><span>Solid outline: contract in the specification</span><span>Dashed outline: reference implementation, or outside VXP</span></p>
+	</div>
+</section>
+
+<div class="doc">
+<nav class="toc" aria-label="Architecture contents">
+	<details open>
+		<summary>Contents</summary>
+		<ol>
+			<li><a href="#participants"><span>1</span>Participants</a></li>
+			<li><a href="#identities"><span>2</span>Identities</a></li>
+			<li><a href="#discovery"><span>3</span>Native profile and discovery</a></li>
+			<li><a href="#entries"><span>4</span>Entries and adapters</a></li>
+			<li><a href="#capability-gate"><span>5</span>Capability Gate</a></li>
+			<li><a href="#relationship"><span>6</span>Relationship</a></li>
+			<li><a href="#proof"><span>7</span>Proof</a></li>
+			<li><a href="#execution"><span>8</span>Enterprise execution</a></li>
+			<li><a href="#states"><span>9</span>States</a></li>
+			<li><a href="#recovery"><span>10</span>Recovery</a></li>
+			<li><a href="#trust"><span>11</span>Verification and trust</a></li>
+		</ol>
+	</details>
+</nav>
+
+<article class="doc__body">
+
+<!-- ═══ 1 Participants ═════════════════════════════════════════════════════ -->
+<section class="dsec" id="participants" aria-labelledby="participants-h">
+	<h2 id="participants-h"><span class="n">1</span>Participants<a class="anchor" href="#participants" aria-label="Link to Participants">#</a></h2>
+	<p>Six roles. The first four appear in every operation; the operator runs the company's side, and the verifier can be anyone who later checks the evidence.</p>
+	<div class="actors">
+		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-person" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Person</h3><p>The person the agent acts for, and the company's end customer. Approves exact terms, approves a relationship, and can revoke either.</p><p class="role">Signs nothing in the chain</p></div></div>
+		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-agent" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Personal agent</h3><p>The person's OAuth client or A2A agent. Identifies with its own key, holds the delegation, asks, accepts, answers the company's requests and keeps the proof.</p><p class="role">Proves possession of its key on each call</p></div></div>
+		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-company" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Company</h3><p>Who executes the operation. Has its own issuer, publishes what it offers, and is the party the terms and the result belong to.</p><p class="role">Signs <code>terms</code>, <code>company_review</code>, <code>outcome</code>, <code>correction</code>, <code>revocation</code></p></div></div>
+		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-system" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Company system</h3><p>The system of record, such as the ERP, where the effect actually lives. It is changed once and read back afterwards.</p><p class="role">Read, never trusted as a signer</p></div></div>
+		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-operator" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Operator</h3><p>Hosts the company's side and executes on its behalf, as processor for each company. In the reference implementation, the operator is SOVRAS.</p><p class="role">Signs <code>request</code>, <code>counter</code>, <code>user_approval</code>, <code>execution</code>, <code>read_back</code></p></div></div>
+		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-verifier" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Verifier</h3><p>Anyone who checks a proof package: the agent itself, a bank, an arbitrator, an auditor. Anchors the issuer on its own and derives the level of evidence.</p><p class="role">Signs nothing; reports a verdict</p></div></div>
+	</div>
+</section>
+
+<!-- ═══ 2 Identities ═══════════════════════════════════════════════════════ -->
+<section class="dsec" id="identities" aria-labelledby="identities-h">
+	<h2 id="identities-h"><span class="n">2</span>Identities<a class="anchor" href="#identities" aria-label="Link to Identities">#</a></h2>
+	<p>A phone number, a customer account and a delegation answer different questions. VXP keeps them as three layers that are never merged, and moves from one to the next only through a step the company controls.</p>
+	<figure class="fig fig--narrow">
+		<svg viewBox="0 0 440 470" role="img" aria-labelledby="fig-id-t">
+			<title id="fig-id-t">Three identity layers: channel identifier, customer at the company, delegated authorization, joined only by company-controlled steps</title>
+			<rect class="box" x="10" y="10" width="420" height="82" rx="8"/>
+			<text class="lg" x="26" y="38">Channel identifier</text>
+			<text class="sm" x="26" y="60">e.g. a WhatsApp number</text>
+			<text class="sm" x="26" y="78">Proves: someone controls this channel</text>
+			<path class="ln" d="M220 92 V150" marker-end="url(#ah)"/>
+			<text class="sm" x="232" y="116">authentication the company</text>
+			<text class="sm" x="232" y="132">controls, evidence kept · ID1</text>
+			<rect class="box" x="10" y="154" width="420" height="82" rx="8"/>
+			<text class="lg" x="26" y="182">Customer at the company</text>
+			<text class="sm" x="26" y="204">canonical customer, linked to the ERP</text>
+			<text class="sm" x="26" y="222">Proves: which account and resources are theirs</text>
+			<path class="ln" d="M220 236 V294" marker-end="url(#ah)"/>
+			<text class="sm" x="232" y="260">delegation the person</text>
+			<text class="sm" x="232" y="276">grants to one agent</text>
+			<rect class="box" x="10" y="298" width="420" height="82" rx="8"/>
+			<text class="lg" x="26" y="326">Delegated authorization</text>
+			<text class="sm" x="26" y="348">client_id · sub · scopes · authorization_details</text>
+			<text class="sm" x="26" y="366">Proves: what this agent may ask, for this person</text>
+			<rect class="box box--final" x="10" y="402" width="420" height="58" rx="8"/>
+			<text x="26" y="426">owner = (profile, client_id, sub, account)</text>
+			<text class="sm" x="26" y="447">ID3 · another key, sub or client_id sees nothing</text>
+		</svg>
+		<figcaption>Matching by name, email or phone never links an account (ID1), and a number shared by two customers links neither (ID2). Rules in the <a href="../spec/#identities" style="color:inherit">specification, §5</a>.</figcaption>
+	</figure>
+</section>
+
+<!-- ═══ 3 Discovery ════════════════════════════════════════════════════════ -->
+<section class="dsec" id="discovery" aria-labelledby="discovery-h">
+	<h2 id="discovery-h"><span class="n">3</span>Native profile and discovery <span class="mk mk--exp">Experimental</span><a class="anchor" href="#discovery" aria-label="Link to Native profile and discovery">#</a></h2>
+	<p>The native profile is VXP's own form: an agent that speaks neither Poppy nor PACT discovers the company, identifies, receives authority per request, operates, obtains the proof and keeps the relationship with it alone. A company can publish it next to the adapters. All entries share one issuer, one authorization server and one set of metadata.</p>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Document</th><th>Where</th><th>What it carries</th></tr></thead>
+		<tbody>
+			<tr><td><code>vxp.json</code> <span class="mk mk--exp">Experimental</span></td><td><code>/.well-known/vxp.json</code> on the company's domain</td><td>Organization and domain, issuer, endpoint, capabilities with <code>access</code> and <code>admission</code>, negotiation limits, <code>"status": "experimental"</code>. No trust members</td></tr>
+			<tr><td>Issuer metadata</td><td>RFC 8414, under the issuer</td><td><code>vxp_proof</code>: the proof keys, operator, custody, log and domains. <code>vxp_relationship</code>: the relationship key and the actions the company may start</td></tr>
+			<tr><td><code>poppy.json</code></td><td>The company's domain</td><td>The Poppy draft 0.2 document, as written, with the <code>vxpprotocol.org/proof</code> extension</td></tr>
+			<tr><td>Agent Card</td><td>The PACT provider, or redirected from the brand's domain</td><td>The PACT 1.0 card over A2A 1.0.1, as written, with <code>https://vxpprotocol.org/ext/proof/v0.1</code></td></tr>
+		</tbody>
+	</table></div>
+	<p>The trust members live in one place, the issuer metadata. Any copy in <code>poppy.json</code> or the Agent Card must be identical, and <code>vxp.json</code> carries none. Discovery, authorization and endpoints in detail: <a href="../spec/#native-profile">specification, §8</a>.</p>
+</section>
+
+<!-- ═══ 4 Entries ══════════════════════════════════════════════════════════ -->
+<section class="dsec" id="entries" aria-labelledby="entries-h">
+	<h2 id="entries-h"><span class="n">4</span>Entries and adapters<a class="anchor" href="#entries" aria-label="Link to Entries and adapters">#</a></h2>
+	<p>A request can arrive through the native profile or through an adapter. An adapter speaks the external protocol literally; what VXP adds travels only in that protocol's extension points. All entries end in one normalized request and one Capability Gate.</p>
+	<figure class="fig fig--narrow">
+		<svg viewBox="0 0 480 590" role="img" aria-labelledby="fig-en-t">
+			<title id="fig-en-t">Entries: native profile, Poppy adapter, PACT adapter and traditional channels converge on a normalized request, the Capability Gate, one execution, and then VXP Proof and VXP Relationship</title>
+			<use href="#g-agent" x="222" y="6" width="36" height="36"/>
+			<text class="sm" x="240" y="58" text-anchor="middle">Personal agent</text>
+			<path class="ln" d="M240 64 V80" marker-end="url(#ah)"/>
+			<rect class="box" x="10" y="84" width="225" height="56" rx="6"/>
+			<text x="24" y="107">VXP native</text>
+			<text class="sm" x="24" y="127">vxp.json · experimental</text>
+			<rect class="box" x="245" y="84" width="225" height="56" rx="6"/>
+			<text x="259" y="107">Poppy adapter</text>
+			<text class="sm" x="259" y="127">poppy.json · draft 0.2</text>
+			<rect class="box" x="10" y="150" width="225" height="56" rx="6"/>
+			<text x="24" y="173">PACT adapter</text>
+			<text class="sm" x="24" y="193">Agent Card · PACT 1.0</text>
+			<rect class="box box--ref" x="245" y="150" width="225" height="56" rx="6"/>
+			<text x="259" y="173">Traditional channels</text>
+			<text class="sm" x="259" y="193">SOVRAS · outside VXP</text>
+			<path class="ln" d="M10 214 V222 H470 V214"/>
+			<path class="ln" d="M240 222 V240" marker-end="url(#ah)"/>
+			<rect class="box box--ref" x="70" y="244" width="340" height="50" rx="6"/>
+			<text x="240" y="265" text-anchor="middle">Normalized request</text>
+			<text class="sm" x="240" y="284" text-anchor="middle">identity · authority · company · operation</text>
+			<path class="ln" d="M240 294 V312" marker-end="url(#ah)"/>
+			<rect class="box" x="30" y="316" width="420" height="76" rx="8" style="stroke-width:1.8"/>
+			<text class="lg" x="240" y="342" text-anchor="middle">Capability Gate</text>
+			<text class="sm" x="240" y="362" text-anchor="middle">owner · scope · resource · terms</text>
+			<text class="sm" x="240" y="380" text-anchor="middle">review · once · read-back</text>
+			<path class="ln" d="M240 392 V410" marker-end="url(#ah)"/>
+			<rect class="box box--ref" x="70" y="414" width="300" height="50" rx="6"/>
+			<text x="220" y="435" text-anchor="middle">One execution, then read-back</text>
+			<text class="sm" x="220" y="454" text-anchor="middle">operator · rules I2, P5, P6</text>
+			<path class="ln" d="M372 439 H412" marker-start="url(#ah)" marker-end="url(#ah)"/>
+			<use href="#g-system" x="418" y="421" width="40" height="36"/>
+			<text class="sm" x="470" y="478" text-anchor="end">Company system</text>
+			<path class="ln" d="M180 464 L122 506" marker-end="url(#ah)"/>
+			<path class="ln" d="M260 464 L357 506" marker-end="url(#ah)"/>
+			<rect class="box" x="10" y="510" width="225" height="62" rx="6"/>
+			<text class="lg" x="24" y="536">VXP Proof</text>
+			<text class="sm" x="24" y="557">signed chain of statements</text>
+			<rect class="box" x="245" y="510" width="225" height="62" rx="6"/>
+			<text class="lg" x="259" y="536">VXP Relationship</text>
+			<text class="sm" x="259" y="557">agreement · signed outbound</text>
+		</svg>
+		<ul class="legend"><li><i class="l-norm"></i>contract in the specification</li><li><i class="l-ref"></i>reference implementation, or outside VXP</li></ul>
+	</figure>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Entry</th><th>Identity and authority</th><th>Where VXP travels</th></tr></thead>
+		<tbody>
+			<tr><td>VXP native <span class="mk mk--exp">Experimental</span></td><td>Client metadata, <code>private_key_jwt</code>, DPoP, per-request <code>authorization_details</code></td><td>It is VXP's own profile</td></tr>
+			<tr><td>Poppy draft 0.2</td><td>Poppy sign-in, sessions, conversations and Operations</td><td>A domain-named member, <code>vxpprotocol.org/proof</code>, only for an agent that lists the extension</td></tr>
+			<tr><td>PACT 1.0 over A2A 1.0.1</td><td>PACT agent identity and delegated authority</td><td>An A2A extension and <code>message.metadata</code>, next to <code>pact.receipt</code></td></tr>
+			<tr><td>Traditional channels</td><td>None: WhatsApp, web chat and voice are a SOVRAS capability</td><td>Not part of VXP. A write never runs in the channel; the agent is offered the structured connection</td></tr>
+		</tbody>
+	</table></div>
+	<p>Whatever the entry, the company needs no conversational agent of its own: a deterministic intermediary serves the Poppy API and the PACT A2A service (I3). Interoperability rules I1 to I5: <a href="../spec/#interoperability-rules">specification, §4</a>.</p>
+</section>
+
+<!-- ═══ 5 Capability Gate ══════════════════════════════════════════════════ -->
+<section class="dsec" id="capability-gate" aria-labelledby="capability-gate-h">
+	<h2 id="capability-gate-h"><span class="n">5</span>Capability Gate<a class="anchor" href="#capability-gate" aria-label="Link to Capability Gate">#</a></h2>
+	<p>A valid identity is a starting point. What runs is the intersection of three things, and the Gate is the boundary where that intersection is computed. VXP defines its rules and no endpoint; how an implementation builds it inside is up to the implementer.</p>
+	<figure class="fig fig--narrow">
+		<svg class="halo" viewBox="0 0 480 420" role="img" aria-labelledby="fig-gate-t">
+			<title id="fig-gate-t">Three overlapping circles: delegated by the person, allowed by the company, admitted by the resource. Only their intersection runs.</title>
+			<circle cx="172" cy="152" r="122" fill="rgba(107,139,158,0.10)" stroke="var(--person)" stroke-width="1.6"/>
+			<circle cx="308" cy="152" r="122" fill="rgba(243,243,239,0.05)" stroke="var(--company)" stroke-width="1.6"/>
+			<circle cx="240" cy="270" r="122" fill="rgba(255,255,255,0.03)" stroke="var(--on-deep-soft)" stroke-width="1.6" stroke-dasharray="5 4"/>
+			<text class="lg" x="112" y="104" text-anchor="middle">Delegated</text>
+			<text class="sm" x="112" y="124" text-anchor="middle">by the person</text>
+			<text class="sm" x="112" y="142" text-anchor="middle">scope, per-request</text>
+			<text class="sm" x="112" y="158" text-anchor="middle">authorization</text>
+			<text class="lg" x="368" y="104" text-anchor="middle">Allowed</text>
+			<text class="sm" x="368" y="124" text-anchor="middle">by the company</text>
+			<text class="sm" x="368" y="142" text-anchor="middle">what it publishes,</text>
+			<text class="sm" x="368" y="158" text-anchor="middle">its review rule</text>
+			<text class="lg" x="240" y="330" text-anchor="middle">Admitted</text>
+			<text class="sm" x="240" y="350" text-anchor="middle">by the resource</text>
+			<text class="sm" x="240" y="368" text-anchor="middle">owner, precondition,</text>
+			<text class="sm" x="240" y="384" text-anchor="middle">one operation at a time</text>
+			<text class="lg" x="240" y="198" text-anchor="middle">What runs</text>
+		</svg>
+		<figcaption>Outside the intersection the answer is <code>authorization_required</code>, or the same not-found answer for someone else's resource and for a missing one.</figcaption>
+	</figure>
+	<div class="split">
+		<div><span class="mk mk--norm" style="justify-self:start">Normative</span><h4>Rules the Gate enforces</h4><ul>
+			<li><b>Owner:</b> account linked only by company-controlled authentication; owner is <code>(profile, client_id, sub, account)</code></li>
+			<li><b>Scope:</b> what is asked fits the delegation and what the company publishes</li>
+			<li><b>Resource:</b> someone else's, missing and unlinked answer the same</li>
+			<li><b>Terms:</b> the company signs the exact revision and its commitment</li>
+			<li><b>Review:</b> when its rule requires it, a person at the company decides on the same digest</li>
+			<li><b>Once:</b> one execution per resource, with precondition and idempotency key</li>
+			<li><b>Read-back:</b> no <code>succeeded</code> without it</li>
+		</ul></div>
+		<div><span class="mk mk--info" style="justify-self:start">Informative</span><h4>How the reference implementation composes it</h4><ul>
+			<li><b>Catalog:</b> released capabilities and the actions the company may start</li>
+			<li><b>Prior read:</b> does the resource belong to the linked ERP customer</li>
+			<li><b>Policy:</b> scope ∩ released capabilities ∩ owner</li>
+			<li><b>Commitment:</b> <code>firm</code> or <code>conditional</code> from what the capability can execute and verify</li>
+			<li><b>Execution:</b> one, with precondition</li>
+			<li><b>Read-back:</b> checks the effect in the system</li>
+			<li><b>Projection:</b> internal state to Poppy and A2A</li>
+		</ul></div>
+	</div>
+	<p>Each rule with its identifiers: <a href="../spec/#gate-rules">specification, §9</a>.</p>
+</section>
+
+<!-- ═══ 6 Relationship ═════════════════════════════════════════════════════ -->
+<section class="dsec" id="relationship" aria-labelledby="relationship-h">
+	<h2 id="relationship-h"><span class="n">6</span>Relationship<a class="anchor" href="#relationship" aria-label="Link to Relationship">#</a></h2>
+	<p>With an agreement the person approved, the company can start a request toward the person's agent. The agreement names its actions, a daily limit and an expiry, and ends when the delegation is revoked. Before signing or sending anything, the company checks that all of it still holds (R6).</p>
+	<figure class="fig">
+		<svg class="halo seq" viewBox="0 0 600 470" role="img" aria-labelledby="fig-rel-t">
+			<title id="fig-rel-t">Sequence of a relationship over HTTP: consent, signed agreement, a company request, the person's approval, acceptance and a single execution</title>
+			<use href="#g-person" x="56" y="6" width="34" height="34"/>
+			<use href="#g-agent" x="206" y="6" width="34" height="34"/>
+			<use href="#g-company" x="356" y="6" width="34" height="34"/>
+			<use href="#g-system" x="505" y="6" width="36" height="34"/>
+			<text class="sm" x="73" y="56" text-anchor="middle">Person</text>
+			<text class="sm" x="223" y="56" text-anchor="middle">Personal agent</text>
+			<text class="sm" x="373" y="56" text-anchor="middle">Company</text>
+			<text class="sm" x="523" y="56" text-anchor="middle">Company system</text>
+			<path class="ln ln--dash" d="M73 64 V460 M223 64 V460 M373 64 V460 M523 64 V460" style="opacity:.45"/>
+			<path class="ln ln--strong" d="M229 96 H366" marker-end="url(#ah)"/>
+			<text class="sm" x="298" y="88" text-anchor="middle">1 · relationship RAR</text>
+			<path class="ln ln--strong" d="M367 136 H80" marker-end="url(#ah)"/>
+			<text class="sm" x="223" y="128" text-anchor="middle">2 · consent, its own checkbox (R3)</text>
+			<path class="ln ln--strong" d="M79 176 H366" marker-end="url(#ah)"/>
+			<text class="sm" x="223" y="168" text-anchor="middle">3 · approves actions, limit, expiry</text>
+			<path class="ln ln--dash" d="M367 216 H230" marker-end="url(#ah)"/>
+			<text class="sm" x="298" y="208" text-anchor="middle">4 · agreement JWS (R4)</text>
+			<path class="ln" d="M20 246 H580" style="opacity:.35"/>
+			<text class="sm" x="580" y="240" text-anchor="end">later, inside the agreement</text>
+			<path class="ln ln--strong" d="M367 286 H230" marker-end="url(#ah)"/>
+			<text class="sm" x="298" y="278" text-anchor="middle">5 · signed request (R7)</text>
+			<path class="ln ln--strong" d="M217 326 H80" marker-end="url(#ah)"/>
+			<text class="sm" x="148" y="318" text-anchor="middle">6 · exact terms</text>
+			<path class="ln ln--strong" d="M79 366 H216" marker-end="url(#ah)"/>
+			<text class="sm" x="148" y="358" text-anchor="middle">7 · approves</text>
+			<path class="ln ln--strong" d="M229 406 H366" marker-end="url(#ah)"/>
+			<text class="sm" x="298" y="398" text-anchor="middle">8 · accept (R8, R9)</text>
+			<path class="ln ln--strong" d="M379 446 H516" marker-end="url(#ah)"/>
+			<text class="sm" x="448" y="438" text-anchor="middle">9 · execute once</text>
+		</svg>
+		<ol class="steps">
+			<li>The agent asks for the relationship in the Device Authorization, with an <code>authorization_details</code> entry of type relationship.</li>
+			<li>The consent screen shows the relationship in business language, with its own checkbox.</li>
+			<li>The person approves the actions, the daily limit and the validity.</li>
+			<li>The token carries <code>relationships[]</code> and the agreement, a JWS <code>vxp-relationship+jwt</code>.</li>
+			<li>The company sends a JWS <code>vxp-company-request+jwt</code> to the agent's inbox. Proposing a change never executes it.</li>
+			<li>The agent shows the person the exact terms of the new revision.</li>
+			<li>The person approves.</li>
+			<li>The agent accepts; the company checks again that the relationship and the delegation are in force.</li>
+			<li>The operation runs once and is read back, with its own proof chain.</li>
+		</ol>
+	</figure>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Delivery path</th><th>How the agent receives and answers</th><th>State</th></tr></thead>
+		<tbody>
+			<tr><td>HTTP inbox</td><td><code>POST {inbox_uri}</code> declared in the agent's client metadata, on the same origin as its <code>client_id</code></td><td><span class="mk mk--exp">Experimental</span> Tested only with a server of SOVRAS's own</td></tr>
+			<tr><td>Poppy conversation</td><td>Messages with <code>data["vxpprotocol.org/relationship"]</code> inside the agent's conversation; offer, agreement, request, answer and a signed reply receipt</td><td>Run with Nova AI (SOVRAS's personal agent, beta); no third-party agent yet</td></tr>
+			<tr><td>PACT</td><td>Not specified yet</td><td><span class="mk mk--pend">Pending</span></td></tr>
+		</tbody>
+	</table></div>
+	<p>Rules R1 to R17: <a href="../spec/#relationship">specification, §7</a>.</p>
+</section>
+
+<!-- ═══ 7 Proof ════════════════════════════════════════════════════════════ -->
+<section class="dsec" id="proof" aria-labelledby="proof-h">
+	<h2 id="proof-h"><span class="n">7</span>Proof<a class="anchor" href="#proof" aria-label="Link to Proof">#</a></h2>
+	<p>Each operation leaves a chain of signed statements. Each one names the previous by its digest and is signed by the role that observed it, so a verifier knows who said what at every link. The terms digest ties the approval, the execution and the result to one exact revision.</p>
+	<figure class="fig fig--narrow">
+		<svg viewBox="0 0 460 600" role="img" aria-labelledby="fig-proof-t">
+			<title id="fig-proof-t">Proof chain: statements alternate between the company column and the operator column, each pointing to the previous one by digest; counter, company review and correction are optional</title>
+			<use href="#g-company" x="97" y="4" width="36" height="36"/>
+			<use href="#g-operator" x="327" y="4" width="36" height="36"/>
+			<text class="sm" x="115" y="58" text-anchor="middle">Company signs</text>
+			<text class="sm op-t" x="345" y="58" text-anchor="middle">Operator signs</text>
+			<!-- filas: y = 76 + i*56, caja de 44 -->
+			<rect class="box box--op" x="250" y="76" width="190" height="44" rx="6"/><text x="264" y="95">request</text><text class="sm" x="264" y="112">digest of what was asked</text>
+			<rect class="box" x="20" y="132" width="190" height="44" rx="6"/><text x="34" y="151">terms</text><text class="sm" x="34" y="168">revision, commitment</text>
+			<rect class="box box--op box--ref" x="250" y="188" width="190" height="44" rx="6"/><text x="264" y="207">counter</text><text class="sm" x="264" y="224">optional</text>
+			<rect class="box box--op" x="250" y="244" width="190" height="44" rx="6"/><text x="264" y="263">user_approval</text><text class="sm" x="264" y="280">method, latest revision</text>
+			<rect class="box box--ref" x="20" y="300" width="190" height="44" rx="6"/><text x="34" y="319">company_review</text><text class="sm" x="34" y="336">optional, by role</text>
+			<rect class="box box--op" x="250" y="356" width="190" height="44" rx="6"/><text x="264" y="375">execution</text><text class="sm" x="264" y="392">once, approved digest</text>
+			<rect class="box box--op" x="250" y="412" width="190" height="44" rx="6"/><text x="264" y="431">read_back</text><text class="sm" x="264" y="448">observed, by term name</text>
+			<rect class="box" x="20" y="468" width="190" height="44" rx="6"/><text x="34" y="487">outcome</text><text class="sm" x="34" y="504">state, summary digest</text>
+			<rect class="box box--ref" x="20" y="524" width="190" height="44" rx="6"/><text x="34" y="543">correction</text><text class="sm" x="34" y="560">optional, after final</text>
+			<!-- prev: cada declaración apunta a la anterior -->
+			<path class="ln" d="M210 154 L250 104" marker-end="url(#ah)"/>
+			<path class="ln ln--dash" d="M250 210 L210 166" marker-end="url(#ah)"/>
+			<path class="ln" d="M345 244 V232" marker-end="url(#ah)"/>
+			<path class="ln ln--dash" d="M210 322 L250 278" marker-end="url(#ah)"/>
+			<path class="ln" d="M345 356 V288" marker-end="url(#ah)" style="opacity:.5"/>
+			<path class="ln" d="M345 412 V400" marker-end="url(#ah)"/>
+			<path class="ln" d="M210 490 L250 446" marker-end="url(#ah)"/>
+			<path class="ln ln--dash" d="M115 524 V512" marker-end="url(#ah)"/>
+			<text class="sm" x="230" y="592" text-anchor="middle">each arrow is prev: the digest of the statement before</text>
+		</svg>
+		<ul class="legend"><li><i class="l-co"></i>company</li><li><i class="l-op"></i>operator</li><li><i class="l-ref"></i>optional statement</li></ul>
+	</figure>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Situation</th><th>What the chain says</th><th>Rule</th></tr></thead>
+		<tbody>
+			<tr><td>Read-back matches the approved terms</td><td><code>outcome: succeeded</code></td><td>P1</td></tr>
+			<tr><td>Not known whether the effect happened</td><td><code>outcome: unknown</code>; Poppy sees <code>in_progress</code></td><td>P3</td></tr>
+			<tr><td>Known later</td><td>A <code>correction</code> on the latest final statement</td><td>P4</td></tr>
+			<tr><td>Read-back contradicts the terms</td><td><code>matches_terms: false</code>, <code>unknown</code>, <code>waiting_human</code></td><td>P5</td></tr>
+			<tr><td>The capability cannot be read back</td><td><code>read_back.method: none</code>, never <code>succeeded</code></td><td>P6</td></tr>
+		</tbody>
+	</table></div>
+	<p>Approval comes in two kinds, named by what they prove: <code>agent_asserted</code> (the agent said the person approved) and <code>company_channel</code> (the person answered from the channel the company linked to them, with a code derived from the terms digest). Format, chain rules and P1 to P8: <a href="../spec/#proof">specification, §6</a>.</p>
+</section>
+
+<!-- ═══ 8 Execution ════════════════════════════════════════════════════════ -->
+<section class="dsec" id="execution" aria-labelledby="execution-h">
+	<h2 id="execution-h"><span class="n">8</span>Enterprise execution<a class="anchor" href="#execution" aria-label="Link to Enterprise execution">#</a></h2>
+	<p>Execution uses the systems and permissions the company already has. The protocol fixes how many times it runs, under which conditions, and what has to be read afterwards.</p>
+	<ul>
+		<li><b>One per resource</b> (<a href="../spec/#i2">I2</a>). Whatever entries arrive, one execution per resource. Each entry produces its own operation, and only the first that passes the precondition takes effect; the others end <code>failed</code>, without effect and with their evidence.</li>
+		<li><b>Precondition.</b> The terms that describe the starting state are checked against the company's system right before executing. If they no longer hold, nothing runs and the operation ends <code>failed</code> without an <code>execution</code> in the chain.</li>
+		<li><b>One in progress.</b> While a confirmed operation on a resource is in progress, no other one is opened on it; the native profile answers <code>resource_busy</code>.</li>
+		<li><b>Re-verification.</b> Before executing, the grant for the resource, the policy and the precondition are evaluated again with the token of the accepting call.</li>
+		<li><b>At most once.</b> No more than one automatic execution attempt per accepted revision.</li>
+		<li><b>Declared effects.</b> A request that ends <code>failed</code> or <code>cancelled</code> after execution started lists <code>effects[]</code> per system touched. A compensation is read back before it is declared reverted.</li>
+	</ul>
+	<p>The outcome of an operation comes from that operation's execution, never from the close of the conversation that contains it.</p>
+</section>
+
+<!-- ═══ 9 States ═══════════════════════════════════════════════════════════ -->
+<section class="dsec" id="states" aria-labelledby="states-h">
+	<h2 id="states-h"><span class="n">9</span>States<a class="anchor" href="#states" aria-label="Link to States">#</a></h2>
+	<p>Eleven internal states are the source. Outside, each protocol sees only its own enum: VXP adds no values to Poppy's or A2A's. Under A2A and PACT, the internal state travels in <code>metadata</code>.</p>
+	<figure class="fig fig--wide">
+		<p class="swipe">Scroll sideways to see the whole diagram</p>
+		<svg viewBox="0 0 570 500" role="img" aria-labelledby="fig-st-t">
+			<title id="fig-st-t">Projection of the eleven internal states to Poppy operation states and to A2A TaskState values</title>
+			<text class="sm" x="70" y="24" text-anchor="middle">Poppy operations</text>
+			<text class="sm" x="280" y="24" text-anchor="middle">Internal (source)</text>
+			<text class="sm" x="490" y="24" text-anchor="middle">A2A TaskState</text>
+			<text class="sm" x="490" y="40" text-anchor="middle">TASK_STATE_…</text>
+			<!-- internos: yc = 66 + i*38 -->
+			<g>
+				<rect class="box" x="180" y="52" width="200" height="28" rx="5"/><text x="194" y="71">received</text>
+				<rect class="box" x="180" y="90" width="200" height="28" rx="5"/><text x="194" y="109">authorization_required</text>
+				<rect class="box" x="180" y="128" width="200" height="28" rx="5"/><text x="194" y="147">proposed</text>
+				<rect class="box" x="180" y="166" width="200" height="28" rx="5"/><text x="194" y="185">accepted</text>
+				<rect class="box" x="180" y="204" width="200" height="28" rx="5"/><text x="194" y="223">waiting_human</text>
+				<rect class="box" x="180" y="242" width="200" height="28" rx="5"/><text x="194" y="261">executing</text>
+				<rect class="box" x="180" y="280" width="200" height="28" rx="5"/><text x="194" y="299">pending_verification</text>
+				<rect class="box box--final" x="180" y="318" width="200" height="28" rx="5"/><text x="194" y="337">succeeded</text>
+				<rect class="box box--final" x="180" y="356" width="200" height="28" rx="5"/><text x="194" y="375">failed</text>
+				<rect class="box box--final" x="180" y="394" width="200" height="28" rx="5"/><text x="194" y="413">cancelled</text>
+				<rect class="box box--final" x="180" y="432" width="200" height="28" rx="5"/><text x="194" y="451">expired</text>
+			</g>
+			<!-- Poppy -->
+			<rect class="box box--ref" x="10" y="71" width="120" height="28" rx="5"/><text class="sm" x="70" y="89" text-anchor="middle">no operation</text>
+			<rect class="box" x="10" y="128" width="120" height="28" rx="5"/><text x="24" y="147">proposed</text>
+			<rect class="box" x="10" y="223" width="120" height="28" rx="5"/><text x="24" y="242">in_progress</text>
+			<rect class="box box--final" x="10" y="318" width="120" height="28" rx="5"/><text x="24" y="337">succeeded</text>
+			<rect class="box box--final" x="10" y="356" width="120" height="28" rx="5"/><text x="24" y="375">failed</text>
+			<rect class="box box--final" x="10" y="394" width="120" height="28" rx="5"/><text x="24" y="413">cancelled</text>
+			<rect class="box box--final" x="10" y="432" width="120" height="28" rx="5"/><text x="24" y="451">expired</text>
+			<path class="ln" d="M180 66 L130 85 M180 104 L130 85 M180 142 H130 M180 180 L130 237 M180 218 L130 237 M180 256 L130 237 M180 294 L130 237 M180 332 H130 M180 370 H130 M180 408 H130 M180 446 H130"/>
+			<!-- A2A -->
+			<rect class="box" x="425" y="52" width="135" height="28" rx="5"/><text x="439" y="71">SUBMITTED</text>
+			<rect class="box" x="425" y="90" width="135" height="28" rx="5"/><text x="439" y="109">AUTH_REQUIRED</text>
+			<rect class="box" x="425" y="128" width="135" height="28" rx="5"/><text x="439" y="147">INPUT_REQUIRED</text>
+			<rect class="box" x="425" y="223" width="135" height="28" rx="5"/><text x="439" y="242">WORKING</text>
+			<rect class="box box--final" x="425" y="318" width="135" height="28" rx="5"/><text x="439" y="337">COMPLETED</text>
+			<rect class="box box--final" x="425" y="356" width="135" height="28" rx="5"/><text x="439" y="375">FAILED</text>
+			<rect class="box box--final" x="425" y="413" width="135" height="28" rx="5"/><text x="439" y="432">CANCELED</text>
+			<path class="ln" d="M380 66 H425 M380 104 H425 M380 142 H425 M380 180 L425 237 M380 218 L425 237 M380 256 L425 237 M380 294 L425 237 M380 332 H425 M380 370 H425 M380 408 L425 427 M380 446 L425 427"/>
+		</svg>
+		<figcaption><b>Filled boxes</b> are final states, which never change; later facts go as a <code>correction</code> in the proof. Under PACT there are no tasks, so the A2A value is used only in <code>metadata</code>, next to the internal state. Legal transitions: <a href="../spec/#states" style="color:inherit">specification, §4</a>.</figcaption>
+	</figure>
+	<p><code>waiting_human</code> covers two cases: the company's review before executing, and a contradiction found after executing. <code>pending_verification</code> is where an operation waits while nobody knows yet whether the effect happened; it is never reported as <code>failed</code>.</p>
+</section>
+
+<!-- ═══ 10 Recovery ════════════════════════════════════════════════════════ -->
+<section class="dsec" id="recovery" aria-labelledby="recovery-h">
+	<h2 id="recovery-h"><span class="n">10</span>Recovery<a class="anchor" href="#recovery" aria-label="Link to Recovery">#</a></h2>
+	<p>What happens when something goes wrong, or when the answer is not known yet. In every case the action is not repeated and nothing is claimed that was not read back.</p>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Situation</th><th>What happens</th></tr></thead>
+		<tbody>
+			<tr><td>The agent repeats a request</td><td>Same <code>Idempotency-Key</code> and same body return the same request; another body with the same key gets 409 <code>idempotency_key_reused</code></td></tr>
+			<tr><td>The terms changed before approval</td><td>A new revision, approved again; accepting an old one gets 409 <code>terms_changed</code></td></tr>
+			<tr><td>The result is not known</td><td><code>pending_verification</code> and <code>outcome: unknown</code>; reading again reconciles against the system and never repeats the action</td></tr>
+			<tr><td>The result becomes known later</td><td>A <code>correction</code> in the chain; to <code>succeeded</code> only with a later matching read-back</td></tr>
+			<tr><td>The system contradicts the approved terms</td><td><code>waiting_human</code>, no retry, no success declared</td></tr>
+			<tr><td>The agent cancels while it runs</td><td>A request to stop: 202, the state does not change because of it, <code>reversal_promised: false</code>; it ends <code>cancelled</code> with known effects, or in the state it reached</td></tr>
+			<tr><td>An approval message could not be delivered</td><td>The operation stays <code>proposed</code> and does not run; a code that was never sent approves nothing</td></tr>
+			<tr><td>The person revoked in the meantime</td><td>Accepting a relationship's proposal gets 403 <code>relationship_revoked</code>, without effect</td></tr>
+			<tr><td>A company request could not be delivered</td><td>Recorded as failed in the company's outbox. Retries with backoff are <span class="mk mk--pend">Pending</span></td></tr>
+		</tbody>
+	</table></div>
+</section>
+
+<!-- ═══ 11 Trust ═══════════════════════════════════════════════════════════ -->
+<section class="dsec" id="trust" aria-labelledby="trust-h">
+	<h2 id="trust-h"><span class="n">11</span>Verification and trust boundaries<a class="anchor" href="#trust" aria-label="Link to Verification and trust boundaries">#</a></h2>
+	<p>Who signs what, who holds each key, and what a verifier can conclude from it. In the reference implementation today, the operator holds every proof key, so the operator is the single root of trust, and the verifier says so in every verdict.</p>
+	<figure class="fig fig--narrow fig--wide">
+		<p class="swipe">Scroll sideways to see the whole diagram</p>
+		<svg viewBox="0 0 520 480" role="img" aria-labelledby="fig-tr-t">
+			<title id="fig-tr-t">Trust boundaries: the company proof key, the operator proof key and the log key are held by the operator today; the verifier anchors the issuer metadata and reports a single root, the operator</title>
+			<text class="sm op-t" x="14" y="26">Held by the operator today · custody: operator_hosted</text>
+			<rect class="zone" x="6" y="36" width="508" height="226" rx="10"/>
+			<rect class="box" x="24" y="54" width="472" height="58" rx="6"/>
+			<use href="#g-company" x="32" y="65" width="36" height="36"/>
+			<text x="80" y="78">Company proof key</text>
+			<text class="sm" x="80" y="98">terms · company_review · outcome · correction · revocation</text>
+			<rect class="box box--op" x="24" y="122" width="472" height="58" rx="6"/>
+			<use href="#g-operator" x="32" y="133" width="36" height="36"/>
+			<text x="80" y="146">Operator proof key</text>
+			<text class="sm" x="80" y="166">request · counter · user_approval · execution · read_back</text>
+			<rect class="box" x="24" y="190" width="472" height="58" rx="6"/>
+			<use href="#g-system" x="32" y="201" width="36" height="36"/>
+			<text x="80" y="214">Log key</text>
+			<text class="sm" x="80" y="234">checkpoints of the transparency log</text>
+			<path class="ln ln--dash" d="M130 262 V300" marker-end="url(#ah)"/>
+			<text class="sm" x="138" y="286">published under the issuer</text>
+			<rect class="box" x="6" y="304" width="248" height="74" rx="6"/>
+			<text x="20" y="328">Issuer metadata</text>
+			<text class="sm" x="20" y="348">RFC 8414 · vxp_proof</text>
+			<text class="sm" x="20" y="366">keys · operator · custody · log</text>
+			<rect class="box" x="266" y="304" width="248" height="74" rx="6"/>
+			<use href="#g-verifier" x="274" y="313" width="34" height="34"/>
+			<text x="314" y="328">Verifier</text>
+			<text class="sm" x="314" y="348">derives levels</text>
+			<text class="sm" x="280" y="368">single_root: operator</text>
+			<path class="ln" d="M266 341 H256" marker-end="url(#ah)"/>
+			<rect class="box" x="6" y="396" width="508" height="70" rx="6"/>
+			<use href="#g-agent" x="16" y="413" width="36" height="36"/>
+			<text x="62" y="422">Personal agent key</text>
+			<text class="sm" x="62" y="442">private_key_jwt and DPoP on every call;</text>
+			<text class="sm" x="62" y="458">nothing in the chain is signed by the agent</text>
+		</svg>
+		<figcaption>The verifier anchors the issuer on its own account and reads the keys from its metadata. With every proof key held by the operator, the chain is an <b>operator attestation</b>: intact and ordered, and not independent of SOVRAS.</figcaption>
+	</figure>
+	<div class="split">
+		<div><h4>A verifier can check today</h4><ul>
+			<li>That the chain has not changed since it was received, is coherent and ordered.</li>
+			<li>Which role signed each link.</li>
+			<li>That the execution was on the approved revision, and the read-back matched it.</li>
+			<li>That nobody other than whoever controls the issuer assembled the package.</li>
+		</ul></div>
+		<div><h4>What independence still needs <span class="mk mk--pend">Pending</span></h4><ul>
+			<li>Witnesses of the log outside the operator; the list of witnesses is empty today, so no package reaches <code>logged</code>.</li>
+			<li>The company's key held outside the operator, in a way a verifier can check.</li>
+			<li>A second independent issuer.</li>
+		</ul></div>
+	</div>
+	<p>The relationship has its own key, published as <code>vxp_relationship.jwks_uri</code> and different from the proof keys and from the Poppy and PACT keys (R5). Assurance levels and the verification algorithm: <a href="../spec/#verification">specification, §10</a>. Check a proof yourself in <a href="../verify/">Verify</a>.</p>
+
+	<div class="doc-next">
+		<p>Every rule behind these diagrams, with its identifier.</p>
+		<a class="btn btn--solid" href="../spec/">Read the specification</a>
+	</div>
+</section>
+
+</article>
+</div>
+</main>
+
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
+		<div><b>Protocol</b><ul><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li></ul></div>
+	</div>
+</footer>
+<script src="../assets/site.js" defer></script>
+<script src="../assets/docs.js" defer></script>
+</body>
+</html>

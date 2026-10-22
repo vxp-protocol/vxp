@@ -1,0 +1,35 @@
+{
+ "operation_id": "op_NBbN47CrhrtM",
+ "revision": 1,
+ "summary": "Cambiar el despacho del pedido P-1043 (Escalera de aluminio 6 peldaños) del 2026-10-27 al 2026-10-30, a Calle Ejemplo 100, Santiago, sin costo.",
+ "terms": {
+  "pedido": "P-1043",
+  "producto": "Escalera de aluminio 6 peldaños",
+  "despacho_actual": "2026-10-27",
+  "despacho_nuevo": "2026-10-30",
+  "direccion": "Calle Ejemplo 100, Santiago",
+  "costo": {
+   "amount": "0",
+   "currency": "CLP"
+  },
+  "vxp_salt": "bldx9qk42Wxhv9S29cZ1rg"
+ },
+ "expires_at": "2026-10-22T06:24:19.653Z",
+ "user_approval_required": true,
+ "state": "succeeded",
+ "result": {
+  "summary": "Listo: el pedido P-1043 se despacha el 2026-10-30 (antes 2026-10-27). Verificado en el sistema de Ferretería Demo.",
+  "data": {
+   "pedido": "P-1043",
+   "despacho": "2026-10-30",
+   "verificado": "lectura_del_sistema",
+   "effects": [
+    {
+     "system": "erp",
+     "change": "despacho 2026-10-27 → 2026-10-30",
+     "applied": true
+    }
+   ]
+  }
+ }
+}

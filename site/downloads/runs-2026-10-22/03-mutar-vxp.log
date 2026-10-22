@@ -1,0 +1,47 @@
+== 03-mutar-vxp · 2026-10-22T04:43:02Z · node scripts/mutar-vxp.mjs
+sin mutación: exit 0 (# pass 39, # fail 0)
+DETECTADA  sin_lectura_succeeded    C3: una capacidad sin lectura de vuelta se trata como si pudiera comprobarse
+    fallan: C3 · no comprobable: una capacidad sin lectura de vuelta nun
+DETECTADA  contradiccion_es_exito   C2: una lectura que contradice lo aprobado se da por éxito
+    fallan: C2 · contradictorio: se ejecutó pero el sistema muestra otra | G2 · API: pedir un pedido nuevo → falta autorizar el monto → | G4 · Poppy, conversando con el agente de la empresa: cotiza, | H1 · (Grok) «déjala en espera para que el cliente la apruebe | H4 · permiso permanente: el cliente aprueba UNA vez con tope
+DETECTADA  no_failed_incierto       C1: sin respuesta del transportista → failed
+    fallan: C1 · pendiente: el transportista no responde → la empresa fi
+DETECTADA  escritura_en_canal       D1: un asistente sospechado puede pedir escrituras por el canal
+    fallan: D1 · WhatsApp: un asistente que se declara pide un cambio →  | F1b · llamadas o WhatsApp a las 3 AM, una y otra vez: mismo  | H1e · (Grok) cambio de fecha por la web: el chat no cambia n
+DETECTADA  telefono_ambiguo         D2: un número compartido identifica al primer cliente
+    fallan: D2 · WhatsApp sin conexión estructurada: un asistente puede 
+DETECTADA  relacion_revocada        E4/E5: una relación revocada sigue valiendo
+    fallan: E4 · revocación: si la persona revoca, la empresa no puede i | E5 · vencimiento y revocación por el agente: una relación ve | F5 · 3 AM, «confirmar o bloquear, nada más»: la empresa preg
+DETECTADA  relacion_vencida         E5: una relación vencida sigue valiendo
+    fallan: E5 · vencimiento y revocación por el agente: una relación ve
+DETECTADA  accion_relacion          E3: la empresa inicia acciones que la relación no incluye
+    fallan: E3 · límites: acción no autorizada, pedido de otro cliente y | E4 · revocación: si la persona revoca, la empresa no puede i
+DETECTADA  limite_relacion          E3: sin tope por día
+    fallan: E3 · límites: acción no autorizada, pedido de otro cliente y | F5 · 3 AM, «confirmar o bloquear, nada más»: la empresa preg
+DETECTADA  relacion_sin_grant       E5: la relación sobrevive a la revocación de la delegación
+    fallan: E5 · vencimiento y revocación por el agente: una relación ve
+DETECTADA  sin_carriles             F1/F1b: sin cupos, un agente insistente no tiene techo
+    fallan: F1 · agente insistente a las 3 AM: el carril lento corta en  | F1b · llamadas o WhatsApp a las 3 AM, una y otra vez: mismo  | G5 · chat web frenado por insistencia: el visitante ve un me
+DETECTADA  sin_tope_otp             F2: un agente puede bombardear a una persona con códigos
+    fallan: F2 · un agente no puede bombardear a una persona con códigos
+DETECTADA  alerta_opcion_libre      F5: el agente responde algo distinto de confirmar o bloquear
+    fallan: F5 · 3 AM, «confirmar o bloquear, nada más»: la empresa preg
+DETECTADA  alerta_dos_respuestas    F5: una alerta se responde dos veces
+    fallan: F5 · 3 AM, «confirmar o bloquear, nada más»: la empresa preg
+DETECTADA  alerta_vencida           F5: una alerta vencida se puede responder
+    fallan: F5 · 3 AM, «confirmar o bloquear, nada más»: la empresa preg
+DETECTADA  tope_compra              G3: se acepta una compra sobre el monto que aprobó el cliente
+    fallan: G3 · límites de una compra: sobre el monto aprobado no se ac
+DETECTADA  precondicion_compra      G3: se crea el pedido aunque ya no haya stock
+    fallan: G3 · límites de una compra: sobre el monto aprobado no se ac | H4 · permiso permanente: el cliente aprueba UNA vez con tope
+DETECTADA  permanente_sin_tope      H4: el permiso permanente cierra pedidos sobre el tope
+    fallan: H4 · permiso permanente: el cliente aprueba UNA vez con tope
+DETECTADA  permisos_suman           H3: ampliar un permiso concede más de lo pedido (Poppy §4.4)
+    fallan: H3 · (Poppy §4.4) ampliar el permiso concede sólo lo pedido;
+DETECTADA  cotizacion_por_conversacion H2: al reconectarse se pierde la cotización y se cotiza de cero
+    fallan: H2 · (agente de prueba B) al reconectarse en otra conversación, la cot
+DETECTADA  cambio_nulo              H1d: se propone «cambiar» a la fecha que ya tiene
+    fallan: H1d · (agente de prueba B, 05:59:35) la fecha de destino es la que sig
+
+mutaciones detectadas: 21/21
+exit 0

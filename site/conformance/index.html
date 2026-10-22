@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conformance · VXP</title>
+<meta name="description" content="Every VXP test result with its version, command, date, environment and downloadable log. Official Poppy and PACT suites listed apart from VXP's own tests.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/vxp.css">
+<link rel="stylesheet" href="../assets/pages.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../architecture/">Architecture</a></li>
+			<li><a href="../spec/">Specification</a></li>
+			<li><a href="../examples/">Examples</a></li>
+			<li><a href="../verify/">Verify</a></li>
+			<li><a href="../conformance/" aria-current="page">Conformance</a></li>
+			<li><a href="../implement/">Implement</a></li>
+			<li><a href="../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../status/">Draft 0.1</a>
+	</div>
+</header>
+
+<main id="main">
+<section class="page-head">
+	<div class="wrap">
+		<p class="kicker">Conformance · draft 0.1</p>
+		<h1>Every result, with the command and the log behind it</h1>
+		<p class="lead">SOVRAS ran each test below on 22 October 2026 against the reference implementation, after that day's revision of the specification. Official suites from Poppy and PACT are listed apart from the tests SOVRAS wrote for VXP. Each figure links to the log that produced it.</p>
+		<p class="page-meta"><span>Runs: 22 Oct 2026, 04:42 to 06:12 UTC</span><span>Windows 11 · Node.js 22.20.0 · Python 3.14.0, cryptography 50.0.2</span></p>
+		<ul class="toc" aria-label="On this page">
+			<li><a href="#official">Official third-party suites</a></li>
+			<li><a href="#own">VXP's own tests</a></li>
+			<li><a href="#fixed">Failures found and fixed</a></li>
+			<li><a href="#run">Run the kit</a></li>
+			<li><a href="#files">Downloads</a></li>
+		</ul>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="scope-h">
+	<div class="wrap">
+		<h2 class="sub-h" id="scope-h">Read this first</h2>
+		<div class="ctx">
+			<p><b>This is a self-run conformance record by SOVRAS, and it is not an independent certification.</b> The Poppy and PACT suites are official and unmodified, but SOVRAS ran them on its own machines against its own implementation. Nobody outside SOVRAS has reproduced these results yet.</p>
+			<p><b>The official PACT delegated suite only runs against PACT's demo airline.</b> To test delegated authority against VXP, SOVRAS wrote its own delegated test with the official PACT client. It is listed under VXP's own tests.</p>
+			<p><b>Environments.</b> <i>In process</i>: the test starts the server inside its own Node.js process. <i>Local server</i>: a separate server process on the same machine, reached over TCP. <i>Offline</i>: the verifier reads files, with no server. <i>Public tunnel</i>: a local server reached from the internet through a tunnel.</p>
+		</div>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="official">
+	<div class="wrap">
+		<div class="group__head">
+			<p class="kicker">Group 1</p>
+			<h2 class="h3" id="official">Official third-party suites</h2>
+			<p>Written and published by the Poppy and PACT projects. They check VXP's adapters against those protocols' own contracts. They do not check VXP Relationship or VXP Proof.</p>
+		</div>
+		<ol class="tests">
+			<li class="test">
+				<div><h3>Poppy official validator</h3><p class="test__what">The official Poppy kit, unmodified, with milestones <code>foundation</code> and <code>interfaces</code>, against three test companies: a hardware store, a hotel, and the hardware store with returns. It covers discovery and conversations. Sign-in and the Operations extension are outside what this version of the kit validates.</p></div>
+				<dl>
+					<dt>Version</dt><dd>Poppy draft 0.2, kit commit <code>39b35bd</code></dd>
+					<dt>Command</dt><dd><code>npm test</code> (runs <code>test/poppy-validador.test.ts</code> and <code>test/exigencia-poppy.test.ts</code>)</dd>
+					<dt>When</dt><dd>22 Oct 2026, 04:42:35 UTC</dd>
+					<dt>Environment</dt><dd>In process; the <code>.test</code> hosts resolve to the server</dd>
+					<dt>Skipped</dt><dd>By the kit's design: authorization endpoint (no Direct Sign-In published) 1, DPoP nonce (optional) 1, OpenAPI 2, MCP 11</dd>
+				</dl>
+				<div class="test__res"><p class="test__num">59 passed<small>0 failed · 15 skipped<br>in each of the three companies</small></p><a href="../downloads/runs-2026-10-22/01-npm-test.log">01-npm-test.log</a><span class="small">lines 61, 83 and 441</span></div>
+			</li>
+			<li class="test">
+				<div><h3>Poppy official validator, through a public tunnel</h3><p class="test__what">The same kit, run from its command line against the test hardware store exposed on the internet. Earlier run, from before the 22 October revision. The hotel was not run this way.</p></div>
+				<dl>
+					<dt>Version</dt><dd>Poppy draft 0.2</dd>
+					<dt>Command</dt><dd>The kit's CLI with <code>--json</code></dd>
+					<dt>When</dt><dd>21 Oct 2026, 03:48 UTC (file time)</dd>
+					<dt>Environment</dt><dd>Public tunnel</dd>
+				</dl>
+				<div class="test__res"><p class="test__num">59 passed<small>0 failed · 15 skipped<br>hardware store only</small></p><a href="../downloads/earlier-2026-10-21/poppy-validator-tunnel.json">poppy-validator-tunnel.json</a><span class="small"><code>summary.total</code></span></div>
+			</li>
+			<li class="test">
+				<div><h3>PACT official Identity suite, hardware store</h3><p class="test__what">Agent identity according to PACT 1.0: the official end-to-end Identity tests (<code>e2e/pact.test.ts</code>) from a clean clone of the PACT repository.</p></div>
+				<dl>
+					<dt>Version</dt><dd>PACT 1.0 over A2A 1.0.1, <code>openpactprotocol</code> commit <code>838c6bd</code></dd>
+					<dt>Command</dt><dd><code>bash scripts/pact-e2e.sh &lt;clone of openpactprotocol 838c6bd with pnpm install&gt;</code></dd>
+					<dt>When</dt><dd>22 Oct 2026, 06:08:26 UTC</dd>
+					<dt>Environment</dt><dd>Local server on <code>localhost:3620</code>, PACT test agent on <code>3622</code></dd>
+				</dl>
+				<div class="test__res"><p class="test__num">10/10</p><a href="../downloads/runs-2026-10-22/13-pact-ferreteria.log">13-pact-ferreteria.log</a><span class="small">file <code>pact.test.ts</code></span></div>
+			</li>
+			<li class="test">
+				<div><h3>PACT official Identity suite, hotel</h3><p class="test__what">The same Identity tests against the test hotel.</p></div>
+				<dl>
+					<dt>Version</dt><dd>PACT 1.0 over A2A 1.0.1, commit <code>838c6bd</code></dd>
+					<dt>Command</dt><dd><code>CUSTOMER_ID=t_hotel npx vitest run pact.test.ts</code> (in the clone's <code>e2e/</code>)</dd>
+					<dt>When</dt><dd>22 Oct 2026, 06:08:50 UTC</dd>
+					<dt>Environment</dt><dd>Local server on <code>localhost:3620</code></dd>
+				</dl>
+				<div class="test__res"><p class="test__num">10/10</p><a href="../downloads/runs-2026-10-22/14-pact-hotel-identity.log">14-pact-hotel-identity.log</a></div>
+			</li>
+		</ol>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="own">
+	<div class="wrap">
+		<div class="group__head">
+			<p class="kicker">Group 2</p>
+			<h2 class="h3" id="own">VXP's own tests</h2>
+			<p>Written by SOVRAS. They check the three capabilities VXP defines, the native profile and the reference implementation. Each protection has a mutation that switches it off, and the matching test must then fail.</p>
+		</div>
+		<ol class="tests">
+			<li class="test">
+				<div><h3>Full suite</h3><p class="test__what">Store, hotel, VXP, native profile, relationship over Poppy, attacks from review round 3, round 4, real phrases from the agents of 21 October, and the official Poppy validator.</p></div>
+				<dl>
+					<dt>Command</dt><dd><code>npm test</code> (<code>node --test test/*.test.ts</code>)</dd>
+					<dt>When</dt><dd>22 Oct 2026, 04:42:35 UTC</dd>
+					<dt>Environment</dt><dd>In process</dd>
+				</dl>
+				<div class="test__res"><p class="test__num">137/137<small>0 failed · 0 skipped</small></p><a href="../downloads/runs-2026-10-22/01-npm-test.log">01-npm-test.log</a></div>
+			</li>
+			<li class="test">
+				<div><h3>Full operation over the network</h3><p class="test__what">Server and agent in separate processes: OAuth with DPoP, account linking, request, acceptance, change in the company's system, proof checked by the Python verifier fetching the material over HTTP, and a company-initiated request delivered to an HTTP inbox. The agent is a test process written by SOVRAS.</p></div>
+				<dl>
+					<dt>Command</dt><dd><code>node --test test-red/vxp-red.test.ts test-red/exigencia-red.test.ts</code></dd>
+					<dt>When</dt><dd>22 Oct 2026, 04:42:58 UTC</dd>
+					<dt>Environment</dt><dd>Local server; each test starts and stops its own processes</dd>
+				</dl>
+				<div class="test__res"><p class="test__num">3/3</p><a href="../downloads/runs-2026-10-22/02-red.log">02-red.log</a></div>
+			</li>
+			<li class="test">
+				<div><h3>Delegated test with the official PACT client</h3><p class="test__what">Written by SOVRAS with the official PACT client: delegation by device code, expansion of permissions, PACT receipts and VXP proofs. It found a defect, listed below under failures fixed.</p></div>
+				<dl>
+					<dt>Version</dt><dd>PACT 1.0 over A2A 1.0.1, client from commit <code>838c6bd</code></dd>
+					<dt>Command</dt><dd><code>bash scripts/pact-e2e.sh &lt;clone&gt;</code> (file <code>sovras-delegada.test.ts</code>, copied into <code>e2e/</code> and removed afterwards)</dd>
+					<dt>When</dt><dd>22 Oct 2026, 06:08:26 UTC</dd>
+					<dt>Environment</dt><dd>Local server on <code>localhost:3620</code></dd>
+				</dl>
+				<div class="test__res"><p class="test__num">12/12</p><a href="../downloads/runs-2026-10-22/13-pact-ferreteria.log">13-pact-ferreteria.log</a><span class="small">file <code>sovras-delegada.test.ts</code></span></div>
+			</li>
+			<li class="test">
+				<div><h3>Live verifier</h3><p class="test__what">The Python verifier against the two proofs left by the delegated test, fetching public material from the running server. Two proofs × seven checks (brand domain, PACT authorization server, Poppy domain, cross-check with the second verifier, <code>aud</code> of another agent, tampered result, tampered PACT receipt), plus two false anchors.</p></div>
+				<dl>
+					<dt>Command</dt><dd><code>bash scripts/verificar-vivo.sh</code></dd>
+					<dt>When</dt><dd>22 Oct 2026, 06:08:58 UTC</dd>
+					<dt>Environment</dt><dd>Local server on <code>localhost:3620</code></dd>
+				</dl>
+				<div class="test__res"><p class="test__num">16/16</p><a href="../downloads/runs-2026-10-22/15-verificar-vivo.log">15-verificar-vivo.log</a></div>
+			</li>
+			<li class="test">
+				<div><h3>Mutations</h3><p class="test__what">One protection is switched off at a time, and the test that covers it has to fail. Four sets: VXP 21, the 0.1 design (native profile) 15, the store and hotel scenarios 15, and the proof chain 39.</p></div>
+				<dl>
+					<dt>Commands</dt><dd><code>node scripts/mutar-vxp.mjs</code> · <code>node scripts/mutar-nativo.mjs</code> · <code>node scripts/mutar-exigencia.mjs</code> · <code>PYTHONIOENCODING=utf-8 python scripts/mutar-prueba.py</code></dd>
+					<dt>When</dt><dd>22 Oct 2026, from 04:43:02 UTC (VXP), 04:47:45 (native), 04:48:44 (scenarios) and 04:56:04 (chain)</dd>
+					<dt>Environment</dt><dd>In process</dd>
+				</dl>
+				<div class="test__res"><p class="test__num">90/90<small>detected: 21 + 15 + 15 + 39</small></p><a href="../downloads/runs-2026-10-22/03-mutar-vxp.log">03-mutar-vxp.log</a><a href="../downloads/runs-2026-10-22/04-mutar-nativo.log">04-mutar-nativo.log</a><a href="../downloads/runs-2026-10-22/05-mutar-exigencia.log">05-mutar-exigencia.log</a><a href="../downloads/runs-2026-10-22/06-mutar-prueba.log">06-mutar-prueba.log</a></div>
+			</li>
+			<li class="test">
+				<div><h3>Test vectors</h3><p class="test__what">Vectors generated by the TypeScript issuer with test keys and neutral test data, checked by two Python verifiers: the proof vectors with each verifier, and the PACT anchoring vectors. The run used the vector files published in Downloads.</p></div>
+				<dl>
+					<dt>Commands</dt><dd><code>python verifier/verificar.py &lt;published vectores-0.1.json&gt;</code><br><code>python verifier/verificar_paquete.py vectores &lt;published vectores-0.1.json&gt;</code><br><code>python verifier/verificar_paquete.py pact &lt;published vectores-pact-0.1.json&gt;</code></dd>
+					<dt>When</dt><dd>22 Oct 2026, 06:12:11 to 06:12:13 UTC</dd>
+					<dt>Environment</dt><dd>Offline</dd>
+				</dl>
+				<div class="test__res"><p class="test__num">0 failures<small>92 checks; PACT 16 checks</small></p><a href="../downloads/runs-2026-10-22/07-vectores-verificar.log">07-vectores-verificar.log</a><a href="../downloads/runs-2026-10-22/08-vectores-paquete.log">08-vectores-paquete.log</a><a href="../downloads/runs-2026-10-22/09-vectores-pact.log">09-vectores-pact.log</a></div>
+			</li>
+			<li class="test">
+				<div><h3>Cross-check of the two verifiers</h3><p class="test__what">Both Python verifiers on the same cases: every chain in the vectors, the malleated signature, the negative cases and the anchoring cases. Both verifiers were written by the same team.</p></div>
+				<dl>
+					<dt>Command</dt><dd><code>python scripts/cruce-verificadores.py</code></dd>
+					<dt>When</dt><dd>22 Oct 2026, 04:53:16 UTC</dd>
+					<dt>Environment</dt><dd>Offline</dd>
+				</dl>
+				<div class="test__res"><p class="test__num">49 cases<small>0 discrepancies</small></p><a href="../downloads/runs-2026-10-22/10-cruce.log">10-cruce.log</a></div>
+			</li>
+			<li class="test">
+				<div><h3>Differential fuzz</h3><p class="test__what">Random chains, signed with the vector test keys, mixing valid and invalid steps, run through both verifiers. Of the 20,000 chains, 279 are valid, so it measures agreement mostly on rejections.</p></div>
+				<dl>
+					<dt>Command</dt><dd><code>python scripts/fuzz-diferencial.py 20000</code> (default seed 20261020; with no argument it runs 5,000)</dd>
+					<dt>When</dt><dd>22 Oct 2026, 04:53:17 UTC</dd>
+					<dt>Environment</dt><dd>Offline</dd>
+				</dl>
+				<div class="test__res"><p class="test__num">20,000 chains<small>0 discrepancies</small></p><a href="../downloads/runs-2026-10-22/11-fuzz.log">11-fuzz.log</a></div>
+			</li>
+			<li class="test">
+				<div><h3>Browser verifier against the Python reference</h3><p class="test__what">The JavaScript module behind the <a href="../verify/">Verify</a> page, run under Node.js and compared line by line with the Python verifier: both vector files, the proofs from the PACT run, the native run and OP-5, each as captured and with tampered copies.</p></div>
+				<dl>
+					<dt>Command</dt><dd><code>node test-vxp-verify.mjs</code> (in <code>verify/</code>; module <code>verify/vxp-verify.js</code>)</dd>
+					<dt>When</dt><dd>22 Oct 2026, 06:12:14 UTC</dd>
+					<dt>Environment</dt><dd>Offline, Node.js 22.20.0</dd>
+				</dl>
+				<div class="test__res"><p class="test__num">189 comparisons<small>0 discrepancies</small></p><a href="../downloads/runs-2026-10-22/16-verificador-web.log">16-verificador-web.log</a></div>
+			</li>
+		</ol>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="fixed">
+	<div class="wrap">
+		<div class="sec__head sec__head--sm">
+			<p class="kicker">What the tests caught</p>
+			<h2 class="h3" id="fixed">Failures found in the reference implementation, and fixed</h2>
+		</div>
+		<ol class="pend">
+			<li><div><h3>A VXP field leaked into the PACT Agent Card</h3></div><div><p>The <code>vxp:relationship</code> checkbox was published as a scope in the PACT Agent Card. The delegated test with the official PACT client detected it.</p></div></li>
+			<li><div><h3>The verifier compared with the first outcome</h3></div><div><p>It compared the operation's state with the first <code>outcome</code>, instead of the last final statement.</p></div></li>
+			<li><div><h3>Three mutations went undetected</h3></div><div><p>Until their tests were added: a write in a traditional channel, a phone number shared by two customers in a channel, and a relationship that survived revoking the delegation.</p></div></li>
+			<li><div><h3>Expanding permissions over Poppy added the earlier scopes (22 Oct)</h3></div><div><p>Poppy draft 0.2 §4.4: «The Company MUST NOT grant scopes beyond those requested». The token now carries only what was requested; test H3 and the mutation <code>permisos_suman</code> cover it.</p></div></li>
+		</ol>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="run">
+	<div class="wrap">
+		<div class="sec__head sec__head--sm">
+			<p class="kicker">Reproduce</p>
+			<h2 class="h3" id="run">Run the kit</h2>
+			<p class="lead">The vectors and the verifier run from the downloads on this site. The full battery runs from the root of the reference implementation, which SOVRAS will publish under the proposed Apache 2.0 license.</p>
+		</div>
+		<div class="ex-grid">
+			<figure class="codebox">
+				<figcaption>With the downloads only · Python 3 and <code>cryptography</code></figcaption>
+<pre data-copy><span class="cmt"># from the downloads/ folder</span>
+pip install cryptography
+python verifier/verificar_paquete.py vectores vectors/vectores-0.1.json
+python verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json
+python verifier/verificar.py vectors/vectores-0.1.json
+
+<span class="cmt"># a proof from the home page, offline</span>
+python verifier/verificar_paquete.py material \
+  --material native-run-2026-10-22/material-op_B6__ICZlCe_c.json \
+  --paquete  native-run-2026-10-22/paquete-op_B6__ICZlCe_c.json \
+  --operacion native-run-2026-10-22/operacion-op_B6__ICZlCe_c.json</pre>
+				<p>Expected: <code>92 comprobaciones, 0 fallas</code>, <code>16 comprobaciones, 0 fallas</code>, <code>0 fallas</code>, and one JSON line with <code>"valid": true</code>. Exit code 0 means valid.</p>
+			</figure>
+			<figure class="codebox">
+				<figcaption>The full battery · run from <code>reference/</code></figcaption>
+<pre data-copy>npm test
+node --test test-red/vxp-red.test.ts test-red/exigencia-red.test.ts
+node scripts/mutar-vxp.mjs
+node scripts/mutar-nativo.mjs
+node scripts/mutar-exigencia.mjs
+PYTHONIOENCODING=utf-8 python scripts/mutar-prueba.py
+python ../verifier/verificar.py ../vectors/vectores-0.1.json
+python ../verifier/verificar_paquete.py vectores ../vectors/vectores-0.1.json
+python ../verifier/verificar_paquete.py pact ../vectors/vectores-pact-0.1.json
+python scripts/cruce-verificadores.py
+python scripts/fuzz-diferencial.py 20000
+PORT=3620 PA_PORT=3622 PA_PUBLIC_JWK="$(cat .prueba/pa-public.jwk)" node src/main.ts &gt; .prueba/server.log &amp;
+bash scripts/pact-e2e.sh &lt;clone of openpactprotocol 838c6bd with pnpm install&gt;
+bash scripts/verificar-vivo.sh</pre>
+				<p>The first eleven commands, with one log per test, are in <a href="../downloads/runs-2026-10-22/correr.sh">correr.sh</a>: <code>bash correr.sh &lt;log folder&gt;</code>. The last three need the server running. On a Windows console with cp1252, <code>mutar-prueba.py</code> needs <code>PYTHONIOENCODING=utf-8</code>.</p>
+			</figure>
+		</div>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="files">
+	<div class="wrap">
+		<div class="sec__head sec__head--sm">
+			<p class="kicker">Downloads</p>
+			<h2 class="h3" id="files">Logs, vectors, verifier and proofs</h2>
+			<p class="lead">The <a href="../downloads/README.txt">README</a> explains every file and how to verify it. The start-up log of the local server for runs 13 to 15 is left out, because it prints an internal key of the test server.</p>
+		</div>
+		<ul class="files">
+			<li><a href="../downloads/README.txt">README.txt</a><span>What each file is, and the verification commands</span></li>
+			<li><a href="../downloads/runs-2026-10-22/correr.sh">runs-2026-10-22/correr.sh</a><span>The script that ran tests 01 to 11</span></li>
+			<li><a href="../downloads/pact-run-2026-10-22/pact-op_01NpsuOhdE3C.json">pact-run-2026-10-22/pact-op_01NpsuOhdE3C.json</a><span>Proof left by the delegated PACT test, approved through the company's channel (<code>company_channel</code>); its <a href="../downloads/pact-run-2026-10-22/pact-op_01NpsuOhdE3C.recibo.json">PACT receipt</a> and <a href="../downloads/pact-run-2026-10-22/pact-op_01NpsuOhdE3C.material.json">saved material</a></span></li>
+			<li><a href="../downloads/pact-run-2026-10-22/pact-op_kXk0fUY1M3Eq.json">pact-run-2026-10-22/pact-op_kXk0fUY1M3Eq.json</a><span>Second proof from the same run; its <a href="../downloads/pact-run-2026-10-22/pact-op_kXk0fUY1M3Eq.op.json">operation</a>, <a href="../downloads/pact-run-2026-10-22/pact-op_kXk0fUY1M3Eq.recibo.json">PACT receipt</a> and <a href="../downloads/pact-run-2026-10-22/pact-op_kXk0fUY1M3Eq.material.json">saved material</a></span></li>
+			<li><a href="../downloads/vectors/vectores-0.1.json">vectors/vectores-0.1.json</a><span>Proof vectors. Carries test-only keys derived from public phrases</span></li>
+			<li><a href="../downloads/vectors/vectores-pact-0.1.json">vectors/vectores-pact-0.1.json</a><span>PACT anchoring and receipt vectors</span></li>
+			<li><a href="../downloads/verifier/verificar_paquete.py">verifier/verificar_paquete.py</a><span>The verifier, in Python, with the current <code>vxp</code> names</span></li>
+			<li><a href="../downloads/verifier/verificar.py">verifier/verificar.py</a><span>The second Python verifier, used in tests 07 and 10</span></li>
+			<li><a href="../downloads/verifier/vxp-verify.js">verifier/vxp-verify.js</a><span>The browser verifier used on the Verify page, used in test 16</span></li>
+			<li><a href="../examples/#native">Native run proofs</a><span>Listed on the Examples page. The OP-5 package was re-verified with signatures on 22 Oct 2026 and is available on request</span></li>
+		</ul>
+	</div>
+</section>
+</main>
+
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
+		<div><b>Protocol</b><ul><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li></ul></div>
+	</div>
+</footer>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

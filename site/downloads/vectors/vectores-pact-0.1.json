@@ -1,0 +1,1058 @@
+{
+  "aviso": "VECTORES DE PRUEBA. Llaves derivadas de frases públicas: no usar fuera de pruebas.",
+  "perfil": "VXP 0.1, perfil PACT: anclaje (SPEC 9.9.1) y cruce con el recibo PACT (SPEC 9.9 paso 4 bis). Corrección ronda 2, 20-oct-2026",
+  "aud": "https://pa.example",
+  "inputs": {
+    "solicitud": {
+      "binding": "pact.message",
+      "text": "Cambia el despacho del P-1042 al 2026-10-28"
+    },
+    "request_digest": "sha-256:ewSeq8TrVbSqp9m9klLo8DnKFKAn6wkDnyReW6gHv0s",
+    "terminos": {
+      "company": "https://auth.sovras.io/e/ferreteria-demo",
+      "operation_id": "op_P1042_pact",
+      "revision": 1,
+      "summary": "Cambiar el despacho del pedido P-1042 (Taladro percutor 800 W) del 2026-10-24 al 2026-10-28, sin costo.",
+      "terms": {
+        "pedido": "P-1042",
+        "despacho_actual": "2026-10-24",
+        "despacho_nuevo": "2026-10-28",
+        "costo": {
+          "amount": "0",
+          "currency": "CLP"
+        },
+        "vxp_salt": "qaK9qfy9OrqlRKdnfFj8bg"
+      },
+      "expires_at": "2026-10-20T16:15:00Z",
+      "user_approval_required": true
+    },
+    "terms_digest": "sha-256:Jezcl6hQv5t1wklmPO8n4f8VJR77UmtsJ9Ntr7_CYyU"
+  },
+  "keys": {
+    "pact_authorization_server": {
+      "jwks": {
+        "keys": [
+          {
+            "kty": "EC",
+            "crv": "P-256",
+            "x": "5iy_aRnEXNv77JFOjp4GTU1Qzw3ec-WzdCOGY_3x_Lo",
+            "y": "pkx8KGsLeyAFJ_XtwC55U7ly6u_CL-PTrTgooCcXp3c",
+            "kid": "uBUipR6c1V5SNOE5eh_JIG-Apv_PKck8JPIE5uQkxmg",
+            "alg": "ES256",
+            "use": "sig"
+          }
+        ]
+      },
+      "issuer": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+    }
+  },
+  "package": {
+    "v": "0.1",
+    "company": "https://auth.sovras.io/e/ferreteria-demo",
+    "op": "op_P1042_pact",
+    "statements": [
+      "eyJhbGciOiJFUzI1NiIsImtpZCI6Ind1b0ZnZkdpb1ZsbVNyaUV0WmQycWVyMC1tSkpxQmxQeEhPVkV5eFBTc3MiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7ImNoYW5uZWwiOiJwYWN0IiwiY2xpZW50X2lkIjoiaHR0cHM6Ly9wYS5leGFtcGxlIiwicGFjdF9wcm9wb3NhbF9yZWNlaXB0Ijp7ImFyZ3NIYXNoIjoic2hhLTI1Njpld1NlcThUclZiU3FwOW05a2xMbzhEbktGS0FuNndrRG55UmVXNmdIdjBzIiwiZ3JhbnRJZCI6ImEyYWdyYW50X1BSVUVCQV8wMDAxIn0sInJlcXVlc3RfZGlnZXN0Ijoic2hhLTI1Njpld1NlcThUclZiU3FwOW05a2xMbzhEbktGS0FuNndrRG55UmVXNmdIdjBzIn0sImNvbXBhbnkiOiJodHRwczovL2F1dGguc292cmFzLmlvL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNTEyMDAwLCJpc3MiOiJodHRwczovL3NvdnJhcy5pby9vcGVyYWRvciIsImtpbmQiOiJyZXF1ZXN0Iiwib3AiOiJvcF9QMTA0Ml9wYWN0IiwicHJldiI6bnVsbCwic2VxIjowLCJ1c2VyIjoiY2xpX2FfZGVtbyIsInYiOiIwLjEifQ.gdEj8UBwkfExR0X-wxYMQ1x-jv2A3cZqPbx8ytZqrz10XosRYqLkPxAdLfXBAa8YBvu2mGQCAfiyLba8OBgU_g~",
+      "eyJhbGciOiJFUzI1NiIsImtpZCI6IlBJa09WdVdvaTRONHN6S0xsWk1FQTFkTjJvUlJ1akZEbzB6YXRuaGN6UGsiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7ImNhcGFiaWxpdHkiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8iLCJjb21wYW55X3Jldmlld19yZXF1aXJlZCI6ZmFsc2UsImV4cGlyZXNfYXQiOiIyMDI2LTEwLTIwVDE2OjE1OjAwWiIsInJlYWRfYmFja190ZXJtcyI6WyJwZWRpZG8iLCJkZXNwYWNob19udWV2byJdLCJyZXZpc2lvbiI6MSwidGVybXNfZGlnZXN0Ijoic2hhLTI1NjpKZXpjbDZoUXY1dDF3a2xtUE84bjRmOFZKUjc3VW10c0o5TnRyN19DWXlVIiwidXNlcl9hcHByb3ZhbF9yZXF1aXJlZCI6dHJ1ZX0sImNvbXBhbnkiOiJodHRwczovL2F1dGguc292cmFzLmlvL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNTEyMDAxLCJpc3MiOiJodHRwczovL2F1dGguc292cmFzLmlvL2UvZmVycmV0ZXJpYS1kZW1vIiwia2luZCI6InRlcm1zIiwib3AiOiJvcF9QMTA0Ml9wYWN0IiwicHJldiI6InNoYS0yNTY6a3Voa2JnVjNsNHdBUU1LOElHZmpmdjlpaUliWnZMazlsbnZwdHA5MG1hVSIsInNlcSI6MSwidXNlciI6ImNsaV9hX2RlbW8iLCJ2IjoiMC4xIn0.INCnFFn5-PRbvj05j1Z0owSdmjgBPoy9yFxCJjyI5aueBDooid3g9n86pbOjrNDIDdxkhP01CZkMym7ZFo7lWw~",
+      "eyJhbGciOiJFUzI1NiIsImtpZCI6Ind1b0ZnZkdpb1ZsbVNyaUV0WmQycWVyMC1tSkpxQmxQeEhPVkV5eFBTc3MiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7ImNoYW5uZWwiOiJ3aGF0c2FwcCIsImRpc3BsYXlfY29kZSI6IjkwODg2NiIsImV2aWRlbmNlIjp7Il9zZCI6WyJVSlNNUjJFbjNhM0hubmY3STF4MWhKSEFJVVoyMlRlaFlEcS1jaXNCRlNJIl19LCJtZXRob2QiOiJjb21wYW55X2NoYW5uZWwiLCJyZXZpc2lvbiI6MSwidGVybXNfZGlnZXN0Ijoic2hhLTI1NjpKZXpjbDZoUXY1dDF3a2xtUE84bjRmOFZKUjc3VW10c0o5TnRyN19DWXlVIn0sImNvbXBhbnkiOiJodHRwczovL2F1dGguc292cmFzLmlvL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNTEyMTIwLCJpc3MiOiJodHRwczovL3NvdnJhcy5pby9vcGVyYWRvciIsImtpbmQiOiJ1c2VyX2FwcHJvdmFsIiwib3AiOiJvcF9QMTA0Ml9wYWN0IiwicHJldiI6InNoYS0yNTY6UlZJNndGYWhvWUxxeFdjX05XS0xZR29xQ2JMUGtHQmFKMUowdUJkWnkwOCIsInNlcSI6MiwidXNlciI6ImNsaV9hX2RlbW8iLCJ2IjoiMC4xIn0.f3EeKyXhU1vAN7_zFiPBL9mwuMVhTTb2tJ-f5hztaFVOHVrEvl1eRO9eU8veJeaE3eho04NygLm0TrR4D9_ucw~WyJxcWpYNEIwX3hCakN3WWpYQjdlYV92IiwiaW5ib3VuZF90ZXh0IiwiQVBST0JBUiA5MDg4NjYiXQ~",
+      "eyJhbGciOiJFUzI1NiIsImtpZCI6Ind1b0ZnZkdpb1ZsbVNyaUV0WmQycWVyMC1tSkpxQmxQeEhPVkV5eFBTc3MiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7ImF0dGVtcHQiOjEsImNhcGFiaWxpdHkiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8iLCJyZWxlYXNlIjoic2hhLTI1NjpJck42WWtIcTJoUVczcGVuamtZZkVyakR3eThTZ0V5ajFwdVNjSU1mbmFZIiwicmV2aXNpb24iOjEsInRlcm1zX2RpZ2VzdCI6InNoYS0yNTY6SmV6Y2w2aFF2NXQxd2tsbVBPOG40ZjhWSlI3N1VtdHNKOU50cjdfQ1l5VSJ9LCJjb21wYW55IjoiaHR0cHM6Ly9hdXRoLnNvdnJhcy5pby9lL2ZlcnJldGVyaWEtZGVtbyIsImlhdCI6MTc5MjUxMjEyMSwiaXNzIjoiaHR0cHM6Ly9zb3ZyYXMuaW8vb3BlcmFkb3IiLCJraW5kIjoiZXhlY3V0aW9uIiwib3AiOiJvcF9QMTA0Ml9wYWN0IiwicHJldiI6InNoYS0yNTY6NGJWN25mMTZYM1lfN3ltUVZFYWdiU0dZdnAtMlNHZWpKOWhzMHB4dDdnQSIsInNlcSI6MywidXNlciI6ImNsaV9hX2RlbW8iLCJ2IjoiMC4xIn0.uoIHjamD6t2JYh8D_MmaXVuZsoNKM_XfP1dzFobZb7Ia3BqQn4ajbEemXuavs4x67vBs4ycVBZLNwxDYXRfORw~",
+      "eyJhbGciOiJFUzI1NiIsImtpZCI6Ind1b0ZnZkdpb1ZsbVNyaUV0WmQycWVyMC1tSkpxQmxQeEhPVkV5eFBTc3MiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7Im1hdGNoZXNfdGVybXMiOnRydWUsIm1ldGhvZCI6InN5c3RlbV9yZWFkX2JhY2siLCJvYnNlcnZlZCI6eyJkZXNwYWNob19udWV2byI6IjIwMjYtMTAtMjgiLCJwZWRpZG8iOiJQLTEwNDIifSwic291cmNlIjoiY29tcGFueV9zeXN0ZW0ifSwiY29tcGFueSI6Imh0dHBzOi8vYXV0aC5zb3ZyYXMuaW8vZS9mZXJyZXRlcmlhLWRlbW8iLCJpYXQiOjE3OTI1MTIxMjIsImlzcyI6Imh0dHBzOi8vc292cmFzLmlvL29wZXJhZG9yIiwia2luZCI6InJlYWRfYmFjayIsIm9wIjoib3BfUDEwNDJfcGFjdCIsInByZXYiOiJzaGEtMjU2OnFFa1NoNjhvX2stYzV2MVhVWF9YSHJzSkhsdUVDdUxWMk16MVpDSmE1SHMiLCJzZXEiOjQsInVzZXIiOiJjbGlfYV9kZW1vIiwidiI6IjAuMSJ9.C3EXk_Ksymu5P5WR40_SWpLFmfet3Kkonmpz-aVftLRWL18ywV9G9C-1Ssv6MJl8xc30E-FABM_ycwm9YoveLQ~",
+      "eyJhbGciOiJFUzI1NiIsImtpZCI6IlBJa09WdVdvaTRONHN6S0xsWk1FQTFkTjJvUlJ1akZEbzB6YXRuaGN6UGsiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7ImNsYWltZWRfYXNzdXJhbmNlIjpbXSwicmVzdWx0X3N1bW1hcnlfZGlnZXN0Ijoic2hhLTI1NjpQbVdPWFczZllDS3N5djR4OFg0SXkzeTRLRmVrcDFzYWRDa2R2NTBHbTI0IiwicmV2aXNpb24iOjEsInN0YXRlIjoic3VjY2VlZGVkIiwidGVybXNfZGlnZXN0Ijoic2hhLTI1NjpKZXpjbDZoUXY1dDF3a2xtUE84bjRmOFZKUjc3VW10c0o5TnRyN19DWXlVIiwidGhpcmRfcGFydHkiOltdfSwiY29tcGFueSI6Imh0dHBzOi8vYXV0aC5zb3ZyYXMuaW8vZS9mZXJyZXRlcmlhLWRlbW8iLCJpYXQiOjE3OTI1MTIxMjMsImlzcyI6Imh0dHBzOi8vYXV0aC5zb3ZyYXMuaW8vZS9mZXJyZXRlcmlhLWRlbW8iLCJraW5kIjoib3V0Y29tZSIsIm9wIjoib3BfUDEwNDJfcGFjdCIsInByZXYiOiJzaGEtMjU2OlFtMVktSGc2M2ZUM1NXT3BSNllwY2puRkxtQ2FURlZHZEpBYjZGZzlXbUUiLCJzZXEiOjUsInVzZXIiOiJjbGlfYV9kZW1vIiwidiI6IjAuMSJ9.7AdF6ATNiI-ASLQFqQz_xGii58qTW8kSZTjcHCx3H0FlcEL6vgezuH-sqezgbMHWOwzPtSoUktxGWqgL2BX1yA~"
+    ]
+  },
+  "receipt": {
+    "jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6InVCVWlwUjZjMVY1U05PRTVlaF9KSUctQXB2X1BLY2s4SlBJRTV1UWt4bWcifQ.eyJhY3Rpb25zIjpbeyJhcmdzSGFzaCI6InNoYS0yNTY6ZXdTZXE4VHJWYlNxcDltOWtsTG84RG5LRktBbjZ3a0RueVJlVzZnSHYwcyIsInRvb2wiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8ucHJlcGFyYXIifV0sImJyYW5kIjoiaHR0cHM6Ly9wcm92aWRlci5zb3ZyYXMuaW8vYTJhL3RfZmVycmV0ZXJpYV9kZW1vIiwiZ3JhbnRJZCI6ImEyYWdyYW50X1BSVUVCQV8wMDAxIiwicGEiOiJodHRwczovL3BhLmV4YW1wbGUiLCJzY29wZXNVc2VkIjpbInBlZGlkb3M6bW9kaWZpY2FyIl0sInRzIjoiMjAyNi0xMC0yMFQxNjowMDowMVoiLCJ1c2VyIjoiY2xpX2FfZGVtbyJ9.NET_uUEL_ZTYJrFKtBfX1Ed856j7o7SZAr_f0mJ144tUqscgQc_zDOXy7djKdoqeHpSeY69J9SKgoSyAjXqAWQ",
+    "claims": {
+      "grantId": "a2agrant_PRUEBA_0001",
+      "user": "cli_a_demo",
+      "pa": "https://pa.example",
+      "brand": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+      "scopesUsed": [
+        "pedidos:modificar"
+      ],
+      "actions": [
+        {
+          "tool": "pedido.reprogramar_despacho.preparar",
+          "argsHash": "sha-256:ewSeq8TrVbSqp9m9klLo8DnKFKAn6wkDnyReW6gHv0s"
+        }
+      ],
+      "ts": "2026-10-20T16:00:01Z"
+    }
+  },
+  "docs": {
+    "https://ferreteria-demo.example/.well-known/agent-card.json": {
+      "name": "Ferretería Demo",
+      "supportedInterfaces": [
+        {
+          "url": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+          "protocolBinding": "HTTP+JSON",
+          "protocolVersion": "1.0"
+        }
+      ],
+      "capabilities": {
+        "extensions": [
+          {
+            "uri": "https://vxpprotocol.org/ext/proof/v0.1",
+            "required": false,
+            "params": {
+              "version": "0.1",
+              "company": "https://auth.sovras.io/e/ferreteria-demo",
+              "jwks_uri": "https://auth.sovras.io/e/ferreteria-demo/sovras/proof-jwks.json",
+              "operator": {
+                "issuer": "https://sovras.io/operador",
+                "jwks_uri": "https://sovras.io/operador/proof-jwks.json"
+              },
+              "custody": "operator_hosted",
+              "log": {
+                "origin": "log.sovras.io/proof/v0.1",
+                "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+                "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+                "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+                "witnesses": []
+              },
+              "domains": [
+                "ferreteria-demo.example"
+              ],
+              "pact": [
+                {
+                  "interface": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+                  "authorization_server": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+                }
+              ],
+              "endpoint": "https://provider.sovras.io/a2a/t_ferreteria_demo/sovras/proof",
+              "approval_channels": [
+                "whatsapp"
+              ],
+              "capabilities": [
+                {
+                  "name": "pedido.reprogramar_despacho",
+                  "effect": "write",
+                  "max_assurance": [
+                    "issuer_key_attested",
+                    "operator_observed",
+                    "operator_reported_read_back",
+                    "operator_reported_channel_approval"
+                  ],
+                  "third_party": []
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "securitySchemes": {
+        "userDelegation": {
+          "oauth2SecurityScheme": {
+            "oauth2MetadataUrl": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth/.well-known/oauth-authorization-server"
+          }
+        }
+      }
+    },
+    "https://auth.sovras.io/.well-known/oauth-authorization-server/e/ferreteria-demo": {
+      "issuer": "https://auth.sovras.io/e/ferreteria-demo",
+      "vxp_proof": {
+        "version": "0.1",
+        "company": "https://auth.sovras.io/e/ferreteria-demo",
+        "jwks_uri": "https://auth.sovras.io/e/ferreteria-demo/sovras/proof-jwks.json",
+        "operator": {
+          "issuer": "https://sovras.io/operador",
+          "jwks_uri": "https://sovras.io/operador/proof-jwks.json"
+        },
+        "custody": "operator_hosted",
+        "log": {
+          "origin": "log.sovras.io/proof/v0.1",
+          "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+          "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+          "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+          "witnesses": []
+        },
+        "domains": [
+          "ferreteria-demo.example"
+        ],
+        "pact": [
+          {
+            "interface": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+            "authorization_server": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+          }
+        ]
+      }
+    },
+    "https://provider.sovras.io/.well-known/oauth-authorization-server/a2a/t_ferreteria_demo/oauth": {
+      "issuer": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth",
+      "jwks_uri": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth/jwks.json",
+      "vxp_proof": {
+        "version": "0.1",
+        "company": "https://auth.sovras.io/e/ferreteria-demo",
+        "jwks_uri": "https://auth.sovras.io/e/ferreteria-demo/sovras/proof-jwks.json",
+        "operator": {
+          "issuer": "https://sovras.io/operador",
+          "jwks_uri": "https://sovras.io/operador/proof-jwks.json"
+        },
+        "custody": "operator_hosted",
+        "log": {
+          "origin": "log.sovras.io/proof/v0.1",
+          "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+          "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+          "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+          "witnesses": []
+        },
+        "domains": [
+          "ferreteria-demo.example"
+        ],
+        "pact": [
+          {
+            "interface": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+            "authorization_server": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+          }
+        ]
+      }
+    },
+    "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth/jwks.json": {
+      "keys": [
+        {
+          "kty": "EC",
+          "crv": "P-256",
+          "x": "5iy_aRnEXNv77JFOjp4GTU1Qzw3ec-WzdCOGY_3x_Lo",
+          "y": "pkx8KGsLeyAFJ_XtwC55U7ly6u_CL-PTrTgooCcXp3c",
+          "kid": "uBUipR6c1V5SNOE5eh_JIG-Apv_PKck8JPIE5uQkxmg",
+          "alg": "ES256",
+          "use": "sig"
+        }
+      ]
+    },
+    "https://auth.sovras.io/e/ferreteria-demo/sovras/proof-jwks.json": {
+      "keys": [
+        {
+          "kty": "EC",
+          "crv": "P-256",
+          "x": "yxg8nvKsBQcK9nw6QhncAn-1CPdR6thZOMI6dNB5Oe8",
+          "y": "Rb104PQRJoygaUg7SPhtkvdtE-KeOoCCAJPcIMVpKHI",
+          "kid": "PIkOVuWoi4N4szKLlZMEA1dN2oRRujFDo0zatnhczPk",
+          "alg": "ES256",
+          "use": "sig"
+        }
+      ]
+    },
+    "https://sovras.io/operador/proof-jwks.json": {
+      "keys": [
+        {
+          "kty": "EC",
+          "crv": "P-256",
+          "x": "8bulkNq5wiXM-5q3c4l9qYRADllkReBSZ360qPdiy3A",
+          "y": "GKHrTLHHUkquZrr16ATsmbIFSVb40dHbX0yLkHKLS6c",
+          "kid": "wuoFgfGioVlmSriEtZd2qer0-mJJqBlPxHOVEyxPSss",
+          "alg": "ES256",
+          "use": "sig"
+        }
+      ]
+    },
+    "https://demo-falsa.example/.well-known/agent-card.json": {
+      "name": "Ferretería Demo",
+      "supportedInterfaces": [
+        {
+          "url": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+          "protocolBinding": "HTTP+JSON",
+          "protocolVersion": "1.0"
+        }
+      ],
+      "capabilities": {
+        "extensions": [
+          {
+            "uri": "https://vxpprotocol.org/ext/proof/v0.1",
+            "required": false,
+            "params": {
+              "version": "0.1",
+              "company": "https://auth.sovras.io/e/ferreteria-demo",
+              "jwks_uri": "https://auth.sovras.io/e/ferreteria-demo/sovras/proof-jwks.json",
+              "operator": {
+                "issuer": "https://sovras.io/operador",
+                "jwks_uri": "https://sovras.io/operador/proof-jwks.json"
+              },
+              "custody": "operator_hosted",
+              "log": {
+                "origin": "log.sovras.io/proof/v0.1",
+                "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+                "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+                "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+                "witnesses": []
+              },
+              "domains": [
+                "ferreteria-demo.example"
+              ],
+              "pact": [
+                {
+                  "interface": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+                  "authorization_server": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+                }
+              ],
+              "endpoint": "https://provider.sovras.io/a2a/t_ferreteria_demo/sovras/proof",
+              "approval_channels": [
+                "whatsapp"
+              ],
+              "capabilities": [
+                {
+                  "name": "pedido.reprogramar_despacho",
+                  "effect": "write",
+                  "max_assurance": [
+                    "issuer_key_attested",
+                    "operator_observed",
+                    "operator_reported_read_back",
+                    "operator_reported_channel_approval"
+                  ],
+                  "third_party": []
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "securitySchemes": {
+        "userDelegation": {
+          "oauth2SecurityScheme": {
+            "oauth2MetadataUrl": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth/.well-known/oauth-authorization-server"
+          }
+        }
+      }
+    },
+    "https://otro-proveedor.example/.well-known/oauth-authorization-server/a2a/demo-falso/oauth": {
+      "issuer": "https://otro-proveedor.example/a2a/demo-falso/oauth",
+      "jwks_uri": "https://otro-proveedor.example/a2a/demo-falso/oauth/jwks.json",
+      "vxp_proof": {
+        "version": "0.1",
+        "company": "https://auth.sovras.io/e/ferreteria-demo",
+        "jwks_uri": "https://auth.sovras.io/e/ferreteria-demo/sovras/proof-jwks.json",
+        "operator": {
+          "issuer": "https://sovras.io/operador",
+          "jwks_uri": "https://sovras.io/operador/proof-jwks.json"
+        },
+        "custody": "operator_hosted",
+        "log": {
+          "origin": "log.sovras.io/proof/v0.1",
+          "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+          "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+          "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+          "witnesses": []
+        },
+        "domains": [
+          "ferreteria-demo.example"
+        ],
+        "pact": [
+          {
+            "interface": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+            "authorization_server": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+          }
+        ]
+      }
+    },
+    "https://otro-proveedor.example/.well-known/agent-card.json": {
+      "name": "Ferretería Demo",
+      "supportedInterfaces": [
+        {
+          "url": "https://otro-proveedor.example/a2a/demo",
+          "protocolBinding": "HTTP+JSON",
+          "protocolVersion": "1.0"
+        }
+      ],
+      "capabilities": {
+        "extensions": [
+          {
+            "uri": "https://vxpprotocol.org/ext/proof/v0.1",
+            "required": false,
+            "params": {
+              "version": "0.1",
+              "company": "https://otro-proveedor.example/e/demo",
+              "jwks_uri": "https://otro-proveedor.example/e/demo/sovras/proof-jwks.json",
+              "operator": {
+                "issuer": "https://otro-proveedor.example/op",
+                "jwks_uri": "https://otro-proveedor.example/op/proof-jwks.json"
+              },
+              "custody": "operator_hosted",
+              "log": {
+                "origin": "log.sovras.io/proof/v0.1",
+                "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+                "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+                "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+                "witnesses": []
+              },
+              "domains": [
+                "otro-proveedor.example"
+              ],
+              "pact": [
+                {
+                  "interface": "https://otro-proveedor.example/a2a/demo",
+                  "authorization_server": "https://otro-proveedor.example/a2a/demo/oauth"
+                }
+              ],
+              "endpoint": "https://provider.sovras.io/a2a/t_ferreteria_demo/sovras/proof",
+              "approval_channels": [
+                "whatsapp"
+              ],
+              "capabilities": [
+                {
+                  "name": "pedido.reprogramar_despacho",
+                  "effect": "write",
+                  "max_assurance": [
+                    "issuer_key_attested",
+                    "operator_observed",
+                    "operator_reported_read_back",
+                    "operator_reported_channel_approval"
+                  ],
+                  "third_party": []
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "securitySchemes": {
+        "userDelegation": {
+          "oauth2SecurityScheme": {
+            "oauth2MetadataUrl": "https://otro-proveedor.example/a2a/demo/oauth/.well-known/oauth-authorization-server"
+          }
+        }
+      }
+    },
+    "https://otro-proveedor.example/.well-known/oauth-authorization-server/e/demo": {
+      "issuer": "https://otro-proveedor.example/e/demo",
+      "vxp_proof": {
+        "version": "0.1",
+        "company": "https://otro-proveedor.example/e/demo",
+        "jwks_uri": "https://otro-proveedor.example/e/demo/sovras/proof-jwks.json",
+        "operator": {
+          "issuer": "https://otro-proveedor.example/op",
+          "jwks_uri": "https://otro-proveedor.example/op/proof-jwks.json"
+        },
+        "custody": "operator_hosted",
+        "log": {
+          "origin": "log.sovras.io/proof/v0.1",
+          "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+          "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+          "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+          "witnesses": []
+        },
+        "domains": [
+          "otro-proveedor.example"
+        ],
+        "pact": [
+          {
+            "interface": "https://otro-proveedor.example/a2a/demo",
+            "authorization_server": "https://otro-proveedor.example/a2a/demo/oauth"
+          }
+        ]
+      }
+    },
+    "https://otro-proveedor.example/.well-known/oauth-authorization-server/a2a/demo/oauth": {
+      "issuer": "https://otro-proveedor.example/a2a/demo/oauth",
+      "jwks_uri": "https://otro-proveedor.example/a2a/demo/oauth/jwks.json",
+      "vxp_proof": {
+        "version": "0.1",
+        "company": "https://otro-proveedor.example/e/demo",
+        "jwks_uri": "https://otro-proveedor.example/e/demo/sovras/proof-jwks.json",
+        "operator": {
+          "issuer": "https://otro-proveedor.example/op",
+          "jwks_uri": "https://otro-proveedor.example/op/proof-jwks.json"
+        },
+        "custody": "operator_hosted",
+        "log": {
+          "origin": "log.sovras.io/proof/v0.1",
+          "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+          "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+          "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+          "witnesses": []
+        },
+        "domains": [
+          "otro-proveedor.example"
+        ],
+        "pact": [
+          {
+            "interface": "https://otro-proveedor.example/a2a/demo",
+            "authorization_server": "https://otro-proveedor.example/a2a/demo/oauth"
+          }
+        ]
+      }
+    },
+    "https://otro-proveedor.example/e/demo/sovras/proof-jwks.json": {
+      "keys": [
+        {
+          "kty": "EC",
+          "crv": "P-256",
+          "x": "XRB8DgBsz1M8qMUCDLYnGJWUofc0EjeUSRMvWr-McyA",
+          "y": "kNkdc1na0igKKFSx-S1cbcJuMXXtXAzpobi06lh_UU4",
+          "kid": "ONXNBcHm0cF52ptAvX-99bAzTw_yqri8-mnn1XY5Mb8",
+          "alg": "ES256",
+          "use": "sig"
+        }
+      ]
+    },
+    "https://otro-proveedor.example/op/proof-jwks.json": {
+      "keys": [
+        {
+          "kty": "EC",
+          "crv": "P-256",
+          "x": "XRB8DgBsz1M8qMUCDLYnGJWUofc0EjeUSRMvWr-McyA",
+          "y": "kNkdc1na0igKKFSx-S1cbcJuMXXtXAzpobi06lh_UU4",
+          "kid": "ONXNBcHm0cF52ptAvX-99bAzTw_yqri8-mnn1XY5Mb8",
+          "alg": "ES256",
+          "use": "sig"
+        }
+      ]
+    },
+    "https://copia-distinta.ferreteria-demo.example/.well-known/agent-card.json": {
+      "name": "Ferretería Demo",
+      "supportedInterfaces": [
+        {
+          "url": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+          "protocolBinding": "HTTP+JSON",
+          "protocolVersion": "1.0"
+        }
+      ],
+      "capabilities": {
+        "extensions": [
+          {
+            "uri": "https://vxpprotocol.org/ext/proof/v0.1",
+            "required": false,
+            "params": {
+              "version": "0.1",
+              "company": "https://auth.sovras.io/e/ferreteria-demo",
+              "jwks_uri": "https://auth.sovras.io/e/ferreteria-demo/sovras/proof-jwks.json",
+              "operator": {
+                "issuer": "https://sovras.io/operador",
+                "jwks_uri": "https://sovras.io/operador/proof-jwks.json"
+              },
+              "custody": "customer_managed",
+              "log": {
+                "origin": "log.sovras.io/proof/v0.1",
+                "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+                "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+                "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+                "witnesses": []
+              },
+              "domains": [
+                "ferreteria-demo.example"
+              ],
+              "pact": [
+                {
+                  "interface": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+                  "authorization_server": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+                }
+              ],
+              "endpoint": "https://provider.sovras.io/a2a/t_ferreteria_demo/sovras/proof",
+              "approval_channels": [
+                "whatsapp"
+              ],
+              "capabilities": [
+                {
+                  "name": "pedido.reprogramar_despacho",
+                  "effect": "write",
+                  "max_assurance": [
+                    "issuer_key_attested",
+                    "operator_observed",
+                    "operator_reported_read_back",
+                    "operator_reported_channel_approval"
+                  ],
+                  "third_party": []
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "securitySchemes": {
+        "userDelegation": {
+          "oauth2SecurityScheme": {
+            "oauth2MetadataUrl": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth/.well-known/oauth-authorization-server"
+          }
+        }
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "PD1",
+      "expect": "valid",
+      "anchor": {
+        "brand_domain": "ferreteria-demo.example"
+      },
+      "receipt": {
+        "jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6InVCVWlwUjZjMVY1U05PRTVlaF9KSUctQXB2X1BLY2s4SlBJRTV1UWt4bWcifQ.eyJhY3Rpb25zIjpbeyJhcmdzSGFzaCI6InNoYS0yNTY6ZXdTZXE4VHJWYlNxcDltOWtsTG84RG5LRktBbjZ3a0RueVJlVzZnSHYwcyIsInRvb2wiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8ucHJlcGFyYXIifV0sImJyYW5kIjoiaHR0cHM6Ly9wcm92aWRlci5zb3ZyYXMuaW8vYTJhL3RfZmVycmV0ZXJpYV9kZW1vIiwiZ3JhbnRJZCI6ImEyYWdyYW50X1BSVUVCQV8wMDAxIiwicGEiOiJodHRwczovL3BhLmV4YW1wbGUiLCJzY29wZXNVc2VkIjpbInBlZGlkb3M6bW9kaWZpY2FyIl0sInRzIjoiMjAyNi0xMC0yMFQxNjowMDowMVoiLCJ1c2VyIjoiY2xpX2FfZGVtbyJ9.NET_uUEL_ZTYJrFKtBfX1Ed856j7o7SZAr_f0mJ144tUqscgQc_zDOXy7djKdoqeHpSeY69J9SKgoSyAjXqAWQ",
+        "claims": {
+          "grantId": "a2agrant_PRUEBA_0001",
+          "user": "cli_a_demo",
+          "pa": "https://pa.example",
+          "brand": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+          "scopesUsed": [
+            "pedidos:modificar"
+          ],
+          "actions": [
+            {
+              "tool": "pedido.reprogramar_despacho.preparar",
+              "argsHash": "sha-256:ewSeq8TrVbSqp9m9klLo8DnKFKAn6wkDnyReW6gHv0s"
+            }
+          ],
+          "ts": "2026-10-20T16:00:01Z"
+        }
+      },
+      "expect_fields": {
+        "company": "https://auth.sovras.io/e/ferreteria-demo",
+        "anchor": "brand_domain",
+        "final_state": "succeeded",
+        "pact_receipt": "verified"
+      },
+      "note": "Ancla por la marca: Card en el dominio (PACT §2.1) → company → la empresa lista el dominio y la interfaz → AS de PACT; recibo verificado y citado"
+    },
+    {
+      "id": "PD2",
+      "expect": "valid",
+      "anchor": {
+        "pact_issuer": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+      },
+      "expect_fields": {
+        "company": "https://auth.sovras.io/e/ferreteria-demo",
+        "anchor": "pact_issuer",
+        "pact_receipt": "not_presented"
+      },
+      "note": "Ancla por el AS de PACT que el agente conoció al delegar (PACT §5.1); sin recibo presentado"
+    },
+    {
+      "id": "PD3",
+      "expect": "issuer_not_anchored",
+      "anchor": {
+        "brand_domain": "demo-falsa.example"
+      },
+      "note": "Una copia fiel de la Card de Demo en un dominio que Demo no lista en `domains`"
+    },
+    {
+      "id": "PD4",
+      "expect": "issuer_not_anchored",
+      "anchor": {
+        "pact_issuer": "https://otro-proveedor.example/a2a/demo-falso/oauth"
+      },
+      "note": "Un AS que se declara de Demo y que Demo no lista en `pact`"
+    },
+    {
+      "id": "PD5",
+      "expect": "company_mismatch",
+      "anchor": {
+        "brand_domain": "otro-proveedor.example"
+      },
+      "note": "Ronda 2 M1: la Card de otro proveedor con el nombre de la marca ancla a SU issuer, no al de Demo; el paquete de Demo no valida a nombre de él"
+    },
+    {
+      "id": "PD6",
+      "expect": "issuer_not_anchored",
+      "anchor": {
+        "pact_issuer": "https://otro-proveedor.example/a2a/sin-metadata/oauth"
+      },
+      "note": "Ronda 2 m4: metadata ausente (404) → issuer_not_anchored, sin caerse"
+    },
+    {
+      "id": "PD7",
+      "expect": "issuer_not_anchored",
+      "anchor": {
+        "brand_domain": "copia-distinta.ferreteria-demo.example"
+      },
+      "docs_override": {
+        "https://auth.sovras.io/.well-known/oauth-authorization-server/e/ferreteria-demo": {
+          "issuer": "https://auth.sovras.io/e/ferreteria-demo",
+          "vxp_proof": {
+            "version": "0.1",
+            "company": "https://auth.sovras.io/e/ferreteria-demo",
+            "jwks_uri": "https://auth.sovras.io/e/ferreteria-demo/sovras/proof-jwks.json",
+            "operator": {
+              "issuer": "https://sovras.io/operador",
+              "jwks_uri": "https://sovras.io/operador/proof-jwks.json"
+            },
+            "custody": "operator_hosted",
+            "log": {
+              "origin": "log.sovras.io/proof/v0.1",
+              "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+              "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+              "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+              "witnesses": []
+            },
+            "domains": [
+              "ferreteria-demo.example",
+              "copia-distinta.ferreteria-demo.example"
+            ],
+            "pact": [
+              {
+                "interface": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+                "authorization_server": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+              }
+            ]
+          }
+        },
+        "https://provider.sovras.io/.well-known/oauth-authorization-server/a2a/t_ferreteria_demo/oauth": {
+          "issuer": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth",
+          "jwks_uri": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth/jwks.json",
+          "vxp_proof": {
+            "version": "0.1",
+            "company": "https://auth.sovras.io/e/ferreteria-demo",
+            "jwks_uri": "https://auth.sovras.io/e/ferreteria-demo/sovras/proof-jwks.json",
+            "operator": {
+              "issuer": "https://sovras.io/operador",
+              "jwks_uri": "https://sovras.io/operador/proof-jwks.json"
+            },
+            "custody": "operator_hosted",
+            "log": {
+              "origin": "log.sovras.io/proof/v0.1",
+              "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+              "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+              "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+              "witnesses": []
+            },
+            "domains": [
+              "ferreteria-demo.example",
+              "copia-distinta.ferreteria-demo.example"
+            ],
+            "pact": [
+              {
+                "interface": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+                "authorization_server": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+              }
+            ]
+          }
+        }
+      },
+      "note": "La copia de la Card no es idéntica a la metadata de la empresa"
+    },
+    {
+      "id": "PD8",
+      "expect": "issuer_not_anchored",
+      "anchor": {
+        "brand_domain": "ferreteria-demo.example"
+      },
+      "docs_override": {
+        "https://provider.sovras.io/.well-known/oauth-authorization-server/a2a/t_ferreteria_demo/oauth": {
+          "issuer": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth",
+          "jwks_uri": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth/jwks.json",
+          "vxp_proof": {
+            "version": "0.1",
+            "company": "https://auth.sovras.io/e/ferreteria-demo",
+            "jwks_uri": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth/otras-llaves.json",
+            "operator": {
+              "issuer": "https://sovras.io/operador",
+              "jwks_uri": "https://sovras.io/operador/proof-jwks.json"
+            },
+            "custody": "operator_hosted",
+            "log": {
+              "origin": "log.sovras.io/proof/v0.1",
+              "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+              "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+              "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+              "witnesses": []
+            },
+            "domains": [
+              "ferreteria-demo.example"
+            ],
+            "pact": [
+              {
+                "interface": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+                "authorization_server": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+              }
+            ]
+          }
+        }
+      },
+      "note": "La copia del bloque en la metadata del AS de PACT no es la de la empresa"
+    },
+    {
+      "id": "PD9",
+      "expect": "issuer_not_anchored",
+      "anchor": {
+        "pact_issuer": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+      },
+      "docs_override": {
+        "https://provider.sovras.io/.well-known/oauth-authorization-server/a2a/t_ferreteria_demo/oauth": {
+          "issuer": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth",
+          "jwks_uri": "https://cdn.otro.example/jwks.json",
+          "vxp_proof": {
+            "version": "0.1",
+            "company": "https://auth.sovras.io/e/ferreteria-demo",
+            "jwks_uri": "https://auth.sovras.io/e/ferreteria-demo/sovras/proof-jwks.json",
+            "operator": {
+              "issuer": "https://sovras.io/operador",
+              "jwks_uri": "https://sovras.io/operador/proof-jwks.json"
+            },
+            "custody": "operator_hosted",
+            "log": {
+              "origin": "log.sovras.io/proof/v0.1",
+              "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+              "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+              "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+              "witnesses": []
+            },
+            "domains": [
+              "ferreteria-demo.example"
+            ],
+            "pact": [
+              {
+                "interface": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+                "authorization_server": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+              }
+            ]
+          }
+        }
+      },
+      "note": "El jwks_uri del AS de PACT (llaves de los recibos) no está bajo su issuer"
+    },
+    {
+      "id": "PD10",
+      "expect": "issuer_not_anchored",
+      "anchor": {
+        "brand_domain": "ferreteria-demo.example"
+      },
+      "docs_override": {
+        "https://ferreteria-demo.example/.well-known/agent-card.json": {
+          "name": "Ferretería Demo",
+          "supportedInterfaces": [
+            {
+              "url": "https://provider.sovras.io/a2a/otra-interfaz",
+              "protocolBinding": "HTTP+JSON",
+              "protocolVersion": "1.0"
+            }
+          ],
+          "capabilities": {
+            "extensions": [
+              {
+                "uri": "https://vxpprotocol.org/ext/proof/v0.1",
+                "required": false,
+                "params": {
+                  "version": "0.1",
+                  "company": "https://auth.sovras.io/e/ferreteria-demo",
+                  "jwks_uri": "https://auth.sovras.io/e/ferreteria-demo/sovras/proof-jwks.json",
+                  "operator": {
+                    "issuer": "https://sovras.io/operador",
+                    "jwks_uri": "https://sovras.io/operador/proof-jwks.json"
+                  },
+                  "custody": "operator_hosted",
+                  "log": {
+                    "origin": "log.sovras.io/proof/v0.1",
+                    "checkpoint_url": "https://log.sovras.io/proof/v0.1/checkpoint",
+                    "consistency_url": "https://log.sovras.io/proof/v0.1/consistency",
+                    "jwks_uri": "https://log.sovras.io/proof/v0.1/jwks.json",
+                    "witnesses": []
+                  },
+                  "domains": [
+                    "ferreteria-demo.example"
+                  ],
+                  "pact": [
+                    {
+                      "interface": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+                      "authorization_server": "https://provider.sovras.io/a2a/t_ferreteria_demo/oauth"
+                    }
+                  ],
+                  "endpoint": "https://provider.sovras.io/a2a/t_ferreteria_demo/sovras/proof",
+                  "approval_channels": [
+                    "whatsapp"
+                  ],
+                  "capabilities": [
+                    {
+                      "name": "pedido.reprogramar_despacho",
+                      "effect": "write",
+                      "max_assurance": [
+                        "issuer_key_attested",
+                        "operator_observed",
+                        "operator_reported_read_back",
+                        "operator_reported_channel_approval"
+                      ],
+                      "third_party": []
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "securitySchemes": {
+            "userDelegation": {
+              "oauth2SecurityScheme": {
+                "oauth2MetadataUrl": "https://provider.sovras.io/a2a/otra-interfaz/oauth/.well-known/oauth-authorization-server"
+              }
+            }
+          }
+        }
+      },
+      "note": "La Card del dominio apunta a una interfaz que la empresa no lista en `pact`"
+    },
+    {
+      "id": "R1",
+      "expect": "pact_receipt_invalid",
+      "seq": 0,
+      "anchor": {
+        "brand_domain": "ferreteria-demo.example"
+      },
+      "receipt": {
+        "jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6Ik9OWE5CY0htMGNGNTJwdEF2WC05OWJBelR3X3lxcmk4LW1ubjFYWTVNYjgifQ.eyJhY3Rpb25zIjpbeyJhcmdzSGFzaCI6InNoYS0yNTY6ZXdTZXE4VHJWYlNxcDltOWtsTG84RG5LRktBbjZ3a0RueVJlVzZnSHYwcyIsInRvb2wiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8ucHJlcGFyYXIifV0sImJyYW5kIjoiaHR0cHM6Ly9wcm92aWRlci5zb3ZyYXMuaW8vYTJhL3RfZmVycmV0ZXJpYV9kZW1vIiwiZ3JhbnRJZCI6ImEyYWdyYW50X1BSVUVCQV8wMDAxIiwicGEiOiJodHRwczovL3BhLmV4YW1wbGUiLCJzY29wZXNVc2VkIjpbInBlZGlkb3M6bW9kaWZpY2FyIl0sInRzIjoiMjAyNi0xMC0yMFQxNjowMDowMVoiLCJ1c2VyIjoiY2xpX2FfZGVtbyJ9.jeMYXKSjJ0eJjSber1e6LCnODnJLGlze2RB4VCpVieopMY-mE3RlJpt_5IhbXsQYfnne5dvstDiPug2f64PVcA",
+        "claims": {
+          "grantId": "a2agrant_PRUEBA_0001",
+          "user": "cli_a_demo",
+          "pa": "https://pa.example",
+          "brand": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+          "scopesUsed": [
+            "pedidos:modificar"
+          ],
+          "actions": [
+            {
+              "tool": "pedido.reprogramar_despacho.preparar",
+              "argsHash": "sha-256:ewSeq8TrVbSqp9m9klLo8DnKFKAn6wkDnyReW6gHv0s"
+            }
+          ],
+          "ts": "2026-10-20T16:00:01Z"
+        }
+      },
+      "note": "Recibo firmado con una llave que no está en el jwks_uri del AS de PACT anclado"
+    },
+    {
+      "id": "R2",
+      "expect": "pact_receipt_invalid",
+      "seq": 0,
+      "anchor": {
+        "brand_domain": "ferreteria-demo.example"
+      },
+      "receipt": {
+        "jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6InVCVWlwUjZjMVY1U05PRTVlaF9KSUctQXB2X1BLY2s4SlBJRTV1UWt4bWcifQ.eyJhY3Rpb25zIjpbeyJhcmdzSGFzaCI6InNoYS0yNTY6ZXdTZXE4VHJWYlNxcDltOWtsTG84RG5LRktBbjZ3a0RueVJlVzZnSHYwcyIsInRvb2wiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8ucHJlcGFyYXIifV0sImJyYW5kIjoiaHR0cHM6Ly9wcm92aWRlci5zb3ZyYXMuaW8vYTJhL3RfZmVycmV0ZXJpYV9kZW1vIiwiZ3JhbnRJZCI6ImEyYWdyYW50X09UUk8iLCJwYSI6Imh0dHBzOi8vcGEuZXhhbXBsZSIsInNjb3Blc1VzZWQiOlsicGVkaWRvczptb2RpZmljYXIiXSwidHMiOiIyMDI2LTEwLTIwVDE2OjAwOjAxWiIsInVzZXIiOiJjbGlfYV9kZW1vIn0.NET_uUEL_ZTYJrFKtBfX1Ed856j7o7SZAr_f0mJ144tUqscgQc_zDOXy7djKdoqeHpSeY69J9SKgoSyAjXqAWQ",
+        "claims": {
+          "grantId": "a2agrant_OTRO",
+          "user": "cli_a_demo",
+          "pa": "https://pa.example",
+          "brand": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+          "scopesUsed": [
+            "pedidos:modificar"
+          ],
+          "actions": [
+            {
+              "tool": "pedido.reprogramar_despacho.preparar",
+              "argsHash": "sha-256:ewSeq8TrVbSqp9m9klLo8DnKFKAn6wkDnyReW6gHv0s"
+            }
+          ],
+          "ts": "2026-10-20T16:00:01Z"
+        }
+      },
+      "note": "Claims del recibo alterados sin volver a firmar"
+    },
+    {
+      "id": "R3",
+      "expect": "pact_receipt_mismatch",
+      "seq": 0,
+      "anchor": {
+        "brand_domain": "ferreteria-demo.example"
+      },
+      "receipt": {
+        "jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6InVCVWlwUjZjMVY1U05PRTVlaF9KSUctQXB2X1BLY2s4SlBJRTV1UWt4bWcifQ.eyJhY3Rpb25zIjpbeyJhcmdzSGFzaCI6InNoYS0yNTY6ZXdTZXE4VHJWYlNxcDltOWtsTG84RG5LRktBbjZ3a0RueVJlVzZnSHYwcyIsInRvb2wiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8ucHJlcGFyYXIifV0sImJyYW5kIjoiaHR0cHM6Ly9wcm92aWRlci5zb3ZyYXMuaW8vYTJhL3RfZmVycmV0ZXJpYV9kZW1vIiwiZ3JhbnRJZCI6ImEyYWdyYW50X09UUk8iLCJwYSI6Imh0dHBzOi8vcGEuZXhhbXBsZSIsInNjb3Blc1VzZWQiOlsicGVkaWRvczptb2RpZmljYXIiXSwidHMiOiIyMDI2LTEwLTIwVDE2OjAwOjAxWiIsInVzZXIiOiJjbGlfYV9kZW1vIn0.KLG-tsaixx_J1Zopehk1pExjsyf_BiYDZFdFf2b4weEKe5zeFwSTifQMDLjntCUwYGEjOrJq0QV3KSyof-kpcA",
+        "claims": {
+          "grantId": "a2agrant_OTRO",
+          "user": "cli_a_demo",
+          "pa": "https://pa.example",
+          "brand": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+          "scopesUsed": [
+            "pedidos:modificar"
+          ],
+          "actions": [
+            {
+              "tool": "pedido.reprogramar_despacho.preparar",
+              "argsHash": "sha-256:ewSeq8TrVbSqp9m9klLo8DnKFKAn6wkDnyReW6gHv0s"
+            }
+          ],
+          "ts": "2026-10-20T16:00:01Z"
+        }
+      },
+      "note": "Recibo válido de otra delegación"
+    },
+    {
+      "id": "R4",
+      "expect": "pact_receipt_mismatch",
+      "seq": 0,
+      "anchor": {
+        "brand_domain": "ferreteria-demo.example"
+      },
+      "receipt": {
+        "jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6InVCVWlwUjZjMVY1U05PRTVlaF9KSUctQXB2X1BLY2s4SlBJRTV1UWt4bWcifQ.eyJhY3Rpb25zIjpbeyJhcmdzSGFzaCI6InNoYS0yNTY6NHNGTEtGZ0dyajNKSHNxaHpZMVEtbWRtSEhPRDNZQ3hwNVNpQTBGdzYtTSIsInRvb2wiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8ucHJlcGFyYXIifV0sImJyYW5kIjoiaHR0cHM6Ly9wcm92aWRlci5zb3ZyYXMuaW8vYTJhL3RfZmVycmV0ZXJpYV9kZW1vIiwiZ3JhbnRJZCI6ImEyYWdyYW50X1BSVUVCQV8wMDAxIiwicGEiOiJodHRwczovL3BhLmV4YW1wbGUiLCJzY29wZXNVc2VkIjpbInBlZGlkb3M6bW9kaWZpY2FyIl0sInRzIjoiMjAyNi0xMC0yMFQxNjowMDowMVoiLCJ1c2VyIjoiY2xpX2FfZGVtbyJ9.oT9N_JkgObuPUas1gSMYOKOCt_POZ7MXHWOMBF17fEC27BiQ07WQpMrnL76WeSd1N34dxEvxFaj6l7F1uZhD9g",
+        "claims": {
+          "grantId": "a2agrant_PRUEBA_0001",
+          "user": "cli_a_demo",
+          "pa": "https://pa.example",
+          "brand": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+          "scopesUsed": [
+            "pedidos:modificar"
+          ],
+          "actions": [
+            {
+              "tool": "pedido.reprogramar_despacho.preparar",
+              "argsHash": "sha-256:4sFLKFgGrj3JHsqhzY1Q-mdmHHOD3YCxp5SiA0Fw6-M"
+            }
+          ],
+          "ts": "2026-10-20T16:00:01Z"
+        }
+      },
+      "note": "Recibo válido de otra petición"
+    },
+    {
+      "id": "R5",
+      "expect": "pact_receipt_mismatch",
+      "seq": 0,
+      "anchor": {
+        "brand_domain": "ferreteria-demo.example"
+      },
+      "receipt": {
+        "jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6InVCVWlwUjZjMVY1U05PRTVlaF9KSUctQXB2X1BLY2s4SlBJRTV1UWt4bWcifQ.eyJhY3Rpb25zIjpbeyJhcmdzSGFzaCI6InNoYS0yNTY6ZXdTZXE4VHJWYlNxcDltOWtsTG84RG5LRktBbjZ3a0RueVJlVzZnSHYwcyIsInRvb2wiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8ucHJlcGFyYXIifV0sImJyYW5kIjoiaHR0cHM6Ly9wcm92aWRlci5zb3ZyYXMuaW8vYTJhL3RfbGlicmVyaWFfZGVtbyIsImdyYW50SWQiOiJhMmFncmFudF9QUlVFQkFfMDAwMSIsInBhIjoiaHR0cHM6Ly9wYS5leGFtcGxlIiwic2NvcGVzVXNlZCI6WyJwZWRpZG9zOm1vZGlmaWNhciJdLCJ0cyI6IjIwMjYtMTAtMjBUMTY6MDA6MDFaIiwidXNlciI6ImNsaV9hX2RlbW8ifQ.fV5E-H34wymVVO-NKOM-rLhnU_Xup6vi9q3sBB2m05Hp5mYzxutoWzZpHuN1KDN5_OUS02tqq-e3DTS_vPqAZw",
+        "claims": {
+          "grantId": "a2agrant_PRUEBA_0001",
+          "user": "cli_a_demo",
+          "pa": "https://pa.example",
+          "brand": "https://provider.sovras.io/a2a/t_libreria_demo",
+          "scopesUsed": [
+            "pedidos:modificar"
+          ],
+          "actions": [
+            {
+              "tool": "pedido.reprogramar_despacho.preparar",
+              "argsHash": "sha-256:ewSeq8TrVbSqp9m9klLo8DnKFKAn6wkDnyReW6gHv0s"
+            }
+          ],
+          "ts": "2026-10-20T16:00:01Z"
+        }
+      },
+      "note": "Recibo de otra marca"
+    },
+    {
+      "id": "R6",
+      "expect": "pact_receipt_mismatch",
+      "seq": 0,
+      "anchor": {
+        "brand_domain": "ferreteria-demo.example"
+      },
+      "receipt": {
+        "jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6InVCVWlwUjZjMVY1U05PRTVlaF9KSUctQXB2X1BLY2s4SlBJRTV1UWt4bWcifQ.eyJhY3Rpb25zIjpbeyJhcmdzSGFzaCI6InNoYS0yNTY6MEZ2cjBOYk1iWVpnRWtzcGtMczFuQ3ZhVTEwYmdhd05jZkpUQUYwZWFvNCIsInRvb2wiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8ucHJlcGFyYXIifV0sImJyYW5kIjoiaHR0cHM6Ly9wcm92aWRlci5zb3ZyYXMuaW8vYTJhL3RfZmVycmV0ZXJpYV9kZW1vIiwiZ3JhbnRJZCI6ImEyYWdyYW50X1BSVUVCQV8wMDAxIiwicGEiOiJodHRwczovL3BhLmV4YW1wbGUiLCJzY29wZXNVc2VkIjpbInBlZGlkb3M6bW9kaWZpY2FyIl0sInRzIjoiMjAyNi0xMC0yMFQxNjowMDowMVoiLCJ1c2VyIjoiY2xpX2FfZGVtbyJ9.IncDdkx3bNsVJogu8_6bzyM6yIsPUhFUJAp321px2YED6koBK1O3_yaqnSKrnLO9N8Thtlmvvgyhsk7mwsCOGg",
+        "claims": {
+          "grantId": "a2agrant_PRUEBA_0001",
+          "user": "cli_a_demo",
+          "pa": "https://pa.example",
+          "brand": "https://provider.sovras.io/a2a/t_ferreteria_demo",
+          "scopesUsed": [
+            "pedidos:modificar"
+          ],
+          "actions": [
+            {
+              "tool": "pedido.reprogramar_despacho.preparar",
+              "argsHash": "sha-256:0Fvr0NbMbYZgEkspkLs1nCvaU10bgawNcfJTAF0eao4"
+            }
+          ],
+          "ts": "2026-10-20T16:00:01Z"
+        }
+      },
+      "package": {
+        "v": "0.1",
+        "company": "https://auth.sovras.io/e/ferreteria-demo",
+        "op": "op_P1042_pact",
+        "statements": [
+          "eyJhbGciOiJFUzI1NiIsImtpZCI6Ind1b0ZnZkdpb1ZsbVNyaUV0WmQycWVyMC1tSkpxQmxQeEhPVkV5eFBTc3MiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7ImNoYW5uZWwiOiJwYWN0IiwiY2xpZW50X2lkIjoiaHR0cHM6Ly9wYS5leGFtcGxlIiwicGFjdF9wcm9wb3NhbF9yZWNlaXB0Ijp7ImFyZ3NIYXNoIjoic2hhLTI1NjowRnZyME5iTWJZWmdFa3Nwa0xzMW5DdmFVMTBiZ2F3TmNmSlRBRjBlYW80IiwiZ3JhbnRJZCI6ImEyYWdyYW50X1BSVUVCQV8wMDAxIn0sInJlcXVlc3RfZGlnZXN0Ijoic2hhLTI1Njpld1NlcThUclZiU3FwOW05a2xMbzhEbktGS0FuNndrRG55UmVXNmdIdjBzIn0sImNvbXBhbnkiOiJodHRwczovL2F1dGguc292cmFzLmlvL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNTEyMDAwLCJpc3MiOiJodHRwczovL3NvdnJhcy5pby9vcGVyYWRvciIsImtpbmQiOiJyZXF1ZXN0Iiwib3AiOiJvcF9QMTA0Ml9wYWN0IiwicHJldiI6bnVsbCwic2VxIjowLCJ1c2VyIjoiY2xpX2FfZGVtbyIsInYiOiIwLjEifQ.8pid5HLle6iY38qDzvfYwDPD1mF9tNhFSWYPbzNHwUdcGcAll7wK2N_vFJZ2wBterahafb-qxywOVCjBpYNirw~",
+          "eyJhbGciOiJFUzI1NiIsImtpZCI6IlBJa09WdVdvaTRONHN6S0xsWk1FQTFkTjJvUlJ1akZEbzB6YXRuaGN6UGsiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7ImNhcGFiaWxpdHkiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8iLCJjb21wYW55X3Jldmlld19yZXF1aXJlZCI6ZmFsc2UsImV4cGlyZXNfYXQiOiIyMDI2LTEwLTIwVDE2OjE1OjAwWiIsInJlYWRfYmFja190ZXJtcyI6WyJwZWRpZG8iLCJkZXNwYWNob19udWV2byJdLCJyZXZpc2lvbiI6MSwidGVybXNfZGlnZXN0Ijoic2hhLTI1NjpKZXpjbDZoUXY1dDF3a2xtUE84bjRmOFZKUjc3VW10c0o5TnRyN19DWXlVIiwidXNlcl9hcHByb3ZhbF9yZXF1aXJlZCI6dHJ1ZX0sImNvbXBhbnkiOiJodHRwczovL2F1dGguc292cmFzLmlvL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNTEyMDAxLCJpc3MiOiJodHRwczovL2F1dGguc292cmFzLmlvL2UvZmVycmV0ZXJpYS1kZW1vIiwia2luZCI6InRlcm1zIiwib3AiOiJvcF9QMTA0Ml9wYWN0IiwicHJldiI6InNoYS0yNTY6U0V0cGtoS2tzTUpwT2JUZVNSUmdSblNQMDRwczJzRE02ZmJYRksySGpGbyIsInNlcSI6MSwidXNlciI6ImNsaV9hX2RlbW8iLCJ2IjoiMC4xIn0.5Awp8x-XKlivDuC40zj5Yj5aCBEtWMGPohubMr_yNOfzNSbx1TMu2pXzkpJzfuiPrMFsBODDgP4haDytkP8mYA~",
+          "eyJhbGciOiJFUzI1NiIsImtpZCI6Ind1b0ZnZkdpb1ZsbVNyaUV0WmQycWVyMC1tSkpxQmxQeEhPVkV5eFBTc3MiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7ImNoYW5uZWwiOiJ3aGF0c2FwcCIsImRpc3BsYXlfY29kZSI6IjkwODg2NiIsImV2aWRlbmNlIjp7Il9zZCI6WyJVSlNNUjJFbjNhM0hubmY3STF4MWhKSEFJVVoyMlRlaFlEcS1jaXNCRlNJIl19LCJtZXRob2QiOiJjb21wYW55X2NoYW5uZWwiLCJyZXZpc2lvbiI6MSwidGVybXNfZGlnZXN0Ijoic2hhLTI1NjpKZXpjbDZoUXY1dDF3a2xtUE84bjRmOFZKUjc3VW10c0o5TnRyN19DWXlVIn0sImNvbXBhbnkiOiJodHRwczovL2F1dGguc292cmFzLmlvL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNTEyMTIwLCJpc3MiOiJodHRwczovL3NvdnJhcy5pby9vcGVyYWRvciIsImtpbmQiOiJ1c2VyX2FwcHJvdmFsIiwib3AiOiJvcF9QMTA0Ml9wYWN0IiwicHJldiI6InNoYS0yNTY6OWJzQzN4NnNaTTVQME9nb1J1NnlnRUtTYlpaZjZBdEREdGtCanlEeklxOCIsInNlcSI6MiwidXNlciI6ImNsaV9hX2RlbW8iLCJ2IjoiMC4xIn0.m3oyURgqGf9Wb2_DYobsRjj9xUno4Fuy5iQS_QuoyyAwsRD5-2_PwPFILMBBOH_WCpLE5sa92UxooLqb9TxCRQ~WyJxcWpYNEIwX3hCakN3WWpYQjdlYV92IiwiaW5ib3VuZF90ZXh0IiwiQVBST0JBUiA5MDg4NjYiXQ~",
+          "eyJhbGciOiJFUzI1NiIsImtpZCI6Ind1b0ZnZkdpb1ZsbVNyaUV0WmQycWVyMC1tSkpxQmxQeEhPVkV5eFBTc3MiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7ImF0dGVtcHQiOjEsImNhcGFiaWxpdHkiOiJwZWRpZG8ucmVwcm9ncmFtYXJfZGVzcGFjaG8iLCJyZWxlYXNlIjoic2hhLTI1NjpJck42WWtIcTJoUVczcGVuamtZZkVyakR3eThTZ0V5ajFwdVNjSU1mbmFZIiwicmV2aXNpb24iOjEsInRlcm1zX2RpZ2VzdCI6InNoYS0yNTY6SmV6Y2w2aFF2NXQxd2tsbVBPOG40ZjhWSlI3N1VtdHNKOU50cjdfQ1l5VSJ9LCJjb21wYW55IjoiaHR0cHM6Ly9hdXRoLnNvdnJhcy5pby9lL2ZlcnJldGVyaWEtZGVtbyIsImlhdCI6MTc5MjUxMjEyMSwiaXNzIjoiaHR0cHM6Ly9zb3ZyYXMuaW8vb3BlcmFkb3IiLCJraW5kIjoiZXhlY3V0aW9uIiwib3AiOiJvcF9QMTA0Ml9wYWN0IiwicHJldiI6InNoYS0yNTY6NC1sc1hzay1DSDBfVnJvSE1lbkZMdzlkY1NMVVg1MENqeURkN1pMOUdCVSIsInNlcSI6MywidXNlciI6ImNsaV9hX2RlbW8iLCJ2IjoiMC4xIn0.ccfG6_req8VqlIpioLZ3dw_zhTddZyt8jKUN79mKagg7UbvQlwWp3CcImKMnZK2k8IyrBs4tYcZmQhmaEnUcBg~",
+          "eyJhbGciOiJFUzI1NiIsImtpZCI6Ind1b0ZnZkdpb1ZsbVNyaUV0WmQycWVyMC1tSkpxQmxQeEhPVkV5eFBTc3MiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7Im1hdGNoZXNfdGVybXMiOnRydWUsIm1ldGhvZCI6InN5c3RlbV9yZWFkX2JhY2siLCJvYnNlcnZlZCI6eyJkZXNwYWNob19udWV2byI6IjIwMjYtMTAtMjgiLCJwZWRpZG8iOiJQLTEwNDIifSwic291cmNlIjoiY29tcGFueV9zeXN0ZW0ifSwiY29tcGFueSI6Imh0dHBzOi8vYXV0aC5zb3ZyYXMuaW8vZS9mZXJyZXRlcmlhLWRlbW8iLCJpYXQiOjE3OTI1MTIxMjIsImlzcyI6Imh0dHBzOi8vc292cmFzLmlvL29wZXJhZG9yIiwia2luZCI6InJlYWRfYmFjayIsIm9wIjoib3BfUDEwNDJfcGFjdCIsInByZXYiOiJzaGEtMjU2OmhVVU1iWGxsSWpHMDd3V3BaXzZVcFlLOVg4ZjZteHdRMjlJZWJMc2g0NVEiLCJzZXEiOjQsInVzZXIiOiJjbGlfYV9kZW1vIiwidiI6IjAuMSJ9.EqtQHIbZbFSwvgQUvBhGyyVrev8YNNR8uuZrmevf8q98H-jQCardeWKUzPwMSXbv98F7vK0L_AJhkCcMCuOAbw~",
+          "eyJhbGciOiJFUzI1NiIsImtpZCI6IlBJa09WdVdvaTRONHN6S0xsWk1FQTFkTjJvUlJ1akZEbzB6YXRuaGN6UGsiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwczovL3BhLmV4YW1wbGUiLCJib2R5Ijp7ImNsYWltZWRfYXNzdXJhbmNlIjpbXSwicmVzdWx0X3N1bW1hcnlfZGlnZXN0Ijoic2hhLTI1NjpQbVdPWFczZllDS3N5djR4OFg0SXkzeTRLRmVrcDFzYWRDa2R2NTBHbTI0IiwicmV2aXNpb24iOjEsInN0YXRlIjoic3VjY2VlZGVkIiwidGVybXNfZGlnZXN0Ijoic2hhLTI1NjpKZXpjbDZoUXY1dDF3a2xtUE84bjRmOFZKUjc3VW10c0o5TnRyN19DWXlVIiwidGhpcmRfcGFydHkiOltdfSwiY29tcGFueSI6Imh0dHBzOi8vYXV0aC5zb3ZyYXMuaW8vZS9mZXJyZXRlcmlhLWRlbW8iLCJpYXQiOjE3OTI1MTIxMjMsImlzcyI6Imh0dHBzOi8vYXV0aC5zb3ZyYXMuaW8vZS9mZXJyZXRlcmlhLWRlbW8iLCJraW5kIjoib3V0Y29tZSIsIm9wIjoib3BfUDEwNDJfcGFjdCIsInByZXYiOiJzaGEtMjU2OjJCOXpmbjFhMWlxUXNSSmswR1lQU0pQcmJ5eXlaWFNWOVliaUtpWXg3TXMiLCJzZXEiOjUsInVzZXIiOiJjbGlfYV9kZW1vIiwidiI6IjAuMSJ9.I5_cj0Fmd1-w7A2ygmT_yqcNkVRw8tUASe1GXCe7sqa5rv7b489CNBEudTCpsKLiMPc_qf2eftt3ZvR0-DNDpw~"
+        ]
+      },
+      "note": "La request y el recibo coinciden entre sí, pero el argsHash no es la huella de lo pedido (request_digest, SPEC §9.4.1): nadie podría recalcularlo"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+== 04-mutar-nativo · 2026-10-22T04:47:45Z · node scripts/mutar-nativo.mjs
+sin mutación: exit 0 (# pass 12, # fail 0)
+DETECTADA  condicion                1a: la condición carrier_acceptance se da por cumplida sin preguntar
+    fallan: 1a · propuesta condicional: no llega a succeeded hasta carri | 1b · el transportista rechaza: failed con efectos parciales  | 6 · el transportista no responde: sin reintento ni failed; l | 3 · cancelar durante la ejecución pide detener: no promete r | 8 · transiciones: la tabla es la del diseño; lo ilegal se re | 9 · proyección: cada estado nativo cae en un valor existente
+DETECTADA  efectos_parciales        1b: el rechazo del transportista no declara ni compensa el efecto en el ERP
+    fallan: 1b · el transportista rechaza: failed con efectos parciales  | 6 · el transportista no responde: sin reintento ni failed; l
+DETECTADA  limite_revisiones        2: sin máximo de revisiones
+    fallan: 2 · límites: superado el máximo de revisiones o la vigencia,
+DETECTADA  vigencia                 2: una propuesta vencida se puede aceptar
+    fallan: 2 · límites: superado el máximo de revisiones o la vigencia,
+DETECTADA  intentos                 2: sin límite de intentos de aceptación
+    fallan: 2 · límites: superado el máximo de revisiones o la vigencia,
+DETECTADA  cancelacion_honesta      3: cancelar durante la ejecución marca `cancelled` y promete «sin cambios»
+    fallan: 3 · cancelar durante la ejecución pide detener: no promete r
+DETECTADA  separar_protocolos       4: el dueño de una operación no incluye el protocolo
+    fallan: 4 · la misma operación por nativo, Poppy y PACT: tres regist
+DETECTADA  telefono_ambiguo         4b: un número compartido vincula al primer cliente que coincide
+    fallan: 4b · el mismo teléfono no fusiona usuarios: un número compar
+DETECTADA  rar_por_pedido           5: el grant RFC 9396 se revisa por acción, no por pedido
+    fallan: 5 · RFC 9396: un grant para P-1042 no sirve para P-1043, ni 
+DETECTADA  reverificar_al_aceptar   5: accept no vuelve a verificar el grant
+    fallan: 5 · RFC 9396: un grant para P-1042 no sirve para P-1043, ni  | 4 · la misma operación por nativo, Poppy y PACT: tres regist
+DETECTADA  sin_reintento            6: leer vuelve a pedirle el cambio al transportista
+    fallan: 6 · el transportista no responde: sin reintento ni failed; l
+DETECTADA  no_failed_incierto       6: sin respuesta del transportista → failed
+    fallan: 1a · propuesta condicional: no llega a succeeded hasta carri | 6 · el transportista no responde: sin reintento ni failed; l | 3 · cancelar durante la ejecución pide detener: no promete r | 9 · proyección: cada estado nativo cae en un valor existente
+DETECTADA  idempotencia             7: se ignora Idempotency-Key
+    fallan: 7 · idempotencia: sin clave 400; misma clave y cuerpo, la mi | 1a · propuesta condicional: no llega a succeeded hasta carri | 1b · el transportista rechaza: failed con efectos parciales  | 6 · el transportista no responde: sin reintento ni failed; l | 3 · cancelar durante la ejecución pide detener: no promete r | 2 · límites: superado el máximo de revisiones o la vigencia, | 4 · la misma operación por nativo, Poppy y PACT: tres regist | 8 · transiciones: la tabla es la del diseño; lo ilegal se re
+DETECTADA  transiciones_legales     8: cualquier transición es legal
+    fallan: 8 · transiciones: la tabla es la del diseño; lo ilegal se re
+DETECTADA  proyeccion               9: la proyección filtra el valor nativo a Poppy/A2A
+    fallan: 7 · idempotencia: sin clave 400; misma clave y cuerpo, la mi | 1a · propuesta condicional: no llega a succeeded hasta carri | 1b · el transportista rechaza: failed con efectos parciales  | 6 · el transportista no responde: sin reintento ni failed; l | 3 · cancelar durante la ejecución pide detener: no promete r | 2 · límites: superado el máximo de revisiones o la vigencia, | 4 · la misma operación por nativo, Poppy y PACT: tres regist | 8 · transiciones: la tabla es la del diseño; lo ilegal se re | 9 · proyección: cada estado nativo cae en un valor existente
+
+mutaciones detectadas: 15/15
+exit 0

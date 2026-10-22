@@ -27,7 +27,7 @@ Requirements: Node.js 22.18 or newer, Python 3 with the `cryptography` package
 
 ```sh
 cd reference
-npm test                # 137 tests in process, including the official Poppy validator
+npm test                # 141 tests in process, including the official Poppy validator
 npm run test:network    # 3 tests over TCP: gateway and agent in separate processes (ports 3610-3634)
 ```
 

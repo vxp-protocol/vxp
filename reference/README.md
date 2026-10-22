@@ -11,7 +11,7 @@ Requirements: Node.js 22.18 or newer (TypeScript runs natively), Python 3 with `
 for the independent verifier (`../verifier/verificar_paquete.py`, called by several tests).
 
 ```sh
-npm test                 # test/*.test.ts: 137 tests, in process
+npm test                 # test/*.test.ts: 141 tests, in process
 npm run test:network     # test-red/*.test.ts: 3 tests over TCP (ports 3610, 3614, 3630, 3632, 3634)
 npm start                # local gateway on :3100 (PORT, PA_PORT, PUBLIC_ORIGIN, HOTEL_ORIGIN)
 ```

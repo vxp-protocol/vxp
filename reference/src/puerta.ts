@@ -337,7 +337,9 @@ export function crearPuerta(cfg: Config) {
 				const cred = req.headers.get("authorization") ?? req.headers.get("x-a2a-user-delegation");
 				const carril: Carril = cred ? "credencial" : firmaAgente?.verificada ? "agente_verificado" : "anonimo";
 				const ip = req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "local";
-				const clave = carril === "credencial" ? createHash("sha256").update(cred!).digest("base64url").slice(0, 22) : carril === "agente_verificado" && firmaAgente?.verificada ? firmaAgente.operador : ip;
+				// A verified operator shares one bucket across IPs only if it was explicitly allowed; anyone can publish
+				// a key directory, so for the rest the bucket is per operator and IP.
+				const clave = carril === "credencial" ? createHash("sha256").update(cred!).digest("base64url").slice(0, 22) : carril === "agente_verificado" && firmaAgente?.verificada ? (wba.confiable(firmaAgente.operador) ? firmaAgente.operador : `${firmaAgente.operador}|${ip}`) : ip;
 				const espera = cfg.carriles.tomar(carril, clave);
 				if (espera !== null) {
 					// In the web chat (form), the writer sees a chat message and keeps their input box and

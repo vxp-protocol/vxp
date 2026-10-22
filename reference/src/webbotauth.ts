@@ -17,6 +17,24 @@ type Jwk = { kty?: string; crv?: string; x?: string; kid?: string; nbf?: number;
 
 const sinComillas = (s: string) => s.trim().replace(/^"(.*)"$/, "$1");
 
+const MAX_CACHE = 1_000;
+const MAX_REGISTRO = 10_000;
+const TIMEOUT_DIRECTORIO_MS = 3_000;
+
+/** Hosts the gateway never fetches a key directory from: loopback, private, link-local and unique-local
+ * literals. Names that resolve to such addresses (DNS rebinding) must be blocked at the egress layer. */
+export function hostInterno(host: string): boolean {
+	const h = host.toLowerCase().replace(/^\[|\]$/g, "");
+	if (h === "localhost" || h.endsWith(".localhost") || h.endsWith(".local") || h.endsWith(".internal")) return true;
+	const v4 = h.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/)?.slice(1).map(Number);
+	if (v4) {
+		const [a, b] = v4;
+		return a === 0 || a === 10 || a === 127 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || (a === 100 && b >= 64 && b <= 127) || a >= 224;
+	}
+	if (h.includes(":")) return h === "::" || h === "::1" || /^f[cd]/.test(h) || /^fe[89ab]/.test(h) || h.startsWith("::ffff:");
+	return false;
+}
+
 /** Splits a top-level Structured Fields Dictionary (RFC 8941), honoring parentheses and quotes. */
 function diccionario(valor: string): Map<string, string> {
 	const out = new Map<string, string>();
@@ -43,10 +61,15 @@ function diccionario(valor: string): Map<string, string> {
 
 export class WebBotAuth {
 	private readonly fetch: FetchLike;
-	private readonly cache = new Map<string, { keys: Jwk[]; hasta: number }>();
-	/** Operators whose directory is accepted. Empty = any with an https directory. */
+	private readonly cache = new Map<string, { keys: Jwk[]; hasta: number; error?: string }>();
+	/** Operators whose directory is accepted. Empty = any public https origin. */
 	private readonly permitidos: Set<string>;
 	readonly registro: { at: string; ruta: string; resultado: ResultadoWba }[] = [];
+
+	/** True when the operator was explicitly allowed. Only those may share one rate-limit bucket across IPs. */
+	confiable(operador: string): boolean {
+		return this.permitidos.has(operador);
+	}
 
 	constructor(fetch: FetchLike, permitidos: string[] = []) {
 		this.fetch = fetch;
@@ -55,12 +78,28 @@ export class WebBotAuth {
 
 	private async llaves(operador: string): Promise<Jwk[]> {
 		const hit = this.cache.get(operador);
-		if (hit && hit.hasta > Date.now()) return hit.keys;
-		const res = await this.fetch(`${operador}/.well-known/http-message-signatures-directory`, { redirect: "manual", headers: { accept: "application/http-message-signatures-directory+json" } });
-		if (res.status !== 200) throw new Error(`directorio_http_${res.status}`);
-		const doc = (await res.json()) as { keys?: Jwk[] };
-		const keys = Array.isArray(doc.keys) ? doc.keys : [];
-		this.cache.set(operador, { keys, hasta: Date.now() + 10 * 60_000 });
+		if (hit && hit.hasta > Date.now()) {
+			if (hit.error) throw new Error(hit.error);
+			return hit.keys;
+		}
+		const guardar = (v: { keys: Jwk[]; hasta: number; error?: string }) => {
+			this.cache.delete(operador);
+			if (this.cache.size >= MAX_CACHE) this.cache.delete(this.cache.keys().next().value!);
+			this.cache.set(operador, v);
+		};
+		let keys: Jwk[];
+		try {
+			const res = await this.fetch(`${operador}/.well-known/http-message-signatures-directory`, { redirect: "manual", signal: AbortSignal.timeout(TIMEOUT_DIRECTORIO_MS), headers: { accept: "application/http-message-signatures-directory+json" } });
+			if (res.status !== 200) throw new Error(`directorio_http_${res.status}`);
+			const doc = (await res.json()) as { keys?: Jwk[] };
+			keys = Array.isArray(doc.keys) ? doc.keys : [];
+		} catch (e) {
+			// Failures are cached briefly too, so a burst of signed requests does not become a burst of fetches.
+			const error = (e as Error).message.startsWith("directorio_http_") ? (e as Error).message : "directorio_inaccesible";
+			guardar({ keys: [], hasta: Date.now() + 60_000, error });
+			throw new Error(error);
+		}
+		guardar({ keys, hasta: Date.now() + 10 * 60_000 });
 		return keys;
 	}
 
@@ -79,6 +118,7 @@ export class WebBotAuth {
 		}
 		if (url.protocol !== "https:") return { verificada: false, motivo: "signature_agent_no_https", operador };
 		if (this.permitidos.size && !this.permitidos.has(url.origin)) return { verificada: false, motivo: "operador_no_permitido", operador };
+		if (!this.permitidos.has(url.origin) && (hostInterno(url.hostname) || url.port !== "")) return { verificada: false, motivo: "operador_no_publico", operador };
 		// The signature with tag="web-bot-auth" (required by the Web Bot Auth architecture).
 		const entradas = diccionario(entrada);
 		const firmas = diccionario(firma);
@@ -127,7 +167,10 @@ export class WebBotAuth {
 	/** Verifies and logs the result (the gateway log). */
 	async observar(req: Request): Promise<ResultadoWba | null> {
 		const r = await this.verificar(req);
-		if (r) this.registro.push({ at: new Date().toISOString(), ruta: new URL(req.url).pathname, resultado: r });
+		if (r) {
+			this.registro.push({ at: new Date().toISOString(), ruta: new URL(req.url).pathname, resultado: r });
+			if (this.registro.length > MAX_REGISTRO) this.registro.splice(0, this.registro.length - MAX_REGISTRO);
+		}
 		return r;
 	}
 }

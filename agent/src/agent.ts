@@ -22,7 +22,7 @@ const CLIENT_ASSERTION = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer
 export type CapabilityDetail = { type: string; actions: string[]; identifier: string; limits?: { max_total_clp: number } };
 export type RelationshipAsk = { actions: string[]; max_per_day?: number; duration_seconds?: number };
 
-type Identity = { version: 1; client_id: string; client_name: string; origin: string; signing: PrivateJwk; dpop: PrivateJwk; user_secret: string; created_at: string };
+type Identity = { version: 1; client_id: string; client_name: string; origin: string; signing: PrivateJwk; dpop: PrivateJwk; user_secret: string; created_at: string; profiles?: string[] };
 type Session = { access_token: string; expires_at: number; kind: "session" | "grant"; authorization_details: CapabilityDetail[]; obtained_at: string };
 type PendingAuthorization = { issuer: string; device_code: string; user_code: string; verification_uri: string; verification_uri_complete: string; expires_at: number; interval: number; details: unknown[]; for_request: string | null; started_at: string; last_poll: number };
 
@@ -132,8 +132,22 @@ export function amountOf(view: any): number | null {
 
 /** Digest of what the person approves: the proposal id (carries the revision), its summary and its terms. */
 export function bindingOf(view: any): string {
-	return sha256b64u(JSON.stringify({ proposal: view?.proposal?.id, summary: view?.proposal?.summary, terms: view?.proposal?.terms }));
+	return bindingFor(view?.proposal?.id, view?.proposal?.summary, view?.proposal?.terms);
 }
+
+/** The same digest for any profile: what is approved is one proposal id (with its revision), its summary and its terms. */
+export function bindingFor(proposalId: unknown, summary: unknown, terms: unknown): string {
+	return sha256b64u(JSON.stringify({ proposal: proposalId, summary, terms }));
+}
+
+/** A revision to be accepted, whatever profile it came through. */
+export type RevisionToAccept = { issuer: string; operation: string; request_id?: string; proposal_id: string; summary: string; terms: unknown; user_approval_required: boolean; amount_clp: number | null };
+
+/** What the person's rules say about one revision. */
+export type AcceptanceDecision =
+	| { status: "allowed"; approved_by: "user" | "standing_permission" }
+	| { status: "needs_user_approval"; approval: Approval; reason: string; mandate: Mandate | null }
+	| { status: "blocked_by_mandate"; reason: string; amount_clp: number | null; mandate: Mandate };
 
 export class VxpAgent {
 	readonly store: Store;
@@ -181,7 +195,26 @@ export class VxpAgent {
 	}
 
 	/** Client ID Metadata Document, served at the client_id URL. VXP extensions only. */
+	/**
+	 * Optional profiles this agent also speaks (`poppy-0.2`). They add only what their contract asks the
+	 * agent to declare; a native-only agent declares nothing for them.
+	 */
+	profiles(): string[] {
+		return this.store.read<Identity>("identity", this.id).profiles ?? [];
+	}
+
+	enableProfile(name: "poppy-0.2" | "pact-1.0"): void {
+		this.store.update<Identity, void>("identity", this.id, (id) => void (id.profiles = [...new Set([...(id.profiles ?? []), name])]), true);
+	}
+
+	/** Keys and identifiers the optional adapters sign with. The native profile does not use this. */
+	credentials(): { clientId: string; origin: string; signing: SigningKey; dpop: SigningKey } {
+		return { clientId: this.id.client_id, origin: this.id.origin, signing: this.sig, dpop: this.dpopKey };
+	}
+
 	clientMetadata() {
+		// Poppy Operations (Poppy §3.3 extension): declared only when the Poppy profile is enabled.
+		const poppy = this.profiles().includes("poppy-0.2") ? { operations: { version: "1" } } : {};
 		return {
 			client_id: this.id.client_id,
 			client_name: this.id.client_name,
@@ -192,6 +225,7 @@ export class VxpAgent {
 			extensions: {
 				"vxpprotocol.org/proof": { version: "0.1" },
 				"vxpprotocol.org/relationship": { version: "0.1", inbox_uri: this.inboxUri },
+				...poppy,
 			},
 		};
 	}
@@ -730,24 +764,35 @@ export class VxpAgent {
 	 *   for this revision (user_approval_required: false);
 	 * - otherwise it returns an approval for the person to decide.
 	 */
+	/**
+	 * The person's rules on one revision, for any profile:
+	 * - a mandate for this company and operation whose cap the amount exceeds blocks it;
+	 * - an approval the person gave for THIS exact revision allows it as `user`;
+	 * - a mandate that covers the amount allows it as `standing_permission`, if the company does not
+	 *   require approval of this revision (user_approval_required: false);
+	 * - otherwise it returns an approval for the person to decide.
+	 */
+	decideAcceptance(r: RevisionToAccept): AcceptanceDecision {
+		const mandate = this.mandateFor(r.issuer, r.operation);
+		const amount = r.amount_clp;
+		if (mandate && (amount === null || amount > mandate.max_total_clp))
+			return { status: "blocked_by_mandate", reason: amount === null ? "the terms state no amount to compare with the cap" : `total ${amount} CLP is above the cap of ${mandate.max_total_clp} CLP`, amount_clp: amount, mandate };
+		const binding = bindingFor(r.proposal_id, r.summary, r.terms);
+		if (this.approvals().some((a) => a.kind === "accept" && a.binding === binding && a.status === "approved")) return { status: "allowed", approved_by: "user" };
+		if (mandate && r.user_approval_required === false) return { status: "allowed", approved_by: "standing_permission" };
+		const approval = this.newApproval({ kind: "accept", issuer: r.issuer, ...(r.request_id ? { request_id: r.request_id } : {}), proposal_id: r.proposal_id, summary: r.summary, amount_clp: amount, binding });
+		const reason = mandate ? "the company requires the person to approve this exact revision (user_approval_required: true); a cap is not enough" : "no cap set by the person for this operation";
+		return { status: "needs_user_approval", approval, reason, mandate };
+	}
+
 	async accept(requestId: string): Promise<AcceptOutcome> {
 		const rec = await this.refresh(requestId);
 		const c = this.company(rec.issuer);
 		const v = rec.view;
 		if (v?.state !== "proposed" || !v.proposal?.id) throw new Error(`request ${requestId} has no proposal to accept (state ${v?.state})`);
-		const amount = amountOf(v);
-		const mandate = this.mandateFor(c.issuer, rec.operation);
-		if (mandate && (amount === null || amount > mandate.max_total_clp))
-			return { status: "blocked_by_mandate", reason: amount === null ? "the terms state no amount to compare with the cap" : `total ${amount} CLP is above the cap of ${mandate.max_total_clp} CLP`, amount_clp: amount, mandate };
-		const binding = bindingOf(v);
-		const approved = this.approvals().find((a) => a.kind === "accept" && a.binding === binding && a.status === "approved");
-		let approvedBy: "user" | "standing_permission" | null = approved ? "user" : null;
-		if (!approvedBy && mandate && v.proposal.user_approval_required === false) approvedBy = "standing_permission";
-		if (!approvedBy) {
-			const approval = this.newApproval({ kind: "accept", issuer: c.issuer, request_id: rec.request_id, proposal_id: v.proposal.id, summary: String(v.proposal.summary ?? ""), amount_clp: amount, binding });
-			const reason = mandate ? "the company requires the person to approve this exact revision (user_approval_required: true); a cap is not enough" : "no cap set by the person for this operation";
-			return { status: "needs_user_approval", approval, reason, mandate };
-		}
+		const d = this.decideAcceptance({ issuer: c.issuer, operation: rec.operation, request_id: rec.request_id, proposal_id: v.proposal.id, summary: String(v.proposal.summary ?? ""), terms: v.proposal.terms, user_approval_required: v.proposal.user_approval_required !== false, amount_clp: amountOf(v) });
+		if (d.status !== "allowed") return d;
+		const approvedBy = d.approved_by;
 		const r = await this.call(c, "POST", `${c.endpoint}/proposals/${v.proposal.id}/accept`, { approved_by: approvedBy });
 		if (r.body?.request_id) this.record(c, r.body, rec);
 		if (r.status >= 400) return { status: "rejected_by_company", http: r.status, body: r.body };

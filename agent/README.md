@@ -12,8 +12,8 @@ integration: everything comes from the company's own `/.well-known/vxp.json`, it
 | CLI | `bin/vxp-agent.ts` | One command per step; each command is its own process. |
 | MCP server | `src/mcp.ts` (`vxp-agent mcp`) | Stdio, JSON-RPC 2.0, written by hand. Dual-era: MCP 2026-07-28 (per-request `_meta`, `server/discover`) and the `initialize` handshake of 2025-11-25 / 2025-06-18 / 2025-03-26 / 2024-11-05. |
 | Example agent | `examples/hotel-santiago.ts` | Deterministic, no LLM: the hotel task end to end. |
-| Tests | `test/` | `node --test`, against the reference company gateway in separate processes, native profile only. |
-| Agent-side adapters | `src/adapters.ts` | The seam for Poppy and PACT. Not implemented (see Limits). |
+| Tests | `test/` | `node --test`, against the reference company gateway in separate processes: native only, and with its Poppy or PACT adapter. |
+| Optional adapters | `src/adapters.ts`, `src/adapters/` | Poppy draft 0.2 and PACT 1.0 on the agent side, for companies that offer them. The native profile does not import them. |
 
 Status: **experimental**, like the native profile itself. Tested only against the reference
 implementation in this repository (`reference/`), whose companies, customers, payments, PMS and
@@ -189,6 +189,47 @@ What the model receives is the approval id, the summary, the amount and a URL **
 No tool sets rules or decides approvals, and no tool result carries an approval secret or code
 (`test/mcp.test.ts` checks that, with only that, the approval cannot be decided).
 
+## Optional adapters: Poppy and PACT
+
+A company MAY also offer Poppy draft 0.2 or PACT 1.0 through its own adapters (spec §8 «Adapters»). The
+agent speaks them as written, with the same identity, state directory and person's rules as the native
+profile. Both are conversational: the company's own agent turns the agent's text into a proposal, so the
+adapters take text (`say`) where the native profile takes `{operation, target, parameters}`. They are a
+library only: the CLI and the MCP server use the native profile.
+
+```ts
+import { PoppyAdapter } from "./src/adapters/poppy.ts";
+import { PactAdapter } from "./src/adapters/pact.ts";
+
+const poppy = new PoppyAdapter(agent);                    // declares Poppy Operations in the agent's client metadata
+const c = await poppy.detect("hotel.example");            // poppy.json + issuer metadata (poppy_domains)
+await poppy.say(c.issuer, "Quiero reservar del 2026-11-23 al 2026-11-25 una doble con vista para 2 adultos con desayuno", { operation: "reserva.crear" });
+const a = await poppy.authorize(c.issuer, ["reservas:crear"]);   // Device Sign-In: show a.verification_uri_complete to the person
+await poppy.pollAuthorization(c.issuer, 60);
+const t = await poppy.say(c.issuer, "Resérvala", { operation: "reserva.crear" });
+await poppy.accept(c.issuer, t.operation.operation_id);   // confirm only within the person's rules
+await poppy.proof(c.issuer, t.operation.operation_id);    // anchored by the Poppy domain
+
+const pact = new PactAdapter(agent, { audience: "<the audience the Provider assigned>" });
+const p = await pact.detect("hotel.example");             // Agent Card on the brand domain (or its redirect)
+// authorize / pollAuthorization / say as above; accept() returns «awaiting_company_channel»:
+// under PACT the person approves each write on the company's own channel, never the agent.
+await pact.proof(p.interface, operationId);               // anchored by the PACT authorization server, receipt cross-checked
+```
+
+| | Poppy draft 0.2 | PACT 1.0 over A2A 1.0.1 |
+|---|---|---|
+| Discovery | `/.well-known/poppy.json`; the issuer's metadata must list the domain in `poppy_domains` | Agent Card on the brand domain, one redirect to the Provider allowed; its proof block must list the domain |
+| Agent identity | CIMD + `private_key_jwt`, the session from an RFC 7523 assertion, DPoP | Personal-agent JWT: `iss` = the agent's platform issuer (its public origin), `aud` = the audience the Provider assigned |
+| Authorization | Device Sign-In with scopes, bound to the session; account token refreshed | Device code of the Card's `userDelegation` scheme; refresh token rotated |
+| Asking | Conversation messages; the proposal arrives in the Operations extension | `message:send` with text parts; the operation arrives in `vxpprotocol.org/operation` metadata |
+| Accepting | `confirm` of the exact revision, only within the person's rules (`agent_asserted`) | The person approves on the company's channel with a code bound to the revision (`company_channel`); the agent cannot |
+| Proof | The operation's `vxpprotocol.org/proof` member; anchor `{domain}` | Message metadata under `https://vxpprotocol.org/ext/proof/v0.1`, next to `pact.receipt`; anchor `{pact_issuer}`, receipt cross-checked |
+
+PACT onboarding happens outside the protocol: the Provider registers the agent's platform issuer and gives
+it an audience. Against the reference, its test platform is `http://localhost:<PORT + 2>` and the audience
+`<origin>/a2a`, so a PACT agent there runs with that public origin.
+
 ## Discovery: where the candidate domains come from
 
 VXP has no global registry. The agent starts from domains that come from outside VXP: the person
@@ -217,7 +258,7 @@ What the agent itself does for each rule. Rules that bind only the company are m
 | §8 Authorization | `resource` = endpoint (RFC 8707), `private_key_jwt` with its CIMD, DPoP ES256 on every call, the User ID as an RFC 7523 assertion, `authorization_details` per request; the verification URL must be on the issuer's origin. |
 | §8 Idempotency | The key is generated once, persisted, and the same body re-sent after authorizing (`resubmit`). |
 | §8 Commitment, limits, cancellation | Shown as received; `counter`, `cancel`; `revisions_left` comes in each proposal. |
-| I1 | The native profile only; Poppy and PACT stay outside the agent (`adapters.ts`). |
+| I1 | The native profile stands alone; the optional Poppy and PACT adapters speak those contracts as written and the native modules do not import them (tested). |
 | I2, O6 | One `accept` per revision; repeating it does not execute again (tested). |
 | ID1, O1 | The agent never sees the person's channel or code: the account is linked on the company's page. |
 | ID3 | Stable per-company pseudonymous User ID and a persistent DPoP key, so the owner tuple survives restarts. |
@@ -226,9 +267,9 @@ What the agent itself does for each rule. Rules that bind only the company are m
 | O3, O5, O7 | Company. The agent reads the result's `effects` and the proof's read-back level. |
 | O4 | Approvals are bound to the exact revision; a new revision needs a new approval. |
 | P1, P8 | The proof is verified with the operation the agent saw (terms digest, salt, state, result). |
-| P2 | The verdict's `approval` is reported as is (`agent_asserted` in the native profile). |
+| P2 | The verdict's `approval` is reported as is: `agent_asserted` in the native profile and under Poppy, `company_channel` under PACT. |
 | P3–P6 | Company; the verifier reports them. |
-| P7, §10 | Anchored by the issuer learned from vxp.json; material fetched from the issuer metadata only, saved with its date for offline verification; levels reported as the verifier derives them. |
+| P7, §10 | Native: anchored by the issuer learned from vxp.json. Poppy: by the domain (`{domain}`). PACT: by the PACT authorization server (`{pact_issuer}`), with the PACT receipt cross-checked. Material fetched from those anchors only, saved with its date for offline verification; levels reported as the verifier derives them. |
 | R1 | Relationship actions are checked against `vxp_relationship.company_initiated_actions` before asking. |
 | R2 | `inbox_uri` in the CIMD, on the client_id's origin. |
 | R3 | Company (the consent screen); the person can untick the relationship. |
@@ -238,7 +279,7 @@ What the agent itself does for each rule. Rules that bind only the company are m
 | R7 | Signature, `typ`, `iss` known, `aud` = client_id, `sub` = this person's User ID, relationship held and usable, action in it, `exp`, and **`jti` not seen before** (persisted). The spec lists the agent's jti check as pending; this agent implements it. |
 | R8 | A change the company proposes becomes a request the agent tracks and accepts only with the person. |
 | R10, R11 | `revoke-relationship` (DELETE) and `relationship` (GET). |
-| R12–R16 | Not implemented (relationship over a Poppy conversation). |
+| R12–R16 | Not implemented (relationship over a Poppy conversation): the Poppy adapter does not ask for, receive or answer relationships. |
 | R17 | `reply` posts only one of the options, only to a `reply_url` under the endpoint, and verifies the `vxp-reply-receipt+jwt`. |
 
 ## Tests
@@ -247,8 +288,8 @@ What the agent itself does for each rule. Rules that bind only the company are m
 cd vxp/agent && node --test test/*.test.ts
 ```
 
-Each file starts the reference gateway in its own process (`VXP_ADAPTERS=none`, proof keys in a
-temporary directory) on ports 3830–3869.
+Each file starts the reference gateway in its own process (proof keys in a temporary directory) on
+ports 3830–3893: `VXP_ADAPTERS=none` except `poppy.test.ts` (`poppy`) and `pact.test.ts` (`pact`).
 
 - `scenario.test.ts`: the whole hotel task; the booking is checked in the hotel's system; the proof is
   verified by `vxp-verify.js` and by the Python reference verifier; negotiation through the «Escapada»
@@ -258,6 +299,17 @@ temporary directory) on ports 3830–3869.
   the grant, the agent does not accept above the person's cap); the person denies; relationship revoked
   by the person, by the agent, or only locally; expired; forged signature, edited payload and replayed
   `jti`; altered proof, altered operation and foreign keys give `valid: false`.
+- `poppy.test.ts`: the hotel task over the Poppy adapter (quote, discount refused, «Escapada» package,
+  Device Sign-In, Operations confirm within the person's rules, booking in the PMS, proof anchored by the
+  domain and verified by both verifiers).
+- `pact.test.ts`: the hotel task over the PACT adapter (Agent Card through the brand redirect, delegated
+  authority, package, the agent cannot confirm, the person approves on the company's channel, proof anchored
+  by the PACT authorization server with the receipt `verified`, by both verifiers).
+- `native-only.test.ts`: the native modules do not import the adapters; against `VXP_ADAPTERS=none` a
+  native-only agent completes the task without one request to poppy.json, the Agent Card, A2A or Poppy routes;
+  the adapters find nothing on that gateway.
+- `untrusted-ids.test.ts`: identifiers from a company cannot choose where the agent writes or take over
+  another company's request.
 - `mcp.test.ts`: both MCP eras, version errors, the task through tools, confirmation by elicitation
   (declined, then accepted), MRTR `input_required` and a forged `requestState`, and self-approval with
   only what the model received (no code, the old `?k=` secret, guessed codes) refused and locked.
@@ -273,8 +325,13 @@ as the person, run the late-arrival rule with a simulated clock, read the PMS); 
 - Only the reference gateway has been used; no company outside this repository has been tested, and
   this agent was written by the same team as the reference. Independence by a third-party developer
   is not demonstrated by this code; this README is what such a developer would start from.
-- Native profile only. Poppy and PACT adapters on the agent side are not implemented; `adapters.ts`
-  says what each needs. The relationship over a Poppy conversation (R12–R16) is not implemented.
+- The Poppy and PACT adapters are a library; the CLI and MCP server speak the native profile only.
+  VXP Relationship is native only: not over a Poppy conversation (R12–R16) nor over PACT (pending in the spec).
+- The adapters were tested only against the reference's own Poppy and PACT faces, not against another
+  Poppy or PACT implementation, and with the hotel's phrasing in Spanish: what text a company's agent
+  understands is up to that company.
+- Under Poppy the proof's poppy.json is named by its https URL, as the verifier asks; in local tests with an
+  allowed http origin, the same document is fetched over that origin.
 - The agent must be reachable by the company over https at its public origin (CIMD, JWKS, inbox).
   An agent on a laptop behind NAT needs a tunnel or a small hosted endpoint.
 - The native profile has no refresh token: a delegated token lasts what the company says (1 h in the

@@ -25,6 +25,8 @@ export type Reference = {
 	proc: ChildProcess;
 	/** The next one-time code the company sends to `phone` after line index `since`. */
 	waitForCode(since: number, timeoutMs?: number): Promise<string>;
+	/** The first simulated-channel message after line `since` that matches `re` (what the person's phone shows). */
+	waitForChannel(since: number, re: RegExp, timeoutMs?: number): Promise<RegExpMatchArray>;
 	/** Company console (reference test aid): start an action inside a relationship. */
 	companyStarts(tenant: string, relationshipId: string, action: string, params: Record<string, unknown>): Promise<{ status: number; body: any }>;
 	/** Company console (reference test aid): revoke a relationship as the person or the company would. */
@@ -34,11 +36,15 @@ export type Reference = {
 	stop(): Promise<void>;
 };
 
-export async function startReference(o: { port: number; agentOrigins: string[]; keysDir?: string }): Promise<Reference> {
+/**
+ * `adapters`: VXP_ADAPTERS for the gateway ("none" = native profile only, the default; "poppy"; "pact").
+ * With PACT the gateway trusts one test personal-agent platform, `http://localhost:<port + 2>` (reference main.ts).
+ */
+export async function startReference(o: { port: number; agentOrigins: string[]; keysDir?: string; adapters?: "none" | "poppy" | "pact" }): Promise<Reference> {
 	const keysDir = o.keysDir ?? mkdtempSync(join(tmpdir(), "vxp-agent-ref-keys-"));
 	const proc = spawn(process.execPath, ["src/main.ts"], {
 		cwd: REFERENCE,
-		env: { ...process.env, PORT: String(o.port), PA_PORT: String(o.port + 2), VXP_ADAPTERS: "none", VXP_KEYS_DIR: keysDir, VXP_SHOW_CHANNEL: "1", ORIGENES_LOCALES: o.agentOrigins.join(","), SOVRAS_MUTAR: "", VXP_CARRILES: "" },
+		env: { ...process.env, PORT: String(o.port), PA_PORT: String(o.port + 2), VXP_ADAPTERS: o.adapters ?? "none", VXP_KEYS_DIR: keysDir, VXP_SHOW_CHANNEL: "1", ORIGENES_LOCALES: o.agentOrigins.join(","), SOVRAS_MUTAR: "", VXP_CARRILES: "" },
 		stdio: ["ignore", "pipe", "pipe"],
 	});
 	const lines: string[] = [];
@@ -104,6 +110,17 @@ export async function startReference(o: { port: number; agentOrigins: string[]; 
 			throw new Error("no code arrived on the simulated company channel");
 		},
 		internal,
+		async waitForChannel(since, re, timeoutMs = 10_000) {
+			const end = Date.now() + timeoutMs;
+			while (Date.now() < end) {
+				for (const l of lines.slice(since)) {
+					const m = l.startsWith("[simulated company channel") ? l.match(re) : null;
+					if (m) return m;
+				}
+				await new Promise((r) => setTimeout(r, 50));
+			}
+			throw new Error(`no message matching ${re} arrived on the simulated company channel`);
+		},
 		companyStarts: (tenant, relationship_id, action, params) => internal("relaciones/iniciar", { tenant, relationship_id, action, params }),
 		companyRevokes: (tenant, relationship_id, by = "usuario") => internal("relaciones/revocar", { tenant, relationship_id, by }),
 		stop: () =>

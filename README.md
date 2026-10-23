@@ -45,7 +45,7 @@ PACT or SOVRAS; the adapters for Poppy and PACT are optional.
 | [`reference/`](reference/) | Reference implementation (Node.js, TypeScript run natively), with its tests. |
 | [`verifier/`](verifier/) | Independent verifiers: two in Python and one in JavaScript for browser and Node, plus [`CHECKS.md`](verifier/CHECKS.md). |
 | [`vectors/`](vectors/) | Conformance test vectors and the scripts that generate them. |
-| [`agent/`](agent/) | The personal-agent side: library, CLI, MCP server, example agent and tests. Native profile only. |
+| [`agent/`](agent/) | The personal-agent side: library, CLI, MCP server, example agent and tests. Native profile, with optional Poppy and PACT adapters in the library. |
 | [`schemas/`](schemas/) | JSON Schemas (2020-12) for every object of VXP 0.1, published at `vxpprotocol.org/schemas/0.1/`, with `check.ts`. |
 | [`conformance/`](conformance/) | Validator that acts as a personal agent against any native endpoint, checklist of what is not automatable, rule → test matrix. |
 | [`docs/`](docs/) | Documentation in Markdown, built into `site/docs/`, `site/llms.txt` and `site/llms-full.txt` with `node docs/build.ts`. |

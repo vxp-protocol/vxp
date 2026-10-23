@@ -67,7 +67,10 @@ If the person approved a relationship, the company may write to your inbox ([R7]
 ## 9. Optionally, Poppy and PACT
 
 If a company only offers Poppy or PACT, use those protocols as written: see
-[Interoperability](https://vxpprotocol.org/docs/guides/interoperability/). The VXP proof still travels in their extension points.
+[Interoperability](https://vxpprotocol.org/docs/guides/interoperability/). The VXP proof still travels in their extension points. The library
+in `agent/` has both, as `PoppyAdapter` and `PactAdapter`, with the same identity, state and person's rules as
+the native profile; the native profile never imports them. Under Poppy the agent confirms within the person's
+rules; under PACT the person approves each write on the company's own channel and the agent cannot.
 
 ## The same steps with `agent/`
 

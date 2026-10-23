@@ -27,7 +27,8 @@ with each other until 1.0.
   objects to be rejected; the conformance validator checks every object an implementation returns (S1).
 - `conformance/`: a validator that acts as an agent against any native-profile implementation and
   reports every check with its rule; a conformance matrix and a checklist of what only a person can check.
-- `agent/`: client library, CLI, MCP server and example personal agent.
+- `agent/`: client library, CLI, MCP server and example personal agent; optional Poppy draft 0.2 and PACT 1.0
+  adapters in the library, which the native profile does not import.
 - `reference/`: optional adapters (`VXP_ADAPTERS=none`), persistent and rotating proof keys
   (`VXP_KEYS_DIR`), proof material under `/vxp/` (`/sovras/` kept as an alias), the simulated company
   channel printed to the console (`VXP_SHOW_CHANNEL=1`).

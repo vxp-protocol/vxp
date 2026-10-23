@@ -995,7 +995,10 @@ If the person approved a relationship, the company may write to your inbox ([R7]
 ## 9. Optionally, Poppy and PACT
 
 If a company only offers Poppy or PACT, use those protocols as written: see
-[Interoperability](https://vxpprotocol.org/docs/guides/interoperability/). The VXP proof still travels in their extension points.
+[Interoperability](https://vxpprotocol.org/docs/guides/interoperability/). The VXP proof still travels in their extension points. The library
+in `agent/` has both, as `PoppyAdapter` and `PactAdapter`, with the same identity, state and person's rules as
+the native profile; the native profile never imports them. Under Poppy the agent confirms within the person's
+rules; under PACT the person approves each write on the company's own channel and the agent cannot.
 
 ## The same steps with `agent/`
 
@@ -1161,6 +1164,16 @@ once per resource ([I2](https://vxpprotocol.org/spec/#i2)).
 | Discovery and identity | The Agent Card, PACT agent identity and delegated authority, as PACT defines them |
 | What VXP adds | `capabilities.extensions[]` with `https://vxpprotocol.org/ext/proof/v0.1` (`required: false`), and the proof in `message.metadata` next to `pact.receipt`, which is not touched |
 | VXP Relationship | Not specified yet |
+
+## The agent side
+
+The personal agent in `agent/` speaks both adapters as written, as a library: `PoppyAdapter` (discovery by
+`poppy.json`, Device Sign-In, the conversation and Operations `confirm`) and `PactAdapter` (the Agent Card,
+the personal-agent JWT, delegated authority and `message:send`). Each verifies the VXP proof with its own anchor:
+the Poppy domain, or the PACT authorization server with the PACT receipt cross-checked. They are tested against
+the reference with `VXP_ADAPTERS=poppy` and `VXP_ADAPTERS=pact`, and a test checks that the native modules
+import neither (`agent/test/native-only.test.ts`). VXP Relationship over a Poppy conversation ([R12](https://vxpprotocol.org/spec/#r12)–[R16](https://vxpprotocol.org/spec/#r16))
+is implemented by the company side only.
 
 ## States across protocols
 
@@ -1999,7 +2012,8 @@ with each other until 1.0.
   objects to be rejected; the conformance validator checks every object an implementation returns (S1).
 - `conformance/`: a validator that acts as an agent against any native-profile implementation and
   reports every check with its rule; a conformance matrix and a checklist of what only a person can check.
-- `agent/`: client library, CLI, MCP server and example personal agent.
+- `agent/`: client library, CLI, MCP server and example personal agent; optional Poppy draft 0.2 and PACT 1.0
+  adapters in the library, which the native profile does not import.
 - `reference/`: optional adapters (`VXP_ADAPTERS=none`), persistent and rotating proof keys
   (`VXP_KEYS_DIR`), proof material under `/vxp/` (`/sovras/` kept as an alias), the simulated company
   channel printed to the console (`VXP_SHOW_CHANNEL=1`).

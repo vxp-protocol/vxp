@@ -29,6 +29,16 @@ once per resource ([I2](https://vxpprotocol.org/spec/#i2)).
 | What VXP adds | `capabilities.extensions[]` with `https://vxpprotocol.org/ext/proof/v0.1` (`required: false`), and the proof in `message.metadata` next to `pact.receipt`, which is not touched |
 | VXP Relationship | Not specified yet |
 
+## The agent side
+
+The personal agent in `agent/` speaks both adapters as written, as a library: `PoppyAdapter` (discovery by
+`poppy.json`, Device Sign-In, the conversation and Operations `confirm`) and `PactAdapter` (the Agent Card,
+the personal-agent JWT, delegated authority and `message:send`). Each verifies the VXP proof with its own anchor:
+the Poppy domain, or the PACT authorization server with the PACT receipt cross-checked. They are tested against
+the reference with `VXP_ADAPTERS=poppy` and `VXP_ADAPTERS=pact`, and a test checks that the native modules
+import neither (`agent/test/native-only.test.ts`). VXP Relationship over a Poppy conversation ([R12](https://vxpprotocol.org/spec/#r12)–[R16](https://vxpprotocol.org/spec/#r16))
+is implemented by the company side only.
+
 ## States across protocols
 
 One internal state model, projected onto each protocol's own enum ([E1](https://vxpprotocol.org/spec/#e1), [E2](https://vxpprotocol.org/spec/#e2), [§4 projection](https://vxpprotocol.org/spec/#state-projection)):

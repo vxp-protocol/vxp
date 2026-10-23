@@ -8,7 +8,8 @@ import { decodeJws } from "./jose.ts";
 import type { Net } from "./net.ts";
 import { metadataUrlFor } from "./discovery.ts";
 
-export type Material = { anchor: { issuer: string }; docs: Record<string, string>; obtained_at: string };
+export type Anchor = { issuer: string } | { domain: string } | { pact_issuer: string };
+export type Material = { anchor: Anchor; docs: Record<string, string>; obtained_at: string };
 
 /** The operation as the agent saw it, in the shape the verifier cross-checks (P8). */
 export function operationView(view: any) {
@@ -53,6 +54,39 @@ export async function collectMaterial(net: Net, issuer: string, pkg: any): Promi
 export type Verdict = Record<string, unknown> & { valid: boolean };
 
 /** Verifies a package with saved material. `operation` and `aud` are optional cross-checks. */
-export async function verifyWithMaterial(pkg: unknown, material: Material, opts: { operation?: unknown; aud?: string } = {}): Promise<Verdict> {
-	return (await verifyPackage({ package: JSON.stringify(pkg), material: JSON.stringify({ anchor: material.anchor, docs: material.docs }), operation: opts.operation ? JSON.stringify(opts.operation) : null, aud: opts.aud ?? null })) as Verdict;
+export async function verifyWithMaterial(pkg: unknown, material: Material, opts: { operation?: unknown; aud?: string; receipt?: unknown } = {}): Promise<Verdict> {
+	return (await verifyPackage({ package: JSON.stringify(pkg), material: JSON.stringify({ anchor: material.anchor, docs: material.docs }), operation: opts.operation ? JSON.stringify(opts.operation) : null, aud: opts.aud ?? null, receipt: opts.receipt ? JSON.stringify(opts.receipt) : null })) as Verdict;
+}
+
+/**
+ * Material for the anchors of the optional adapters (spec §10, «Anchoring the issuer and its keys»):
+ * - `{domain}` under Poppy: the company's poppy.json on that domain, then its issuer's metadata;
+ * - `{pact_issuer}` under PACT: the PACT authorization server's metadata (its copy of the trust block and its
+ *   JWKS for the PACT receipt), then the company issuer it names.
+ * The verifier names poppy.json by its https URL; in local tests, where the developer allowed an http origin,
+ * the same document is fetched over that origin and kept under the name the verifier asks for.
+ */
+export async function collectAdapterMaterial(net: Net, anchor: { domain: string } | { pact_issuer: string }, pkg: any): Promise<Material> {
+	const extra: Record<string, string> = {};
+	let issuer: string;
+	if ("domain" in anchor) {
+		const r = await net.raw(`${net.originFor(anchor.domain)}/.well-known/poppy.json`);
+		if (r.status !== 200) throw new Error(`poppy.json on ${anchor.domain} → ${r.status}`);
+		extra[`https://${anchor.domain}/.well-known/poppy.json`] = r.text;
+		issuer = String(JSON.parse(r.text)?.auth?.issuer ?? "");
+	} else {
+		const metaUrl = metadataUrlFor(anchor.pact_issuer);
+		const r = await net.raw(metaUrl);
+		if (r.status !== 200) throw new Error(`GET ${metaUrl} → ${r.status}`);
+		extra[metaUrl] = r.text;
+		const meta = JSON.parse(r.text);
+		if (typeof meta.jwks_uri === "string") {
+			const j = await net.raw(meta.jwks_uri);
+			if (j.status === 200) extra[meta.jwks_uri] = j.text;
+		}
+		issuer = String(meta?.vxp_proof?.company ?? "");
+	}
+	if (!issuer) throw new Error("the anchor names no company issuer");
+	const base = await collectMaterial(net, issuer, pkg);
+	return { anchor, docs: { ...base.docs, ...extra }, obtained_at: base.obtained_at };
 }

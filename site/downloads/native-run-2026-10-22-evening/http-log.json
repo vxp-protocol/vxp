@@ -181,7 +181,7 @@
   "request": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&client_id=http%3A%2F%2Flocalhost%3A3734%2Fagent.json&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer&resource=http%3A%2F%2Flocalhost%3A3730%2Fe%2Fferreteria-demo%2Fv1&client_assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczNC9hZ2VudC5qc29uIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNzA4MjI5LCJleHAiOjE3OTI3MDgyODksImp0aSI6IkFQd2dpOG9lR3NWM1hhNTAifQ.TCQFzdx-Uw5dajNK0VNOCskjwvy8CyzdJK8GiO55sHwCNNzymX6dAwzHq5fY7U_u-Lkn1fha1SgqbKJ8vsEccg&assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6InVzcl8wMTI0ZWY0MCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtbyIsImlhdCI6MTc5MjcwODIyOSwiZXhwIjoxNzkyNzA4Mjg5LCJqdGkiOiJ0S2ZFWWxEZU5ZUGozNFVmIn0.k7Nsy9XtA5_q7st1FLKYf-G03V_zelNT3b7HlB1ZoZOjb6DSfr6UkwA35ko0OeE5LCZ4FmFm1fViL9OXY6zuPQ",
   "status": 200,
   "response": {
-   "access_token": "nt_NzWld5QybEBxrEY2Sl9STyOpwWqhTT9O",
+   "access_token": "[redacted]",
    "token_type": "DPoP",
    "expires_in": 3600
   }
@@ -191,7 +191,7 @@
   "method": "POST",
   "url": "http://localhost:3730/e/ferreteria-demo/v1/requests",
   "headers": {
-   "authorization": "DPoP nt_NzWld5QybEBxrEY2Sl9STyOpwWqhTT9O",
+   "authorization": "DPoP [redacted access token]",
    "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiI5TXkwQkhUQXBVYXFUVFd4IiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtby92MS9yZXF1ZXN0cyIsImlhdCI6MTc5MjcwODIyOSwiYXRoIjoieVk1VWJTUG1qX2t5NkJKNWNMV3g1ZklWRU05a2w1R29nMHNjTlRhQUZZYyJ9.lzD-_2OxYwwguqTOdtZdeiyv6Q7mJmRpQd6v1LkLJXz2mu-KzkrJHAbd8S_iFPoDzISUYdAB-TeJW9OeYEeeGA",
    "content-type": "application/json",
    "idempotency-key": "cW61M-FmasZ6"
@@ -241,7 +241,7 @@
   "request": "client_id=http%3A%2F%2Flocalhost%3A3734%2Fagent.json&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer&resource=http%3A%2F%2Flocalhost%3A3730%2Fe%2Fferreteria-demo%2Fv1&client_assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczNC9hZ2VudC5qc29uIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNzA4MjI5LCJleHAiOjE3OTI3MDgyODksImp0aSI6InFXTkVxVGxKSl9oQ0V6X2kifQ.Ip9dO2XdJliiihqNMwRLqr_ERkS38sQ3jDMr3wXm4n38RO-88dJ2E9l8lbRqAfqGPOYbEv9x5cq03TzYZsl6uQ&authorization_details=%5B%7B%22type%22%3A%22https%3A%2F%2Fvxpprotocol.org%2Frar%2Fcapability%22%2C%22actions%22%3A%5B%22pedido.reprogramar_despacho%22%5D%2C%22identifier%22%3A%22P-1042%22%7D%2C%7B%22type%22%3A%22https%3A%2F%2Fvxpprotocol.org%2Frar%2Frelationship%22%2C%22actions%22%3A%5B%22despacho.proponer_cambio%22%5D%2C%22identifier%22%3A%22relationship%22%2C%22limits%22%3A%7B%22max_per_day%22%3A2%2C%22duration_seconds%22%3A3600%7D%7D%5D",
   "status": 200,
   "response": {
-   "device_code": "dc_sccQ4bC2G3b8vIKm24UUUDhNHif9kyt1",
+   "device_code": "[redacted]",
    "user_code": "SBCN-KSMT",
    "verification_uri": "http://localhost:3730/e/ferreteria-demo/vincular",
    "verification_uri_complete": "http://localhost:3730/e/ferreteria-demo/vincular?user_code=SBCN-KSMT",
@@ -293,10 +293,10 @@
    "content-type": "application/x-www-form-urlencoded",
    "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJtaUdyNXVNeEMtNUdCRFlqIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtby9vYXV0aC90b2tlbiIsImlhdCI6MTc5MjcwODIyOX0.BDWAAdj-24-jQmMolKgU-vQgPJc7FfppC4CqSgxc-wSnbZdsLB3P609AlWlsErtVuiiwcmg9J1EZmbb-GTHCzQ"
   },
-  "request": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=dc_sccQ4bC2G3b8vIKm24UUUDhNHif9kyt1&client_id=http%3A%2F%2Flocalhost%3A3734%2Fagent.json&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer&resource=http%3A%2F%2Flocalhost%3A3730%2Fe%2Fferreteria-demo%2Fv1&client_assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczNC9hZ2VudC5qc29uIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNzA4MjI5LCJleHAiOjE3OTI3MDgyODksImp0aSI6IkdWZmgxMFhHN1dGVUU5dE8ifQ.gRnr3ZUQ2ynt9CaIC1Y39hUYQ7suOXykNLk3iI0js_TIDzhzc5sjw3jAwKLf52_LxhQ5w4wf8d_3K0KnKE_OIg&assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6InVzcl8wMTI0ZWY0MCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtbyIsImlhdCI6MTc5MjcwODIyOSwiZXhwIjoxNzkyNzA4Mjg5LCJqdGkiOiJXeEF6NW9ZUnhVRmROaWoxIn0.F3-8iPPkDbn4o1sNOfh-2q00WUJ5lSCJKDpk4S-otTWWaIsjG_q4GqUQEXE6KKRt4iVVNk7qkDBtGVNYWH9mow",
+  "request": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=[redacted]&client_id=http%3A%2F%2Flocalhost%3A3734%2Fagent.json&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer&resource=http%3A%2F%2Flocalhost%3A3730%2Fe%2Fferreteria-demo%2Fv1&client_assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczNC9hZ2VudC5qc29uIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNzA4MjI5LCJleHAiOjE3OTI3MDgyODksImp0aSI6IkdWZmgxMFhHN1dGVUU5dE8ifQ.gRnr3ZUQ2ynt9CaIC1Y39hUYQ7suOXykNLk3iI0js_TIDzhzc5sjw3jAwKLf52_LxhQ5w4wf8d_3K0KnKE_OIg&assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6InVzcl8wMTI0ZWY0MCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtbyIsImlhdCI6MTc5MjcwODIyOSwiZXhwIjoxNzkyNzA4Mjg5LCJqdGkiOiJXeEF6NW9ZUnhVRmROaWoxIn0.F3-8iPPkDbn4o1sNOfh-2q00WUJ5lSCJKDpk4S-otTWWaIsjG_q4GqUQEXE6KKRt4iVVNk7qkDBtGVNYWH9mow",
   "status": 200,
   "response": {
-   "access_token": "nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "access_token": "[redacted]",
    "token_type": "DPoP",
    "expires_in": 3600,
    "authorization_details": [
@@ -329,7 +329,7 @@
   "method": "POST",
   "url": "http://localhost:3730/e/ferreteria-demo/v1/requests",
   "headers": {
-   "authorization": "DPoP nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "authorization": "DPoP [redacted access token]",
    "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJIV0F6U1p6YzlhQTAwOVdWIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtby92MS9yZXF1ZXN0cyIsImlhdCI6MTc5MjcwODIyOSwiYXRoIjoiVk5Sc1hwbGdxSFg3WGhXSFlKWmJYR0hkQlZ2NnJRVVpXS3VwMmsxc2FuSSJ9.HDGwU6GkrRQb62BpI7FnJpmtfqA4SjuT0H5iREwAZNJVKGPym2Nx1iVeT2kyN0mxcQE8BJgW5XvWSwX7rabLKA",
    "content-type": "application/json",
    "idempotency-key": "cW61M-FmasZ6"
@@ -397,7 +397,7 @@
   "method": "POST",
   "url": "http://localhost:3730/e/ferreteria-demo/v1/proposals/prop_op_XzdILOmlgiae_r1/accept",
   "headers": {
-   "authorization": "DPoP nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "authorization": "DPoP [redacted access token]",
    "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJhOWZpY2Q5eFdJaUk4b2RUIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtby92MS9wcm9wb3NhbHMvcHJvcF9vcF9YemRJTE9tbGdpYWVfcjEvYWNjZXB0IiwiaWF0IjoxNzkyNzA4MjI5LCJhdGgiOiJWTlJzWHBsZ3FIWDdYaFdIWUpaYlhHSGRCVnY2clFVWldLdXAyazFzYW5JIn0.LETB_jmiM4uUt44agBTGaferrO-S_8tuOD6NLfagbxZy3hDtJBBWgSsEyknAkD0P5UEKwb_kUNx9vYQLogIh2Q",
    "content-type": "application/json"
   },
@@ -479,7 +479,7 @@
   "method": "GET",
   "url": "http://localhost:3730/e/ferreteria-demo/v1/requests/req_eSTKa7J-MERu/proof",
   "headers": {
-   "authorization": "DPoP nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "authorization": "DPoP [redacted access token]",
    "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJ5NFVja1R1TlZ1em0zUU1RIiwiaHRtIjoiR0VUIiwiaHR1IjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vL3YxL3JlcXVlc3RzL3JlcV9lU1RLYTdKLU1FUnUvcHJvb2YiLCJpYXQiOjE3OTI3MDgyMjksImF0aCI6IlZOUnNYcGxncUhYN1hoV0hZSlpiWEdIZEJWdjZyUVVaV0t1cDJrMXNhbkkifQ.DjP6uRJBttpmtniUlugw7KUNO9sqM6DS4Pr9QR6uObden4vOC1RHfeKJMmH0WzSJcCMM-O1FRs9dKu5NtQbT3Q",
    "content-type": "application/json"
   },
@@ -641,7 +641,7 @@
   "method": "POST",
   "url": "http://localhost:3730/e/ferreteria-demo/v1/proposals/prop_op_wHbfb8mjcZI7_r1/accept",
   "headers": {
-   "authorization": "DPoP nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "authorization": "DPoP [redacted access token]",
    "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJuS0NDWUxRS3d1X1UxeDRxIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtby92MS9wcm9wb3NhbHMvcHJvcF9vcF93SGJmYjhtamNaSTdfcjEvYWNjZXB0IiwiaWF0IjoxNzkyNzA4MjMwLCJhdGgiOiJWTlJzWHBsZ3FIWDdYaFdIWUpaYlhHSGRCVnY2clFVWldLdXAyazFzYW5JIn0.qLyehFQqUBRa16RR2wxXoIwef4_Ej2RxBIsonmm9_iXQyf0Y0jwKQXszPoj3he7ZQ8Jcx0H-i4zLzKZdIbLiXA",
    "content-type": "application/json"
   },
@@ -723,7 +723,7 @@
   "method": "GET",
   "url": "http://localhost:3730/e/ferreteria-demo/v1/requests/req_1tEWlrG-_6eq/proof",
   "headers": {
-   "authorization": "DPoP nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "authorization": "DPoP [redacted access token]",
    "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJTUkR4Q1ZHUnF3Q1lkby01IiwiaHRtIjoiR0VUIiwiaHR1IjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vL3YxL3JlcXVlc3RzL3JlcV8xdEVXbHJHLV82ZXEvcHJvb2YiLCJpYXQiOjE3OTI3MDgyMzAsImF0aCI6IlZOUnNYcGxncUhYN1hoV0hZSlpiWEdIZEJWdjZyUVVaV0t1cDJrMXNhbkkifQ.pvtD28BLWIstaeHlCHJAxDCQAPRWY41MGBWOB-lqEdXCFTEgCU4fSvG772tE4jpv4YBH4-kb5lPl82HXK6s6_Q",
    "content-type": "application/json"
   },

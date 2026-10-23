@@ -9,7 +9,7 @@ import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSy
 import { join } from "node:path";
 import { randomBytes } from "node:crypto";
 
-export type Doc = "identity" | "companies" | "sessions" | "requests" | "authorizations" | "relationships" | "inbox" | "mandates" | "approvals";
+export type Doc = "identity" | "companies" | "sessions" | "requests" | "authorizations" | "relationships" | "inbox" | "mandates" | "approvals" | "poppy" | "pact";
 
 export class Store {
 	readonly dir: string;

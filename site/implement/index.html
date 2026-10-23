@@ -786,6 +786,7 @@ seq 5  outcome        company   prev sha-256:wBMpHI0f…
 				<li><span>No <code>succeeded</code> without a matching read-back; <code>unknown</code> when unsure; later facts as <code>correction</code>. <a href="../spec/#p6">P6</a></span></li>
 				<li><span>Relationship checks run before anything is signed or sent; outgoing messages recorded. <a href="../spec/#r6">R6</a></span></li>
 				<li><span>Adapters literal, extensions only at extension points, official suites green. <a href="../spec/#i1">I1</a></span></li>
+				<li><span>Every object you return matches the <a href="../docs/schemas/">JSON Schemas</a>, and the conformance validator passes against your server. <a href="../docs/conformance/">validator</a></span></li>
 			</ol>
 		</div>
 	</div>
@@ -1359,6 +1360,7 @@ payload { "iss": "&lt;company issuer&gt;", "aud": "&lt;your client_id&gt;", "sub
 				<li><span>Final states treated as final; cancel during execution read as a request to stop. <a href="../spec/#cancellation">cancel</a></span></li>
 				<li><span>Every proof verified against your own anchor and stored; derived level shown. <a href="../spec/#proof-verification">verification</a></span></li>
 				<li><span>Company messages verified with the relationship key, repeated <code>jti</code> rejected, one answer per question. <a href="../spec/#r7">R7</a></span></li>
+				<li><span>Each failure handled as <a href="../docs/failures/">Failures and how VXP behaves</a> describes; the library, CLI and MCP server in <code>agent/</code> do all of the above. <a href="../docs/guides/agent/">guide</a></span></li>
 			</ol>
 		</div>
 	</div>

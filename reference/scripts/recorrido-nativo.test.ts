@@ -33,6 +33,13 @@ const MATERIAL = join(RAIZ, "scripts", "capturar-material.py");
 
 // ── Every HTTP exchange of the agent is recorded ─────────────────────────────────────────────────
 const registro: unknown[] = [];
+/** Replaces bearer credentials in a logged body: access and refresh tokens, and device codes. */
+function tapar(x: unknown): unknown {
+	if (typeof x === "string") return x.replace(/\b(access_token|refresh_token|device_code)=[^&]+/g, "$1=[redacted]");
+	if (!x || typeof x !== "object") return x;
+	if (Array.isArray(x)) return x.map(tapar);
+	return Object.fromEntries(Object.entries(x).map(([k, v]) => [k, ["access_token", "refresh_token", "device_code"].includes(k) && typeof v === "string" ? "[redacted]" : tapar(v)]));
+}
 const fetchOriginal = globalThis.fetch;
 globalThis.fetch = async (input: RequestInfo | URL, init: RequestInit = {}) => {
 	const url = String(input instanceof Request ? input.url : input);
@@ -42,9 +49,15 @@ globalThis.fetch = async (input: RequestInfo | URL, init: RequestInit = {}) => {
 	try { body = JSON.parse(txt); } catch {}
 	let req: unknown = init.body ? String(init.body) : null;
 	try { req = JSON.parse(String(init.body)); } catch {}
-	// The test-only key of the gateway's internal routes is never written down.
-	const headers = Object.fromEntries(Object.entries((init.headers ?? {}) as Record<string, string>).filter(([k]) => k.toLowerCase() !== "x-sovras-prueba"));
-	registro.push({ at: new Date().toISOString(), method: init.method ?? "GET", url, headers, request: req, status: r.status, response: body });
+	// The test-only key of the gateway's internal routes is never written down, and neither are bearer
+	// credentials: access tokens and device codes are replaced in the published log (DPoP proofs stay; they
+	// are public and bound to one request).
+	const headers = Object.fromEntries(
+		Object.entries((init.headers ?? {}) as Record<string, string>)
+			.filter(([k]) => k.toLowerCase() !== "x-sovras-prueba")
+			.map(([k, v]) => [k, k.toLowerCase() === "authorization" ? "DPoP [redacted access token]" : v]),
+	);
+	registro.push({ at: new Date().toISOString(), method: init.method ?? "GET", url, headers, request: tapar(req), status: r.status, response: tapar(body) });
 	return r;
 };
 after(() => writeFileSync(join(SALIDA, "recorrido.json"), JSON.stringify(registro, null, 1)));

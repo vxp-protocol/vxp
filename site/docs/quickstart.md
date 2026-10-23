@@ -100,7 +100,7 @@ python verifier/verificar_paquete.py material \
 ```
 
 Expected: `{"valid": false, "error": "operation_terms_mismatch"}`. To alter the signed statements themselves
-and see which link breaks, use the [verifier](../verify/) in a browser. [Verifier guide](https://vxpprotocol.org/docs/guides/verifier/).
+and see which link breaks, use the [verifier](https://vxpprotocol.org/verify/) in a browser. [Verifier guide](https://vxpprotocol.org/docs/guides/verifier/).
 
 ## 4. The company starts the next request
 

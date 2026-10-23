@@ -82,7 +82,13 @@ python verifier/verificar_paquete.py material \
   --material /tmp/vxp-agent/proofs/$REQ.material.json \
   --paquete /tmp/vxp-agent/proofs/$REQ.package.json \
   --operacion /tmp/vxp-agent/proofs/$REQ.operation.json</pre></div>
-<p>Expected: <code>"valid": true</code> and <code>"final_state": "succeeded"</code>. Change one character of a term in the package and run it again: the verdict is <code>"valid": false</code> with the error that names the broken link. To verify in a browser instead, paste the package in the <a href="../verify/">verifier</a>. <a href="../../docs/guides/verifier/">Verifier guide</a>.</p>
+<p>Expected: <code>"valid": true</code> and <code>"final_state": "succeeded"</code>. The terms travel signed inside each statement, so the way to see a mismatch is to change what the agent claims it was shown. Lower the total in the operation file and run the verifier again:</p>
+<div class="code"><div class="code__head"><b>Claim different terms</b><span>sh</span></div><pre data-copy tabindex="0">sed 's/"total": *230400/"total": 200000/' /tmp/vxp-agent/proofs/$REQ.operation.json &gt; /tmp/claimed.json
+python verifier/verificar_paquete.py material \
+  --material /tmp/vxp-agent/proofs/$REQ.material.json \
+  --paquete /tmp/vxp-agent/proofs/$REQ.package.json \
+  --operacion /tmp/claimed.json</pre></div>
+<p>Expected: <code>{"valid": false, "error": "operation_terms_mismatch"}</code>. To alter the signed statements themselves and see which link breaks, use the <a href="../verify/">verifier</a> in a browser. <a href="../../docs/guides/verifier/">Verifier guide</a>.</p>
 <h2 id="4-the-company-starts-the-next-request">4. The company starts the next request<a class="anchor" href="#4-the-company-starts-the-next-request" aria-label="Link to 4. The company starts the next request">#</a></h2>
 <p>The hotel's rule asks the guest's agent, inside the relationship, whether to hold or release a booking when the guest has not arrived after 20:00 on the arrival day (<a class="rule" href="../../spec/#r17">R17</a>). The gateway checks every minute. To run the rule now, with the reference's clock moved to that evening, add these options to the example in step 2:</p>
 <div class="code"><div class="code__head"><b>Terminal 2 · add to the example</b><span>sh</span></div><pre data-copy tabindex="0">  --hotel-console http://localhost:3100 --hotel-console-key &lt;the "llave interna" printed by Terminal 1&gt;</pre></div>

@@ -88,9 +88,20 @@ python verifier/verificar_paquete.py material \
   --operacion /tmp/vxp-agent/proofs/$REQ.operation.json
 ```
 
-Expected: `"valid": true` and `"final_state": "succeeded"`. Change one character of a term in the package and
-run it again: the verdict is `"valid": false` with the error that names the broken link. To verify in a
-browser instead, paste the package in the [verifier](../verify/). [Verifier guide](guides/verifier.md).
+Expected: `"valid": true` and `"final_state": "succeeded"`. The terms travel signed inside each statement, so
+the way to see a mismatch is to change what the agent claims it was shown. Lower the total in the operation
+file and run the verifier again:
+
+```sh title="Claim different terms"
+sed 's/"total": *230400/"total": 200000/' /tmp/vxp-agent/proofs/$REQ.operation.json > /tmp/claimed.json
+python verifier/verificar_paquete.py material \
+  --material /tmp/vxp-agent/proofs/$REQ.material.json \
+  --paquete /tmp/vxp-agent/proofs/$REQ.package.json \
+  --operacion /tmp/claimed.json
+```
+
+Expected: `{"valid": false, "error": "operation_terms_mismatch"}`. To alter the signed statements themselves
+and see which link breaks, use the [verifier](../verify/) in a browser. [Verifier guide](guides/verifier.md).
 
 ## 4. The company starts the next request
 

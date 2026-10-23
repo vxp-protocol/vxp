@@ -29,7 +29,8 @@ what an implementation that passed rc.3 does.
 - `verifier/`: `key_source` is `issuer_metadata_saved` when the keys come from saved material, and
   `issuer_metadata_live` when they are fetched for the check.
 - `site/` and `docs/`: wording, dates and status brought up to date; the Quickstart runs as written;
-  Demos in the menu; adding a demo is described in CONTRIBUTING.md.
+  Demos in the menu; adding a demo is described in CONTRIBUTING.md; Conformance says which code its recorded run
+  checked; the site has its icon.
 
 ## 0.1.0-rc.3 · 23 October 2026
 

@@ -28,7 +28,7 @@
 			<li><a href="../../verify/">Verify</a></li>
 			<li><a href="../../conformance/">Conformance</a></li>
 			<li><a href="../../implement/">Implement</a></li>
-			<li><a href="../../videos/">Videos</a></li>
+			<li><a href="../../demos/">Demos</a></li>
 		</ul>
 		<a class="nav__ver" href="../../status/">Draft 0.1</a>
 	</div>
@@ -50,7 +50,7 @@
 		<p class="kicker">VXP docs · draft 0.1</p>
 		<h1 class="h2">Tests and conformance</h1>
 		<p class="lead">How to check an implementation against VXP, with the validator, the conformance matrix and the checklist, and which tests are whose.</p>
-		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#the-validator">The validator</a></li><li><a href="#the-checklist">The checklist</a></li><li><a href="#the-matrix">The matrix</a></li><li><a href="#three-kinds-of-tests-never-added-together">Three kinds of tests, never added together</a></li><li><a href="#running-everything">Running everything</a></li><li><a href="#what-this-is-not">What this is not</a></li></ul></nav>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#the-validator">The validator</a></li><li><a href="#the-checklist">The checklist</a></li><li><a href="#the-matrix">The matrix</a></li><li><a href="#three-kinds-of-tests-counted-apart">Three kinds of tests, counted apart</a></li><li><a href="#running-everything">Running everything</a></li><li><a href="#what-this-is-not">What this is not</a></li></ul></nav>
 		<h2 id="the-validator">The validator<a class="anchor" href="#the-validator" aria-label="Link to The validator">#</a></h2>
 <p><code>conformance/validate.ts</code> acts as a personal agent against a company's server and reports every check with the rule it tests. It shares no code with the reference implementation: it signs with <code>node:crypto</code>, and it checks the proof with the independent browser verifier, anchored by the issuer. Node.js 22.18+, no dependencies.</p>
 <div class="code"><div class="code__head"><b>Against the reference implementation (native only)</b><span>sh</span></div><pre data-copy tabindex="0">node conformance/reference/run.ts --report conformance-report.json</pre></div>
@@ -65,12 +65,12 @@
 <ul><li>the consent screen's language (<a class="rule" href="../../spec/#r3">R3</a>);</li><li>account-linking evidence (<a class="rule" href="../../spec/#id1">ID1</a>, <a class="rule" href="../../spec/#id2">ID2</a>);</li><li>privacy;</li><li>company review (<a class="rule" href="../../spec/#o5">O5</a>);</li><li>key custody and rotation.</li></ul>
 <h2 id="the-matrix">The matrix<a class="anchor" href="#the-matrix" aria-label="Link to The matrix">#</a></h2>
 <p><code>conformance/MATRIX.md</code> lists every normative rule with the reference tests, the validator checks and the other evidence that cover it. It is generated from the specification, the tests and the validator, and the build fails if a cited test does not exist.</p>
-<h2 id="three-kinds-of-tests-never-added-together">Three kinds of tests, never added together<a class="anchor" href="#three-kinds-of-tests-never-added-together" aria-label="Link to Three kinds of tests, never added together">#</a></h2>
+<h2 id="three-kinds-of-tests-counted-apart">Three kinds of tests, counted apart<a class="anchor" href="#three-kinds-of-tests-counted-apart" aria-label="Link to Three kinds of tests, counted apart">#</a></h2>
 <div class="tbl tbl--fit"><table><thead><tr><th>Kind</th><th>What</th><th>What it does not show</th></tr></thead><tbody><tr><td>Official tools of other protocols</td><td>The Poppy validator (draft 0.2 kit) and the PACT Identity suite, unchanged</td><td>The Poppy validator skips sign-in and Operations; it is not full Poppy conformance. The official PACT delegated suite runs only against PACT's demo airline</td></tr><tr><td>Own adapter tests</td><td>Written by SOVRAS, including the delegated PACT flow with the official PACT client</td><td>That a third party agrees with them</td></tr><tr><td>VXP tests</td><td>The reference suite (in process and over the network), mutation runs, the native-only test, vectors, the three verifiers and the validator</td><td>Interoperability with an implementation written elsewhere</td></tr></tbody></table></div>
 <h2 id="running-everything">Running everything<a class="anchor" href="#running-everything" aria-label="Link to Running everything">#</a></h2>
 <div class="code"><div class="code__head"><b>From the repository root</b><span>sh</span></div><pre data-copy tabindex="0">cd reference &amp;&amp; npm test &amp;&amp; npm run test:network &amp;&amp; cd ..
-python verifier/verificar_paquete.py vectores vectors/vectores-0.1.json
-python verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json
+python3 verifier/verificar_paquete.py vectores vectors/vectores-0.1.json
+python3 verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json
 node verifier/tests/test-vxp-verify.mjs
 node conformance/reference/run.ts</pre></div>
 <p>Continuous integration runs all of these on every push (<code>.github/workflows/ci.yml</code>).</p>

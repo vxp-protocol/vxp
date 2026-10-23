@@ -1429,7 +1429,8 @@ function makeEngine(N) {
     if (pyNe(get(paquete, "op"), idx(payloads[0], "op"))) throw new Falla("op_mismatch");
     veredicto.set("company", empresa);
     veredicto.set("anchor", tipo);
-    veredicto.set("key_source", "issuer_metadata_live");
+    // This verifier only reads material saved earlier (it does not fetch), and the verdict says so.
+    veredicto.set("key_source", "issuer_metadata_saved");
     veredicto.set("profile", perfil);
     veredicto.set("statements", pyLen(estados));
     for (const [k, v] of await verificarRegistro(paquete, jwts, bloque, material)) veredicto.set(k, v);

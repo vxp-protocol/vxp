@@ -43,7 +43,7 @@ The message is a `vxp-company-request+jwt` delivered to the agent's inbox ([[R7]
 - **A proposal** ([[R8]]): it creates a normal operation, with terms signed by the company and its own
   VXP Proof chain. Proposing never executes. The agent accepts with the person's approval, and the company
   checks the relationship again at that moment ([[R9]]).
-- **A closed question** ([[R17]]): for example «hold or release the booking». The agent answers once, with
+- **A closed question** ([[R17]]): for example “hold or release the booking”. The agent answers once, with
   one of the options, before it expires, and gets a signed receipt (`vxp-reply-receipt+jwt`).
 
 <!--json:relate.outbox title="A company-initiated request, as delivered"-->
@@ -66,4 +66,7 @@ See [Interoperability](guides/interoperability.md).
 ## Status
 
 Experimental. The HTTP inbox has been tested with agents written by SOVRAS. The relationship over a Poppy
-conversation was used once by a live agent, on 21 October 2026. No third-party agent exposes an inbox yet.
+conversation is implemented on the company side only (the agent library in `agent/` does not implement it); it
+ran once, on 21 October 2026, during SOVRAS's own runs, and no agent outside them has used it. Over Poppy alone
+an agent can receive and answer closed questions; to accept a change the company proposes ([[R8]]), it needs the
+native profile. No third-party agent exposes an inbox yet.

@@ -931,9 +931,10 @@ def verificar_paquete(paquete, material, ancla, aud=None, operacion=None, recibo
         raise Falla("op_mismatch")
     veredicto["company"] = empresa
     veredicto["anchor"] = tipo
-    # The keys come from the live jwks_uri named by the issuer metadata: anchored to the issuer,
-    # not to its history (SPEC 9.6: key leaves in the log do not exist in 0.1).
-    veredicto["key_source"] = "issuer_metadata_live"
+    # The keys come from the jwks_uri named by the issuer metadata: anchored to the issuer, not to its
+    # history (SPEC 9.6: key leaves in the log do not exist in 0.1). Fetched now, or read from material
+    # saved earlier, which the verdict says (spec §10, key rotation and historical verification).
+    veredicto["key_source"] = "issuer_metadata_live" if material.docs is None else "issuer_metadata_saved"
     veredicto["profile"] = perfil
     veredicto["statements"] = len(estados)
     veredicto.update(verificar_registro(paquete, jwts, bloque, material))

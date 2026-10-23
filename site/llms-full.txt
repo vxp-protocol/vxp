@@ -42,12 +42,12 @@ Everything is under the Apache License 2.0, and nothing requires SOVRAS, Poppy o
 
 # Introduction
 
-> What VXP is, the work it comes from, its two public components, and what it does not do.
+> What VXP is, the work behind it, its two public components, and what it does not do.
 
-## The work it comes from
+## The work behind VXP
 
 Every day, companies take bookings, sell, change deliveries, handle claims and answer incidents in their
-own systems. More and more of those requests come from a person's own agent: an assistant the company did
+own systems. Now some of those requests come from a person's own agent: an assistant the company did
 not build and whose conversation it cannot see. After each operation the same questions come back:
 
 1. Who asked, and on whose behalf?
@@ -112,12 +112,10 @@ verifier knows whether it is reading the company's word or the operator's ([P7](
   what, over which exact terms and in which order, with its root of trust named ([P7](https://vxpprotocol.org/spec/#p7),
   [§10, reading a verdict](https://vxpprotocol.org/spec/#reading-a-verdict)).
 
-This is the behaviour the standard targets. Today no commercial personal agent supports VXP natively, and
-the native profile is experimental.
-
 ## Status
 
-Draft 0.1. The specification, the reference implementation, the verifiers, the vectors, the conformance
+Draft 0.1. Today no commercial personal agent supports VXP natively, and the native profile is experimental.
+The specification, the reference implementation, the verifiers, the vectors, the conformance
 validator and the agent tools are published together, under Apache 2.0. See [Changelog](https://vxpprotocol.org/docs/changelog/).
 
 
@@ -130,7 +128,8 @@ validator and the agent tools are published together, under Apache 2.0. See [Cha
 ## Requirements
 
 - Node.js 22.18 or newer. Nothing to install with npm: the repository has no dependencies.
-- Python 3 with `cryptography`, for the Python verifier: `pip install cryptography`.
+- Python 3 with `cryptography`, for the Python verifier: `python3 -m pip install cryptography` (inside a virtual
+  environment, `python3 -m venv .venv && . .venv/bin/activate`, where the system's Python refuses packages).
 - Git.
 
 ```sh title="Clone"
@@ -138,13 +137,14 @@ git clone https://github.com/vxp-protocol/vxp.git
 cd vxp
 ```
 
-The commands below are for bash. In PowerShell, set each variable first (`$env:PORT="3100"`) and then run
-the command.
+The commands below are for bash: Linux, macOS, WSL or Git Bash on Windows. Where `python3` does not exist, as in
+Git Bash, use `python`.
 
 ## 1. Start a company
 
-The reference implementation serves fictitious test companies: Ferretería Demo at `localhost:3100` and Hotel
-Demo at `127.0.0.1:3100`. Start it as a native-only gateway, with persistent keys outside the repository, and
+The reference implementation serves fictitious test companies and tells them apart by host name: Ferretería Demo
+at `localhost:3100` and Hotel Demo at `127.0.0.1:3100`. They are Chilean, so their pages and messages are in
+Spanish. Start it as a native-only gateway, with persistent keys outside the repository, and
 with the company's channel printed to the console (the channel is simulated: it stands for the SMS or
 WhatsApp line through which a real company would reach its customer).
 
@@ -168,12 +168,17 @@ You get the hotel's `vxp.json`: its issuer, its `/v1` endpoint and its capabilit
 
 The agent is another process with its own identity, its own keys and its own HTTP server for the documents
 companies fetch and for the inbox. The example does the task of the [agent guide](https://vxpprotocol.org/docs/guides/agent/): a hotel in
-Santiago, two nights with breakfast, up to $250,000.
+Santiago, two nights with breakfast, up to CLP 250,000 (printed as `$250.000`).
+
+Terminal 1 prints an internal key for the reference's test console (`llave interna: …`). Pass it to the agent,
+so that step 4 can run at once:
 
 ```sh title="Terminal 2 · the agent"
 cd agent
+KEY=<the value printed after "llave interna:" in Terminal 1>
 node examples/hotel-santiago.ts --state /tmp/vxp-agent --origin http://localhost:3811 --port 3811 \
   --allow-http http://localhost:3100,http://127.0.0.1:3100,http://localhost:3811 \
+  --hotel-console http://localhost:3100 --hotel-console-key "$KEY" \
   localhost:3100 127.0.0.1:3100 localhost:3999
 ```
 
@@ -181,19 +186,19 @@ The last three arguments are candidate domains: VXP has no registry, so the agen
 person names or finds. The agent then:
 
 1. discovers which candidates speak VXP and which one offers bookings (the third one does not answer);
-2. records the person's rules: book up to $250,000, and answer «mantener» to a late-arrival question;
+2. records the person's rules: book up to CLP 250,000, and answer `mantener` (keep) to a late-arrival question;
 3. reads availability, rates and services, a public read with no consent;
 4. asks for the stay. The hotel answers `authorization_required` with exactly what to ask the person for.
 
 The agent prints a link on the hotel's own page and waits. **You are the person now:** open the link, enter the
 test phone `+56 9 0000 0101`, enter the code that Terminal 1 prints as `[simulated company channel …]`, read
-the consent and allow it. The consent covers the booking up to $250,000 and a relationship so the hotel can ask
+the consent and press “Permitir” (allow). The consent covers the booking up to CLP 250,000 and a relationship so the hotel can ask
 about a late arrival.
 
 The agent continues on its own:
 
 5. sends the same request again with the same `Idempotency-Key` and receives signed terms;
-6. negotiates within the hotel's policy: a discretionary discount is refused, and the «Escapada» package lowers
+6. negotiates within the hotel's policy: a discretionary discount is refused, and the “Escapada” package lowers
    the total in a new revision;
 7. accepts that exact revision within your cap (`approved_by: "standing_permission"`). The hotel executes it
    once and reads its system back;
@@ -202,43 +207,42 @@ The agent continues on its own:
 ## 3. Verify the proof yourself
 
 The agent saved what it verified in its state directory. Check the same package with the Python verifier,
-which shares no code with the agent's JavaScript verifier:
+which shares no code with the agent's JavaScript verifier (its modes and flags are in Spanish: `paquete` is the
+package, `operacion` the operation):
 
 ```sh title="From the repository root"
 REQ=$(ls /tmp/vxp-agent/proofs/ | grep -m1 '.package.json' | sed 's/.package.json//')
-python verifier/verificar_paquete.py material \
+python3 verifier/verificar_paquete.py material \
   --material /tmp/vxp-agent/proofs/$REQ.material.json \
   --paquete /tmp/vxp-agent/proofs/$REQ.package.json \
   --operacion /tmp/vxp-agent/proofs/$REQ.operation.json
 ```
 
-Expected: `"valid": true` and `"final_state": "succeeded"`. The terms travel signed inside each statement, so
+Expected: `"valid": true`, `"final_state": "succeeded"` and `"key_source": "issuer_metadata_saved"`, since the
+keys come from the material the agent saved. The terms travel signed inside each statement, so
 the way to see a mismatch is to change what the agent claims it was shown. Lower the total in the operation
 file and run the verifier again:
 
 ```sh title="Claim different terms"
 sed 's/"total": *230400/"total": 200000/' /tmp/vxp-agent/proofs/$REQ.operation.json > /tmp/claimed.json
-python verifier/verificar_paquete.py material \
+python3 verifier/verificar_paquete.py material \
   --material /tmp/vxp-agent/proofs/$REQ.material.json \
   --paquete /tmp/vxp-agent/proofs/$REQ.package.json \
   --operacion /tmp/claimed.json
 ```
 
-Expected: `{"valid": false, "error": "operation_terms_mismatch"}`. To alter the signed statements themselves
+Expected: `{"valid": false, "error": "operation_terms_mismatch", "seq": null}`. To alter the signed statements themselves
 and see which link breaks, use the [verifier](https://vxpprotocol.org/verify/) in a browser. [Verifier guide](https://vxpprotocol.org/docs/guides/verifier/).
 
 ## 4. The company starts the next request
 
 The hotel's rule asks the guest's agent, inside the relationship, whether to hold or release a booking when the
-guest has not arrived after 20:00 on the arrival day ([R17](https://vxpprotocol.org/spec/#r17)). The gateway checks every minute. To run the
-rule now, with the reference's clock moved to that evening, add these options to the example in step 2:
-
-```sh title="Terminal 2 · add to the example"
-  --hotel-console http://localhost:3100 --hotel-console-key <the "llave interna" printed by Terminal 1>
-```
+guest has not arrived after 20:00 on the arrival day ([R17](https://vxpprotocol.org/spec/#r17)). The gateway checks every minute; the
+`--hotel-console` options of step 2 run the rule at once, with the reference's clock moved to that evening.
+Without them, the agent waits for the real evening.
 
 The hotel signs a closed question and posts it to the agent's inbox. The agent verifies the signature with the
-key anchored to the issuer, rejects a repeated `jti`, answers «mantener» with the person's standing answer,
+key anchored to the issuer, rejects a repeated `jti`, answers `mantener` with the person's standing answer,
 and verifies the signed receipt. The `/interno/` console is the reference's test-only console, standing in for
 the hotel's own clock; it is not part of VXP.
 
@@ -528,7 +532,7 @@ The message is a `vxp-company-request+jwt` delivered to the agent's inbox ([R7](
 - **A proposal** ([R8](https://vxpprotocol.org/spec/#r8)): it creates a normal operation, with terms signed by the company and its own
   VXP Proof chain. Proposing never executes. The agent accepts with the person's approval, and the company
   checks the relationship again at that moment ([R9](https://vxpprotocol.org/spec/#r9)).
-- **A closed question** ([R17](https://vxpprotocol.org/spec/#r17)): for example «hold or release the booking». The agent answers once, with
+- **A closed question** ([R17](https://vxpprotocol.org/spec/#r17)): for example “hold or release the booking”. The agent answers once, with
   one of the options, before it expires, and gets a signed receipt (`vxp-reply-receipt+jwt`).
 
 ```json
@@ -565,7 +569,10 @@ See [Interoperability](https://vxpprotocol.org/docs/guides/interoperability/).
 ## Status
 
 Experimental. The HTTP inbox has been tested with agents written by SOVRAS. The relationship over a Poppy
-conversation was used once by a live agent, on 21 October 2026. No third-party agent exposes an inbox yet.
+conversation is implemented on the company side only (the agent library in `agent/` does not implement it); it
+ran once, on 21 October 2026, during SOVRAS's own runs, and no agent outside them has used it. Over Poppy alone
+an agent can receive and answer closed questions; to accept a change the company proposes ([R8](https://vxpprotocol.org/spec/#r8)), it needs the
+native profile. No third-party agent exposes an inbox yet.
 
 
 ---
@@ -705,7 +712,7 @@ The agent starts a device authorization (RFC 8628) with those `authorization_det
 approves on the company's own page, after linking their account through an authentication the company
 controls ([ID1](https://vxpprotocol.org/spec/#id1)). The token that follows carries exactly what was granted ([O2](https://vxpprotocol.org/spec/#o2)).
 
-## 4. Keep the context
+## 4. Repeat the same request
 
 The agent repeats the same request, with the same `Idempotency-Key`. It is the same request, re-evaluated
 with the new authority ([§8, idempotency](https://vxpprotocol.org/spec/#native-idempotency)):
@@ -880,7 +887,8 @@ Sign it into the proof ([P1](https://vxpprotocol.org/spec/#p1), [O4](https://vxp
 
 On acceptance:
 1. Re-check authority, the policy and the precondition.
-2. Execute **once** per resource, even if the same request arrives by several paths ([O6](https://vxpprotocol.org/spec/#o6), [I2](https://vxpprotocol.org/spec/#i2)).
+2. Execute each accepted revision **once**; if competing requests for the same resource arrive by several paths, only the
+   first that passes the precondition takes effect ([O6](https://vxpprotocol.org/spec/#o6), [I2](https://vxpprotocol.org/spec/#i2)).
 3. Read your system back.
 4. Only if what you read matches the terms, sign `succeeded` ([O7](https://vxpprotocol.org/spec/#o7)).
 
@@ -891,8 +899,8 @@ a person at the company decides on the same digest before execution ([O5](https:
 ## 7. Keep your keys
 
 Generate proof keys once and keep them; publish earlier public keys after a rotation; never reuse a
-retired key ([§10 key rotation](https://vxpprotocol.org/spec/#key-rotation)). Proofs signed with keys you lose can no longer be checked by
-anyone.
+retired key ([§10 key rotation](https://vxpprotocol.org/spec/#key-rotation)). Losing a private key only stops new signatures. Losing a public
+key that nobody saved while it was published leaves the proofs it signed impossible to check.
 
 ## 8. Optionally, a relationship
 
@@ -916,7 +924,7 @@ Then go through `conformance/CHECKLIST.md` for what no tool can see from outside
 
 ```sh title="The reference company, native profile only"
 cd reference
-VXP_ADAPTERS=none VXP_KEYS_DIR=./.keys VXP_SHOW_CHANNEL=1 npm start
+VXP_ADAPTERS=none VXP_KEYS_DIR=/tmp/vxp-keys VXP_SHOW_CHANNEL=1 npm start
 ```
 
 It serves three fictitious test companies on `http://localhost:3100`. The store's discovery is at
@@ -930,9 +938,10 @@ channel, such as the account-linking code, because that channel is simulated.
 
 > How a personal agent finds companies that speak VXP, acts with its user's permission, keeps its state, verifies results and answers the company within an agreement.
 
-A person tells their agent: «Book a hotel in Santiago for two nights, with breakfast; negotiate the best rate
-and book it if it is under $250,000». This guide shows what the agent does with any company that speaks VXP,
-with no integration per company. The `agent/` folder of the repository implements every step as a library you
+A person tells their agent: “Book a hotel in Santiago for two nights, with breakfast; negotiate the best rate
+and book it if it is under CLP 250,000.” This guide shows what the agent does with any company that speaks VXP,
+with the same code for discovery, identity, authority, negotiation and proof at every company. The names of
+the operations and their parameters are each company's own; VXP does not standardize them. The `agent/` folder of the repository implements every step as a library you
 can import or copy, with a command-line tool and an MCP server; the [Quickstart](https://vxpprotocol.org/docs/quickstart/) runs it.
 
 ## 1. Have an identity
@@ -959,7 +968,7 @@ exactly what to ask the person for ([O2](https://vxpprotocol.org/spec/#o2)).
 
 Start a device authorization (RFC 8628) with those `authorization_details`, and show the person the
 verification link. They approve on the company's page, linking their account through the company's own
-channel. If the person sets a limit in advance, for example «up to $250,000», ask for it as a limit in the
+channel. If the person sets a limit in advance, for example “up to CLP 250,000”, ask for it as a limit in the
 authorization details. Within it, the agent may accept without asking again. Above it, the company asks for
 more authority and you go back to the person.
 
@@ -988,7 +997,7 @@ If the person approved a relationship, the company may write to your inbox ([R7]
 - **Verify** each message's signature with the relationship key anchored to the issuer, and reject a repeated
   `jti`.
 - **A proposal** is a normal operation: accept it only with the person's approval or within their limit ([R8](https://vxpprotocol.org/spec/#r8)).
-- **A closed question**, for example «hold or release the booking», is answered once, with one of the options,
+- **A closed question**, for example “hold or release the booking”, is answered once, with one of the options,
   at `reply_url` ([R17](https://vxpprotocol.org/spec/#r17)).
 - **Revoke** the relationship with `DELETE /v1/relationships/{id}` when the person asks ([R10](https://vxpprotocol.org/spec/#r10)).
 
@@ -1028,7 +1037,7 @@ relationships, forged and replayed company messages, and altered proofs.
 ## What you can rely on, and what you cannot
 
 - You can rely on: one execution per accepted revision; success only after the company read its system; and a
-  proof you can check without trusting the company's server.
+  proof you can check without trusting whoever hands it to you: the keys come from the issuer you anchored.
 - You cannot rely on: that the company told the truth about its own system. The proof names its root of trust;
   today that root is the operator ([P7](https://vxpprotocol.org/spec/#p7)).
 
@@ -1042,7 +1051,7 @@ relationships, forged and replayed company messages, and altered proofs.
 ## What you need
 
 - The **package**: `{v, company, op, statements[], log}`, as the agent received it.
-- An **anchor** you know on your own account: the company's domain or its issuer. Never a document handed
+- An **anchor** you obtained independently: the company's domain or its issuer. Never a document handed
   over by whoever presents the package ([§10 anchoring](https://vxpprotocol.org/spec/#issuer-anchoring)).
 - Optionally, the **operation the agent saw**: its revision, summary, terms, expiry and state. The verifier
   then also checks that what the agent was shown is what was signed ([P8](https://vxpprotocol.org/spec/#p8)).
@@ -1060,18 +1069,20 @@ Save the public material once (the issuer's metadata and the key sets and checkp
 verify any time later, with no server:
 
 ```sh title="Offline"
-pip install cryptography
-python verifier/verificar_paquete.py material \
+python3 -m pip install cryptography
+python3 verifier/verificar_paquete.py material \
   --material material.json --paquete paquete.json --operacion operacion.json
 ```
 
-`material.json` is `{"anchor": {"issuer": "<issuer>"}, "docs": {"<url>": "<body>", …}}`. The published runs in the
+`material.json` is `{"anchor": {"issuer": "<issuer>"}, "docs": {"<url>": "<body>", …}}`, optionally with
+`obtained_at`, the date it was fetched. The Python verifier's modes and flags are in Spanish: `vivo` is live,
+`paquete` the package, `operacion` the operation and `vectores` the test vectors. The published runs in the
 site's downloads include it, so you can try this right now.
 
 ## Verify live
 
 ```sh title="Live, fetching the material over HTTPS"
-python verifier/verificar_paquete.py vivo --issuer https://agents.example.com/e/store \
+python3 verifier/verificar_paquete.py vivo --issuer https://agents.example.com/e/store \
   --paquete paquete.json --aud https://agent.example/agent.json
 ```
 
@@ -1093,7 +1104,7 @@ things ([§10 reading a verdict](https://vxpprotocol.org/spec/#reading-a-verdict
 | Question | Where the verdict answers it |
 |---|---|
 | Integrity: has the chain changed, is it complete and ordered? | `valid`, and on failure `error` and `seq` |
-| Provenance: who signed each link, anchored to whom? | `company`, `anchor`, `key_source` |
+| Provenance: who signed each link, anchored to whom? | `company`, `anchor`, `key_source` (`issuer_metadata_live` or `issuer_metadata_saved`) |
 | Authority: what was approved, and how? | `revision`, `approval` (`agent_asserted` or `company_channel`) |
 | Declared result | `final_state`: what the company asserts |
 | Corroboration | `derived_assurance[]`, `single_root`, `custody_declared`, `logged` |
@@ -1106,6 +1117,10 @@ things ([§10 reading a verdict](https://vxpprotocol.org/spec/#reading-a-verdict
 | `operator_observed` | the operator |
 | `operator_reported_read_back` | the operator, who says it read the system |
 | `operator_reported_agent_approval` | the operator, who says the agent said the user approved |
+| `operator_reported_channel_approval` | the operator, who says the answer came through the company's channel |
+
+The specification also defines `logged`, `time_stamped`, `third_party_*` and `user_confirmed`; no verifier grants
+them yet.
 
 `single_root: operator` with `logged: false` means: intact and ordered, and not independent of the operator.
 
@@ -1128,8 +1143,8 @@ The full list, check by check, is in `verifier/CHECKS.md`.
 ## Old proofs and retired keys
 
 Statements name their key by `kid`. A company that rotates keeps earlier public keys published. A key that
-was retired verifies only against material saved while it was published, and your report should say the date
-of that material ([§10 key rotation](https://vxpprotocol.org/spec/#key-rotation)).
+was retired verifies only against material saved while it was published. The verdict then says
+`key_source: issuer_metadata_saved`, and your report should give the date of that material ([§10 key rotation](https://vxpprotocol.org/spec/#key-rotation)).
 
 
 ---
@@ -1145,8 +1160,8 @@ speak another protocol. Adapters are optional and never required to implement VX
 
 An adapter speaks the other protocol exactly as written: its discovery, authorization, operations,
 states and errors. VXP adds only what fits in that protocol's extension points, and none of its own items
-leak into the other protocol's catalog ([I1](https://vxpprotocol.org/spec/#i1), [I4](https://vxpprotocol.org/spec/#i4), [I5](https://vxpprotocol.org/spec/#i5)). Whatever the entry, the company executes
-once per resource ([I2](https://vxpprotocol.org/spec/#i2)).
+leak into the other protocol's catalog ([I1](https://vxpprotocol.org/spec/#i1), [I4](https://vxpprotocol.org/spec/#i4), [I5](https://vxpprotocol.org/spec/#i5)). Whatever the entry, of several operations
+competing for one resource only the first that passes the precondition takes effect ([I2](https://vxpprotocol.org/spec/#i2)).
 
 ## Poppy draft 0.2 (with Operations v1)
 
@@ -1155,7 +1170,7 @@ once per resource ([I2](https://vxpprotocol.org/spec/#i2)).
 | Discovery and identity | `poppy.json`, Poppy sign-in, sessions and conversations, as Poppy defines them |
 | Operations | Poppy's Operations extension v1: revisions, confirmation, single execution |
 | What VXP adds | The extension `vxpprotocol.org/proof` in `poppy.json` and in the agent's client metadata; a domain-named member in each operation with effect, only for an agent that lists the extension |
-| VXP Relationship | Over the Poppy conversation, for agents without an inbox ([R12](https://vxpprotocol.org/spec/#r12)–[R16](https://vxpprotocol.org/spec/#r16)) |
+| VXP Relationship | Over the Poppy conversation, for agents without an inbox ([R12](https://vxpprotocol.org/spec/#r12)–[R16](https://vxpprotocol.org/spec/#r16)); experimental, company side only. Accepting a change the company proposes ([R8](https://vxpprotocol.org/spec/#r8)) uses the native profile |
 
 ## PACT 1.0 over A2A 1.0.1
 
@@ -1694,7 +1709,7 @@ npx --yes ajv-cli@5 validate --spec=draft2020 -r "schemas/0.1/common.schema.json
   -s schemas/0.1/vxp.schema.json -d my-vxp.json
 ```
 
-Or import them by URL once the site is published: every `$ref` is relative, so a validator that resolves `$id`
+Or import them by URL: every `$ref` is relative, so a validator that resolves `$id`
 loads the rest by itself.
 
 
@@ -1705,7 +1720,8 @@ loads the rest by itself.
 > What a company, an agent and a verifier do when authority is missing, a permission is revoked, terms change, a request repeats or a result is unknown. Every row is covered by a test in the repository.
 
 Each row names the test that covers it. Tests in `reference/` run with `npm test` (and `npm run test:network`
-for `test-red/`); tests in `agent/` with `npm test` in that folder; the conformance validator runs the same checks
+for `test-red/`); tests in `agent/` with `npm test` in that folder. Test names are in Spanish and quoted as
+written; the conformance validator runs the same checks
 against any implementation ([Conformance](https://vxpprotocol.org/docs/conformance/)). Error codes are those of [the specification](https://vxpprotocol.org/spec/#errors).
 
 ## Missing or wrong authority
@@ -1725,7 +1741,7 @@ against any implementation ([Conformance](https://vxpprotocol.org/docs/conforman
 
 | Situation | What happens | Covered by |
 |---|---|---|
-| The person revokes between the proposal and the acceptance | Accepting no longer runs anything ([O5](https://vxpprotocol.org/spec/#o5)) | `reference/test/vxp.test.ts` B4 · `reference/test/exigencia.test.ts` HO-A7 |
+| The person revokes between the proposal and the acceptance | Accepting no longer runs anything: the grant is checked again before executing ([O2](https://vxpprotocol.org/spec/#o2), [§8 re-verification](https://vxpprotocol.org/spec/#native-idempotency)) | `reference/test/vxp.test.ts` B4 · `reference/test/exigencia.test.ts` HO-A7 |
 | The proposal, the device code or the session expires | `409 proposal_expired` or a refused token; nothing runs | `reference/test/nativo.test.ts` 2 · `reference/test/vxp.test.ts` F4 · `reference/test/exigencia.test.ts` HO-A7 |
 | A relationship is revoked by the person, the company or the agent | The company cannot start anything (`relationship_revoked`); a pending proposal from it is no longer accepted; a late answer is refused ([R6](https://vxpprotocol.org/spec/#r6), [R9](https://vxpprotocol.org/spec/#r9), [R10](https://vxpprotocol.org/spec/#r10)) | `reference/test/vxp.test.ts` E4, E5 · `reference/test/relacion-poppy.test.ts` RP3 · validator R11, R12 · `agent/test/negatives.test.ts` «relationship revoked…» |
 | A relationship expires | `relationship_expired`; the agent's inbox and reply refuse it too | `reference/test/vxp.test.ts` E5 · `agent/test/negatives.test.ts` «relationship expired» |
@@ -1785,7 +1801,7 @@ The objects of every row match the [JSON Schemas](https://vxpprotocol.org/docs/s
 ## The normative text
 
 The [specification](https://vxpprotocol.org/spec/) is the only normative text of VXP. Its source is `spec/spec.tpl.html` in the
-repository. Current version: **draft 0.1**, revised on 22 October 2026.
+repository. Current version: **draft 0.1**, revised on 23 October 2026 (repository release 0.1.0-rc.4).
 
 | Section | What it defines |
 |---|---|
@@ -1885,7 +1901,7 @@ which test covers it, is in [Failures and how VXP behaves](https://vxpprotocol.o
 other evidence that cover it. It is generated from the specification, the tests and the validator, and the
 build fails if a cited test does not exist.
 
-## Three kinds of tests, never added together
+## Three kinds of tests, counted apart
 
 | Kind | What | What it does not show |
 |---|---|---|
@@ -1897,8 +1913,8 @@ build fails if a cited test does not exist.
 
 ```sh title="From the repository root"
 cd reference && npm test && npm run test:network && cd ..
-python verifier/verificar_paquete.py vectores vectors/vectores-0.1.json
-python verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json
+python3 verifier/verificar_paquete.py vectores vectors/vectores-0.1.json
+python3 verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json
 node verifier/tests/test-vxp-verify.mjs
 node conformance/reference/run.ts
 ```
@@ -1924,9 +1940,9 @@ tools of Poppy or PACT on part of their scope is not conformance to those standa
 | Forgery by an outsider | Signatures, RFC 7638 `kid`, and keys anchored to the company's issuer ([§10 anchoring](https://vxpprotocol.org/spec/#issuer-anchoring)) |
 | Terms changed after approval | The terms digest covers summary and terms; approval and execution must cite it ([P1](https://vxpprotocol.org/spec/#p1)) |
 | Replay into another operation or to another agent | `op`, `seq`, `prev`, `aud` and `user` equal across the chain, verified |
-| Two contradictory successes on one resource | One execution per resource ([O6](https://vxpprotocol.org/spec/#o6), [I2](https://vxpprotocol.org/spec/#i2)); across separate packages, only a log with witnesses |
+| Two contradictory successes on one resource | A precondition before executing and one operation in progress per resource ([O6](https://vxpprotocol.org/spec/#o6), [I2](https://vxpprotocol.org/spec/#i2)); across separate packages, only a log with witnesses, which 0.1 specifies but no verifier grants yet |
 | Another agent or user rewrites an operation | The full owner on every reuse ([ID3](https://vxpprotocol.org/spec/#id3)) |
-| «The user approved», said by the agent | Labelled `agent_asserted`, with its real root ([P2](https://vxpprotocol.org/spec/#p2), [P7](https://vxpprotocol.org/spec/#p7)) |
+| “The user approved”, said by the agent | Labeled `agent_asserted`, with its real root ([P2](https://vxpprotocol.org/spec/#p2), [P7](https://vxpprotocol.org/spec/#p7)) |
 | The company lies about its own system | No signature solves this. VXP relies on read-back, third-party evidence and an honest level label |
 | The operator signs a whole alternative chain | Possible while the operator holds the keys and there are no witnesses: the verifier says `single_root: operator` |
 
@@ -1965,7 +1981,8 @@ exists ([O3](https://vxpprotocol.org/spec/#o3)). Full table: [§9 errors](https:
   retired key ([§10 key rotation](https://vxpprotocol.org/spec/#key-rotation)).
 - The relationship key is distinct from the proof keys and from any Poppy or PACT key ([R5](https://vxpprotocol.org/spec/#r5)).
 - The reference implementation keeps keys in `VXP_KEYS_DIR`. Without it, they live in memory and die with the
-  process.
+  process, and every proof they signed becomes impossible to check unless its public material was saved
+  ([§10 key rotation](https://vxpprotocol.org/spec/#key-rotation)).
 
 ## Privacy
 
@@ -1990,6 +2007,34 @@ Privately, through the repository's Security tab. See `SECURITY.md`.
 
 All notable changes to the VXP specification and to this repository. Draft versions are incompatible
 with each other until 1.0.
+
+## 0.1.0-rc.4 · 23 October 2026
+
+Editorial review of the site, the documentation and the specification against the code. No rule changes
+what an implementation that passed rc.3 does.
+
+### Specification
+- I2 and O6 state the scope of “one execution”: each accepted revision executes at most once, and of several
+  operations competing for one resource only the first that passes the precondition takes effect. A later
+  request on the same resource is a new operation.
+- `resource` (RFC 8707) goes in the native profile's device authorization and token requests, and is how an
+  authorization server shared with the Poppy adapter tells the two apart.
+- Approving a revision needs no grant of its own: the sentence about a `vxpprotocol.org/operation` grant
+  type, which no implementation had, is removed.
+- Relationship over a Poppy conversation: the `relationship` and `reply_error` messages, and that accepting a
+  change the company proposes (R8) uses the native profile.
+- Errors: the codes a native client meets (`customer_not_linked`, `not_authorized`, `sign_in_required`,
+  `invalid_target`), `404 request_not_found` on `/v1/requests/{id}/proof`.
+- Key rotation: what losing a key means, and how a verdict states that it used saved material.
+- Conformance by role: an issuer that offers VXP Relationship meets R1 to R17.
+- The design draft that VXP Proof comes from is named as unpublished; prior art cites the Internet-Drafts
+  by name.
+
+### Repository
+- `verifier/`: `key_source` is `issuer_metadata_saved` when the keys come from saved material, and
+  `issuer_metadata_live` when they are fetched for the check.
+- `site/` and `docs/`: wording, dates and status brought up to date; the Quickstart runs as written;
+  Demos in the menu; adding a demo is described in CONTRIBUTING.md.
 
 ## 0.1.0-rc.3 · 23 October 2026
 

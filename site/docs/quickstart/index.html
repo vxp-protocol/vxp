@@ -28,7 +28,7 @@
 			<li><a href="../../verify/">Verify</a></li>
 			<li><a href="../../conformance/">Conformance</a></li>
 			<li><a href="../../implement/">Implement</a></li>
-			<li><a href="../../videos/">Videos</a></li>
+			<li><a href="../../demos/">Demos</a></li>
 		</ul>
 		<a class="nav__ver" href="../../status/">Draft 0.1</a>
 	</div>
@@ -52,12 +52,12 @@
 		<p class="lead">From a clean clone to a company and a personal agent in separate processes, an operation with its proof verified, a company-initiated request answered, and a conformance report, with no Poppy, no PACT and no SOVRAS service.</p>
 		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#requirements">Requirements</a></li><li><a href="#1-start-a-company">1. Start a company</a></li><li><a href="#2-run-a-personal-agent">2. Run a personal agent</a></li><li><a href="#3-verify-the-proof-yourself">3. Verify the proof yourself</a></li><li><a href="#4-the-company-starts-the-next-request">4. The company starts the next request</a></li><li><a href="#5-run-the-conformance-validator">5. Run the conformance validator</a></li><li><a href="#where-next">Where next</a></li></ul></nav>
 		<h2 id="requirements">Requirements<a class="anchor" href="#requirements" aria-label="Link to Requirements">#</a></h2>
-<ul><li>Node.js 22.18 or newer. Nothing to install with npm: the repository has no dependencies.</li><li>Python 3 with <code>cryptography</code>, for the Python verifier: <code>pip install cryptography</code>.</li><li>Git.</li></ul>
+<ul><li>Node.js 22.18 or newer. Nothing to install with npm: the repository has no dependencies.</li><li>Python 3 with <code>cryptography</code>, for the Python verifier: <code>python3 -m pip install cryptography</code> (inside a virtual environment, <code>python3 -m venv .venv &amp;&amp; . .venv/bin/activate</code>, where the system's Python refuses packages).</li><li>Git.</li></ul>
 <div class="code"><div class="code__head"><b>Clone</b><span>sh</span></div><pre data-copy tabindex="0">git clone https://github.com/vxp-protocol/vxp.git
 cd vxp</pre></div>
-<p>The commands below are for bash. In PowerShell, set each variable first (<code>$env:PORT="3100"</code>) and then run the command.</p>
+<p>The commands below are for bash: Linux, macOS, WSL or Git Bash on Windows. Where <code>python3</code> does not exist, as in Git Bash, use <code>python</code>.</p>
 <h2 id="1-start-a-company">1. Start a company<a class="anchor" href="#1-start-a-company" aria-label="Link to 1. Start a company">#</a></h2>
-<p>The reference implementation serves fictitious test companies: Ferretería Demo at <code>localhost:3100</code> and Hotel Demo at <code>127.0.0.1:3100</code>. Start it as a native-only gateway, with persistent keys outside the repository, and with the company's channel printed to the console (the channel is simulated: it stands for the SMS or WhatsApp line through which a real company would reach its customer).</p>
+<p>The reference implementation serves fictitious test companies and tells them apart by host name: Ferretería Demo at <code>localhost:3100</code> and Hotel Demo at <code>127.0.0.1:3100</code>. They are Chilean, so their pages and messages are in Spanish. Start it as a native-only gateway, with persistent keys outside the repository, and with the company's channel printed to the console (the channel is simulated: it stands for the SMS or WhatsApp line through which a real company would reach its customer).</p>
 <div class="code"><div class="code__head"><b>Terminal 1 · the company</b><span>sh</span></div><pre data-copy tabindex="0">cd reference
 VXP_ADAPTERS=none VXP_KEYS_DIR=/tmp/vxp-keys VXP_SHOW_CHANNEL=1 \
   ORIGENES_LOCALES=http://localhost:3811 node src/main.ts</pre></div>
@@ -65,34 +65,36 @@ VXP_ADAPTERS=none VXP_KEYS_DIR=/tmp/vxp-keys VXP_SHOW_CHANNEL=1 \
 <div class="code"><div class="code__head"><b>Discovery</b><span>sh</span></div><pre data-copy tabindex="0">curl http://127.0.0.1:3100/.well-known/vxp.json</pre></div>
 <p>You get the hotel's <code>vxp.json</code>: its issuer, its <code>/v1</code> endpoint and its capabilities, with <code>"status": "experimental"</code>.</p>
 <h2 id="2-run-a-personal-agent">2. Run a personal agent<a class="anchor" href="#2-run-a-personal-agent" aria-label="Link to 2. Run a personal agent">#</a></h2>
-<p>The agent is another process with its own identity, its own keys and its own HTTP server for the documents companies fetch and for the inbox. The example does the task of the <a href="../../docs/guides/agent/">agent guide</a>: a hotel in Santiago, two nights with breakfast, up to $250,000.</p>
+<p>The agent is another process with its own identity, its own keys and its own HTTP server for the documents companies fetch and for the inbox. The example does the task of the <a href="../../docs/guides/agent/">agent guide</a>: a hotel in Santiago, two nights with breakfast, up to CLP 250,000 (printed as <code>$250.000</code>).</p>
+<p>Terminal 1 prints an internal key for the reference's test console (<code>llave interna: …</code>). Pass it to the agent, so that step 4 can run at once:</p>
 <div class="code"><div class="code__head"><b>Terminal 2 · the agent</b><span>sh</span></div><pre data-copy tabindex="0">cd agent
+KEY=&lt;the value printed after "llave interna:" in Terminal 1&gt;
 node examples/hotel-santiago.ts --state /tmp/vxp-agent --origin http://localhost:3811 --port 3811 \
   --allow-http http://localhost:3100,http://127.0.0.1:3100,http://localhost:3811 \
+  --hotel-console http://localhost:3100 --hotel-console-key "$KEY" \
   localhost:3100 127.0.0.1:3100 localhost:3999</pre></div>
 <p>The last three arguments are candidate domains: VXP has no registry, so the agent starts from domains the person names or finds. The agent then:</p>
-<ol><li>discovers which candidates speak VXP and which one offers bookings (the third one does not answer);</li><li>records the person's rules: book up to $250,000, and answer «mantener» to a late-arrival question;</li><li>reads availability, rates and services, a public read with no consent;</li><li>asks for the stay. The hotel answers <code>authorization_required</code> with exactly what to ask the person for.</li></ol>
-<p>The agent prints a link on the hotel's own page and waits. <b>You are the person now:</b> open the link, enter the test phone <code>+56 9 0000 0101</code>, enter the code that Terminal 1 prints as <code>[simulated company channel …]</code>, read the consent and allow it. The consent covers the booking up to $250,000 and a relationship so the hotel can ask about a late arrival.</p>
+<ol><li>discovers which candidates speak VXP and which one offers bookings (the third one does not answer);</li><li>records the person's rules: book up to CLP 250,000, and answer <code>mantener</code> (keep) to a late-arrival question;</li><li>reads availability, rates and services, a public read with no consent;</li><li>asks for the stay. The hotel answers <code>authorization_required</code> with exactly what to ask the person for.</li></ol>
+<p>The agent prints a link on the hotel's own page and waits. <b>You are the person now:</b> open the link, enter the test phone <code>+56 9 0000 0101</code>, enter the code that Terminal 1 prints as <code>[simulated company channel …]</code>, read the consent and press “Permitir” (allow). The consent covers the booking up to CLP 250,000 and a relationship so the hotel can ask about a late arrival.</p>
 <p>The agent continues on its own:</p>
-<ol><li>sends the same request again with the same <code>Idempotency-Key</code> and receives signed terms;</li><li>negotiates within the hotel's policy: a discretionary discount is refused, and the «Escapada» package lowers the total in a new revision;</li><li>accepts that exact revision within your cap (<code>approved_by: "standing_permission"</code>). The hotel executes it once and reads its system back;</li><li>downloads the proof and verifies it locally, anchored by the hotel's issuer.</li></ol>
+<ol><li>sends the same request again with the same <code>Idempotency-Key</code> and receives signed terms;</li><li>negotiates within the hotel's policy: a discretionary discount is refused, and the “Escapada” package lowers the total in a new revision;</li><li>accepts that exact revision within your cap (<code>approved_by: "standing_permission"</code>). The hotel executes it once and reads its system back;</li><li>downloads the proof and verifies it locally, anchored by the hotel's issuer.</li></ol>
 <h2 id="3-verify-the-proof-yourself">3. Verify the proof yourself<a class="anchor" href="#3-verify-the-proof-yourself" aria-label="Link to 3. Verify the proof yourself">#</a></h2>
-<p>The agent saved what it verified in its state directory. Check the same package with the Python verifier, which shares no code with the agent's JavaScript verifier:</p>
+<p>The agent saved what it verified in its state directory. Check the same package with the Python verifier, which shares no code with the agent's JavaScript verifier (its modes and flags are in Spanish: <code>paquete</code> is the package, <code>operacion</code> the operation):</p>
 <div class="code"><div class="code__head"><b>From the repository root</b><span>sh</span></div><pre data-copy tabindex="0">REQ=$(ls /tmp/vxp-agent/proofs/ | grep -m1 '.package.json' | sed 's/.package.json//')
-python verifier/verificar_paquete.py material \
+python3 verifier/verificar_paquete.py material \
   --material /tmp/vxp-agent/proofs/$REQ.material.json \
   --paquete /tmp/vxp-agent/proofs/$REQ.package.json \
   --operacion /tmp/vxp-agent/proofs/$REQ.operation.json</pre></div>
-<p>Expected: <code>"valid": true</code> and <code>"final_state": "succeeded"</code>. The terms travel signed inside each statement, so the way to see a mismatch is to change what the agent claims it was shown. Lower the total in the operation file and run the verifier again:</p>
+<p>Expected: <code>"valid": true</code>, <code>"final_state": "succeeded"</code> and <code>"key_source": "issuer_metadata_saved"</code>, since the keys come from the material the agent saved. The terms travel signed inside each statement, so the way to see a mismatch is to change what the agent claims it was shown. Lower the total in the operation file and run the verifier again:</p>
 <div class="code"><div class="code__head"><b>Claim different terms</b><span>sh</span></div><pre data-copy tabindex="0">sed 's/"total": *230400/"total": 200000/' /tmp/vxp-agent/proofs/$REQ.operation.json &gt; /tmp/claimed.json
-python verifier/verificar_paquete.py material \
+python3 verifier/verificar_paquete.py material \
   --material /tmp/vxp-agent/proofs/$REQ.material.json \
   --paquete /tmp/vxp-agent/proofs/$REQ.package.json \
   --operacion /tmp/claimed.json</pre></div>
-<p>Expected: <code>{"valid": false, "error": "operation_terms_mismatch"}</code>. To alter the signed statements themselves and see which link breaks, use the <a href="../../verify/">verifier</a> in a browser. <a href="../../docs/guides/verifier/">Verifier guide</a>.</p>
+<p>Expected: <code>{"valid": false, "error": "operation_terms_mismatch", "seq": null}</code>. To alter the signed statements themselves and see which link breaks, use the <a href="../../verify/">verifier</a> in a browser. <a href="../../docs/guides/verifier/">Verifier guide</a>.</p>
 <h2 id="4-the-company-starts-the-next-request">4. The company starts the next request<a class="anchor" href="#4-the-company-starts-the-next-request" aria-label="Link to 4. The company starts the next request">#</a></h2>
-<p>The hotel's rule asks the guest's agent, inside the relationship, whether to hold or release a booking when the guest has not arrived after 20:00 on the arrival day (<a class="rule" href="../../spec/#r17">R17</a>). The gateway checks every minute. To run the rule now, with the reference's clock moved to that evening, add these options to the example in step 2:</p>
-<div class="code"><div class="code__head"><b>Terminal 2 · add to the example</b><span>sh</span></div><pre data-copy tabindex="0">  --hotel-console http://localhost:3100 --hotel-console-key &lt;the "llave interna" printed by Terminal 1&gt;</pre></div>
-<p>The hotel signs a closed question and posts it to the agent's inbox. The agent verifies the signature with the key anchored to the issuer, rejects a repeated <code>jti</code>, answers «mantener» with the person's standing answer, and verifies the signed receipt. The <code>/interno/</code> console is the reference's test-only console, standing in for the hotel's own clock; it is not part of VXP.</p>
+<p>The hotel's rule asks the guest's agent, inside the relationship, whether to hold or release a booking when the guest has not arrived after 20:00 on the arrival day (<a class="rule" href="../../spec/#r17">R17</a>). The gateway checks every minute; the <code>--hotel-console</code> options of step 2 run the rule at once, with the reference's clock moved to that evening. Without them, the agent waits for the real evening.</p>
+<p>The hotel signs a closed question and posts it to the agent's inbox. The agent verifies the signature with the key anchored to the issuer, rejects a repeated <code>jti</code>, answers <code>mantener</code> with the person's standing answer, and verifies the signed receipt. The <code>/interno/</code> console is the reference's test-only console, standing in for the hotel's own clock; it is not part of VXP.</p>
 <h2 id="5-run-the-conformance-validator">5. Run the conformance validator<a class="anchor" href="#5-run-the-conformance-validator" aria-label="Link to 5. Run the conformance validator">#</a></h2>
 <div class="code"><div class="code__head"><b>From the repository root</b><span>sh</span></div><pre data-copy tabindex="0">node conformance/reference/run.ts --report conformance-report.json</pre></div>
 <p>It starts its own native-only reference company, acts as a personal agent against it, and reports every check with the rule it tests. Expected: <code>{"pass":51,"fail":0,"optional":0,"manual":3,"skipped":0}</code>. The report is in <code>conformance-report.md</code>. To check your own company, see <a href="../../docs/conformance/">Conformance</a>.</p>

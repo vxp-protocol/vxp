@@ -9,8 +9,8 @@ speak another protocol. Adapters are optional and never required to implement VX
 
 An adapter speaks the other protocol exactly as written: its discovery, authorization, operations,
 states and errors. VXP adds only what fits in that protocol's extension points, and none of its own items
-leak into the other protocol's catalog ([I1](https://vxpprotocol.org/spec/#i1), [I4](https://vxpprotocol.org/spec/#i4), [I5](https://vxpprotocol.org/spec/#i5)). Whatever the entry, the company executes
-once per resource ([I2](https://vxpprotocol.org/spec/#i2)).
+leak into the other protocol's catalog ([I1](https://vxpprotocol.org/spec/#i1), [I4](https://vxpprotocol.org/spec/#i4), [I5](https://vxpprotocol.org/spec/#i5)). Whatever the entry, of several operations
+competing for one resource only the first that passes the precondition takes effect ([I2](https://vxpprotocol.org/spec/#i2)).
 
 ## Poppy draft 0.2 (with Operations v1)
 
@@ -19,7 +19,7 @@ once per resource ([I2](https://vxpprotocol.org/spec/#i2)).
 | Discovery and identity | `poppy.json`, Poppy sign-in, sessions and conversations, as Poppy defines them |
 | Operations | Poppy's Operations extension v1: revisions, confirmation, single execution |
 | What VXP adds | The extension `vxpprotocol.org/proof` in `poppy.json` and in the agent's client metadata; a domain-named member in each operation with effect, only for an agent that lists the extension |
-| VXP Relationship | Over the Poppy conversation, for agents without an inbox ([R12](https://vxpprotocol.org/spec/#r12)–[R16](https://vxpprotocol.org/spec/#r16)) |
+| VXP Relationship | Over the Poppy conversation, for agents without an inbox ([R12](https://vxpprotocol.org/spec/#r12)–[R16](https://vxpprotocol.org/spec/#r16)); experimental, company side only. Accepting a change the company proposes ([R8](https://vxpprotocol.org/spec/#r8)) uses the native profile |
 
 ## PACT 1.0 over A2A 1.0.1
 

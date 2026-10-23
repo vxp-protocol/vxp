@@ -14,9 +14,42 @@ error code or a verifier result.
    its anchor in the specification (`https://vxpprotocol.org/spec/#r6`).
 3. Bring a test or a test vector that fails without the change and passes with it: a test under
    `reference/test/`, or a case in `vectors/` with the verdict two conforming verifiers must return.
-4. Edit `spec/spec.tpl.html`, not `site/spec/index.html`, and rebuild with `python spec/build.py`.
+4. Edit `spec/spec.tpl.html`, not `site/spec/index.html`, and rebuild with `python3 spec/build.py`.
 
 Errata, broken links and wording fixes that change no requirement can go straight to a pull request.
+
+## Adding a demo
+
+A demo lives apart from the protocol's own code, so it can change, or be removed, without touching the
+specification, the verifier or the captured data.
+
+- **Its own folder.** Everything goes in `site/demos/<name>/`, with its own `index.html` and its own
+  assets. The name uses lowercase letters, digits and hyphens.
+- **No shared code.** A demo does not import from `assets/`, `verify/`, `spec/`, `docs/` or `downloads/`.
+  If it needs a file from there, it keeps its own copy.
+- **Honest data.** It uses the neutral test companies. Captured data names its source on screen;
+  anything invented is labeled as illustrative.
+- **Registered in one place.** One entry in `site/demos/demos.json` makes it appear on the
+  [Demos](https://vxpprotocol.org/demos/) page. With `"embed": "page"` it gets a link to its own page;
+  with `"embed": "iframe"` it can also be loaded there, in a sandboxed frame, only when the visitor asks.
+- **Same bar as the site.** Usable at 390 px wide without horizontal scroll, reachable by keyboard, with
+  visible focus, and with no motion under `prefers-reduced-motion`.
+
+```json
+{
+  "demos": [
+    {
+      "slug": "my-demo",
+      "title": "What the demo shows, in a few words",
+      "description": "One sentence on what the visitor can try.",
+      "kind": "Illustrative",
+      "lang": "en",
+      "embed": "iframe",
+      "height": 680
+    }
+  ]
+}
+```
 
 ## Reporting a security problem
 

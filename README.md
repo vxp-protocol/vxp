@@ -40,7 +40,7 @@ PACT or SOVRAS; the adapters for Poppy and PACT are optional.
 
 | Path | What it holds |
 |---|---|
-| [`spec/`](spec/) | The normative text: [`spec.tpl.html`](spec/spec.tpl.html), built into `site/spec/index.html` with `python spec/build.py`. |
+| [`spec/`](spec/) | The normative text: [`spec.tpl.html`](spec/spec.tpl.html), built into `site/spec/index.html` with `python3 spec/build.py`. |
 | [`site/`](site/) | The published site, as built. |
 | [`reference/`](reference/) | Reference implementation (Node.js, TypeScript run natively), with its tests. |
 | [`verifier/`](verifier/) | Independent verifiers: two in Python and one in JavaScript for browser and Node, plus [`CHECKS.md`](verifier/CHECKS.md). |
@@ -64,9 +64,9 @@ npm run test:network    # tests over TCP: gateway and agent in separate processe
 Verifiers and vectors, from the repository root:
 
 ```sh
-python verifier/verificar_paquete.py vectores vectors/vectores-0.1.json    # 92 checks, 0 failures
-python verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json   # 16 checks, 0 failures
-python verifier/verificar.py vectors/vectores-0.1.json
+python3 verifier/verificar_paquete.py vectores vectors/vectores-0.1.json    # 92 checks, 0 failures
+python3 verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json   # 16 checks, 0 failures
+python3 verifier/verificar.py vectors/vectores-0.1.json
 node verifier/tests/test-vxp-verify.mjs     # JavaScript verifier against the Python reference
 node verifier/tests/fuzz-vxp-verify.mjs     # differential fuzz, default 3000 chains
 ```

@@ -144,6 +144,7 @@ test("RX1 · por red, hotel: descubre en SU dominio → pide → vincula → amp
 	const veredicto = JSON.parse(v.stdout.trim().split("\n").at(-1)!);
 	assert.equal(veredicto.valid, true, v.stdout + v.stderr);
 	assert.equal(veredicto.final_state, "succeeded");
+	assert.equal(veredicto.key_source, "issuer_metadata_live", "keys fetched for this check");
 
 	const rec = await ejecutar(process.execPath, [join(RAIZ, "scripts", "recolectar-evidencia.mjs"), "--base", P, "--llave", llave, "--salida", tmp, "--etiqueta", "rx1"]);
 	assert.equal(rec.status, 0, rec.stdout + rec.stderr);

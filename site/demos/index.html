@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Demos · VXP</title>
-<meta name="description" content="Interactive VXP demos: what can be tried today on this site, and how a self-contained demo is added, kept apart from the normative code.">
+<meta name="description" content="Try VXP in your browser: one operation step by step, the signed proof and the relationship up close, and the verifier.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
 			<li><a href="../verify/">Verify</a></li>
 			<li><a href="../conformance/">Conformance</a></li>
 			<li><a href="../implement/">Implement</a></li>
-			<li><a href="../videos/">Videos</a></li>
+			<li><a href="../demos/" aria-current="page">Demos</a></li>
 		</ul>
 		<a class="nav__ver" href="../status/">Draft 0.1</a>
 	</div>
@@ -52,56 +52,24 @@
 <section class="page-head">
 	<div class="wrap">
 		<p class="kicker">Demos</p>
-		<h1>Interactive demos</h1>
-		<p class="lead">Self-contained pieces that let you try VXP. They illustrate the protocol; the rules are in the <a href="../spec/">specification</a>, and what actually ran, with its evidence, is in <a href="../examples/">Examples</a>.</p>
+		<h1>Try VXP in your browser</h1>
+		<p class="lead">Interactive views that run on data captured from the reference implementation. The rules are in the <a href="../spec/">specification</a>; what ran with live agents, with its evidence, is in <a href="../examples/">Examples</a>.</p>
 	</div>
 </section>
 
 <section class="sec sec--tight" aria-labelledby="now-h">
 	<div class="wrap">
 		<div class="sec__head sec__head--sm">
-			<h2 class="h3" id="now-h">What you can try today</h2>
-			<p class="lead">No standalone interactive demo is published yet. These parts of the site are interactive and run on captured data:</p>
+			<h2 class="h3" id="now-h">On this site</h2>
 		</div>
 		<ul class="now">
 			<li><h3>One operation, step by step</h3><p>Seven steps of a delivery change, in plain words, with the real messages one click away.</p><a class="btn btn--ghost" href="../#run">Open the walkthrough</a></li>
-			<li><h3>Proof and Relationship, from inside</h3><p>Inspect each signed statement, see what happens when one is altered, and follow a request the company started within an agreement.</p><a class="btn btn--ghost" href="../#proof">Open Proof</a></li>
+			<li><h3>Proof and Relationship, up close</h3><p>Inspect each signed statement, see what happens when one is altered, and follow a request the company started within an agreement.</p><a class="btn btn--ghost" href="../#proof">Open Proof</a> <a class="btn btn--ghost" href="../#relationship">Open Relationship</a></li>
 			<li><h3>Verifier</h3><p>Check a real proof in your browser, intact or tampered with, and see which control catches each change.</p><a class="btn btn--ghost" href="../verify/">Open the verifier</a></li>
 		</ul>
-		<p class="empty" data-demos-empty>Standalone demos will appear here once they are published.</p>
-		<ol class="dm-list" data-demos hidden aria-label="Published demos"></ol>
-	</div>
-</section>
-
-<section class="sec sec--tight" aria-labelledby="add-h" id="add" style="background:var(--soft)">
-	<div class="wrap">
-		<div class="sec__head sec__head--sm">
-			<h2 class="h3" id="add-h">Adding a demo</h2>
-			<p class="lead">A demo lives apart from the protocol's own code, so it can change, or be removed, without touching the specification, the verifier or the captured data.</p>
-		</div>
-		<ol class="rules">
-			<li><b>Its own folder.</b> Everything goes in <code>site/demos/&lt;name&gt;/</code>, with its own <code>index.html</code> and its own assets. The name uses lowercase letters, digits and hyphens.</li>
-			<li><b>No shared code.</b> A demo does not import from <code>assets/</code>, <code>verify/</code>, <code>spec/</code>, <code>docs/</code> or <code>downloads/</code>. If it needs a file from there, it keeps its own copy.</li>
-			<li><b>Honest data.</b> It uses the neutral test companies. Captured data names its source on screen; anything invented is labeled as illustrative.</li>
-			<li><b>Registered in one place.</b> One entry in <code>site/demos/demos.json</code> makes it appear on this page. With <code>"embed": "page"</code> it gets a link to its own page; with <code>"embed": "iframe"</code> it can also be loaded here, in a sandboxed frame, only when the visitor asks.</li>
-			<li><b>Same bar as the site.</b> Usable at 390 px wide without horizontal scroll, reachable by keyboard, with visible focus, and with no motion under <code>prefers-reduced-motion</code>.</li>
-		</ol>
-		<figure class="codebox" style="margin-top:24px">
-			<figcaption>An entry in <code>site/demos/demos.json</code></figcaption>
-<pre data-copy>{
-  "demos": [
-    {
-      "slug": "my-demo",
-      "title": "What the demo shows, in a few words",
-      "description": "One sentence on what the visitor can try.",
-      "kind": "Illustrative",
-      "lang": "en",
-      "embed": "iframe",
-      "height": 680
-    }
-  ]
-}</pre>
-		</figure>
+		<p class="empty" data-demos-empty hidden></p>
+		<ol class="dm-list" data-demos hidden aria-label="More demos"></ol>
+		<p class="small" style="margin-top:24px">To add a demo, see <a href="https://github.com/vxp-protocol/vxp/blob/main/CONTRIBUTING.md#adding-a-demo">Adding a demo</a> in the repository.</p>
 	</div>
 </section>
 </main>

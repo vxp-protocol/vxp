@@ -242,7 +242,7 @@ function pagina(p: Pagina) {
 			<li><a href="${r}verify/">Verify</a></li>
 			<li><a href="${r}conformance/">Conformance</a></li>
 			<li><a href="${r}implement/">Implement</a></li>
-			<li><a href="${r}videos/">Videos</a></li>
+			<li><a href="${r}demos/">Demos</a></li>
 		</ul>
 		<a class="nav__ver" href="${r}status/">Draft ${esc(nav.version)}</a>
 	</div>

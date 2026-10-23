@@ -4,7 +4,8 @@ description: What a company, an agent and a verifier do when authority is missin
 ---
 
 Each row names the test that covers it. Tests in `reference/` run with `npm test` (and `npm run test:network`
-for `test-red/`); tests in `agent/` with `npm test` in that folder; the conformance validator runs the same checks
+for `test-red/`); tests in `agent/` with `npm test` in that folder. Test names are in Spanish and quoted as
+written; the conformance validator runs the same checks
 against any implementation ([Conformance](conformance.md)). Error codes are those of [[errors|the specification]].
 
 ## Missing or wrong authority
@@ -24,7 +25,7 @@ against any implementation ([Conformance](conformance.md)). Error codes are thos
 
 | Situation | What happens | Covered by |
 |---|---|---|
-| The person revokes between the proposal and the acceptance | Accepting no longer runs anything ([[O5]]) | `reference/test/vxp.test.ts` B4 · `reference/test/exigencia.test.ts` HO-A7 |
+| The person revokes between the proposal and the acceptance | Accepting no longer runs anything: the grant is checked again before executing ([[O2]], [[native-idempotency|§8 re-verification]]) | `reference/test/vxp.test.ts` B4 · `reference/test/exigencia.test.ts` HO-A7 |
 | The proposal, the device code or the session expires | `409 proposal_expired` or a refused token; nothing runs | `reference/test/nativo.test.ts` 2 · `reference/test/vxp.test.ts` F4 · `reference/test/exigencia.test.ts` HO-A7 |
 | A relationship is revoked by the person, the company or the agent | The company cannot start anything (`relationship_revoked`); a pending proposal from it is no longer accepted; a late answer is refused ([[R6]], [[R9]], [[R10]]) | `reference/test/vxp.test.ts` E4, E5 · `reference/test/relacion-poppy.test.ts` RP3 · validator R11, R12 · `agent/test/negatives.test.ts` «relationship revoked…» |
 | A relationship expires | `relationship_expired`; the agent's inbox and reply refuse it too | `reference/test/vxp.test.ts` E5 · `agent/test/negatives.test.ts` «relationship expired» |

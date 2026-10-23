@@ -36,7 +36,7 @@
 			<li><a href="../verify/">Verify</a></li>
 			<li><a href="../conformance/">Conformance</a></li>
 			<li><a href="../implement/">Implement</a></li>
-			<li><a href="../videos/">Videos</a></li>
+			<li><a href="../demos/">Demos</a></li>
 		</ul>
 		<a class="nav__ver" href="../status/">Draft 0.1</a>
 	</div>
@@ -77,11 +77,11 @@
 <!-- ═══ 1 Participants ═════════════════════════════════════════════════════ -->
 <section class="dsec" id="participants" aria-labelledby="participants-h">
 	<h2 id="participants-h"><span class="n">1</span>Participants<a class="anchor" href="#participants" aria-label="Link to Participants">#</a></h2>
-	<p>Six roles. The first four appear in every operation; the operator runs the company's side, and the verifier can be anyone who later checks the evidence.</p>
+	<p>Six roles. Five take part in every operation: the operator runs the company's side, either the company itself or a provider it hires. The verifier can be anyone who later checks the evidence.</p>
 	<div class="actors">
 		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-person" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Person</h3><p>The person the agent acts for, and the company's end customer. Approves exact terms, approves a relationship, and can revoke either.</p><p class="role">Signs nothing in the chain</p></div></div>
 		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-agent" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Personal agent</h3><p>The person's OAuth client or A2A agent. Identifies with its own key, holds the delegation, asks, accepts, answers the company's requests and keeps the proof.</p><p class="role">Proves possession of its key on each call</p></div></div>
-		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-company" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Company</h3><p>Who executes the operation. Has its own issuer, publishes what it offers, and is the party the terms and the result belong to.</p><p class="role">Signs <code>terms</code>, <code>company_review</code>, <code>outcome</code>, <code>correction</code>, <code>revocation</code></p></div></div>
+		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-company" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Company</h3><p>The party that offers the operation and answers for it. Has its own issuer, publishes what it offers, and is the party the terms and the result belong to.</p><p class="role">Signs <code>terms</code>, <code>company_review</code>, <code>outcome</code>, <code>correction</code>, <code>revocation</code></p></div></div>
 		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-system" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Company system</h3><p>The system of record, such as the ERP, where the effect actually lives. It is changed once and read back afterwards.</p><p class="role">Read, never trusted as a signer</p></div></div>
 		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-operator" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Operator</h3><p>Hosts the company's side and executes on its behalf, as processor for each company. In the reference implementation, the operator is SOVRAS.</p><p class="role">Signs <code>request</code>, <code>counter</code>, <code>user_approval</code>, <code>execution</code>, <code>read_back</code></p></div></div>
 		<div class="actor"><svg viewBox="-22 -22 44 44" aria-hidden="true"><use href="#g-verifier" x="-20" y="-20" width="40" height="40"/></svg><div><h3>Verifier</h3><p>Anyone who checks a proof package: the agent itself, a bank, an arbitrator, an auditor. Anchors the issuer on its own and derives the level of evidence.</p><p class="role">Signs nothing; reports a verdict</p></div></div>
@@ -124,7 +124,7 @@
 <!-- ═══ 3 Discovery ════════════════════════════════════════════════════════ -->
 <section class="dsec" id="discovery" aria-labelledby="discovery-h">
 	<h2 id="discovery-h"><span class="n">3</span>Native profile and discovery <span class="mk mk--exp">Experimental</span><a class="anchor" href="#discovery" aria-label="Link to Native profile and discovery">#</a></h2>
-	<p>The native profile is VXP's own form: an agent that speaks neither Poppy nor PACT discovers the company, identifies, receives authority per request, operates, obtains the proof and keeps the relationship with it alone. It works alone, without either adapter (<a href="../spec/#native-only">specification §8, native-only gateway</a>), and a company can also publish it next to the adapters. All entries share one issuer, one authorization server and one set of metadata.</p>
+	<p>The native profile is VXP's own form: an agent that speaks neither Poppy nor PACT discovers the company, identifies, receives authority per request, operates, obtains the proof and keeps the relationship using only this profile (<a href="../spec/#native-only">specification §8, native-only gateway</a>). A company can publish it alone or next to the adapters. All entries share one issuer, one authorization server and one set of metadata.</p>
 	<div class="tbl tbl--fit"><table>
 		<thead><tr><th>Document</th><th>Where</th><th>What it carries</th></tr></thead>
 		<tbody>
@@ -190,7 +190,7 @@
 	<div class="tbl tbl--fit"><table>
 		<thead><tr><th>Entry</th><th>Identity and authority</th><th>Where VXP travels</th></tr></thead>
 		<tbody>
-			<tr><td>VXP native <span class="mk mk--exp">Experimental</span></td><td>Client metadata, <code>private_key_jwt</code>, DPoP, per-request <code>authorization_details</code></td><td>It is VXP's own profile</td></tr>
+			<tr><td>VXP native <span class="mk mk--exp">Experimental</span></td><td>Client metadata, <code>private_key_jwt</code>, DPoP, per-request <code>authorization_details</code></td><td>In the profile itself</td></tr>
 			<tr><td>Poppy draft 0.2</td><td>Poppy sign-in, sessions, conversations and Operations</td><td>A domain-named member, <code>vxpprotocol.org/proof</code>, only for an agent that lists the extension</td></tr>
 			<tr><td>PACT 1.0 over A2A 1.0.1</td><td>PACT agent identity and delegated authority</td><td>An A2A extension and <code>message.metadata</code>, next to <code>pact.receipt</code></td></tr>
 			<tr><td>Traditional channels</td><td>None: WhatsApp, web chat and voice are a SOVRAS capability</td><td>Not part of VXP. A write never runs in the channel; the agent is offered the structured connection</td></tr>
@@ -202,7 +202,7 @@
 <!-- ═══ 5 Operation requirements ═════════════════════════════════════════════ -->
 <section class="dsec" id="operation-requirements" aria-labelledby="operation-requirements-h">
 	<h2 id="operation-requirements-h"><span class="n">5</span>Operation requirements<a class="anchor" href="#operation-requirements" aria-label="Link to Operation requirements">#</a></h2>
-	<p>A valid identity is a starting point. What passes is the intersection of what the person delegated, what the company allows and what the resource admits. VXP states this as operation requirements O1 to O7: the behaviour every implementation shows where an external request becomes an operation. They are requirements, not a component: VXP defines no interface for them, and how an implementation builds them inside is its own decision.</p>
+	<p>A valid identity is a starting point. What passes is the intersection of what the person delegated, what the company allows and what the resource admits. VXP states this as operation requirements O1 to O7: the behavior every implementation shows where an external request becomes an operation. VXP defines no interface for them; how an implementation builds them inside is its own decision.</p>
 	<figure class="fig fig--narrow">
 		<svg class="halo" viewBox="0 0 480 420" role="img" aria-labelledby="fig-req-t">
 			<title id="fig-req-t">Three overlapping circles: delegated by the person, allowed by the company, admitted by the resource. Only their intersection runs.</title>
@@ -233,14 +233,14 @@
 			<tr><td><a href="../spec/#o3">O3</a> Own resource</td><td>Someone else's, missing and unlinked resources answer the same</td><td>Not shown by the chain; still required</td></tr>
 			<tr><td><a href="../spec/#o4">O4</a> Terms and commitment</td><td>The company signs the exact revision and its commitment; a change is a new revision</td><td><code>terms</code> and <code>user_approval</code> on the same digest</td></tr>
 			<tr><td><a href="../spec/#o5">O5</a> Company review</td><td>When its rule requires it, a person at the company decides on the same digest</td><td><code>company_review</code></td></tr>
-			<tr><td><a href="../spec/#o6">O6</a> One execution</td><td>One per resource, with precondition and idempotency key</td><td>One <code>execution</code> on the approved digest</td></tr>
+			<tr><td><a href="../spec/#o6">O6</a> One execution</td><td>Each accepted revision once; of competing operations on a resource, only the first that passes the precondition</td><td>One <code>execution</code> on the approved digest</td></tr>
 			<tr><td><a href="../spec/#o7">O7</a> Read-back</td><td>No <code>succeeded</code> without it; a contradiction goes to <code>waiting_human</code></td><td><code>read_back</code>, by term name</td></tr>
 		</tbody>
 	</table></div>
 	<div class="split">
 		<div><span class="mk mk--norm" style="justify-self:start">Normative</span><h4>Requirement and evidence</h4><ul>
-			<li><b>Required behaviour:</b> rules O1 to O7, defined by the specification.</li>
-			<li><b>Evidence:</b> what VXP Proof records so that anyone can check that behaviour afterwards. A rule the chain cannot show is still required; the verifier only reports what the chain carries.</li>
+			<li><b>Required behavior:</b> rules O1 to O7, defined by the specification.</li>
+			<li><b>Evidence:</b> what VXP Proof records so that anyone can check that behavior afterwards. A rule the chain cannot show is still required; the verifier only reports what the chain carries.</li>
 		</ul></div>
 		<div><span class="mk mk--info" style="justify-self:start">Informative</span><h4>Internal controls, outside VXP</h4><ul>
 			<li>The catalog, policies, checks and locks that enforce the rules inside one company's systems belong to each implementation.</li>
@@ -252,7 +252,7 @@
 
 <!-- ═══ 6 Relationship ═════════════════════════════════════════════════════ -->
 <section class="dsec" id="relationship" aria-labelledby="relationship-h">
-	<h2 id="relationship-h"><span class="n">6</span>Relationship<a class="anchor" href="#relationship" aria-label="Link to Relationship">#</a></h2>
+	<h2 id="relationship-h"><span class="n">6</span>VXP Relationship<a class="anchor" href="#relationship" aria-label="Link to Relationship">#</a></h2>
 	<p>With an agreement the person approved, the company can start a request toward the person's agent. The agreement names its actions, a daily limit and an expiry, and ends when the delegation is revoked. Before signing or sending anything, the company checks that all of it still holds (R6). A relationship does not replace the company's authorization: inside it, each request still passes the company's own rules.</p>
 	<figure class="fig">
 		<svg class="halo seq" viewBox="0 0 600 470" role="img" aria-labelledby="fig-rel-t">
@@ -303,7 +303,7 @@
 		<thead><tr><th>Delivery path</th><th>How the agent receives and answers</th><th>State</th></tr></thead>
 		<tbody>
 			<tr><td>HTTP inbox</td><td><code>POST {inbox_uri}</code> declared in the agent's client metadata, on the same origin as its <code>client_id</code></td><td><span class="mk mk--exp">Experimental</span> Tested only with a server of SOVRAS's own</td></tr>
-			<tr><td>Poppy conversation</td><td>Messages with <code>data["vxpprotocol.org/relationship"]</code> inside the agent's conversation; offer, agreement, request, answer and a signed reply receipt</td><td>Run once with a live personal agent through the Poppy adapter; no agent outside SOVRAS's runs yet</td></tr>
+			<tr><td>Poppy conversation</td><td>Messages with <code>data["vxpprotocol.org/relationship"]</code> inside the agent's conversation; offer, agreement, request, answer and a signed reply receipt</td><td>Run once, on 21 October 2026, with a live personal agent through the Poppy adapter; no agent outside SOVRAS has used it yet</td></tr>
 			<tr><td>PACT</td><td>Not specified yet</td><td><span class="mk mk--pend">Pending</span></td></tr>
 		</tbody>
 	</table></div>
@@ -312,7 +312,7 @@
 
 <!-- ═══ 7 Proof ════════════════════════════════════════════════════════════ -->
 <section class="dsec" id="proof" aria-labelledby="proof-h">
-	<h2 id="proof-h"><span class="n">7</span>Proof<a class="anchor" href="#proof" aria-label="Link to Proof">#</a></h2>
+	<h2 id="proof-h"><span class="n">7</span>VXP Proof<a class="anchor" href="#proof" aria-label="Link to Proof">#</a></h2>
 	<p>Each operation leaves a chain of signed statements. Each one names the previous by its digest and is signed by the role that observed it, so a verifier knows who said what at every link. The terms digest ties the approval, the execution and the result to one exact revision. VXP Proof is not an execution engine: it records what was asked, approved, executed and observed.</p>
 	<figure class="fig fig--narrow">
 		<svg viewBox="0 0 460 600" role="img" aria-labelledby="fig-proof-t">
@@ -362,7 +362,7 @@
 	<h2 id="execution-h"><span class="n">8</span>Enterprise execution<a class="anchor" href="#execution" aria-label="Link to Enterprise execution">#</a></h2>
 	<p>Execution uses the systems and permissions the company already has. The protocol fixes how many times it runs, under which conditions, and what has to be read afterwards.</p>
 	<ul>
-		<li><b>One per resource</b> (<a href="../spec/#i2">I2</a>). Whatever entries arrive, one execution per resource. Each entry produces its own operation, and only the first that passes the precondition takes effect; the others end <code>failed</code>, without effect and with their evidence.</li>
+		<li><b>At most once among competing operations</b> (<a href="../spec/#i2">I2</a>). When several entries ask for the same resource, each entry produces its own operation, and only the first that passes the precondition takes effect; the others end <code>failed</code>, without effect and with their evidence.</li>
 		<li><b>Precondition.</b> The terms that describe the starting state are checked against the company's system right before executing. If they no longer hold, nothing runs and the operation ends <code>failed</code> without an <code>execution</code> in the chain.</li>
 		<li><b>One in progress.</b> While a confirmed operation on a resource is in progress, no other one is opened on it; the native profile answers <code>resource_busy</code>.</li>
 		<li><b>Re-verification.</b> Before executing, the grant for the resource, the policy and the precondition are evaluated again with the token of the accepting call.</li>

@@ -5,7 +5,7 @@
 ## The normative text
 
 The [specification](https://vxpprotocol.org/spec/) is the only normative text of VXP. Its source is `spec/spec.tpl.html` in the
-repository. Current version: **draft 0.1**, revised on 22 October 2026.
+repository. Current version: **draft 0.1**, revised on 23 October 2026 (repository release 0.1.0-rc.4).
 
 | Section | What it defines |
 |---|---|

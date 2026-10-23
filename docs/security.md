@@ -10,9 +10,9 @@ description: The threats VXP addresses and the ones it does not, every error cod
 | Forgery by an outsider | Signatures, RFC 7638 `kid`, and keys anchored to the company's issuer ([[issuer-anchoring|§10 anchoring]]) |
 | Terms changed after approval | The terms digest covers summary and terms; approval and execution must cite it ([[P1]]) |
 | Replay into another operation or to another agent | `op`, `seq`, `prev`, `aud` and `user` equal across the chain, verified |
-| Two contradictory successes on one resource | One execution per resource ([[O6]], [[I2]]); across separate packages, only a log with witnesses |
+| Two contradictory successes on one resource | A precondition before executing and one operation in progress per resource ([[O6]], [[I2]]); across separate packages, only a log with witnesses, which 0.1 specifies but no verifier grants yet |
 | Another agent or user rewrites an operation | The full owner on every reuse ([[ID3]]) |
-| «The user approved», said by the agent | Labelled `agent_asserted`, with its real root ([[P2]], [[P7]]) |
+| “The user approved”, said by the agent | Labeled `agent_asserted`, with its real root ([[P2]], [[P7]]) |
 | The company lies about its own system | No signature solves this. VXP relies on read-back, third-party evidence and an honest level label |
 | The operator signs a whole alternative chain | Possible while the operator holds the keys and there are no witnesses: the verifier says `single_root: operator` |
 
@@ -51,7 +51,8 @@ exists ([[O3]]). Full table: [[errors|§9 errors]].
   retired key ([[key-rotation|§10 key rotation]]).
 - The relationship key is distinct from the proof keys and from any Poppy or PACT key ([[R5]]).
 - The reference implementation keeps keys in `VXP_KEYS_DIR`. Without it, they live in memory and die with the
-  process.
+  process, and every proof they signed becomes impossible to check unless its public material was saved
+  ([[key-rotation|§10 key rotation]]).
 
 ## Privacy
 

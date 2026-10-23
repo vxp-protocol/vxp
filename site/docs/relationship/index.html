@@ -28,7 +28,7 @@
 			<li><a href="../../verify/">Verify</a></li>
 			<li><a href="../../conformance/">Conformance</a></li>
 			<li><a href="../../implement/">Implement</a></li>
-			<li><a href="../../videos/">Videos</a></li>
+			<li><a href="../../demos/">Demos</a></li>
 		</ul>
 		<a class="nav__ver" href="../../status/">Draft 0.1</a>
 	</div>
@@ -76,7 +76,7 @@
 <p>Before it signs or sends anything, the company checks that (<a class="rule" href="../../spec/#r6">R6</a>):</p>
 <ul><li>the relationship and the delegation that created it are still in force;</li><li>the action is in the agreement;</li><li>the daily limit is not exceeded;</li><li>the resource belongs to the same customer.</li></ul>
 <p>The message is a <code>vxp-company-request+jwt</code> delivered to the agent's inbox (<a class="rule" href="../../spec/#r7">R7</a>). There are two kinds:</p>
-<ul><li><b>A proposal</b> (<a class="rule" href="../../spec/#r8">R8</a>): it creates a normal operation, with terms signed by the company and its own VXP Proof chain. Proposing never executes. The agent accepts with the person's approval, and the company checks the relationship again at that moment (<a class="rule" href="../../spec/#r9">R9</a>).</li><li><b>A closed question</b> (<a class="rule" href="../../spec/#r17">R17</a>): for example «hold or release the booking». The agent answers once, with one of the options, before it expires, and gets a signed receipt (<code>vxp-reply-receipt+jwt</code>).</li></ul>
+<ul><li><b>A proposal</b> (<a class="rule" href="../../spec/#r8">R8</a>): it creates a normal operation, with terms signed by the company and its own VXP Proof chain. Proposing never executes. The agent accepts with the person's approval, and the company checks the relationship again at that moment (<a class="rule" href="../../spec/#r9">R9</a>).</li><li><b>A closed question</b> (<a class="rule" href="../../spec/#r17">R17</a>): for example “hold or release the booking”. The agent answers once, with one of the options, before it expires, and gets a signed receipt (<code>vxp-reply-receipt+jwt</code>).</li></ul>
 <div class="code"><div class="code__head"><b>A company-initiated request, as delivered</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
   "outbox_id": "out_c_bdRdvaL42s",
   "delivery": "entregado",
@@ -95,7 +95,7 @@
 <h2 id="agents-without-an-inbox">Agents without an inbox<a class="anchor" href="#agents-without-an-inbox" aria-label="Link to Agents without an inbox">#</a></h2>
 <p>An agent that only speaks Poppy and has no HTTP inbox can still hold a relationship. It is asked for, received and answered inside its Poppy conversation, without changing the Poppy contract (<a class="rule" href="../../spec/#r12">R12</a>–<a class="rule" href="../../spec/#r16">R16</a>). See <a href="../../docs/guides/interoperability/">Interoperability</a>.</p>
 <h2 id="status">Status<a class="anchor" href="#status" aria-label="Link to Status">#</a></h2>
-<p>Experimental. The HTTP inbox has been tested with agents written by SOVRAS. The relationship over a Poppy conversation was used once by a live agent, on 21 October 2026. No third-party agent exposes an inbox yet.</p>
+<p>Experimental. The HTTP inbox has been tested with agents written by SOVRAS. The relationship over a Poppy conversation is implemented on the company side only (the agent library in <code>agent/</code> does not implement it); it ran once, on 21 October 2026, during SOVRAS's own runs, and no agent outside them has used it. Over Poppy alone an agent can receive and answer closed questions; to accept a change the company proposes (<a class="rule" href="../../spec/#r8">R8</a>), it needs the native profile. No third-party agent exposes an inbox yet.</p>
 		<div class="dfoot">
 			<a href="../../docs/relationship.md">View as Markdown</a>
 			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/relationship.md">Source</a>

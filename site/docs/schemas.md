@@ -47,5 +47,5 @@ npx --yes ajv-cli@5 validate --spec=draft2020 -r "schemas/0.1/common.schema.json
   -s schemas/0.1/vxp.schema.json -d my-vxp.json
 ```
 
-Or import them by URL once the site is published: every `$ref` is relative, so a validator that resolves `$id`
+Or import them by URL: every `$ref` is relative, so a validator that resolves `$id`
 loads the rest by itself.

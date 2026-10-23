@@ -1,11 +1,11 @@
 # Introduction
 
-> What VXP is, the work it comes from, its two public components, and what it does not do.
+> What VXP is, the work behind it, its two public components, and what it does not do.
 
-## The work it comes from
+## The work behind VXP
 
 Every day, companies take bookings, sell, change deliveries, handle claims and answer incidents in their
-own systems. More and more of those requests come from a person's own agent: an assistant the company did
+own systems. Now some of those requests come from a person's own agent: an assistant the company did
 not build and whose conversation it cannot see. After each operation the same questions come back:
 
 1. Who asked, and on whose behalf?
@@ -70,10 +70,8 @@ verifier knows whether it is reading the company's word or the operator's ([P7](
   what, over which exact terms and in which order, with its root of trust named ([P7](https://vxpprotocol.org/spec/#p7),
   [§10, reading a verdict](https://vxpprotocol.org/spec/#reading-a-verdict)).
 
-This is the behaviour the standard targets. Today no commercial personal agent supports VXP natively, and
-the native profile is experimental.
-
 ## Status
 
-Draft 0.1. The specification, the reference implementation, the verifiers, the vectors, the conformance
+Draft 0.1. Today no commercial personal agent supports VXP natively, and the native profile is experimental.
+The specification, the reference implementation, the verifiers, the vectors, the conformance
 validator and the agent tools are published together, under Apache 2.0. See [Changelog](https://vxpprotocol.org/docs/changelog/).

@@ -61,7 +61,7 @@ which test covers it, is in [Failures and how VXP behaves](https://vxpprotocol.o
 other evidence that cover it. It is generated from the specification, the tests and the validator, and the
 build fails if a cited test does not exist.
 
-## Three kinds of tests, never added together
+## Three kinds of tests, counted apart
 
 | Kind | What | What it does not show |
 |---|---|---|
@@ -73,8 +73,8 @@ build fails if a cited test does not exist.
 
 ```sh title="From the repository root"
 cd reference && npm test && npm run test:network && cd ..
-python verifier/verificar_paquete.py vectores vectors/vectores-0.1.json
-python verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json
+python3 verifier/verificar_paquete.py vectores vectors/vectores-0.1.json
+python3 verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json
 node verifier/tests/test-vxp-verify.mjs
 node conformance/reference/run.ts
 ```

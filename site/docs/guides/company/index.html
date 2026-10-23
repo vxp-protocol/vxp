@@ -28,7 +28,7 @@
 			<li><a href="../../../verify/">Verify</a></li>
 			<li><a href="../../../conformance/">Conformance</a></li>
 			<li><a href="../../../implement/">Implement</a></li>
-			<li><a href="../../../videos/">Videos</a></li>
+			<li><a href="../../../demos/">Demos</a></li>
 		</ul>
 		<a class="nav__ver" href="../../../status/">Draft 0.1</a>
 	</div>
@@ -71,10 +71,10 @@
 <p>Sign it into the proof (<a class="rule" href="../../../spec/#p1">P1</a>, <a class="rule" href="../../../spec/#o4">O4</a>). A change of terms is a new revision. Accepting an older one gets <code>409 terms_changed</code>.</p>
 <h2 id="6-execute-once-then-read-back">6. Execute once, then read back<a class="anchor" href="#6-execute-once-then-read-back" aria-label="Link to 6. Execute once, then read back">#</a></h2>
 <p>On acceptance:</p>
-<ol><li>Re-check authority, the policy and the precondition.</li><li>Execute <b>once</b> per resource, even if the same request arrives by several paths (<a class="rule" href="../../../spec/#o6">O6</a>, <a class="rule" href="../../../spec/#i2">I2</a>).</li><li>Read your system back.</li><li>Only if what you read matches the terms, sign <code>succeeded</code> (<a class="rule" href="../../../spec/#o7">O7</a>).</li></ol>
+<ol><li>Re-check authority, the policy and the precondition.</li><li>Execute each accepted revision <b>once</b>; if competing requests for the same resource arrive by several paths, only the first that passes the precondition takes effect (<a class="rule" href="../../../spec/#o6">O6</a>, <a class="rule" href="../../../spec/#i2">I2</a>).</li><li>Read your system back.</li><li>Only if what you read matches the terms, sign <code>succeeded</code> (<a class="rule" href="../../../spec/#o7">O7</a>).</li></ol>
 <p>If you cannot tell whether it happened, sign <code>unknown</code> and correct it later (<a class="rule" href="../../../spec/#p3">P3</a>, <a class="rule" href="../../../spec/#p4">P4</a>). If what you read contradicts the terms, sign that, keep <code>unknown</code> and send it to a person (<a class="rule" href="../../../spec/#p5">P5</a>). When your rule requires it, a person at the company decides on the same digest before execution (<a class="rule" href="../../../spec/#o5">O5</a>).</p>
 <h2 id="7-keep-your-keys">7. Keep your keys<a class="anchor" href="#7-keep-your-keys" aria-label="Link to 7. Keep your keys">#</a></h2>
-<p>Generate proof keys once and keep them; publish earlier public keys after a rotation; never reuse a retired key (<a class="rule" href="../../../spec/#key-rotation">§10 key rotation</a>). Proofs signed with keys you lose can no longer be checked by anyone.</p>
+<p>Generate proof keys once and keep them; publish earlier public keys after a rotation; never reuse a retired key (<a class="rule" href="../../../spec/#key-rotation">§10 key rotation</a>). Losing a private key only stops new signatures. Losing a public key that nobody saved while it was published leaves the proofs it signed impossible to check.</p>
 <h2 id="8-optionally-a-relationship">8. Optionally, a relationship<a class="anchor" href="#8-optionally-a-relationship" aria-label="Link to 8. Optionally, a relationship">#</a></h2>
 <p>If you want to reach agents later, publish <code>vxp_relationship</code> (its own key set and your <code>company_initiated_actions</code>), accept the relationship RAR in the same consent, and follow <a class="rule" href="../../../spec/#r1">R1</a>–<a class="rule" href="../../../spec/#r17">R17</a>. See <a href="../../../docs/relationship/">VXP Relationship</a>.</p>
 <h2 id="9-prove-it">9. Prove it<a class="anchor" href="#9-prove-it" aria-label="Link to 9. Prove it">#</a></h2>
@@ -83,7 +83,7 @@
 <p>Then go through <code>conformance/CHECKLIST.md</code> for what no tool can see from outside. See <a href="../../../docs/conformance/">Tests and conformance</a>.</p>
 <h2 id="running-the-reference-implementation-as-your-starting-point">Running the reference implementation as your starting point<a class="anchor" href="#running-the-reference-implementation-as-your-starting-point" aria-label="Link to Running the reference implementation as your starting point">#</a></h2>
 <div class="code"><div class="code__head"><b>The reference company, native profile only</b><span>sh</span></div><pre data-copy tabindex="0">cd reference
-VXP_ADAPTERS=none VXP_KEYS_DIR=./.keys VXP_SHOW_CHANNEL=1 npm start</pre></div>
+VXP_ADAPTERS=none VXP_KEYS_DIR=/tmp/vxp-keys VXP_SHOW_CHANNEL=1 npm start</pre></div>
 <p>It serves three fictitious test companies on <code>http://localhost:3100</code>. The store's discovery is at <code>/.well-known/vxp.json</code>. <code>VXP_SHOW_CHANNEL=1</code> prints to the console what the company would send through its channel, such as the account-linking code, because that channel is simulated.</p>
 		<div class="dfoot">
 			<a href="../../../docs/guides/company.md">View as Markdown</a>

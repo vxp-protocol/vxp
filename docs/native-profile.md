@@ -43,7 +43,7 @@ The agent starts a device authorization (RFC 8628) with those `authorization_det
 approves on the company's own page, after linking their account through an authentication the company
 controls ([[ID1]]). The token that follows carries exactly what was granted ([[O2]]).
 
-## 4. Keep the context
+## 4. Repeat the same request
 
 The agent repeats the same request, with the same `Idempotency-Key`. It is the same request, re-evaluated
 with the new authority ([[native-idempotency|§8, idempotency]]):

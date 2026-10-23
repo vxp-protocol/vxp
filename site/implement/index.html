@@ -26,7 +26,7 @@
 			<li><a href="../verify/">Verify</a></li>
 			<li><a href="../conformance/">Conformance</a></li>
 			<li><a href="../implement/" aria-current="page">Implement</a></li>
-			<li><a href="../videos/">Videos</a></li>
+			<li><a href="../demos/">Demos</a></li>
 		</ul>
 		<a class="nav__ver" href="../status/">Draft 0.1</a>
 	</div>
@@ -66,7 +66,7 @@
 		</div>
 
 		<p class="legend" aria-label="Labels used on this page"><span class="lg-cap">captured: real HTTP exchange of the native profile, 22 Oct 2026</span><span class="lg-spec">from the specification</span><span class="lg-exp">experimental: native profile and HTTP inbox</span></p>
-		<p class="small" style="margin-top:14px;max-width:80ch">Captured objects come from the reference implementation running the native profile against a test company. Hosts are shown as <code>store.example</code> and <code>agent.example</code>, and long tokens are shortened with <code>…</code>. Paths such as <code>…/sovras/proof-jwks.json</code> in the earlier captures of 22 October are the reference implementation's own choice, read from the issuer metadata; since the evening revision of 22 October 2026 it uses <code>/vxp/</code>, and still answers at the old paths (<a href="../spec/#implementation-paths">§8, implementation paths</a>).</p>
+		<p class="small" style="margin-top:14px;max-width:80ch">Captured objects come from the reference implementation running the native profile against a test company. Hosts are shown as <code>store.example</code> and <code>agent.example</code>, and long tokens are shortened with <code>…</code>. Some captures predate the move of the reference implementation's paths from <code>/sovras/</code> to <code>/vxp/</code>; both are its own choice, read from the issuer metadata, and both still answer (<a href="../spec/#implementation-paths">§8, implementation paths</a>). The test company and its messages are Chilean, in Spanish.</p>
 	</div>
 </section>
 
@@ -76,7 +76,7 @@
 		<div class="guide__head">
 			<p class="kicker">Guide 00 · On your own · native profile <span class="exp">experimental</span></p>
 			<h2 class="h2" id="on-your-own-h">Without SOVRAS, without Poppy, without PACT</h2>
-			<p class="lead">VXP can be implemented with its native profile alone. Nothing in VXP Proof, VXP Relationship or the operation requirements depends on Poppy or PACT, and no SOVRAS service takes part. Three things to settle before the guides below.</p>
+			<p class="lead">VXP can be implemented with its native profile alone. Nothing in VXP Proof, VXP Relationship or the operation requirements depends on Poppy or PACT, and no SOVRAS service takes part. Before the guides, three decisions.</p>
 		</div>
 		<div class="guide__grid">
 			<nav class="toc" aria-label="Steps on your own">
@@ -152,7 +152,7 @@ log                    {host}/vxp/log/v0, {origin}/vxp/log/checkpoint,
                        …/consistency, …/jwks.json
 relationship keys      {issuer}/vxp/relationship-jwks.json
 
-// until the evening revision of 22 Oct 2026 under /sovras/, still an alias;
+// until 22 Oct 2026 under /sovras/, still an alias;
 // packages signed before that date keep …/sovras/log/v0 as signed</pre></div>
 					</div>
 				</article>
@@ -167,7 +167,7 @@ relationship keys      {issuer}/vxp/relationship-jwks.json
 							<li>A key removed from the JWKS no longer verifies against live material: the verifier answers <code>unknown_key</code>. Against material saved while the key was published, the same proof still verifies, and a verifier that uses saved material says so, with the date it was obtained.</li>
 							<li>Keys generated in memory and lost when the process stops make every proof they signed unverifiable, unless their public keys were saved.</li>
 						</ul>
-						<p>With <code>VXP_KEYS_DIR</code>, the reference implementation keeps its operator, log and company keys across restarts, and a rotation keeps the earlier public key published. Before the evening revision of 22 October 2026 its keys lived in memory; that is why most proofs of 21 October can no longer be checked by signature (<a href="../examples/#signatures">Examples</a>).</p>
+						<p>With <code>VXP_KEYS_DIR</code>, the reference implementation keeps its operator, log and company keys across restarts, and a rotation keeps the earlier public key published. Until 22 October 2026 its keys lived in memory, which is why most proofs of 21 October can no longer be checked by signature (<a href="../examples/#signatures">Examples</a>).</p>
 						<div class="req">
 							<p><span class="bcp">SHOULD</span> keep proof keys persistent. <span class="bcp">MUST NOT</span> reuse a retired key.</p>
 							<a href="../spec/#key-rotation">Spec · key rotation and historical verification</a> <a href="../spec/#reading-a-verdict">Reading a verdict</a>
@@ -206,7 +206,7 @@ relationship keys      {issuer}/vxp/relationship-jwks.json
 					<li><a href="#c-terms"><span>5</span>Sign each revision</a></li>
 					<li><a href="#c-chain"><span>6</span>Emit the proof chain</a></li>
 					<li><a href="#c-unknown"><span>7</span>Unknown, correction, read-back</a></li>
-					<li><a href="#c-relationship"><span>8</span>Offer and honour Relationship</a></li>
+					<li><a href="#c-relationship"><span>8</span>Offer and honor Relationship</a></li>
 					<li><a href="#c-adapters"><span>9</span>Add Poppy and PACT adapters</a></li>
 				</ol>
 			</nav>
@@ -436,7 +436,7 @@ relationship keys      {issuer}/vxp/relationship-jwks.json
 					<div class="step__text">
 						<p class="step__n">Step 4</p>
 						<h3>Meet the operation requirements where a request becomes an operation</h3>
-						<p>Operation requirements O1 to O7 are behaviour, not an interface: VXP defines no endpoint for them. Where an external request turns into an operation on your system, what passes is the intersection of what the person delegated, what the company allows and what the resource admits. The controls that enforce them inside your systems are yours; VXP Proof records the evidence that lets anyone check them afterwards.</p>
+						<p>Operation requirements O1 to O7 are behavior, not an interface: VXP defines no endpoint for them. Where an external request turns into an operation on your system, what passes is the intersection of what the person delegated, what the company allows and what the resource admits. The controls that enforce them inside your systems are yours; VXP Proof records the evidence that lets anyone check them afterwards.</p>
 						<div class="tbl"><table>
 							<thead><tr><th>Requirement</th><th>What your implementation does</th><th>Answer when it fails</th><th>Spec</th></tr></thead>
 							<tbody>
@@ -445,12 +445,12 @@ relationship keys      {issuer}/vxp/relationship-jwks.json
 								<tr><td><a href="../spec/#o3">O3</a> Own resource</td><td>Foreign, missing and unlinked resources answer the same way</td><td><code>target_not_found</code> / <code>operation_not_found</code></td><td><a href="../spec/#r6">R6</a></td></tr>
 								<tr><td><a href="../spec/#o4">O4</a> Terms and commitment</td><td>The company signs the exact revision with its <code>commitment</code> (<code>firm</code> or <code>conditional</code>). Changed terms are a new revision, approved again</td><td>An unsigned revision cannot be confirmed</td><td><a href="../spec/#p1">P1</a> <a href="../spec/#commitment">Commitment</a></td></tr>
 								<tr><td><a href="../spec/#o5">O5</a> Company review</td><td>When its rule requires it, a person at the company decides on the same digest, after the person</td><td>No <code>execution</code> before <code>company_review: approved</code>; <code>denied</code> ends <code>failed</code></td><td><a href="../spec/#e3">E3</a></td></tr>
-								<tr><td><a href="../spec/#o6">O6</a> One execution</td><td>One per resource across every entry path, with a precondition checked right before executing and an <code>Idempotency-Key</code></td><td>Later entries end <code>failed</code> with no effect; <code>resource_busy</code> while one is in progress</td><td><a href="../spec/#i2">I2</a></td></tr>
+								<tr><td><a href="../spec/#o6">O6</a> One execution</td><td>Each accepted revision once; of operations competing for a resource through any entry path, only the first that passes the precondition, checked right before executing. Retries carry an <code>Idempotency-Key</code></td><td>Later entries end <code>failed</code> with no effect; <code>resource_busy</code> while one is in progress</td><td><a href="../spec/#i2">I2</a></td></tr>
 								<tr><td><a href="../spec/#o7">O7</a> Read-back</td><td>Without a read-back of the company's system there is no <code>succeeded</code>; a contradiction goes to <code>waiting_human</code></td><td><code>outcome: unknown</code></td><td><a href="../spec/#p5">P5</a> <a href="../spec/#p6">P6</a></td></tr>
 							</tbody>
 						</table></div>
 						<div class="req">
-							<p><span class="bcp">MUST</span> every conforming implementation shows this behaviour. Before executing, re-evaluate with the token of the <code>accept</code> request the resource grant, the policy and the precondition; if any fails, do not execute.</p>
+							<p><span class="bcp">MUST</span> every conforming implementation shows this behavior. Before executing, re-evaluate with the token of the <code>accept</code> request the resource grant, the policy and the precondition; if any fails, do not execute.</p>
 							<a href="../spec/#operation-requirements">Spec · §9 operation requirements</a> <a href="../spec/#three-layers">Requirement, evidence, control</a> <a href="../spec/#native-endpoints">Native endpoints</a>
 						</div>
 					</div>
@@ -637,7 +637,7 @@ seq 5  outcome        company   prev sha-256:wBMpHI0f…
 					<div class="step__text">
 						<p class="step__n">Step 8 · HTTP inbox <span class="exp">experimental</span></p>
 						<h3>Offer the relationship and stay inside it</h3>
-						<p><b>Birth.</b> The agent asks in the Device Authorization (RFC 8628) with an <code>authorization_details</code> of type <code>https://vxpprotocol.org/rar/relationship</code>. Its <code>actions</code> are a subset of your <code>company_initiated_actions</code>, and you cap the limits to your own ceilings (draft 0.1: 10 per day and 90 days). The agent declares its inbox in its Client ID Metadata Document, same origin as its <code>client_id</code>; without it, answer <code>invalid_authorization_details</code>. The consent screen shows the relationship in business language with its own checkbox: unchecked, the relationship is not born.</p>
+						<p><b>Creation.</b> The agent asks in the Device Authorization (RFC 8628) with an <code>authorization_details</code> of type <code>https://vxpprotocol.org/rar/relationship</code>. Its <code>actions</code> are a subset of your <code>company_initiated_actions</code>, and you cap the limits to your own ceilings (draft 0.1: 10 per day and 90 days). The agent declares its inbox in its Client ID Metadata Document, same origin as its <code>client_id</code>; without it, answer <code>invalid_authorization_details</code>. The consent screen shows the relationship in business language with its own checkbox: unchecked, no relationship is created.</p>
 						<p><b>Agreement.</b> The token response carries <code>relationships[]</code> with <code>relationship_id</code>, <code>state</code>, <code>actions</code>, <code>limits</code>, <code>expires_at</code> and the signed <code>agreement</code> (<code>typ: vxp-relationship+jwt</code>; <code>iss</code>, <code>aud</code>, <code>sub</code>, <code>rel</code>, <code>actions</code>, <code>limits</code>, <code>iat</code>, <code>exp</code>, <code>jti</code>).</p>
 						<p><b>Initiating.</b> Check everything before signing or sending anything:</p>
 						<div class="tbl"><table>
@@ -712,7 +712,7 @@ seq 5  outcome        company   prev sha-256:wBMpHI0f…
 						<div class="code" data-src="spec"><div class="code__head"><b>Poppy conversation path · data members</b><span>from the specification</span></div>
 <pre tabindex="0" data-copy>// offer (R12)
 { "type": "relationship_offer", "approval_url": "...", "actions": [...], "limits": {...} }
-// birth (R14)
+// creation (R14)
 { "type": "relationship_agreement", "relationship_id": "...", "actions": [...],
   "limits": {...}, "expires_at": "...", "agreement": "&lt;vxp-relationship+jwt&gt;" }
 // request (R15), on a message event with role: company
@@ -732,8 +732,8 @@ seq 5  outcome        company   prev sha-256:wBMpHI0f…
 						<ul>
 							<li><b>I1.</b> Each adapter follows the external contract literally: its objects, states, errors and discovery. Inside an adapter, VXP leaves Poppy's and PACT's discovery, authorization, operations and states exactly as they are.</li>
 							<li><b>I4.</b> What VXP adds travels in each protocol's extension points: a domain-named member in Poppy, <code>metadata</code> or extensions in A2A. Never as new values of their enums. The native state reaches A2A as <code>metadata["https://vxpprotocol.org/ext/native/v0.1"]</code> and stays out of Poppy's <code>state</code>.</li>
-							<li><b>I5.</b> Nothing of VXP enters Poppy's or PACT's catalogues: the relationship checkbox is no scope on the Agent Card.</li>
-							<li><b>I2.</b> However many adapters, one execution per resource. Entries produce separate operations, one per identity; the first to pass the precondition takes effect, the others end <code>failed</code> with no effect and with their evidence.</li>
+							<li><b>I5.</b> Nothing of VXP enters Poppy's or PACT's catalogs: the relationship checkbox is no scope on the Agent Card.</li>
+							<li><b>I2.</b> However many adapters, competing operations on one resource execute at most once among them. Entries produce separate operations, one per identity; the first to pass the precondition takes effect, the others end <code>failed</code> with no effect and with their evidence.</li>
 						</ul>
 						<p>Keep the official suites green with VXP present: the Poppy validator and the PACT Identity suite are the check that the contract stayed literal.</p>
 						<div class="req">
@@ -887,8 +887,8 @@ resource=https://store.example/e/ferreteria-demo/v1
 						<p>Create the request. Without a grant for that resource, the company answers <code>202 authorization_required</code> and names exactly what is missing. Start a Device Authorization (RFC 8628) with those <code>authorization_details</code>, and add a relationship detail if you want one. The person opens the company's page, links their account with a code sent by a channel the company controls, sees each identifier in business language and decides. Poll the token endpoint with the <code>device_code</code>: the response returns the details granted.</p>
 						<ul>
 							<li><code>https://vxpprotocol.org/rar/capability</code> authorizes asking for an operation on a resource.</li>
-							<li><code>vxpprotocol.org/operation</code> authorizes approving one exact revision. They complement each other.</li>
-						</ul>
+							<li>Approving one exact revision needs no further grant: you accept it at <code>POST /v1/proposals/{id}/accept</code>, and the company re-checks the grant before executing.</li>
+													</ul>
 						<div class="req">
 							<p><span class="bcp">MUST</span> the authorization server checks that each <code>identifier</code> belongs to the linked account; otherwise <code>invalid_authorization_details</code>.</p>
 							<a href="../spec/#native-authorization">Native authorization</a> <a href="../spec/#id1">ID1</a>
@@ -1020,7 +1020,7 @@ Idempotency-Key: BKjzb0e35jUf3RPm
 					<div class="step__text">
 						<p class="step__n">Step 5</p>
 						<h3>Show the exact terms, then accept that revision</h3>
-						<p>Show the person the <code>summary</code> and the <code>terms</code> of the revision, including its <code>commitment</code> and conditions. Accept with <code>POST /v1/proposals/{id}/accept</code> and <code>{approved_by}</code>. To negotiate, send <code>POST /v1/proposals/{id}/counter</code> with <code>{proposed_terms, note?}</code>: a counter never executes by itself, and only a revision issued by the company can be accepted.</p>
+						<p>Show the person the <code>summary</code> and the <code>terms</code> of the revision, including its <code>commitment</code> and conditions. Accept with <code>POST /v1/proposals/{id}/accept</code> and <code>{approved_by}</code>: <code>"user"</code> when the person approved these terms, or <code>"standing_permission"</code> only when the revision says <code>user_approval_required: false</code> because the terms fall within a limit the person approved in advance. To negotiate, send <code>POST /v1/proposals/{id}/counter</code> with <code>{proposed_terms, note?}</code>: a counter never executes by itself, and only a revision issued by the company can be accepted.</p>
 						<ul>
 							<li><code>409 terms_changed</code> brings the current proposal: show it again before accepting.</li>
 							<li><code>202</code> means accepted and not final yet; <code>200</code> means it finished.</li>
@@ -1335,6 +1335,7 @@ payload { "iss": "&lt;company issuer&gt;", "aud": "&lt;your client_id&gt;", "sub
 								<tr><td><code>request_not_found</code></td><td>404 · read</td><td>Unknown, or owned by another <code>(profile, client_id, sub, account)</code></td><td>Check you use the same identity and key that created it</td></tr>
 								<tr><td><code>terms_changed</code></td><td>409 · accept</td><td>The revision you accepted is no longer the latest</td><td>Show the current proposal it returns and ask again</td></tr>
 								<tr><td><code>proposal_expired</code></td><td>409 · accept</td><td>The revision passed its <code>expires_at</code></td><td>Create a new request</td></tr>
+								<tr><td><code>user_approval_required</code></td><td>403 · accept</td><td><code>standing_permission</code> was used on a revision that needs the person's own approval</td><td>Ask the person, then accept with <code>approved_by: "user"</code></td></tr>
 								<tr><td><code>proposal_not_acceptable</code></td><td>409 · accept</td><td>The request is already final</td><td>Read the final state and the proof</td></tr>
 								<tr><td><code>attempt_limit_exceeded</code></td><td>409 · accept</td><td>Too many accepts on stale revisions; the request ends <code>failed</code> with no effect</td><td>Start over with a new request</td></tr>
 								<tr><td><code>counter_rejected</code></td><td>409 · counter</td><td>The company keeps its current revision</td><td>Show it; accept, counter differently or let it expire</td></tr>
@@ -1552,7 +1553,7 @@ terms.despacho_nuevo  "2026-10-28"   observed.despacho_nuevo  "2026-10-28"  =
 						<h3>Compare the operation with the last final, never the first</h3>
 						<p>The state in force is that of the last final statement: the <code>outcome</code>, or the latest <code>correction</code>, or <code>revoked</code> after a <code>revocation</code>. Each <code>correction</code> points at the last final statement in <code>corrects</code>; a correction to <code>succeeded</code> cites a later matching <code>read_back</code>. Compare the state the agent sees on the operation with that last final.</p>
 						<div class="req">
-							<p><span class="bcp">MUST</span> compare the visible state of the operation with the last final statement. Comparing with the first <code>outcome</code> was a gap of the 0.1 verifier, now corrected.</p>
+							<p><span class="bcp">MUST</span> compare the visible state of the operation with the last final statement, not with the first <code>outcome</code>.</p>
 							<a href="../spec/#p8">P8</a> <a href="../spec/#corrections">Corrections</a>
 						</div>
 					</div>
@@ -1692,7 +1693,7 @@ terms.despacho_nuevo  "2026-10-28"   observed.despacho_nuevo  "2026-10-28"  =
 			</details>
 			<details>
 				<summary>Can the relationship consent show up as a scope on the Agent Card?</summary>
-				<div class="ans"><p>It stays out of every Poppy and PACT catalogue. The PACT delegated test caught exactly that in the reference implementation, and it was corrected.</p><a href="../spec/#i5">I5</a></div>
+				<div class="ans"><p>It stays out of every Poppy and PACT catalog. The PACT delegated test caught exactly that in the reference implementation, and it was corrected.</p><a href="../spec/#i5">I5</a></div>
 			</details>
 			<details>
 				<summary>What if the person revokes while a company-initiated proposal is pending?</summary>
@@ -1708,7 +1709,7 @@ terms.despacho_nuevo  "2026-10-28"   observed.despacho_nuevo  "2026-10-28"  =
 			</details>
 			<details>
 				<summary>Are the <code>vxpprotocol.org</code> identifiers final?</summary>
-				<div class="ans"><p>They are the draft 0.1 names, renamed from the annex on 22 October 2026. <code>vxpprotocol.org</code> was registered that day and is under SOVRAS's control, so the identifiers use a domain the publisher controls, as Poppy requires. Publishing the site and the documents on that domain is pending. While VXP is a 0.x draft, every new draft is treated as incompatible with the previous one.</p><a href="../spec/#renamed-identifiers">§8, renamed identifiers</a> <a href="../spec/#versioning">Versioning</a></div>
+				<div class="ans"><p>They are the draft 0.1 names, renamed from the annex on 22 October 2026. <code>vxpprotocol.org</code> was registered that day and is under SOVRAS's control, so the identifiers use a domain the publisher controls, as Poppy requires; this site is published there. While VXP is a 0.x draft, every new draft is treated as incompatible with the previous one.</p><a href="../spec/#renamed-identifiers">§8, renamed identifiers</a> <a href="../spec/#versioning">Versioning</a></div>
 			</details>
 		</div>
 	</div>

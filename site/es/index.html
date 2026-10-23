@@ -29,7 +29,7 @@
 			<li><a href="../verify/" hreflang="en" title="En inglés">Verificar</a></li>
 			<li><a href="../conformance/" hreflang="en" title="En inglés">Conformidad</a></li>
 			<li><a href="../implement/" hreflang="en" title="En inglés">Implementar</a></li>
-			<li><a href="../videos/" hreflang="en" title="En inglés">Videos</a></li>
+			<li><a href="../demos/" hreflang="en" title="En inglés">Demos</a></li>
 			<li class="nav__note">Páginas en inglés</li>
 		</ul>
 		<a class="nav__ver" href="../status/" hreflang="en">Borrador 0.1</a>
@@ -41,7 +41,7 @@
 <section class="hero">
 	<div class="wrap hero__in hero__in--solo">
 		<p class="kicker">Protocolo abierto · borrador 0.1</p>
-		<h1 class="h1 reveal-words" data-lines>Las empresas reservan, venden, cambian y resuelven cosas para las personas todos los días. Ahora la solicitud llega desde el agente propio de la persona.</h1>
+		<h1 class="h1 reveal-words" data-lines>Todos los días, las empresas reservan, venden, cambian pedidos y resuelven problemas. Ahora la solicitud puede llegar del agente propio de la persona.</h1>
 		<p class="lead">VXP es un protocolo abierto para ese trabajo. La persona autoriza lo que su agente puede hacer con la empresa, la empresa lo hace en sus propios sistemas y con sus propias reglas, y ambos guardan una constancia firmada que cualquiera puede revisar después.</p>
 		<div class="hero__cta">
 			<a class="btn btn--solid" href="#work">Ver cómo funciona</a>
@@ -55,7 +55,7 @@
 	<div class="wrap">
 		<div class="sec__head">
 			<p class="kicker">1 · El trabajo</p>
-			<h2 class="h2" id="work-h">Parte con algo que una empresa tiene que resolver</h2>
+			<h2 class="h2" id="work-h">Empieza con algo que una empresa tiene que resolver</h2>
 			<p class="lead">Una reserva, una venta, una modificación, una solicitud o un problema. La empresa ya sabe hacerlo, en sus propios sistemas y con sus propias reglas. Lo que cambia es quién lo pide.</p>
 		</div>
 		<ul class="jobs">
@@ -63,7 +63,7 @@
 			<li class="job"><p class="job__ind">Hotelería</p><h3>Reservar dos noches, o mantener una reserva por una llegada tarde</h3><p><b>Dentro de la empresa:</b> cotizar la tarifa vigente, retener la habitación, registrar la garantía.</p></li>
 			<li class="job"><p class="job__ind">Distribución</p><h3>Comprar treinta unidades al precio por volumen</h3><p><b>Dentro de la empresa:</b> aplicar la política de descuentos, emitir la cotización, crear el pedido.</p></li>
 			<li class="job"><p class="job__ind">Salud</p><h3>Cambiar la hora de una consulta</h3><p><b>Dentro de la empresa:</b> buscar un cupo con el mismo profesional y actualizar la agenda.</p></li>
-			<li class="job"><p class="job__ind">Servicios básicos y telecomunicaciones</p><h3>Avisar un corte en la casa y seguirlo</h3><p><b>Dentro de la empresa:</b> abrir el ticket, asignar una visita, informar cada cambio de estado.</p></li>
+			<li class="job"><p class="job__ind">Servicios básicos y telecomunicaciones</p><h3>Avisar un corte en casa y hacerle seguimiento</h3><p><b>Dentro de la empresa:</b> abrir el ticket, asignar una visita, informar cada cambio de estado.</p></li>
 			<li class="job"><p class="job__ind">Seguros</p><h3>Abrir un siniestro después de un choque</h3><p><b>Dentro de la empresa:</b> revisar la póliza, registrar el siniestro, pedir lo que falta.</p></li>
 		</ul>
 	</div>
@@ -73,11 +73,11 @@
 	<div class="wrap who">
 		<div class="sec__head" style="margin:0">
 			<p class="kicker">2 · Quién pide</p>
-			<h2 class="h2" id="who-h">Cada vez más, es el agente propio de la persona</h2>
+			<h2 class="h2" id="who-h">Ahora puede ser el agente propio de la persona</h2>
 			<p class="lead">La persona habla con su agente, por teléfono o en un chat. El agente va a la empresa a pedir algo, a retomar una gestión que ya está en curso, o a responder cuando la empresa necesita una decisión. La empresa no construyó ese agente y no puede ver su conversación.</p>
 			<p class="body-soft">Antes de actuar, la empresa necesita cuatro respuestas, y también quien revise el trabajo después:</p>
 			<ol class="origin__qs">
-				<li><span>1</span>¿Quién pide, y a nombre de quién?</li>
+				<li><span>1</span>¿Quién pide, y en nombre de quién?</li>
 				<li><span>2</span>¿Qué puede hacer ese agente aquí, y hasta cuándo?</li>
 				<li><span>3</span>¿Qué términos exactos se aceptaron, y cómo?</li>
 				<li><span>4</span>¿Qué se ejecutó, y qué mostró después el sistema de la empresa?</li>
@@ -103,7 +103,7 @@
 		<div class="sec__head">
 			<p class="kicker">3 · Lo que agrega VXP</p>
 			<h2 class="h2" id="how-h">Una relación, condiciones exactas y evidencia</h2>
-			<p class="lead">VXP no reemplaza la forma en que trabaja la empresa. Le da al agente y a la empresa una manera común de acordar qué se puede hacer, hacerlo una sola vez y demostrarlo.</p>
+			<p class="lead">VXP trabaja sobre lo que la empresa ya hace. Le da al agente y a la empresa una manera común de acordar qué se puede hacer, hacerlo una sola vez y demostrarlo.</p>
 		</div>
 		<ol class="adds">
 			<li class="add">
@@ -115,19 +115,18 @@
 			<li class="add">
 				<span class="add__n">Condiciones</span>
 				<h3>La empresa propone términos exactos, y los ejecuta una vez</h3>
-				<p>Nada se ejecuta hasta que se acepta una revisión exacta de los términos. Entonces se ejecuta una sola vez, con las reglas de la propia empresa. Toda implementación cumple los <a href="../spec/#operation-requirements" hreflang="en">requisitos de operación O1 a O7</a>.</p>
-				<p class="add__tag">Requisitos de operación</p>
+				<p>Nada se ejecuta hasta que se acepta una versión exacta de los términos. Entonces se ejecuta una sola vez, con las reglas de la propia empresa. Toda implementación cumple los <a href="../spec/#operation-requirements" hreflang="en">requisitos de operación O1 a O7</a>.</p>
 			</li>
 			<li class="add">
 				<span class="add__n">Evidencia</span>
 				<h3>Cada paso deja una declaración firmada</h3>
-				<p>La solicitud, los términos, la aprobación y cómo se dio, la ejecución y lo que mostró después el sistema de la empresa, cada uno firmado y amarrado al anterior. Cualquiera puede revisar la cadena.</p>
+				<p>La solicitud, los términos, la aprobación y cómo se dio, la ejecución y lo que mostró después el sistema de la empresa, cada uno firmado y enlazado al anterior. Cualquiera puede revisar la cadena.</p>
 				<p class="add__tag">VXP Proof</p>
 			</li>
 		</ol>
 		<div class="interop">
 			<p><b>Perfil propio.</b> VXP tiene un perfil nativo que no necesita otro protocolo: descubrimiento en el dominio de la empresa, identidad propia del agente, permiso por solicitud, operaciones, Proof y Relationship.</p>
-			<p><b>Interoperabilidad opcional.</b> Para agentes que ya hablan Poppy o PACT, una empresa puede publicar además esos adaptadores, sobre el mismo emisor. VXP lo creó SOVRAS; cualquiera puede implementarlo.</p>
+			<p><b>Interoperabilidad opcional.</b> Para agentes que ya hablan Poppy o PACT, una empresa puede publicar además esos adaptadores, sobre el mismo emisor.</p>
 		</div>
 	</div>
 </section>
@@ -172,7 +171,7 @@
 		<div class="sec__head">
 			<p class="kicker">5 · VXP Proof</p>
 			<h2 class="h2" id="proof-h">Seis declaraciones firmadas, cada una apuntando a la anterior</h2>
-			<p class="lead">La constancia de la operación de arriba. Firman dos roles: la empresa firma los términos que ofreció y el resultado que declara; el operador, que ejecuta la operación por cuenta de la empresa, firma lo que recibió, ejecutó y releyó. Elige una declaración para revisarla, y después intenta alterarla.</p>
+			<p class="lead">La constancia de la operación de arriba. Firman dos roles: la empresa firma los términos que ofreció y el resultado que declara; el operador, que ejecuta la operación por cuenta de la empresa, firma lo que recibió, la aprobación de la persona, la ejecución y lo que releyó. Elige una declaración para revisarla, y después intenta alterarla.</p>
 		</div>
 		<div class="pl" data-proof-lab><noscript><p>Esta vista necesita JavaScript. La misma constancia se puede descargar en <a href="../examples/#run-2026-10-22-evening" hreflang="en">Examples</a>.</p></noscript></div>
 	</div>
@@ -198,12 +197,12 @@
 		<div class="twin">
 			<article>
 				<h3>Interactivas</h3>
-				<p>La operación paso a paso de arriba, y un verificador que revisa una constancia real en tu navegador, intacta o alterada. La página de demos lista cada demostración interactiva publicada.</p>
+				<p>La operación paso a paso de arriba, y un verificador que revisa una constancia real en tu navegador, intacta o alterada. La página de demos reúne todo lo que se puede probar en el sitio.</p>
 				<a class="btn btn--ghost" href="../demos/" hreflang="en">Demos (en inglés)</a>
 			</article>
 			<article>
 				<h3>Con agentes en vivo</h3>
-				<p>El 21 de octubre de 2026 entraron agentes personales por el adaptador de Poppy, entre ellos Nova, el agente personal que SOVRAS usa internamente, y un agente web de un tercero, Grok, por las páginas de las empresas. Cambiaron despachos, compraron y reservaron con una ferretería y un hotel de prueba, y el hotel le preguntó al agente de un huésped si mantener o liberar una reserva.</p>
+				<p>El 21 de octubre de 2026 entraron agentes personales por el adaptador de Poppy, entre ellos Nova, el agente personal que SOVRAS usa internamente. Grok, un agente web de un tercero, entró por las páginas de las empresas. Cambiaron despachos, compraron y reservaron con una ferretería y un hotel de prueba, y el hotel le preguntó al agente de un huésped si mantener o liberar una reserva.</p>
 				<a class="btn btn--ghost" href="../examples/#observed" hreflang="en">Lo que hicieron, con su evidencia (en inglés)</a>
 			</article>
 		</div>

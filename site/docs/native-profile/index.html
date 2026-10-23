@@ -28,7 +28,7 @@
 			<li><a href="../../verify/">Verify</a></li>
 			<li><a href="../../conformance/">Conformance</a></li>
 			<li><a href="../../implement/">Implement</a></li>
-			<li><a href="../../videos/">Videos</a></li>
+			<li><a href="../../demos/">Demos</a></li>
 		</ul>
 		<a class="nav__ver" href="../../status/">Draft 0.1</a>
 	</div>
@@ -50,7 +50,7 @@
 		<p class="kicker">VXP docs · draft 0.1</p>
 		<h1 class="h2">Native profile and discovery</h1>
 		<p class="lead">How an agent finds a company that speaks VXP, identifies itself, gets authority for one request, and drives an operation through the /v1 endpoints.</p>
-		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#1-discover">1. Discover</a></li><li><a href="#2-identify">2. Identify</a></li><li><a href="#3-get-authority-for-this-request">3. Get authority for this request</a></li><li><a href="#4-keep-the-context">4. Keep the context</a></li><li><a href="#5-operate">5. Operate</a></li><li><a href="#6-prove-and-keep-the-relationship">6. Prove, and keep the relationship</a></li><li><a href="#endpoints">Endpoints</a></li><li><a href="#states">States</a></li></ul></nav>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#1-discover">1. Discover</a></li><li><a href="#2-identify">2. Identify</a></li><li><a href="#3-get-authority-for-this-request">3. Get authority for this request</a></li><li><a href="#4-repeat-the-same-request">4. Repeat the same request</a></li><li><a href="#5-operate">5. Operate</a></li><li><a href="#6-prove-and-keep-the-relationship">6. Prove, and keep the relationship</a></li><li><a href="#endpoints">Endpoints</a></li><li><a href="#states">States</a></li></ul></nav>
 		<p>The native profile is VXP's own way to carry an operation. It needs neither Poppy nor PACT (<a class="rule" href="../../spec/#native-only">§8, native-only gateway</a>). It is <b>experimental</b>, and <code>vxp.json</code> says so with <code>"status": "experimental"</code>.</p>
 <h2 id="1-discover">1. Discover<a class="anchor" href="#1-discover" aria-label="Link to 1. Discover">#</a></h2>
 <p>The agent fetches <code>https://&lt;company domain&gt;/.well-known/vxp.json</code> (<a class="rule" href="../../spec/#native-discovery">§8, discovery</a>):</p>
@@ -149,7 +149,7 @@
   }
 }</pre></div>
 <p>The agent starts a device authorization (RFC 8628) with those <code>authorization_details</code> (RFC 9396). The person approves on the company's own page, after linking their account through an authentication the company controls (<a class="rule" href="../../spec/#id1">ID1</a>). The token that follows carries exactly what was granted (<a class="rule" href="../../spec/#o2">O2</a>).</p>
-<h2 id="4-keep-the-context">4. Keep the context<a class="anchor" href="#4-keep-the-context" aria-label="Link to 4. Keep the context">#</a></h2>
+<h2 id="4-repeat-the-same-request">4. Repeat the same request<a class="anchor" href="#4-repeat-the-same-request" aria-label="Link to 4. Repeat the same request">#</a></h2>
 <p>The agent repeats the same request, with the same <code>Idempotency-Key</code>. It is the same request, re-evaluated with the new authority (<a class="rule" href="../../spec/#native-idempotency">§8, idempotency</a>):</p>
 <div class="code"><div class="code__head"><b>POST /v1/requests (same Idempotency-Key)</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
   "request_id": "req_eSTKa7J-MERu",

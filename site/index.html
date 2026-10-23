@@ -29,7 +29,7 @@
 			<li><a href="verify/">Verify</a></li>
 			<li><a href="conformance/">Conformance</a></li>
 			<li><a href="implement/">Implement</a></li>
-			<li><a href="videos/">Videos</a></li>
+			<li><a href="demos/">Demos</a></li>
 		</ul>
 		<a class="nav__ver" href="status/">Draft 0.1</a>
 		<p class="nav__lang" aria-label="Language"><b aria-current="page">EN</b><span aria-hidden="true">/</span><a href="es/" hreflang="es" lang="es">ES</a></p>
@@ -40,7 +40,7 @@
 <section class="hero">
 	<div class="wrap hero__in hero__in--solo">
 		<p class="kicker">Open protocol · draft 0.1</p>
-		<h1 class="h1 reveal-words" data-lines>Companies book, sell, change and fix things for people every day. Now the request comes from the person's own agent.</h1>
+		<h1 class="h1 reveal-words" data-lines>Every day, companies book, sell, change orders and solve problems for people. Now the request can come from the person's own agent.</h1>
 		<p class="lead">VXP is an open protocol for that work. The person authorizes what their agent may do with the company, the company does it in its own systems under its own rules, and both keep signed evidence that anyone can check afterwards.</p>
 		<div class="hero__cta">
 			<a class="btn btn--solid" href="#work">See how it works</a>
@@ -62,7 +62,7 @@
 			<li class="job"><p class="job__ind">Hotels</p><h3>Book two nights, or hold a booking for a late arrival</h3><p><b>Inside the company:</b> quote the current rate, hold the room, record the guarantee.</p></li>
 			<li class="job"><p class="job__ind">Distribution</p><h3>Buy thirty units at the volume price</h3><p><b>Inside the company:</b> apply the discount policy, issue the quote, create the order.</p></li>
 			<li class="job"><p class="job__ind">Healthcare</p><h3>Reschedule an appointment</h3><p><b>Inside the company:</b> find a free slot with the same professional and update the schedule.</p></li>
-			<li class="job"><p class="job__ind">Utilities and telecom</p><h3>Report an outage at home and follow it up</h3><p><b>Inside the company:</b> open the ticket, assign a visit, report each change of state.</p></li>
+			<li class="job"><p class="job__ind">Utilities and telecom</p><h3>Report an outage at home and track it</h3><p><b>Inside the company:</b> open the ticket, assign a visit, report each change of state.</p></li>
 			<li class="job"><p class="job__ind">Insurance</p><h3>Open a claim after an accident</h3><p><b>Inside the company:</b> check the policy, register the claim, ask for what is missing.</p></li>
 		</ul>
 	</div>
@@ -72,7 +72,7 @@
 	<div class="wrap who">
 		<div class="sec__head" style="margin:0">
 			<p class="kicker">2 · Who asks</p>
-			<h2 class="h2" id="who-h">More and more, it is the person's own agent</h2>
+			<h2 class="h2" id="who-h">Now it can be the person's own agent</h2>
 			<p class="lead">The person talks to their agent, on the phone or in a chat. The agent goes to the company to ask for something, to pick up a request already under way, or to answer when the company needs a decision. The company did not build that agent and cannot see its conversation.</p>
 			<p class="body-soft">Before it acts, the company needs four answers, and so does anyone who checks the work later:</p>
 			<ol class="origin__qs">
@@ -102,7 +102,7 @@
 		<div class="sec__head">
 			<p class="kicker">3 · What VXP adds</p>
 			<h2 class="h2" id="how-h">A relationship, exact conditions and evidence</h2>
-			<p class="lead">VXP does not replace how the company works. It gives the agent and the company a common way to agree on what may be done, to do it exactly once, and to prove it.</p>
+			<p class="lead">VXP works on top of what the company already does. It gives the agent and the company a common way to agree on what may be done, to do it exactly once, and to prove it.</p>
 		</div>
 		<ol class="adds">
 			<li class="add">
@@ -115,7 +115,6 @@
 				<span class="add__n">Conditions</span>
 				<h3>The company proposes exact terms, and runs them once</h3>
 				<p>Nothing runs until one exact revision of the terms is accepted. Then it runs once, under the company's own rules. Every implementation meets the <a href="spec/#operation-requirements">operation requirements O1 to O7</a>.</p>
-				<p class="add__tag">Operation requirements</p>
 			</li>
 			<li class="add">
 				<span class="add__n">Evidence</span>
@@ -126,7 +125,7 @@
 		</ol>
 		<div class="interop">
 			<p><b>Its own profile.</b> VXP has a native profile that needs no other protocol: discovery on the company's domain, the agent's own identity, permission per request, operations, Proof and Relationship.</p>
-			<p><b>Optional interoperability.</b> For agents that already speak Poppy or PACT, a company can also publish those adapters, on the same issuer. VXP was created by SOVRAS; anyone can implement it.</p>
+			<p><b>Optional interoperability.</b> For agents that already speak Poppy or PACT, a company can also publish those adapters, on the same issuer.</p>
 		</div>
 	</div>
 </section>
@@ -171,7 +170,7 @@
 		<div class="sec__head">
 			<p class="kicker">5 · VXP Proof</p>
 			<h2 class="h2" id="proof-h">Six signed statements, each pointing to the one before</h2>
-			<p class="lead">The proof of the operation above. Two roles sign: the company signs the terms it offered and the result it declares; the operator, which runs the operation for the company, signs what it received, executed and read back. Choose a statement to inspect it, then try to alter it.</p>
+			<p class="lead">The proof of the operation above. Two roles sign: the company signs the terms it offered and the result it declares; the operator, which runs the operation for the company, signs what it received, the person's approval, the execution and the read-back. Choose a statement to inspect it, then try to alter it.</p>
 		</div>
 		<div class="pl" data-proof-lab><noscript><p>This view needs JavaScript. The same proof can be downloaded from <a href="examples/#run-2026-10-22-evening">Examples</a>.</p></noscript></div>
 	</div>
@@ -197,12 +196,12 @@
 		<div class="twin">
 			<article>
 				<h3>Interactive</h3>
-				<p>The step-by-step operation above, and a verifier that checks a real proof in your browser, intact or tampered with. The demos page lists every interactive demo that is published.</p>
+				<p>The step-by-step operation above, and a verifier that checks a real proof in your browser, intact or tampered with. The demos page gathers everything on the site you can try.</p>
 				<a class="btn btn--ghost" href="demos/">Demos</a>
 			</article>
 			<article>
 				<h3>With live agents</h3>
-				<p>On 21 October 2026, personal agents came in through the Poppy adapter, among them Nova, the personal agent SOVRAS uses internally, and a third-party web agent, Grok, through the companies' web pages. They moved deliveries, bought and booked with a test store and a test hotel, and the hotel asked a guest's agent to keep or release a booking.</p>
+				<p>On 21 October 2026, personal agents came in through the Poppy adapter, among them Nova, the personal agent SOVRAS uses internally. Grok, a third-party web agent, came in through the companies' web pages. They moved deliveries, bought and booked with a test store and a test hotel, and the hotel asked a guest's agent to keep or release a booking.</p>
 				<a class="btn btn--ghost" href="examples/#observed">What they did, with its evidence</a>
 			</article>
 		</div>

@@ -186,6 +186,7 @@ test("nativo sin adaptadores: recorrido completo — autoridad por pedido, propu
 	assert.equal(veredicto.valid, true, v.stdout + v.stderr);
 	assert.equal(veredicto.anchor, "issuer");
 	assert.equal(veredicto.final_state, "succeeded");
+	assert.equal(veredicto.key_source, "issuer_metadata_saved", "keys read from saved material, and the verdict says so");
 
 	// The company starts a request inside the relationship; it reaches the agent's own HTTP inbox.
 	const inicia = await interno("relaciones/iniciar", { tenant: T, relationship_id: rel!.relationship_id, action: "despacho.proponer_cambio", params: { order_ref: "P-1042", delivery_date: "2026-11-02" } });

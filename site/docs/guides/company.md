@@ -67,7 +67,8 @@ Sign it into the proof ([P1](https://vxpprotocol.org/spec/#p1), [O4](https://vxp
 
 On acceptance:
 1. Re-check authority, the policy and the precondition.
-2. Execute **once** per resource, even if the same request arrives by several paths ([O6](https://vxpprotocol.org/spec/#o6), [I2](https://vxpprotocol.org/spec/#i2)).
+2. Execute each accepted revision **once**; if competing requests for the same resource arrive by several paths, only the
+   first that passes the precondition takes effect ([O6](https://vxpprotocol.org/spec/#o6), [I2](https://vxpprotocol.org/spec/#i2)).
 3. Read your system back.
 4. Only if what you read matches the terms, sign `succeeded` ([O7](https://vxpprotocol.org/spec/#o7)).
 
@@ -78,8 +79,8 @@ a person at the company decides on the same digest before execution ([O5](https:
 ## 7. Keep your keys
 
 Generate proof keys once and keep them; publish earlier public keys after a rotation; never reuse a
-retired key ([§10 key rotation](https://vxpprotocol.org/spec/#key-rotation)). Proofs signed with keys you lose can no longer be checked by
-anyone.
+retired key ([§10 key rotation](https://vxpprotocol.org/spec/#key-rotation)). Losing a private key only stops new signatures. Losing a public
+key that nobody saved while it was published leaves the proofs it signed impossible to check.
 
 ## 8. Optionally, a relationship
 
@@ -103,7 +104,7 @@ Then go through `conformance/CHECKLIST.md` for what no tool can see from outside
 
 ```sh title="The reference company, native profile only"
 cd reference
-VXP_ADAPTERS=none VXP_KEYS_DIR=./.keys VXP_SHOW_CHANNEL=1 npm start
+VXP_ADAPTERS=none VXP_KEYS_DIR=/tmp/vxp-keys VXP_SHOW_CHANNEL=1 npm start
 ```
 
 It serves three fictitious test companies on `http://localhost:3100`. The store's discovery is at

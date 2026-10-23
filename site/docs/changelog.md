@@ -5,6 +5,34 @@
 All notable changes to the VXP specification and to this repository. Draft versions are incompatible
 with each other until 1.0.
 
+## 0.1.0-rc.4 · 23 October 2026
+
+Editorial review of the site, the documentation and the specification against the code. No rule changes
+what an implementation that passed rc.3 does.
+
+### Specification
+- I2 and O6 state the scope of “one execution”: each accepted revision executes at most once, and of several
+  operations competing for one resource only the first that passes the precondition takes effect. A later
+  request on the same resource is a new operation.
+- `resource` (RFC 8707) goes in the native profile's device authorization and token requests, and is how an
+  authorization server shared with the Poppy adapter tells the two apart.
+- Approving a revision needs no grant of its own: the sentence about a `vxpprotocol.org/operation` grant
+  type, which no implementation had, is removed.
+- Relationship over a Poppy conversation: the `relationship` and `reply_error` messages, and that accepting a
+  change the company proposes (R8) uses the native profile.
+- Errors: the codes a native client meets (`customer_not_linked`, `not_authorized`, `sign_in_required`,
+  `invalid_target`), `404 request_not_found` on `/v1/requests/{id}/proof`.
+- Key rotation: what losing a key means, and how a verdict states that it used saved material.
+- Conformance by role: an issuer that offers VXP Relationship meets R1 to R17.
+- The design draft that VXP Proof comes from is named as unpublished; prior art cites the Internet-Drafts
+  by name.
+
+### Repository
+- `verifier/`: `key_source` is `issuer_metadata_saved` when the keys come from saved material, and
+  `issuer_metadata_live` when they are fetched for the check.
+- `site/` and `docs/`: wording, dates and status brought up to date; the Quickstart runs as written;
+  Demos in the menu; adding a demo is described in CONTRIBUTING.md.
+
 ## 0.1.0-rc.3 · 23 October 2026
 
 ### Repository

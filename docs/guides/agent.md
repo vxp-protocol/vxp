@@ -3,9 +3,10 @@ title: Guide for personal agents
 description: How a personal agent finds companies that speak VXP, acts with its user's permission, keeps its state, verifies results and answers the company within an agreement.
 ---
 
-A person tells their agent: «Book a hotel in Santiago for two nights, with breakfast; negotiate the best rate
-and book it if it is under $250,000». This guide shows what the agent does with any company that speaks VXP,
-with no integration per company. The `agent/` folder of the repository implements every step as a library you
+A person tells their agent: “Book a hotel in Santiago for two nights, with breakfast; negotiate the best rate
+and book it if it is under CLP 250,000.” This guide shows what the agent does with any company that speaks VXP,
+with the same code for discovery, identity, authority, negotiation and proof at every company. The names of
+the operations and their parameters are each company's own; VXP does not standardize them. The `agent/` folder of the repository implements every step as a library you
 can import or copy, with a command-line tool and an MCP server; the [Quickstart](../quickstart.md) runs it.
 
 ## 1. Have an identity
@@ -32,7 +33,7 @@ exactly what to ask the person for ([[O2]]).
 
 Start a device authorization (RFC 8628) with those `authorization_details`, and show the person the
 verification link. They approve on the company's page, linking their account through the company's own
-channel. If the person sets a limit in advance, for example «up to $250,000», ask for it as a limit in the
+channel. If the person sets a limit in advance, for example “up to CLP 250,000”, ask for it as a limit in the
 authorization details. Within it, the agent may accept without asking again. Above it, the company asks for
 more authority and you go back to the person.
 
@@ -61,7 +62,7 @@ If the person approved a relationship, the company may write to your inbox ([[R7
 - **Verify** each message's signature with the relationship key anchored to the issuer, and reject a repeated
   `jti`.
 - **A proposal** is a normal operation: accept it only with the person's approval or within their limit ([[R8]]).
-- **A closed question**, for example «hold or release the booking», is answered once, with one of the options,
+- **A closed question**, for example “hold or release the booking”, is answered once, with one of the options,
   at `reply_url` ([[R17]]).
 - **Revoke** the relationship with `DELETE /v1/relationships/{id}` when the person asks ([[R10]]).
 
@@ -101,6 +102,6 @@ relationships, forged and replayed company messages, and altered proofs.
 ## What you can rely on, and what you cannot
 
 - You can rely on: one execution per accepted revision; success only after the company read its system; and a
-  proof you can check without trusting the company's server.
+  proof you can check without trusting whoever hands it to you: the keys come from the issuer you anchored.
 - You cannot rely on: that the company told the truth about its own system. The proof names its root of trust;
   today that root is the operator ([[P7]]).

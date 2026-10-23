@@ -28,7 +28,7 @@
 			<li><a href="../../verify/">Verify</a></li>
 			<li><a href="../../conformance/">Conformance</a></li>
 			<li><a href="../../implement/">Implement</a></li>
-			<li><a href="../../videos/">Videos</a></li>
+			<li><a href="../../demos/">Demos</a></li>
 		</ul>
 		<a class="nav__ver" href="../../status/">Draft 0.1</a>
 	</div>
@@ -60,7 +60,7 @@
 <h2 id="use-them">Use them<a class="anchor" href="#use-them" aria-label="Link to Use them">#</a></h2>
 <div class="code"><div class="code__head"><b>Validate one object with any JSON Schema 2020-12 validator, for example</b><span>sh</span></div><pre data-copy tabindex="0">npx --yes ajv-cli@5 validate --spec=draft2020 -r "schemas/0.1/common.schema.json" \
   -s schemas/0.1/vxp.schema.json -d my-vxp.json</pre></div>
-<p>Or import them by URL once the site is published: every <code>$ref</code> is relative, so a validator that resolves <code>$id</code> loads the rest by itself.</p>
+<p>Or import them by URL: every <code>$ref</code> is relative, so a validator that resolves <code>$id</code> loads the rest by itself.</p>
 		<div class="dfoot">
 			<a href="../../docs/schemas.md">View as Markdown</a>
 			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/schemas.md">Source</a>

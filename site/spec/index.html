@@ -593,7 +593,6 @@
 
 <!-- ═══ 9 ═══════════════════════════════════════════════════════════════════ -->
 <section class="dsec" id="operation-requirements" aria-labelledby="operation-requirements-h">
-	<span id="capability-gate"></span>
 	<h2 id="operation-requirements-h"><span class="n">9</span>Operation requirements, security and privacy<a class="anchor" href="#operation-requirements" aria-label="Link to section 9">#</a></h2>
 	<p>Where an external request becomes an operation on a company's system, every conforming implementation <span class="kw">MUST</span> show the behaviour below. A valid identity is a starting point: what passes is the intersection of what the person delegated, what the company allows and what the resource admits. VXP defines no interface for these rules and does not prescribe how they are built. Each one is written elsewhere in this specification and gathered here.</p>
 
@@ -758,7 +757,7 @@
 <!-- ═══ 11 ══════════════════════════════════════════════════════════════════ -->
 <section class="dsec" id="examples" aria-labelledby="examples-h">
 	<h2 id="examples-h"><span class="n">11</span>Examples<a class="anchor" href="#examples" aria-label="Link to section 11">#</a></h2>
-	<p>Every object in this section was captured from the reference implementation in the evening run of 22 October 2026: a native-only gateway (no Poppy, no PACT) with persistent keys, against a test company. The run is reproducible with <code>reference/scripts/recorrido-nativo.test.ts</code>, and its signed files and public material are in the downloads. Hosts are shown as <code>store.example</code> and <code>agent.example</code>, and long tokens are shortened. Operations run with live agents on 21 October 2026, during SOVRAS's production runs with test companies, are documented in <a href="../examples/">Examples</a>: personal agents through the Poppy adapter, among them SOVRAS's beta agent Nova AI, and a web agent identified as Grok.</p>
+	<p>Every object in this section was captured from the reference implementation in the evening run of 22 October 2026: a native-only gateway (no Poppy, no PACT) with persistent keys, against a test company. The run is reproducible with <code>reference/scripts/recorrido-nativo.test.ts</code>, and its signed files and public material are in the downloads. Hosts are shown as <code>store.example</code> and <code>agent.example</code>, and long tokens are shortened. Operations run with live agents on 21 October 2026, during SOVRAS's production runs with test companies, are documented in <a href="../examples/">Examples</a>: personal agents through the Poppy adapter, among them Nova, the personal agent SOVRAS uses internally, and a web agent identified as Grok.</p>
 
 	<h3 id="example-authority">Asking without authority<a class="anchor" href="#example-authority" aria-label="Link to Asking without authority">#</a></h3>
 	<p><code>POST /v1/requests</code> without a grant for the order returns <code>authorization_required</code> with exactly what is missing.</p>
@@ -1062,7 +1061,7 @@ python scripts/fuzz-diferencial.py 20000</pre></div>
 			<tr><td>VXP Relationship over a Poppy conversation</td><td>Implemented and run once with a live personal agent through the Poppy adapter, on 21 October 2026; no agent outside SOVRAS's runs yet</td></tr>
 			<tr><td>VXP Relationship over an HTTP inbox</td><td><span class="mk mk--exp">Experimental</span> Tested only against a server of SOVRAS's own</td></tr>
 			<tr><td>Native profile, <code>vxp.json</code> and <code>/v1</code></td><td><span class="mk mk--exp">Experimental</span> Declared so in the document itself. Runs as a native-only gateway, with no adapter</td></tr>
-			<tr><td>Poppy draft 0.2 adapter</td><td>Official validator for discovery and conversations; run with live personal agents on 21 October 2026, among them SOVRAS's beta agent Nova AI</td></tr>
+			<tr><td>Poppy draft 0.2 adapter</td><td>Official validator for discovery and conversations; run with live personal agents on 21 October 2026, among them Nova, the personal agent SOVRAS uses internally</td></tr>
 			<tr><td>PACT 1.0 adapter</td><td>Official Identity suite and a delegated test written by SOVRAS with the official client; no third-party PACT agent yet</td></tr>
 			<tr><td>Relationship over PACT</td><td><span class="mk mk--pend">Pending</span></td></tr>
 		</tbody>

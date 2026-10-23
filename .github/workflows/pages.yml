@@ -1,10 +1,8 @@
-# Publishes site/ to GitHub Pages (vxpprotocol.org). Runs on every push to main and on demand.
+# Publishes site/ to GitHub Pages (vxpprotocol.org). Manual only: publishing is a release decision, so a push
+# never deploys. Run it from the Actions tab once the release is approved and Pages is enabled.
 name: Publish site
 
 on:
-  push:
-    branches: [main]
-    paths: ["site/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:

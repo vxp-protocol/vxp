@@ -1,0 +1,10 @@
+{
+  "name": "vxp-conformance",
+  "version": "0.1.0-rc.1",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "VXP conformance validator: acts as a personal agent against a company that implements the VXP native profile.",
+  "engines": { "node": ">=22.18" },
+  "scripts": { "validate": "node validate.ts", "reference": "node reference/run.ts" }
+}

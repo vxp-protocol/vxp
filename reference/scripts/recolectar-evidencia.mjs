@@ -16,7 +16,7 @@
 //      (the internal key comes from the «llave interna:» line of the server log)
 
 import { createHash } from "node:crypto";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -44,6 +44,17 @@ const interno = async (ruta) => {
 	if (!r.ok) throw new Error(`/interno/${ruta} → ${r.status}`);
 	return r.json();
 };
+// Child processes run asynchronously: a blocking spawnSync freezes this process's event loop, the server then
+// closes the idle keep-alive socket, and the next fetch reuses the dead socket and fails with ECONNRESET.
+const ejecutar = (cmd, args) =>
+	new Promise((ok) => {
+		const h = spawn(cmd, args);
+		let stdout = "";
+		let stderr = "";
+		h.stdout.on("data", (d) => (stdout += d));
+		h.stderr.on("data", (d) => (stderr += d));
+		h.on("close", (status) => ok({ status, stdout, stderr }));
+	});
 const guardar = (nombre, valor) => writeFileSync(join(DIR, nombre), typeof valor === "string" ? valor : JSON.stringify(valor, null, 2));
 
 const { tenants } = await interno("tenants");
@@ -71,7 +82,7 @@ for (const t of tenants) {
 		writeFileSync(opf, JSON.stringify(op.visible));
 		const args = [VERIFICADOR, "vivo", "--issuer", estado.issuer, "--paquete", f, "--aud", op.dueno.clientId, "--operacion", opf];
 		if (estado.issuer.startsWith("http://")) args.splice(2, 0, "--http-local");
-		const v = spawnSync("python", args, { encoding: "utf8" });
+		const v = await ejecutar("python", args);
 		let veredicto;
 		try {
 			veredicto = JSON.parse(v.stdout.trim().split("\n").at(-1));

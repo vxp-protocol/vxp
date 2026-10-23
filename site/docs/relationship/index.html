@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VXP Relationship · VXP docs</title>
+<meta name="description" content="The authorized agreement within which a company can start a request toward a person's agent, and how it is born, used, limited and revoked.">
+<link rel="alternate" type="text/markdown" href="../../docs/relationship.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/vxp.css">
+<link rel="stylesheet" href="../../assets/docs.css">
+<link rel="stylesheet" href="../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../architecture/">Architecture</a></li>
+			<li><a href="../../spec/">Specification</a></li>
+			<li><a href="../../examples/">Examples</a></li>
+			<li><a href="../../verify/">Verify</a></li>
+			<li><a href="../../conformance/">Conformance</a></li>
+			<li><a href="../../implement/">Implement</a></li>
+			<li><a href="../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../docs/">VXP documentation</a></li><li><a href="../../docs/introduction/">Introduction</a></li><li><a href="../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../docs/proof/">VXP Proof</a></li><li><a href="../../docs/relationship/" aria-current="page">VXP Relationship</a></li><li><a href="../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../docs/guides/company/">Guide for companies</a></li><li><a href="../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../docs/examples/">Examples and messages</a></li><li><a href="../../docs/specification/">Specification and versions</a></li><li><a href="../../docs/conformance/">Tests and conformance</a></li><li><a href="../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">VXP Relationship</h1>
+		<p class="lead">The authorized agreement within which a company can start a request toward a person's agent, and how it is born, used, limited and revoked.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#why-it-exists">Why it exists</a></li><li><a href="#how-it-is-born">How it is born</a></li><li><a href="#how-the-company-uses-it">How the company uses it</a></li><li><a href="#limits-and-revocation">Limits and revocation</a></li><li><a href="#agents-without-an-inbox">Agents without an inbox</a></li><li><a href="#status">Status</a></li></ul></nav>
+		<h2 id="why-it-exists">Why it exists<a class="anchor" href="#why-it-exists" aria-label="Link to Why it exists">#</a></h2>
+<p>Some work cannot wait for the person's agent to ask. A guest has not arrived and the hotel must decide whether to hold the room; a delivery has to move; a suspicious order needs a yes or a no. VXP Relationship lets the company reach the person's agent for that, and only within an agreement the person approved first.</p>
+<h2 id="how-it-is-born">How it is born<a class="anchor" href="#how-it-is-born" aria-label="Link to How it is born">#</a></h2>
+<p>The agent asks for the relationship in the same consent it asks for authority, with an <code>authorization_details</code> entry of type <code>https://vxpprotocol.org/rar/relationship</code> (<a class="rule" href="../../spec/#r1">R1</a>):</p>
+<div class="code"><div class="code__head"><b>authorization_details · relationship</b><span>json</span></div><pre data-copy tabindex="0">{ "type": "https://vxpprotocol.org/rar/relationship",
+  "actions": ["despacho.proponer_cambio"],
+  "identifier": "relationship",
+  "limits": { "max_per_day": 2, "duration_seconds": 3600 } }</pre></div>
+<ul><li>The actions must be among those the company publishes in <code>vxp_relationship.company_initiated_actions</code>. The company caps the limits at its own maximums (<a class="rule" href="../../spec/#r1">R1</a>).</li><li>The agent declares an inbox in its Client ID Metadata Document, on the same origin as its <code>client_id</code> (<a class="rule" href="../../spec/#r2">R2</a>).</li><li>The consent screen shows the relationship in business language, with its own checkbox. Unchecked, no relationship is created (<a class="rule" href="../../spec/#r3">R3</a>).</li><li>On approval, the token response carries <code>relationships[]</code> and a signed agreement (<code>vxp-relationship+jwt</code>), with the company's relationship key anchored to its issuer (<a class="rule" href="../../spec/#r4">R4</a>, <a class="rule" href="../../spec/#r5">R5</a>).</li></ul>
+<div class="code"><div class="code__head"><b>The relationship, as granted</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "relationship_id": "rel_X9sUhyHhjsLp",
+  "state": "active",
+  "actions": [
+    "despacho.proponer_cambio"
+  ],
+  "limits": {
+    "max_per_day": 2
+  },
+  "expires_at": "2026-10-22T23:30:29.000Z",
+  "agreement": "eyJhbGciO…"
+}</pre></div>
+<h2 id="how-the-company-uses-it">How the company uses it<a class="anchor" href="#how-the-company-uses-it" aria-label="Link to How the company uses it">#</a></h2>
+<p>Before it signs or sends anything, the company checks that (<a class="rule" href="../../spec/#r6">R6</a>):</p>
+<ul><li>the relationship and the delegation that created it are still in force;</li><li>the action is in the agreement;</li><li>the daily limit is not exceeded;</li><li>the resource belongs to the same customer.</li></ul>
+<p>The message is a <code>vxp-company-request+jwt</code> delivered to the agent's inbox (<a class="rule" href="../../spec/#r7">R7</a>). There are two kinds:</p>
+<ul><li><b>A proposal</b> (<a class="rule" href="../../spec/#r8">R8</a>): it creates a normal operation, with terms signed by the company and its own VXP Proof chain. Proposing never executes. The agent accepts with the person's approval, and the company checks the relationship again at that moment (<a class="rule" href="../../spec/#r9">R9</a>).</li><li><b>A closed question</b> (<a class="rule" href="../../spec/#r17">R17</a>): for example «hold or release the booking». The agent answers once, with one of the options, before it expires, and gets a signed receipt (<code>vxp-reply-receipt+jwt</code>).</li></ul>
+<div class="code"><div class="code__head"><b>A company-initiated request, as delivered</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "outbox_id": "out_c_bdRdvaL42s",
+  "delivery": "entregado",
+  "http": 202,
+  "content": {
+    "request_id": "req_1tEWlrG-_6eq",
+    "request_url": "https://store.example/e/ferreteria-demo/v1/requests/req_1tEWlrG-_6eq",
+    "proposal_id": "prop_op_wHbfb8mjcZI7_r1",
+    "operation_id": "op_wHbfb8mjcZI7",
+    "summary": "Cambiar el despacho del pedido P-1043 (Escalera de aluminio 6 peldaños) del 2026-10-27 al 2026-10-30, a Calle Ejemplo 100, Santiago, sin costo.",
+    "terms_digest": "sha-256:u-oBOmfP_-UahdQqZhwaNaeQAq1ro4hzhaDCy69JhG8"
+  }
+}</pre></div>
+<h2 id="limits-and-revocation">Limits and revocation<a class="anchor" href="#limits-and-revocation" aria-label="Link to Limits and revocation">#</a></h2>
+<ul><li>The person, the company or the agent can revoke. Revoking the delegation revokes the relationship. Once it is revoked or expired, nothing goes through (<a class="rule" href="../../spec/#r10">R10</a>).</li><li>The agent reads or revokes its relationship with <code>GET</code> and <code>DELETE /v1/relationships/{id}</code> (<a class="rule" href="../../spec/#r11">R11</a>). A late answer to a question does not count after revocation.</li><li>The relationship never replaces the company's authorization: inside an agreement, each request still passes the company's own rules and the operation requirements (<a class="rule" href="../../spec/#o1">O1</a>–<a class="rule" href="../../spec/#o7">O7</a>).</li></ul>
+<h2 id="agents-without-an-inbox">Agents without an inbox<a class="anchor" href="#agents-without-an-inbox" aria-label="Link to Agents without an inbox">#</a></h2>
+<p>An agent that only speaks Poppy and has no HTTP inbox can still hold a relationship. It is asked for, received and answered inside its Poppy conversation, without changing the Poppy contract (<a class="rule" href="../../spec/#r12">R12</a>–<a class="rule" href="../../spec/#r16">R16</a>). See <a href="../../docs/guides/interoperability/">Interoperability</a>.</p>
+<h2 id="status">Status<a class="anchor" href="#status" aria-label="Link to Status">#</a></h2>
+<p>Experimental. The HTTP inbox has been tested with agents written by SOVRAS. The relationship over a Poppy conversation was used once by a live agent, on 21 October 2026. No third-party agent exposes an inbox yet.</p>
+		<div class="dfoot">
+			<a href="../../docs/relationship.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/relationship.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../docs/proof/"><span>Previous</span>VXP Proof</a>
+			<a href="../../docs/native-profile/"><span>Next</span>Native profile and discovery</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../docs/quickstart/">Quickstart</a></li><li><a href="../../spec/">Specification</a></li><li><a href="../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../verify/">Verifier</a></li><li><a href="../../demos/">Demos</a></li><li><a href="../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../docs/changelog/">Changelog</a></li><li><a href="../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../assets/site.js" defer></script>
+<script src="../../assets/docs-site.js" defer></script>
+</body>
+</html>

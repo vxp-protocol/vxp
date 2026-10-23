@@ -1,0 +1,28 @@
+{
+  "version": "0.1",
+  "sections": [
+    { "title": "Start", "pages": [
+      { "slug": "", "file": "index.md" },
+      { "slug": "introduction", "file": "introduction.md" },
+      { "slug": "quickstart", "file": "quickstart.md" }
+    ] },
+    { "title": "The protocol", "pages": [
+      { "slug": "proof", "file": "proof.md" },
+      { "slug": "relationship", "file": "relationship.md" },
+      { "slug": "native-profile", "file": "native-profile.md" }
+    ] },
+    { "title": "Guides", "pages": [
+      { "slug": "guides/company", "file": "guides/company.md" },
+      { "slug": "guides/agent", "file": "guides/agent.md" },
+      { "slug": "guides/verifier", "file": "guides/verifier.md" },
+      { "slug": "guides/interoperability", "file": "guides/interoperability.md" }
+    ] },
+    { "title": "Reference", "pages": [
+      { "slug": "examples", "file": "examples.md" },
+      { "slug": "specification", "file": "specification.md" },
+      { "slug": "conformance", "file": "conformance.md" },
+      { "slug": "security", "file": "security.md" },
+      { "slug": "changelog", "file": "@CHANGELOG.md" }
+    ] }
+  ]
+}

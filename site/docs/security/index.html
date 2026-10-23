@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security, errors, recovery and versions · VXP docs</title>
+<meta name="description" content="The threats VXP addresses and the ones it does not, every error code, how operations recover from failures, and how keys and versions evolve.">
+<link rel="alternate" type="text/markdown" href="../../docs/security.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/vxp.css">
+<link rel="stylesheet" href="../../assets/docs.css">
+<link rel="stylesheet" href="../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../architecture/">Architecture</a></li>
+			<li><a href="../../spec/">Specification</a></li>
+			<li><a href="../../examples/">Examples</a></li>
+			<li><a href="../../verify/">Verify</a></li>
+			<li><a href="../../conformance/">Conformance</a></li>
+			<li><a href="../../implement/">Implement</a></li>
+			<li><a href="../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../docs/">VXP documentation</a></li><li><a href="../../docs/introduction/">Introduction</a></li><li><a href="../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../docs/proof/">VXP Proof</a></li><li><a href="../../docs/relationship/">VXP Relationship</a></li><li><a href="../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../docs/guides/company/">Guide for companies</a></li><li><a href="../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../docs/examples/">Examples and messages</a></li><li><a href="../../docs/specification/">Specification and versions</a></li><li><a href="../../docs/conformance/">Tests and conformance</a></li><li><a href="../../docs/security/" aria-current="page">Security, errors, recovery and versions</a></li><li><a href="../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">Security, errors, recovery and versions</h1>
+		<p class="lead">The threats VXP addresses and the ones it does not, every error code, how operations recover from failures, and how keys and versions evolve.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#threats">Threats</a></li><li><a href="#errors">Errors</a></li><li><a href="#recovery">Recovery</a></li><li><a href="#keys">Keys</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#versions">Versions</a></li><li><a href="#reporting-a-vulnerability">Reporting a vulnerability</a></li></ul></nav>
+		<h2 id="threats">Threats<a class="anchor" href="#threats" aria-label="Link to Threats">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Threat</th><th>How VXP covers it</th></tr></thead><tbody><tr><td>Forgery by an outsider</td><td>Signatures, RFC 7638 <code>kid</code>, and keys anchored to the company's issuer ([[issuer-anchoring</td><td>§10 anchoring]])</td></tr><tr><td>Terms changed after approval</td><td>The terms digest covers summary and terms; approval and execution must cite it (<a class="rule" href="../../spec/#p1">P1</a>)</td></tr><tr><td>Replay into another operation or to another agent</td><td><code>op</code>, <code>seq</code>, <code>prev</code>, <code>aud</code> and <code>user</code> equal across the chain, verified</td></tr><tr><td>Two contradictory successes on one resource</td><td>One execution per resource (<a class="rule" href="../../spec/#o6">O6</a>, <a class="rule" href="../../spec/#i2">I2</a>); across separate packages, only a log with witnesses</td></tr><tr><td>Another agent or user rewrites an operation</td><td>The full owner on every reuse (<a class="rule" href="../../spec/#id3">ID3</a>)</td></tr><tr><td>«The user approved», said by the agent</td><td>Labelled <code>agent_asserted</code>, with its real root (<a class="rule" href="../../spec/#p2">P2</a>, <a class="rule" href="../../spec/#p7">P7</a>)</td></tr><tr><td>The company lies about its own system</td><td>No signature solves this. VXP relies on read-back, third-party evidence and an honest level label</td></tr><tr><td>The operator signs a whole alternative chain</td><td>Possible while the operator holds the keys and there are no witnesses: the verifier says <code>single_root: operator</code></td></tr></tbody></table></div>
+<p>Full table: <a class="rule" href="../../spec/#security">§9 security</a>.</p>
+<h2 id="errors">Errors<a class="anchor" href="#errors" aria-label="Link to Errors">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Where</th><th>Codes</th></tr></thead><tbody><tr><td>Requests</td><td><code>idempotency_key_required</code>, <code>invalid_request</code>, <code>target_not_found</code>, <code>idempotency_key_reused</code>, <code>request_exists</code>, <code>resource_busy</code>, <code>request_not_found</code>, <code>authorization_required</code></td></tr><tr><td>Proposals</td><td><code>terms_changed</code>, <code>proposal_expired</code>, <code>proposal_not_acceptable</code>, <code>attempt_limit_exceeded</code>, <code>counter_rejected</code>, <code>negotiation_limit_exceeded</code></td></tr><tr><td>Authorization</td><td><code>invalid_authorization_details</code>, and <code>invalid_target</code> on a native-only gateway</td></tr><tr><td>Relationship</td><td><code>relationship_not_found</code>, <code>relationship_revoked</code>, <code>relationship_expired</code>, <code>action_not_authorized</code>, <code>relationship_limit_exceeded</code>, <code>target_not_found</code></td></tr><tr><td>Closed questions</td><td><code>alert_not_found</code>, <code>already_answered</code>, <code>alert_expired</code>, <code>option_not_allowed</code></td></tr><tr><td>Verifier</td><td>The codes of the chain rules, plus <code>issuer_not_anchored</code> and the PACT receipt codes</td></tr></tbody></table></div>
+<p>Someone else's resource and a missing one answer the same way, so an error never confirms that something exists (<a class="rule" href="../../spec/#o3">O3</a>). Full table: <a class="rule" href="../../spec/#errors">§9 errors</a>.</p>
+<h2 id="recovery">Recovery<a class="anchor" href="#recovery" aria-label="Link to Recovery">#</a></h2>
+<ul><li><b>The response is lost.</b> Repeat the request with the same <code>Idempotency-Key</code>: you get the same request, never a second operation. Accepting a revision twice runs it once (<a class="rule" href="../../spec/#native-idempotency">§8 idempotency</a>, <a class="rule" href="../../spec/#o6">O6</a>).</li><li><b>It is not known whether the effect happened.</b> The operation stays <code>pending_verification</code>, never <code>failed</code>. The company signs <code>unknown</code>. A later read reconciles without repeating the action, and a <code>correction</code> records what became known (<a class="rule" href="../../spec/#p3">P3</a>, <a class="rule" href="../../spec/#p4">P4</a>).</li><li><b>The system contradicts the terms.</b> The read-back says so, the result stays <code>unknown</code>, the operation waits for a person, and nothing is retried (<a class="rule" href="../../spec/#p5">P5</a>).</li><li><b>Cancelling during execution</b> is a request to stop. It never claims a reversal that was not read back (<a class="rule" href="../../spec/#cancellation">§8 cancellation</a>).</li><li><b>The company's server restarts.</b> With persistent keys, earlier proofs still verify.</li></ul>
+<h2 id="keys">Keys<a class="anchor" href="#keys" aria-label="Link to Keys">#</a></h2>
+<ul><li>Persist proof keys. Rotate by publishing the new key and keeping the earlier one in the JWKS. Never reuse a retired key (<a class="rule" href="../../spec/#key-rotation">§10 key rotation</a>).</li><li>The relationship key is distinct from the proof keys and from any Poppy or PACT key (<a class="rule" href="../../spec/#r5">R5</a>).</li><li>The reference implementation keeps keys in <code>VXP_KEYS_DIR</code>. Without it, they live in memory and die with the process.</li></ul>
+<h2 id="privacy">Privacy<a class="anchor" href="#privacy" aria-label="Link to Privacy">#</a></h2>
+<p>Personal data travels only as selective disclosures. <code>user</code> is a per-company pseudonym. Keys, issuers and log tags are per company, and the log keeps no personal data (<a class="rule" href="../../spec/#privacy">§9 privacy</a>).</p>
+<h2 id="versions">Versions<a class="anchor" href="#versions" aria-label="Link to Versions">#</a></h2>
+<p>Draft versions are incompatible with each other until 1.0, and a verifier rejects a <code>v</code> it does not know. See <a href="../../docs/specification/">Specification and versions</a> and the <a href="../../docs/changelog/">changelog</a>.</p>
+<h2 id="reporting-a-vulnerability">Reporting a vulnerability<a class="anchor" href="#reporting-a-vulnerability" aria-label="Link to Reporting a vulnerability">#</a></h2>
+<p>Privately, through the repository's Security tab. See <code>SECURITY.md</code>.</p>
+		<div class="dfoot">
+			<a href="../../docs/security.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/security.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../docs/conformance/"><span>Previous</span>Tests and conformance</a>
+			<a href="../../docs/changelog/"><span>Next</span>Changelog</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../docs/quickstart/">Quickstart</a></li><li><a href="../../spec/">Specification</a></li><li><a href="../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../verify/">Verifier</a></li><li><a href="../../demos/">Demos</a></li><li><a href="../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../docs/changelog/">Changelog</a></li><li><a href="../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../assets/site.js" defer></script>
+<script src="../../assets/docs-site.js" defer></script>
+</body>
+</html>

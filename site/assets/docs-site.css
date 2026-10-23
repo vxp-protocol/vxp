@@ -1,0 +1,52 @@
+/* Documentation pages (/docs/): sidebar, search, page body. Built on the tokens of vxp.css and docs.css. */
+.dlay { width: var(--wrap); margin-inline: auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 56px; padding-block: 40px 96px; }
+.dnav { position: sticky; top: 84px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; padding-right: 6px; }
+.dnav__wrap > summary { list-style: none; cursor: pointer; font: 500 13px var(--mono); color: var(--ink-soft); padding: 8px 0; }
+.dnav__wrap > summary::-webkit-details-marker { display: none; }
+.dnav__sec + .dnav__sec { margin-top: 18px; }
+.dnav__h { font: 500 12px var(--mono); color: var(--mute); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+.dnav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.dnav a { display: block; padding: 5px 10px; border-radius: var(--r-sm); text-decoration: none; color: var(--ink-soft); font-size: 14.5px; }
+.dnav a:hover { background: var(--soft); color: var(--ink); }
+.dnav a[aria-current="page"] { background: var(--soft); color: var(--ink); font-weight: 500; box-shadow: inset 2px 0 0 var(--permit); }
+.dsearch { position: relative; margin-bottom: 14px; }
+.dsearch input { width: 100%; height: 38px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--paper); font: inherit; font-size: 14px; color: var(--ink); }
+.dsearch input:focus-visible { outline: 2px solid var(--permit); outline-offset: 1px; }
+.dsearch__r { position: absolute; z-index: 5; top: 42px; left: 0; right: 0; list-style: none; margin: 0; padding: 4px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 12px 32px rgba(10, 10, 10, 0.1); max-height: 60vh; overflow: auto; }
+.dsearch__r a { display: block; padding: 8px 10px; border-radius: var(--r-sm); text-decoration: none; color: var(--ink); font-size: 14px; }
+.dsearch__r a small { display: block; color: var(--mute); font-size: 12.5px; margin-top: 2px; }
+.dsearch__r a:hover, .dsearch__r a:focus-visible, .dsearch__r a[aria-selected="true"] { background: var(--soft); outline: none; }
+.dsearch__r li.none { padding: 8px 10px; color: var(--mute); font-size: 14px; }
+.dmain { min-width: 0; }
+.dpage { padding-top: 0; max-width: 780px; }
+.dpage > h1 { margin-top: 10px; }
+.dpage > .lead { margin-top: 14px; }
+.dpage h2 { font-size: clamp(24px, 2.6vw, 32px); line-height: 1.1; letter-spacing: -0.03em; margin-top: 48px; scroll-margin-top: 84px; }
+.dpage h3 { font-size: clamp(18px, 1.9vw, 22px); line-height: 1.2; letter-spacing: -0.02em; margin-top: 32px; scroll-margin-top: 84px; }
+.dpage h4 { font: 500 15px var(--sans); margin-top: 24px; scroll-margin-top: 84px; }
+.dpage h2:hover .anchor, .dpage h3:hover .anchor, .dpage h4:hover .anchor, .dpage .anchor:focus-visible { opacity: 1; }
+.dpage > p, .dpage > ul, .dpage > ol { margin-top: 14px; color: var(--ink-soft); max-width: 70ch; }
+.dpage ul, .dpage ol { padding-left: 20px; }
+.dpage li + li { margin-top: 6px; }
+.dpage a.rule { font: 500 0.86em var(--mono); text-decoration: none; padding: 1px 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--permit); background: var(--paper); white-space: nowrap; }
+.dpage a.rule:hover { border-color: var(--permit); }
+.dontoc { margin-top: 26px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r-md); }
+.dontoc p { font: 500 12px var(--mono); color: var(--mute); margin-bottom: 6px; }
+.dontoc ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+.dontoc a { font-size: 14px; color: var(--ink-soft); }
+.dfoot { display: flex; gap: 18px; margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); font: 400 13px var(--mono); }
+.dfoot a { color: var(--ink-soft); }
+.dprevnext { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+.dprevnext a { display: grid; gap: 2px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r-md); text-decoration: none; color: var(--ink); }
+.dprevnext a:last-child { text-align: right; }
+.dprevnext a span { font: 400 12px var(--mono); color: var(--mute); }
+.dprevnext a:hover { border-color: var(--ink-soft); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 900px) {
+	.dlay { grid-template-columns: 1fr; gap: 18px; padding-top: 20px; }
+	.dnav { position: static; max-height: none; overflow: visible; padding: 0; }
+	.dnav__wrap { border: 1px solid var(--line); border-radius: var(--r-md); padding: 4px 12px 12px; }
+	.dnav__wrap:not([open]) { padding-bottom: 4px; }
+	.dprevnext { grid-template-columns: 1fr; }
+	.dprevnext a:last-child { text-align: left; }
+}

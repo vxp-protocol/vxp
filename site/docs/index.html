@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VXP documentation · VXP docs</title>
+<meta name="description" content="How to understand, run, implement and verify VXP, the open protocol for work that personal agents do for people inside companies.">
+<link rel="alternate" type="text/markdown" href="../docs/index.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/vxp.css">
+<link rel="stylesheet" href="../assets/docs.css">
+<link rel="stylesheet" href="../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../architecture/">Architecture</a></li>
+			<li><a href="../spec/">Specification</a></li>
+			<li><a href="../examples/">Examples</a></li>
+			<li><a href="../verify/">Verify</a></li>
+			<li><a href="../conformance/">Conformance</a></li>
+			<li><a href="../implement/">Implement</a></li>
+			<li><a href="../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../docs/" aria-current="page">VXP documentation</a></li><li><a href="../docs/introduction/">Introduction</a></li><li><a href="../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../docs/proof/">VXP Proof</a></li><li><a href="../docs/relationship/">VXP Relationship</a></li><li><a href="../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../docs/guides/company/">Guide for companies</a></li><li><a href="../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../docs/examples/">Examples and messages</a></li><li><a href="../docs/specification/">Specification and versions</a></li><li><a href="../docs/conformance/">Tests and conformance</a></li><li><a href="../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">VXP documentation</h1>
+		<p class="lead">How to understand, run, implement and verify VXP, the open protocol for work that personal agents do for people inside companies.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#start-here">Start here</a></li><li><a href="#how-these-docs-relate-to-the-specification">How these docs relate to the specification</a></li><li><a href="#what-is-in-the-repository">What is in the repository</a></li></ul></nav>
+		<h2 id="start-here">Start here<a class="anchor" href="#start-here" aria-label="Link to Start here">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>You are</th><th>Read</th></tr></thead><tbody><tr><td>New to VXP</td><td><a href="../docs/introduction/">Introduction</a>: what it is, its two components, and what it does not do</td></tr><tr><td>Trying it on your machine</td><td><a href="../docs/quickstart/">Quickstart</a>: a company and a personal agent in separate processes, from a clean clone</td></tr><tr><td>Building the company side</td><td><a href="../docs/guides/company/">Guide for companies</a>, then prove it with the <a href="../docs/conformance/">conformance validator</a></td></tr><tr><td>Building a personal agent</td><td><a href="../docs/guides/agent/">Guide for personal agents</a> and the agent library in <code>agent/</code></td></tr><tr><td>Checking a proof someone gave you</td><td><a href="../docs/guides/verifier/">Guide for verifiers</a></td></tr><tr><td>Already speaking Poppy or PACT</td><td><a href="../docs/guides/interoperability/">Interoperability</a>: the optional adapters</td></tr><tr><td>Checking the exact rules</td><td><a href="../docs/specification/">Specification</a>: the only normative text</td></tr></tbody></table></div>
+<h2 id="how-these-docs-relate-to-the-specification">How these docs relate to the specification<a class="anchor" href="#how-these-docs-relate-to-the-specification" aria-label="Link to How these docs relate to the specification">#</a></h2>
+<p>The <a href="../spec/">specification</a> is the only normative text. These pages explain it and show how to use it. Every rule they restate links to its identifier in the specification, like <a class="rule" href="../spec/#r6">R6</a> or <a class="rule" href="../spec/#o6">O6</a>. Where a page and the specification differ, the specification wins: please <a href="https://github.com/vxp-protocol/vxp/issues">report it</a>.</p>
+<p>Every page is also available as Markdown at the same path with <code>.md</code>, and <a href="../llms.txt"><code>/llms.txt</code></a> lists them for AI agents.</p>
+<h2 id="what-is-in-the-repository">What is in the repository<a class="anchor" href="#what-is-in-the-repository" aria-label="Link to What is in the repository">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Path</th><th>What it is</th></tr></thead><tbody><tr><td><code>spec/</code></td><td>The specification source</td></tr><tr><td><code>docs/</code></td><td>These pages, in Markdown</td></tr><tr><td><code>reference/</code></td><td>A reference company implementation: native profile, Proof, Relationship, optional Poppy and PACT adapters</td></tr><tr><td><code>agent/</code></td><td>Personal-agent tools: a client library, a command-line tool, an MCP server and an example agent</td></tr><tr><td><code>verifier/</code></td><td>Three independent verifiers: two in Python, one in JavaScript for the browser and Node.js</td></tr><tr><td><code>vectors/</code></td><td>Test vectors, positive and negative</td></tr><tr><td><code>conformance/</code></td><td>A validator that acts as a personal agent against any implementation, the conformance matrix and a checklist</td></tr></tbody></table></div>
+<p>Everything is under the Apache License 2.0, and nothing requires SOVRAS, Poppy or PACT.</p>
+		<div class="dfoot">
+			<a href="../docs/index.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/index.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<span></span>
+			<a href="../docs/introduction/"><span>Next</span>Introduction</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../docs/quickstart/">Quickstart</a></li><li><a href="../spec/">Specification</a></li><li><a href="../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../demos/">Demos</a></li><li><a href="../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../docs/changelog/">Changelog</a></li><li><a href="../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../assets/site.js" defer></script>
+<script src="../assets/docs-site.js" defer></script>
+</body>
+</html>

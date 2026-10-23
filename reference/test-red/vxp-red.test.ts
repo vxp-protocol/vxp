@@ -7,7 +7,7 @@
 // Usage: node --test test-red/vxp-red.test.ts   (uses ports 3630, 3632 and 3634)
 
 import assert from "node:assert/strict";
-import { type ChildProcess, spawn, spawnSync } from "node:child_process";
+import { type ChildProcess, spawn } from "node:child_process";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
@@ -90,7 +90,18 @@ async function pedir(method: string, url: string, body?: unknown, headers: Recor
 	const t = await r.text();
 	return { status: r.status, body: t ? JSON.parse(t) : null };
 }
-function verificador(paquete: unknown, operacion?: unknown) {
+// Child processes run asynchronously: a blocking spawnSync freezes this process's event loop, the server then
+// closes the idle keep-alive socket, and the next fetch reuses the dead socket and fails with ECONNRESET.
+const ejecutar = (cmd: string, args: string[]) =>
+	new Promise<{ status: number | null; stdout: string; stderr: string }>((ok) => {
+		const h = spawn(cmd, args);
+		let stdout = "";
+		let stderr = "";
+		h.stdout.on("data", (d) => (stdout += d));
+		h.stderr.on("data", (d) => (stderr += d));
+		h.on("close", (status) => ok({ status, stdout, stderr }));
+	});
+async function verificador(paquete: unknown, operacion?: unknown) {
 	const n = randomId(6);
 	writeFileSync(join(tmp, `${n}-p.json`), JSON.stringify(paquete));
 	const args = [join(RAIZ, "..", "verifier", "verificar_paquete.py"), "vivo", "--http-local", "--issuer", FERRETERIA, "--paquete", join(tmp, `${n}-p.json`), "--aud", clientId];
@@ -98,7 +109,7 @@ function verificador(paquete: unknown, operacion?: unknown) {
 		writeFileSync(join(tmp, `${n}-o.json`), JSON.stringify(operacion));
 		args.push("--operacion", join(tmp, `${n}-o.json`));
 	}
-	const r = spawnSync("python", args, { encoding: "utf8" });
+	const r = await ejecutar("python", args);
 	assert.ok(r.stdout, r.stderr);
 	return JSON.parse(r.stdout.trim().split("\n").at(-1)!);
 }
@@ -152,7 +163,7 @@ test("R1 · por red: descubrir → pedir (faltan permisos) → vincular por What
 	assert.equal(a.body.state, "succeeded", JSON.stringify(a.body));
 	assert.equal((await interno("sistema?tenant=t_ferreteria_demo")).find((p: { id: string }) => p.id === "P-1042").despacho, "2026-10-28", "el sistema de la empresa cambió");
 	const paq = (await pedir("GET", `${V1}/requests/${r1.body.request_id}/proof`)).body;
-	const v = verificador(paq, comoPoppy(a.body));
+	const v = await verificador(paq, comoPoppy(a.body));
 	assert.equal(v.valid, true, JSON.stringify(v));
 	assert.equal(v.final_state, "succeeded");
 	assert.ok(v.derived_assurance.includes("operator_reported_read_back"));
@@ -172,7 +183,7 @@ test("R2 · por red: la empresa inicia un cambio dentro de la relación; el mens
 	const c = d.payload.content as { request_url: string; proposal_id: string };
 	const a = await pedir("POST", `${V1}/proposals/${c.proposal_id}/accept`, { approved_by: "user" });
 	assert.equal(a.body.state, "succeeded", JSON.stringify(a.body));
-	const v = verificador((await pedir("GET", `${c.request_url}/proof`)).body, comoPoppy(a.body));
+	const v = await verificador((await pedir("GET", `${c.request_url}/proof`)).body, comoPoppy(a.body));
 	assert.equal(v.valid, true, JSON.stringify(v));
 	assert.equal(v.final_state, "succeeded");
 });

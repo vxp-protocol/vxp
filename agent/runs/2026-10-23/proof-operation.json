@@ -1,0 +1,79 @@
+{
+ "operation_id": "op_nijHSFqZ1K6h",
+ "revision": 2,
+ "summary": "Reservar a nombre de Cliente de prueba A (titular de la cuenta vinculada): Cotización EST-MCVPTFA (revisión 2) de Hotel Demo: Doble con vista a la montaña, 2 adultos, llegada 2026-11-09 y salida 2026-11-11 (2 noches): habitación $196.000. Servicios: Desayuno buffet × 4 = $48.000; Estacionamiento × 2 = $12.000. Descuento por paquete Escapada Demo (2 noches en doble con vista, desayuno y estacionamiento): 10% (−$25.600). Total $230.400 IVA incluido (neto $193.613 + IVA $36.787). Tarifa directa vs. publicada en agencias (comparación simulada) por las noches: Agencia A (simulada): $215.600; Agencia B (simulada): $203.840. Cancelación sin cargo hasta 72 horas antes del check-in (15:00); después, se cobra la primera noche. Garantía: pre-autorización del total en la tarjeta registrada en tu cuenta (simulada en este entorno: no hay cobros reales). Válida hasta 2026-10-23 07:23 UTC.",
+ "terms": {
+  "estadia": "EST-MCVPTFA",
+  "revision_estadia": 2,
+  "tipo": "DBL-VIS",
+  "llegada": "2026-11-09",
+  "salida": "2026-11-11",
+  "adultos": 2,
+  "noches": [
+   {
+    "fecha": "2026-11-09",
+    "tarifa": 98000
+   },
+   {
+    "fecha": "2026-11-10",
+    "tarifa": 98000
+   }
+  ],
+  "servicios": [
+   {
+    "codigo": "DESAYUNO",
+    "nombre": "Desayuno buffet",
+    "cantidad": 4,
+    "precio_unitario": 12000,
+    "total": 48000
+   },
+   {
+    "codigo": "ESTAC",
+    "nombre": "Estacionamiento",
+    "cantidad": 2,
+    "precio_unitario": 6000,
+    "total": 12000
+   }
+  ],
+  "descuento": {
+   "motivo": "paquete Escapada Demo (2 noches en doble con vista, desayuno y estacionamiento)",
+   "pct": 10,
+   "monto": 25600
+  },
+  "tarifa_igualada": null,
+  "neto": 193613,
+  "iva": 36787,
+  "total": 230400,
+  "moneda": "CLP",
+  "garantia": 230400,
+  "garantia_detalle": "pre-autorización del total en la tarjeta registrada en tu cuenta (simulada en este entorno: no hay cobros reales)",
+  "cancelacion": "Cancelación sin cargo hasta 72 horas antes del check-in (15:00); después, se cobra la primera noche.",
+  "vxp_salt": "wxRMdCM6XcauRPI-n8531Q"
+ },
+ "expires_at": "2026-10-23T06:38:38.286Z",
+ "user_approval_required": false,
+ "state": "succeeded",
+ "result": {
+  "summary": "Listo: reserva R-4001 confirmada en Hotel Demo: Doble con vista a la montaña, llegada 2026-11-09 y salida 2026-11-11, total $230.400 IVA incluido. Garantía pre-autorizada en la tarjeta registrada (simulada). Verificado en el sistema del hotel y en el proveedor de pago.",
+  "data": {
+   "reserva": "R-4001",
+   "total": 230400,
+   "llegada": "2026-11-09",
+   "salida": "2026-11-11",
+   "verificado": "lectura_del_sistema",
+   "effects": [
+    {
+     "system": "payment",
+     "change": "autorizacion $230.400 (R-4001)",
+     "applied": true,
+     "status": "approved"
+    },
+    {
+     "system": "pms",
+     "change": "reserva R-4001 creada (DBL-VIS, 2026-11-09 → 2026-11-11)",
+     "applied": true
+    }
+   ]
+  }
+ }
+}

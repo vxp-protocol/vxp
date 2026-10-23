@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "vxp-agent-local": {
+      "command": "node",
+      "args": [
+        "/ABSOLUTE/PATH/TO/vxp/agent/bin/vxp-agent.ts",
+        "mcp",
+        "--port", "3811",
+        "--state", "/ABSOLUTE/PATH/TO/.vxp-agent-local",
+        "--origin", "http://localhost:3811",
+        "--allow-http", "http://localhost:3810,http://127.0.0.1:3810,http://localhost:3811"
+      ]
+    }
+  }
+}

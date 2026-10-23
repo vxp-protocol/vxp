@@ -1,0 +1,89 @@
+TAP version 13
+# Subtest: protocol: legacy initialize and modern _meta on one process; discover; version errors
+ok 1 - protocol: legacy initialize and modern _meta on one process; discover; version errors
+  ---
+  duration_ms: 4817.7354
+  type: 'test'
+  ...
+# Subtest: the hotel task through MCP tools; accept and reply run only after the person confirms
+ok 2 - the hotel task through MCP tools; accept and reply run only after the person confirms
+  ---
+  duration_ms: 16110.759
+  type: 'test'
+  ...
+# Subtest: cap exceeded: the agent does not ask for more authority, the company does not propose above the grant, and the agent does not accept above the person's cap
+ok 3 - cap exceeded: the agent does not ask for more authority, the company does not propose above the grant, and the agent does not accept above the person's cap
+  ---
+  duration_ms: 11218.2188
+  type: 'test'
+  ...
+# Subtest: person denies the exact terms: nothing runs
+ok 4 - person denies the exact terms: nothing runs
+  ---
+  duration_ms: 4681.1087
+  type: 'test'
+  ...
+# Subtest: relationship revoked by the person at the company: the company cannot send, and a late answer is refused
+ok 5 - relationship revoked by the person at the company: the company cannot send, and a late answer is refused
+  ---
+  duration_ms: 3959.42
+  type: 'test'
+  ...
+# Subtest: relationship revoked by the agent (DELETE /v1/relationships/{id}): the company can no longer send
+ok 6 - relationship revoked by the agent (DELETE /v1/relationships/{id}): the company can no longer send
+  ---
+  duration_ms: 2938.6135
+  type: 'test'
+  ...
+# Subtest: revoked locally while the company still thinks it is active: the inbox rejects the message (403)
+ok 7 - revoked locally while the company still thinks it is active: the inbox rejects the message (403)
+  ---
+  duration_ms: 2444.0776
+  type: 'test'
+  ...
+# Subtest: relationship expired: the company cannot send, and the agent's inbox and reply refuse it
+ok 8 - relationship expired: the company cannot send, and the agent's inbox and reply refuse it
+  ---
+  duration_ms: 14742.0058
+  type: 'test'
+  ...
+# Subtest: company message with a forged signature or a repeated jti is rejected
+ok 9 - company message with a forged signature or a repeated jti is rejected
+  ---
+  duration_ms: 2969.3574
+  type: 'test'
+  ...
+# Subtest: altered proof: valid false
+ok 10 - altered proof: valid false
+  ---
+  duration_ms: 3243.8425
+  type: 'test'
+  ...
+# Subtest: each step in a new process, with the agent's server restarted mid-task: the task continues from the state directory
+ok 11 - each step in a new process, with the agent's server restarted mid-task: the task continues from the state directory
+  ---
+  duration_ms: 52317.5028
+  type: 'test'
+  ...
+# Subtest: hotel in Santiago, two nights with breakfast, up to $250.000: book, prove, and keep the relationship
+ok 12 - hotel in Santiago, two nights with breakfast, up to $250.000: book, prove, and keep the relationship
+  ---
+  duration_ms: 20056.3802
+  type: 'test'
+  ...
+# Subtest: negotiation through the hotel's policy: the «Escapada» package lowers the view room with breakfast, within the cap
+ok 13 - negotiation through the hotel's policy: the «Escapada» package lowers the view room with breakfast, within the cap
+  ---
+  duration_ms: 2946.0993
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 55321.1222
+EXIT 0

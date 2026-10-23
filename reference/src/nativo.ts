@@ -21,7 +21,7 @@ import { cotizar } from "./comercio.ts";
 import { ACCIONES_EMPRESA, ALCANCE_RELACION, BUZON_CONVERSACION, type DetalleRelacion, type ErrorRelacion, RAR_RELACION, type Relacion, Relaciones } from "./relacion.ts";
 import { sondeo } from "./vincular.ts";
 import { CONECTORES, conectorDe, inputsDesdeApi, pideDesdeApi, rarPropio, textoRar } from "./conectores.ts";
-import { cotizarEstadia } from "./hotel.ts";
+import { cotizarEstadia, disponibilidad, esFecha } from "./hotel.ts";
 
 /** RAR type of this profile: one capability over ONE company resource (RFC 9396 §2). */
 export const RAR_CAPACIDAD = "https://vxpprotocol.org/rar/capability";
@@ -155,7 +155,7 @@ export class CaraNativa {
 			capabilities: e.release.capacidades.map((c) => ({
 				id: c.id,
 				effect: c.efecto,
-				access: "delegated",
+				access: c.alcance === "publico" ? "public" : "delegated",
 				// Admission of a specific order is decided at request time (owner, ownership and Policy).
 				admission: c.efecto === "write" ? "dynamic" : "static",
 				authorization_details_type: RAR_CAPACIDAD,
@@ -677,7 +677,8 @@ export class CaraNativa {
 			return pedirPermiso([{ ...necesario, limits: { max_total_clp: red.r.monto } }], "amount_above_approved_limit", estadia ? { quote: estadia } : {});
 		const viva = [...this.solicitudes.values()].find((x) => x !== s && x.tenantId === s.tenantId && x.clientId === s.clientId && x.sub === s.sub && x.operation === s.operation && x.orderRef === s.orderRef && x.orderRef !== "nuevo" && this.op(x)?.interno.nativo.estado === "proposed");
 		if (viva) return json(409, { error: "request_exists", request_id: viva.id });
-		const r = this.nucleo.proponerOperacion(actor, s.caseId, s.operation, s.inputs ?? {}, null, { binding: "vxp.request", operation: s.operation, target: { [CONECTORES[s.operation]?.objetivo ?? "order_ref"]: s.orderRef }, inputs: s.inputs ?? {} }, s.eventos);
+		// A cap the person approved in advance (limits.max_total_clp) lets revisions within it go without approval of their own.
+		const r = this.nucleo.proponerOperacion(actor, s.caseId, s.operation, s.inputs ?? {}, null, { binding: "vxp.request", operation: s.operation, target: { [CONECTORES[s.operation]?.objetivo ?? "order_ref"]: s.orderRef }, inputs: s.inputs ?? {} }, s.eventos, Number.isFinite(tope) ? tope : null);
 		if (!r.ok) {
 			const motivo = r.falta === "en_curso" ? "resource_busy" : r.falta === "no_encontrado" ? "target_not_found" : r.falta === "sin_vinculo" ? "customer_not_linked" : Array.isArray(r.falta) || r.falta === "sign_in" ? "not_authorized" : String(r.falta);
 			this.mover(s, "failed", motivo);
@@ -745,6 +746,67 @@ export class CaraNativa {
 		}
 	}
 
+	/**
+	 * The hotel's own late-arrival rule: on the arrival day, after `llegadaTardiaDesde` (Chile time), each confirmed
+	 * booking of a customer with an active relationship that allows `alerta.mantener_o_liberar` gets ONE closed question
+	 * to the guest's agent: hold or release. It runs inside the relationship's limits like any company request (R6).
+	 */
+	readonly avisadas = new Set<string>();
+	async revisarLlegadas(e: Empresa, ahora = new Date()): Promise<{ reserva: string; relacion: string; resultado: unknown }[]> {
+		const h = e.hotel;
+		const sh = e.sistema.hotel;
+		if (!h || !sh) return [];
+		const local = new Date(ahora.getTime() - 3 * 3_600_000);
+		const hoy = local.toISOString().slice(0, 10);
+		const hora = local.toISOString().slice(11, 16);
+		if (hora < (h.politica.llegadaTardiaDesde ?? "20:00")) return [];
+		const out: { reserva: string; relacion: string; resultado: unknown }[] = [];
+		for (const rel of this.relaciones.todas.values()) {
+			if (rel.tenantId !== e.tenantId || !rel.acciones.includes("alerta.mantener_o_liberar") || typeof this.relacionVigente(rel.id, e.tenantId) === "string") continue;
+			const erp = e.clientes.find((c) => c.id === rel.clienteId)?.erp?.id;
+			for (const r of sh.reservas.filter((x) => x.huespedId === erp && x.llegada === hoy && x.estado === "confirmada")) {
+				const clave = `${rel.id}|${r.id}|${hoy}`;
+				if (this.avisadas.has(clave)) continue;
+				this.avisadas.add(clave);
+				const res = await this.iniciarPorEmpresa(e, rel.id, "alerta.mantener_o_liberar", { reservation_ref: r.id, summary: `La reserva ${r.id} llegaba hoy y el huésped no ha llegado (pasadas las ${h.politica.llegadaTardiaDesde ?? "20:00"}). ¿Mantenerla o liberarla?` });
+				out.push({ reserva: r.id, relacion: rel.id, resultado: res.body });
+			}
+		}
+		return out;
+	}
+
+	/** Reads: `hotel.disponibilidad`, `catalogo.consultar` (public), `reserva.consultar`, `pedido.consultar` (delegated). */
+	private async leer(req: Request, e: Empresa, actor: ActorExterno): Promise<Response | null> {
+		const body = await this.cuerpo(req);
+		const cap = e.release.capacidades.find((c) => c.id === body?.operation);
+		if (!body || !cap || cap.efecto !== "read") return null;
+		const p = (body.parameters ?? {}) as Record<string, unknown>;
+		const responder = (result: unknown) => json(200, { operation: cap.id, effect: "read", result });
+		if (cap.alcance !== "publico") {
+			const d = this.nucleo.decidir(actor, { capability: cap.id, inputs: {}, reason: "Lectura por la API nativa", expectedEffect: "read" });
+			if (d.decision !== "allow") return json(403, { error: "authorization_required", authorization_details: [{ type: RAR_CAPACIDAD, actions: [cap.id], identifier: "*" }], ...this.comoAutorizar(e) });
+		}
+		if (cap.id === "hotel.disponibilidad") {
+			const h = e.hotel;
+			const sh = e.sistema.hotel;
+			if (!h || !sh || !esFecha(p.check_in) || !esFecha(p.check_out) || p.check_out <= p.check_in || !Number.isInteger(p.adults)) return json(400, { error: "invalid_request" });
+			const tipos = disponibilidad(h, sh, p.check_in, p.check_out, Number(p.adults)).map(({ agencias: _a, ...t }) => t);
+			return responder({ check_in: p.check_in, check_out: p.check_out, adults: p.adults, currency: "CLP", room_types: tipos, services: h.servicios.map((x) => ({ code: x.codigo, name: x.nombre, price: x.precio, unit: x.unidad })), packages: h.paquetes.map((x) => ({ code: x.codigo, name: x.nombre, room_type: x.tipo, nights: x.noches, services: x.servicios, discount_pct: x.descuentoPct })) });
+		}
+		if (cap.id === "catalogo.consultar" && e.comercio) return responder({ currency: "CLP", items: e.comercio.catalogo.map((x) => ({ sku: x.sku, name: x.nombre, price: x.precio, stock: x.stock })) });
+		if (cap.id === "reserva.consultar") {
+			const erp = this.nucleo.erpDe(actor);
+			const mias = erp && e.sistema.hotel ? e.sistema.hotel.reservas.filter((x) => x.huespedId === erp) : [];
+			return responder({ reservations: mias.map(({ huespedId: _h, historial: _hi, ...x }) => x) });
+		}
+		if (cap.id === "pedido.consultar") {
+			const caso = this.nucleo.abrirCaso(e.tenantId, actor);
+			const r = this.nucleo.leerPedidos(actor, caso.id);
+			return r.ok ? responder({ orders: r.pedidos.map(({ clienteId: _c, ...x }) => x) }) : json(403, { error: "authorization_required", ...this.comoAutorizar(e) });
+		}
+		return null;
+	}
+
 	async atender(req: Request, e: Empresa, resto: string[]): Promise<Response> {
 		const r = this.actor(req, e);
 		if (r instanceof Response) return r;
@@ -778,6 +840,10 @@ export class CaraNativa {
 		}
 
 		if (coleccion === "requests" && !id && req.method === "POST") {
+			// A read capability (effect "read") answers at once: it creates no operation, changes nothing and has no
+			// proof. Public reads need no grant; delegated ones need the scope, like any other request.
+			const lectura = await this.leer(req.clone(), e, actor);
+			if (lectura) return lectura;
 			const llave = req.headers.get("idempotency-key");
 			if (!llave && !mutado("idempotencia")) return json(400, { error: "idempotency_key_required" });
 			const body = await this.cuerpo(req);

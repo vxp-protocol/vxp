@@ -1,0 +1,125 @@
+$ vxp-agent serve --port 3811 &
+[agent] http://localhost:3811/agent.json · inbox http://localhost:3811/vxp/inbox · listening on 3811
+$ vxp-agent discover localhost:3810 127.0.0.1:3810 --offers reserva.crear  (output omitted: same as the example)
+$ vxp-agent read 127.0.0.1:3810 hotel.disponibilidad --params {"check_in":"2026-11-20","check_out":"2026-11-22","adults":2}
+{
+ "http": 200,
+ "operation": "hotel.disponibilidad",
+ "effect": "read",
+ "result": {
+  "check_in": "2026-11-20",
+  "check_out": "2026-11-22",
+  "adults": 2,
+  "currency": "CLP",
+  "room_types": [
+   {
+    "tipo": "DBL-EST",
+    "nombre": "Doble estándar",
+    "capacidad": 2,
+    "apta": true,
+    "libres": 6,
+    "directa": 179400,
+    "por_noche": [
+     {
+      "fecha": "2026-11-20",
+      "tarifa": 89700
+     },
+     {
+      "fecha": "2026-11-21",
+      "tarifa": 89700
+     }
+    ]
+   },
+   {
+    "tipo": "DBL-VIS",
+    "nombre": "Doble con vista a la montaña",
+    "capacidad": 2,
+    "apta": true,
+    "libres": 4,
+    "directa": 225400,
+    "por_noche": [
+     {
+      "fecha": "2026-11 …
+$ vxp-agent request 127.0.0.1:3810 reserva.crear --params {"room_type":"DBL-EST","check_in":"2026-11-20","check_out":"2026-11-22","adults":2,"services":[{"code":"DESAYUNO"}]}
+{
+ "http": 202,
+ "request_id": "req_LJII1ICyJlby",
+ "operation": "reserva.crear",
+ "target": {
+  "order_ref": "nuevo"
+ },
+ "state": "authorization_required",
+ "projections": {
+  "poppy": null,
+  "a2a": "TASK_STATE_AUTH_REQUIRED"
+ },
+ "authorization": {
+  "error": "authorization_required",
+  "authorization_details": [
+   {
+    "type": "https://vxpprotocol.org/rar/capability",
+    "actions": [
+     "reserva.crear"
+    ],
+    "identifier": "nuevo",
+    "limits": {
+     "max_total_clp": 227400
+    }
+   }
+  ],
+  "device_authorization_endpoint": "http://localhost:3810/e/hotel-demo/oauth/device",
+  " …
+$ vxp-agent authorize 127.0.0.1:3810 --request req_LJII1ICyJlby --cap-clp 250000 --relationship alerta.mantener_o_liberar
+{
+ "company": "Hotel Demo",
+ "verification_uri": "http://localhost:3810/e/hotel-demo/vincular",
+ "verification_uri_complete": "http://localhost:3810/e/hotel-demo/vincular?user_code=TJMT-THHK",
+ "user_code": "TJMT-THHK",
+ "expires_at": "2026-10-23T06:15:20.000Z",
+ "details": [
+  {
+   "type": "https://vxpprotocol.org/rar/capability",
+   "actions": [
+    "reserva.crear"
+   ],
+   "identifier": "nuevo",
+   "limits": {
+    "max_total_clp": 250000
+   }
+  },
+  {
+   "type": "https://vxpprotocol.org/rar/relationship",
+   "actions": [
+    "alerta.mantener_o_liberar"
+   ],
+   "identifier": "relationship",
+   "limits": {
+    "max_per_day": 2,
+    "duration_seconds": 2592000
+   }
+  }
+ ],
+ "tell_the_person": "Open http://localhost:3810/e/hotel-demo/vincular?user_code=TJMT-THHK and confirm the code TJMT-THHK. Hotel Demo will send you a one-time code through its own channel."
+}
+$ vxp-agent wait-authorization 127.0.0.1:3810 --timeout 6   (the person has not approved yet)
+{
+ "status": "authorization_pending"
+}
+$ vxp-agent cancel req_LJII1ICyJlby
+{
+ "http": 200,
+ "body": {
+  "request_id": "req_LJII1ICyJlby",
+  "operation": "reserva.crear",
+  "target": {
+   "order_ref": "nuevo"
+  },
+  "state": "cancelled",
+  "projections": {
+   "poppy": "cancelled",
+   "a2a": "TASK_STATE_CANCELED"
+  },
+  "reason": "cancelled_before_proposal"
+ }
+}
+ …

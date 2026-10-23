@@ -1,0 +1,15 @@
+{
+  "name": "vxp-agent",
+  "version": "0.1.0-experimental",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "VXP personal-agent side: a client library, a CLI, an MCP server and an example agent for companies that implement VXP's native profile. No dependencies.",
+  "engines": { "node": ">=22.18" },
+  "bin": { "vxp-agent": "bin/vxp-agent.ts" },
+  "scripts": {
+    "test": "node --test test/*.test.ts",
+    "example": "node examples/hotel-santiago.ts",
+    "cli": "node bin/vxp-agent.ts"
+  }
+}

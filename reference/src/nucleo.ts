@@ -204,6 +204,11 @@ export type Operacion = {
 		relacionId?: string;
 		/** What this revision may charge the customer (CLP): against the cap of their authorization (RFC 9396 `limits`). */
 		monto?: number;
+		/**
+		 * A cap the customer approved in advance (RFC 9396 `limits.max_total_clp`): a revision whose amount is within it
+		 * needs no approval of its own (`standing_permission`); one above it does. Null when there is no such cap.
+		 */
+		permanenteHasta?: number | null;
 	};
 };
 
@@ -297,6 +302,9 @@ export class Nucleo {
 	 *   fixed text: it names neither the agent nor the permissions (the page shows that);
 	 * - if it cannot be delivered, nothing is faked: the caller leaves the operation `proposed`.
 	 */
+	/** Optional observer of the simulated company channel (the example server prints it with VXP_SHOW_CHANNEL=1). */
+	alSalidaCanal: ((tenantId: string, m: { telefono: string; texto: string; proposito: PropositoWhatsApp }) => void) | null = null;
+
 	enviarWhatsApp(tenantId: string, cliente: Cliente, m: { proposito: PropositoWhatsApp; texto: string; textoPlantilla: string }): EntregaWhatsApp {
 		const empresa = this.empresa(tenantId);
 		if (m.proposito === "aprobacion" && !cliente.whatsapp.consentimientoServicio) return { entregado: false, motivo: "sin_consentimiento" };
@@ -304,13 +312,15 @@ export class Nucleo {
 		const abierta = Number.isFinite(ultima) && Date.now() - ultima < VENTANA_WHATSAPP_MS;
 		const via = abierta ? "ventana_de_servicio" : empresa.plantillasWhatsApp[m.proposito] ? "plantilla" : null;
 		if (!via) return { entregado: false, motivo: "ventana_cerrada_sin_plantilla" };
-		this.base(tenantId).whatsappSalida.push({
+		const salida = {
 			telefono: cliente.telefono,
 			texto: via === "plantilla" ? m.textoPlantilla : m.texto,
 			at: new Date().toISOString(),
 			via,
 			proposito: m.proposito,
-		});
+		} as const;
+		this.base(tenantId).whatsappSalida.push(salida);
+		this.alSalidaCanal?.(tenantId, salida);
 		return { entregado: true, via };
 	}
 
@@ -1475,6 +1485,7 @@ export class Nucleo {
 		sesion: string | null,
 		solicitud: Record<string, unknown> | null = null,
 		historia: Nativo["eventos"] = [],
+		permanenteHasta: number | null = null,
 	): { ok: true; operacion: Operacion } | { ok: false; falta: string[] | string; operacion?: Operacion } {
 		const empresa = this.empresa(actor.tenantId);
 		const con = conectorDe(empresa, capacidad);
@@ -1516,6 +1527,7 @@ export class Nucleo {
 				huella: "",
 				dueno: { protocolo: actor.protocolo, clientId: actor.clientId, sub: actor.sub, clienteId: actor.clienteId, sesion },
 				revisionEmpresa: this.revisionDe(decision) ?? (red.r.revision && !mutado("revision_conector") ? { id: randomId("rev_", 6), estado: "pendiente", motivo: red.r.revision } : null),
+				permanenteHasta,
 				ejecutada: false,
 				termsDigest: "",
 				counterPendiente: null,
@@ -1585,6 +1597,9 @@ export class Nucleo {
 		const ttl = Date.now() + this.limites(empresa.tenantId).proposal_ttl_seconds * 1000;
 		op.expires_at = new Date(Math.min(ttl, r.vence ? Date.parse(r.vence) : ttl)).toISOString();
 		op.interno.monto = r.monto;
+		// Within a cap the customer approved in advance, this revision needs no approval of its own; above it, it does.
+		// It is part of the signed terms, so the agent and any verifier see which one applies.
+		if (op.interno.permanenteHasta != null) op.user_approval_required = !(r.monto <= op.interno.permanenteHasta || mutado("permanente_conector_sin_tope"));
 		op.interno.huella = sha256(jcs({ c: op.interno.intent.capability, i: op.interno.intent.inputs, t: op.terms, r: op.revision }));
 		op.interno.termsDigest = huellaTerminos({
 			company: this.pruebas ? this.pruebas.issuer(empresa.tenantId) : empresa.tenantId,

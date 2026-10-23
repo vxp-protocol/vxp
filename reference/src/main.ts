@@ -66,6 +66,17 @@ const puerta = crearPuerta({
 	adaptadores: process.env.VXP_ADAPTERS === undefined ? undefined : { poppy: /poppy/.test(process.env.VXP_ADAPTERS), pact: /pact/.test(process.env.VXP_ADAPTERS) },
 });
 
+// The hotel's late-arrival rule runs every minute, as the hotel's own system would: after its cut-off hour on the
+// arrival day, it asks the guest's agent, inside an authorized relationship, whether to hold or release the booking.
+setInterval(() => {
+	for (const e of puerta.nucleo.empresas.values()) if (e.hotel) puerta.nativo.revisarLlegadas(e).catch(() => {});
+}, 60_000).unref();
+
+// VXP_SHOW_CHANNEL=1: print what the company sends through its (simulated) channel, so a person running the
+// example can read the one-time code that links their account. The channel is simulated; nothing is sent.
+if (process.env.VXP_SHOW_CHANNEL === "1")
+	puerta.nucleo.alSalidaCanal = (tenant, m) => console.log(`[simulated company channel · ${tenant} → ${m.telefono}] ${m.texto}`);
+
 async function leer(req: IncomingMessage): Promise<Buffer> {
 	const chunks: Buffer[] = [];
 	for await (const c of req) chunks.push(c as Buffer);

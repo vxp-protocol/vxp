@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog · VXP docs</title>
+<meta name="description" content="Every notable change to the specification and the repository, by version.">
+<link rel="alternate" type="text/markdown" href="../../docs/changelog.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/vxp.css">
+<link rel="stylesheet" href="../../assets/docs.css">
+<link rel="stylesheet" href="../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../architecture/">Architecture</a></li>
+			<li><a href="../../spec/">Specification</a></li>
+			<li><a href="../../examples/">Examples</a></li>
+			<li><a href="../../verify/">Verify</a></li>
+			<li><a href="../../conformance/">Conformance</a></li>
+			<li><a href="../../implement/">Implement</a></li>
+			<li><a href="../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../docs/">VXP documentation</a></li><li><a href="../../docs/introduction/">Introduction</a></li><li><a href="../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../docs/proof/">VXP Proof</a></li><li><a href="../../docs/relationship/">VXP Relationship</a></li><li><a href="../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../docs/guides/company/">Guide for companies</a></li><li><a href="../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../docs/examples/">Examples and messages</a></li><li><a href="../../docs/specification/">Specification and versions</a></li><li><a href="../../docs/conformance/">Tests and conformance</a></li><li><a href="../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../docs/changelog/" aria-current="page">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">Changelog</h1>
+		<p class="lead">Every notable change to the specification and the repository, by version.</p>
+		
+		<p>All notable changes to the VXP specification and to this repository. Draft versions are incompatible with each other until 1.0.</p>
+<h2 id="010-rc2-unreleased">0.1.0-rc.2 · unreleased<a class="anchor" href="#010-rc2-unreleased" aria-label="Link to 0.1.0-rc.2 · unreleased">#</a></h2>
+<h3 id="specification">Specification<a class="anchor" href="#specification" aria-label="Link to Specification">#</a></h3>
+<ul><li>Two public components, VXP Proof and VXP Relationship. Operation requirements O1–O7 replace the earlier presentation of a third component; the rules themselves did not change.</li><li>Native-only gateway (§8): a company can implement VXP with the native profile alone.</li><li>Implementation paths (§8): only the well-known locations and the native endpoints are fixed; key sets, log and proof bundle are discovered through the issuer metadata.</li><li>Reading a verdict, key rotation and historical verification (§10).</li><li>WhatsApp no longer named in normative rules: «a channel the company has linked to the customer».</li></ul>
+<h3 id="repository">Repository<a class="anchor" href="#repository" aria-label="Link to Repository">#</a></h3>
+<ul><li><code>docs/</code>: documentation in Markdown, built into the site, with <code>llms.txt</code>.</li><li><code>conformance/</code>: a validator that acts as an agent against any native-profile implementation and reports every check with its rule; a conformance matrix and a checklist of what only a person can check.</li><li><code>agent/</code>: client library, CLI, MCP server and example personal agent.</li><li><code>reference/</code>: optional adapters (<code>VXP_ADAPTERS=none</code>), persistent and rotating proof keys (<code>VXP_KEYS_DIR</code>), proof material under <code>/vxp/</code> (<code>/sovras/</code> kept as an alias), the simulated company channel printed to the console (<code>VXP_SHOW_CHANNEL=1</code>).</li><li><code>reference/</code>, company side for a personal agent: public reads in the native profile (<code>effect: "read"</code>, <code>access: "public" | "delegated"</code> in <code>vxp.json</code>), a cap the person approves beforehand (<code>user_approval_required: false</code> and <code>approved_by: "standing_permission"</code> within it), the hotel's late-arrival question started by the company every minute, and a relationship key that persists with <code>VXP_KEYS_DIR</code>.</li><li>Network tests no longer block the event loop while the Python verifier runs (an idle keep-alive socket closed meanwhile caused <code>ECONNRESET</code>).</li><li><code>site/</code>: the home page starts from the work inside companies; Proof and Relationship have their own interactive views; Docs and Demos in every page; the native walkthrough states that the code linked the account and granted authority, while the terms were <code>agent_asserted</code>.</li><li>Vectors use <code>*.example</code> hosts. Continuous integration runs the suites on every push.</li></ul>
+<h2 id="010-rc1-22-october-2026">0.1.0-rc.1 · 22 October 2026<a class="anchor" href="#010-rc1-22-october-2026" aria-label="Link to 0.1.0-rc.1 · 22 October 2026">#</a></h2>
+<p>First complete draft: specification, reference implementation with the native profile and the Poppy draft 0.2 and PACT 1.0 adapters, three verifiers (two in Python, one in JavaScript for the browser), test vectors, and the site.</p>
+		<div class="dfoot">
+			<a href="../../docs/changelog.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/CHANGELOG.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../docs/security/"><span>Previous</span>Security, errors, recovery and versions</a>
+			<span></span>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../docs/quickstart/">Quickstart</a></li><li><a href="../../spec/">Specification</a></li><li><a href="../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../verify/">Verifier</a></li><li><a href="../../demos/">Demos</a></li><li><a href="../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../docs/changelog/">Changelog</a></li><li><a href="../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../assets/site.js" defer></script>
+<script src="../../assets/docs-site.js" defer></script>
+</body>
+</html>

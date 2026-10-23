@@ -1,0 +1,61 @@
+Task: book a hotel for 2 nights (2026-11-09 → 2026-11-11), 2 adults, with breakfast; best rate; book only if the total is ≤ $250.000.
+Agent: http://localhost:3811/agent.json (publishes its CIMD, JWKS and inbox at http://localhost:3811)
+
+── 1. Discover companies that implement VXP among the candidate domains
+   VXP has no global registry: the candidates come from outside VXP (the person, a search, a website).
+   localhost:3810: Ferretería Demo · experimental · pedido.consultar, pedido.reprogramar_despacho, catalogo.consultar (public), pedido.crear, pedido.devolver
+   127.0.0.1:3810: Hotel Demo · experimental · hotel.disponibilidad (public), reserva.consultar, reserva.crear, reserva.modificar_fechas, reserva.agregar_servicio, reserva.cancelar
+   localhost:3899: not usable — no vxp.json (fetch failed)
+   → Hotel Demo offers hotel.disponibilidad and reserva.crear (issuer http://localhost:3810/e/hotel-demo).
+   Note: vxp.json carries no location; «Santiago» is the person's criterion for choosing candidates, not something VXP checks.
+
+── 2. The person's own rules for this task (set by the person, not by the agent)
+   cap for reserva.crear: $250.000 · if the hotel asks about a late arrival: «mantener»
+
+── 3. Availability, rates and services: a public read (no authorization, no operation)
+   breakfast «Desayuno buffet» (DESAYUNO): $12.000 per persona_noche → $48.000 for the stay
+   DBL-EST «Doble estándar»: room $156.000 + breakfast $48.000 = $204.000  ✓ within the cap
+   DBL-VIS «Doble con vista a la montaña»: room $196.000 + breakfast $48.000 = $244.000  ✓ within the cap
+   FAM «Familiar (hasta 4 personas)»: room $264.000 + breakfast $48.000 = $312.000  ✗ above the cap
+   SUI «Suite montaña»: room $330.000 + breakfast $48.000 = $378.000  ✗ above the cap
+   → the best room with breakfast within the cap: DBL-VIS, $244.000 before negotiating.
+   package «Escapada Demo (2 noches en doble con vista, desayuno y estacionamiento)» (ESCAPADA): 10% off, includes DESAYUNO, ESTAC
+
+── 4. Ask for the stay: the hotel quotes under its own policy (the quote is public)
+   req_kIlHQ0za531q: EST-MCVPTFA total $244.000 VAT incl. · agencies (simulated): Agencia A (simulada) $215.600; Agencia B (simulada) $203.840
+
+── 5. Authorization: the person links their account on the hotel's own page
+   Asked for: a new booking up to $250.000 (the person's cap, not the quote), and a relationship so the hotel can ask about a late arrival (only «mantener» or «liberar»).
+   PERSON: open http://localhost:3810/e/hotel-demo/vincular?user_code=XQMG-DKQV
+           check the code XQMG-DKQV, type your phone number, then the code Hotel Demo sends you, and press «Permitir».
+   granted: [{"type":"https://vxpprotocol.org/rar/capability","actions":["reserva.crear"],"identifier":"nuevo","limits":{"max_total_clp":250000}}]
+   relationship rel_yMhyI2mSN_hz: alerta.mantener_o_liberar, until 2026-11-22T06:23:38.000Z, signed agreement verified with the hotel's key: true
+
+── 6. The same request again (same Idempotency-Key): now the hotel proposes signed terms
+   prop_op_nijHSFqZ1K6h_r1 · commitment {"mode":"firm","requires":[]} · total $244.000 · breakfast: yes · user_approval_required: false
+
+── 7. Negotiate the rate (counter-proposals, within the hotel's policy)
+   discount asked: declined (counter_rejected: sin_descuento_adicional). The hotel gives no discretionary discount.
+   package ESCAPADA: revision 2 at $230.400 (was $244.000; Desayuno buffet, Estacionamiento; 10% off)
+   → negotiated: $230.400 (revision 2, user_approval_required: false).
+
+── 8. Accept, within the person's rules
+   approved_by: standing_permission (the total is within the $250.000 the person approved at the hotel and set as their rule) · state: succeeded
+   Listo: reserva R-4001 confirmada en Hotel Demo: Doble con vista a la montaña, llegada 2026-11-09 y salida 2026-11-11, total $230.400 IVA incluido. Garantía pre-autorizada en la tarjeta registrada (simulada). Verificado en el sistema del hotel y en el proveedor de pago.
+   → reservation id in the hotel's system: R-4001
+
+── 9. Proof: download and verify locally, anchored by the issuer learned from vxp.json
+   valid: true · final_state: succeeded · revision: 2 · approval: agent_asserted · operation: matches
+   derived_assurance: issuer_key_attested, operator_observed, operator_reported_read_back, operator_reported_agent_approval · single_root: operator · logged: false
+   Reading: the chain is intact and signed by the keys the issuer publishes; it is the operator's attestation, not independent confirmation. Saved: <scratch>/.vxp-example\proofs\req_kIlHQ0za531q.package.json
+
+── 10. Keep the relationship: the hotel asks about a late arrival
+   [reference test aid, not VXP] running the hotel's own late-arrival rule with its simulated clock at 2026-11-09T23:35:00.000Z (20:35 in Chile on the arrival day):
+   [inbox] 202 {"received":"msg_5ZhBW62jUEL9"}
+   hotel rule: 200 [{"reserva":"R-4001","delivery":"entregado"}]
+   inbox: «La reserva R-4001 llegaba hoy y el huésped no ha llegado (pasadas las 20:00). ¿Mantenerla o liberarla?» options ["mantener","liberar"] (signature checked with the hotel's relationship key; jti new)
+   answered «mantener» by the person's standing answer; hotel receipt verified: true
+
+── 11. Summary
+   booked R-4001 at Hotel Demo, 2026-11-09 → 2026-11-11, $230.400 with breakfast (cap $250.000); proof valid: true; late-arrival answer: mantener.
+   state kept in <scratch>/.vxp-example

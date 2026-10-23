@@ -38,6 +38,7 @@ export const hotelDemo = (): Hotel => ({
 		maxNoches: 14,
 		checkIn: "15:00",
 		checkOut: "12:00",
+		llegadaTardiaDesde: "20:00",
 		vigenciaMinutos: 60,
 		garantia: "pre-autorización del total en la tarjeta registrada en tu cuenta (simulada en este entorno: no hay cobros reales)",
 		extranjeros: "Tarifas en CLP con IVA (19%) incluido. Los huéspedes extranjeros no residentes que pagan en divisas pueden quedar exentos de IVA; en este entorno de prueba se cobra siempre en CLP con IVA.",

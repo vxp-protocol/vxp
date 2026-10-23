@@ -1,0 +1,40 @@
+# VXP · Verifiable eXchange Protocol
+
+> An open protocol for work that personal agents do for people inside companies. Two public components: VXP Proof (signed, verifiable evidence of each operation) and VXP Relationship (an authorized agreement within which the company can start a request toward the agent). Draft 0.1, Apache 2.0.
+
+The specification is the only normative text; the docs restate it and link to its rule identifiers.
+
+## Start
+
+- [VXP documentation](https://vxpprotocol.org/docs/index.md): How to understand, run, implement and verify VXP, the open protocol for work that personal agents do for people inside companies.
+- [Introduction](https://vxpprotocol.org/docs/introduction.md): What VXP is, the work it comes from, its two public components, and what it does not do.
+- [Quickstart](https://vxpprotocol.org/docs/quickstart.md): From a clean clone to a company and a personal agent in separate processes, an operation with its proof verified, a company-initiated request answered, and a conformance report, with no Poppy, no PACT and no SOVRAS service.
+
+## The protocol
+
+- [VXP Proof](https://vxpprotocol.org/docs/proof.md): The signed chain that records what was asked, approved, executed and read back, and how anyone verifies it.
+- [VXP Relationship](https://vxpprotocol.org/docs/relationship.md): The authorized agreement within which a company can start a request toward a person's agent, and how it is born, used, limited and revoked.
+- [Native profile and discovery](https://vxpprotocol.org/docs/native-profile.md): How an agent finds a company that speaks VXP, identifies itself, gets authority for one request, and drives an operation through the /v1 endpoints.
+
+## Guides
+
+- [Guide for companies](https://vxpprotocol.org/docs/guides/company.md): How to make a company's existing systems speak VXP with the native profile, step by step, and how to prove it.
+- [Guide for personal agents](https://vxpprotocol.org/docs/guides/agent.md): How a personal agent finds companies that speak VXP, acts with its user's permission, keeps its state, verifies results and answers the company within an agreement.
+- [Guide for verifiers](https://vxpprotocol.org/docs/guides/verifier.md): How anyone checks a VXP proof (an agent, a bank, an auditor, an arbitrator) and how to read what the verdict says and does not say.
+- [Interoperability with Poppy and PACT](https://vxpprotocol.org/docs/guides/interoperability.md): The optional adapters that let agents already speaking Poppy draft 0.2 or PACT 1.0 work with a VXP company, and what each one carries.
+
+## Reference
+
+- [Examples and messages](https://vxpprotocol.org/docs/examples.md): One complete operation with every message, as the reference implementation produced it in a native-only run, and where to find more.
+- [Specification and versions](https://vxpprotocol.org/docs/specification.md): Where the normative text lives, how its rules are identified, and how versions work.
+- [Tests and conformance](https://vxpprotocol.org/docs/conformance.md): How to check an implementation against VXP, with the validator, the conformance matrix and the checklist, and which tests are whose.
+- [Security, errors, recovery and versions](https://vxpprotocol.org/docs/security.md): The threats VXP addresses and the ones it does not, every error code, how operations recover from failures, and how keys and versions evolve.
+- [Changelog](https://vxpprotocol.org/docs/changelog.md): Every notable change to the specification and the repository, by version.
+
+## Normative
+
+- [Specification, draft 0.1](https://vxpprotocol.org/spec/): the rules, with stable identifiers (I, ID, E, P, R, O).
+
+## Code
+
+- [Repository](https://github.com/vxp-protocol/vxp): specification source, reference implementation, agent tools, verifiers, vectors and conformance validator. AGENTS.md points coding agents at the right guide.

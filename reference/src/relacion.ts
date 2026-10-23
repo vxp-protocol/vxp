@@ -13,7 +13,10 @@
 //   external counterpart, what is verified is the signed outbox and its HTTP delivery to a local test inbox.
 
 import type { FetchLike } from "./identidad.ts";
-import { type ClaveFirma, ahora, nuevaClaveEs256, randomId, signJwt } from "./jose.ts";
+import { createPrivateKey } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { type ClaveFirma, type Jwk, ahora, nuevaClaveEs256, randomId, signJwt, thumbprint } from "./jose.ts";
 import { mutado } from "./mutar.ts";
 
 export const RAR_RELACION = "https://vxpprotocol.org/rar/relationship";
@@ -125,13 +128,33 @@ export class Relaciones {
 		);
 	}
 	private readonly llaves = new Map<string, ClaveFirma>();
+	/** Where the relationship keys persist (one file per company); null keeps them in memory. */
+	dirLlaves: string | null = null;
 
+	/**
+	 * The company's relationship key (R5). With a key directory it survives restarts, so agreements and requests
+	 * signed before a restart still verify against the published key.
+	 */
 	llave(tenantId: string): ClaveFirma {
 		let k = this.llaves.get(tenantId);
-		if (!k) {
+		if (k) return k;
+		const ruta = this.dirLlaves ? join(this.dirLlaves, `relationship-${tenantId}.json`) : null;
+		if (ruta && existsSync(ruta)) {
+			const privateKey = createPrivateKey({ key: JSON.parse(readFileSync(ruta, "utf8")).current, format: "jwk" });
+			const j = privateKey.export({ format: "jwk" }) as Jwk;
+			const publicJwk: Jwk = { kty: "EC", crv: j.crv, x: j.x, y: j.y };
+			publicJwk.kid = thumbprint(publicJwk);
+			publicJwk.alg = "ES256";
+			publicJwk.use = "sig";
+			k = { privateKey, publicJwk };
+		} else {
 			k = nuevaClaveEs256();
-			this.llaves.set(tenantId, k);
+			if (ruta) {
+				mkdirSync(this.dirLlaves!, { recursive: true });
+				writeFileSync(ruta, JSON.stringify({ current: k.privateKey.export({ format: "jwk" }) }), { encoding: "utf8", mode: 0o600 });
+			}
 		}
+		this.llaves.set(tenantId, k);
 		return k;
 	}
 

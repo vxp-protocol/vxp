@@ -1,0 +1,14 @@
+**vxp_rules:**
+```json
+{"caps":[],"standing_answers":[]}
+```
+
+**vxp_discover (["example.com"]):**
+```json
+{"note":"VXP has no global registry; only the domains given were checked.","results":[{"domain":"example.com","ok":false,"reason":"no vxp.json (GET https://example.com/.well-known/vxp.json → 404)"}]}
+```
+
+**Herramientas del servidor vxp que veo (18):**
+vxp_accept, vxp_authorize, vxp_cancel, vxp_check_authorization, vxp_counter, vxp_discover, vxp_events, vxp_inbox, vxp_list_companies, vxp_proof, vxp_read, vxp_relationships, vxp_reply, vxp_request, vxp_resubmit, vxp_revoke_relationship, vxp_rules, vxp_status
+
+[exited with code 0]

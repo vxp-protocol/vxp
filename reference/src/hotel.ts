@@ -26,6 +26,8 @@ export type PoliticaHotel = {
 	maxNoches: number;
 	checkIn: string;
 	checkOut: string;
+	/** Local hour (Chile) after which a guest who has not arrived on the arrival day counts as a late arrival. */
+	llegadaTardiaDesde?: string;
 	vigenciaMinutos: number;
 	garantia: string;
 	extranjeros: string;

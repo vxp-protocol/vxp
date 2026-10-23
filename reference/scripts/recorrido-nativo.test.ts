@@ -14,7 +14,7 @@
 // Uses ports 3730 (gateway) and 3734 (agent).
 
 import assert from "node:assert/strict";
-import { type ChildProcess, spawn, spawnSync } from "node:child_process";
+import { type ChildProcess, spawn } from "node:child_process";
 import { createHash, generateKeyPairSync, type KeyObject, randomBytes, sign } from "node:crypto";
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
@@ -144,16 +144,28 @@ async function pedir(method: string, url: string, body?: unknown, headers: Recor
 }
 const comoOperacion = (v: Record<string, any>) => ({ operation_id: v.operation_id, revision: v.proposal.revision, summary: v.proposal.summary, terms: v.proposal.terms, expires_at: v.proposal.expires_at, user_approval_required: v.proposal.user_approval_required, state: v.projections.poppy, result: v.result });
 
-function verificar(paquete: unknown, operacion: unknown) {
+// Child processes run asynchronously: a blocking spawnSync freezes this process's event loop, the server then
+// closes the idle keep-alive socket, and the next fetch reuses the dead socket and fails with ECONNRESET.
+const ejecutar = (cmd: string, args: string[]) =>
+	new Promise<{ status: number | null; stdout: string; stderr: string }>((ok) => {
+		const h = spawn(cmd, args);
+		let stdout = "";
+		let stderr = "";
+		h.stdout.on("data", (d) => (stdout += d));
+		h.stderr.on("data", (d) => (stderr += d));
+		h.on("close", (status) => ok({ status, stdout, stderr }));
+	});
+
+async function verificar(paquete: unknown, operacion: unknown) {
 	const op = (paquete as { op: string }).op;
 	const p = join(SALIDA!, `paquete-${op}.json`);
 	const o = join(SALIDA!, `operacion-${op}.json`);
 	writeFileSync(p, JSON.stringify(paquete, null, 1));
 	writeFileSync(o, JSON.stringify(operacion, null, 1));
-	const r = spawnSync("python", [VERIFICADOR, "vivo", "--http-local", "--issuer", ISSUER, "--paquete", p, "--aud", clientId, "--operacion", o], { encoding: "utf8" });
+	const r = await ejecutar("python", [VERIFICADOR, "vivo", "--http-local", "--issuer", ISSUER, "--paquete", p, "--aud", clientId, "--operacion", o]);
 	assert.ok(r.stdout, r.stderr);
 	const veredicto = JSON.parse(r.stdout.trim().split("\n").at(-1)!);
-	const m = spawnSync("python", [MATERIAL, VERIFICADOR, P, ISSUER, p, join(SALIDA!, `material-${op}.json`), o], { encoding: "utf8" });
+	const m = await ejecutar("python", [MATERIAL, VERIFICADOR, P, ISSUER, p, join(SALIDA!, `material-${op}.json`), o]);
 	registro.push({ at: new Date().toISOString(), verifier: "verifier/verificar_paquete.py vivo", op, verdict: veredicto, material_capture: (m.stdout + m.stderr).trim().split("\n").slice(-2) });
 	return veredicto;
 }
@@ -200,7 +212,7 @@ test("R1 · native only: discover → ask (authority missing) → the person app
 	assert.equal(r1.body.request_id, r0.body.request_id, "the same request, re-evaluated");
 	const a = await pedir("POST", `${V1}/proposals/${r1.body.proposal.id}/accept`, { approved_by: "user" });
 	assert.equal(a.body.state, "succeeded", JSON.stringify(a.body));
-	const v = verificar((await pedir("GET", `${V1}/requests/${r1.body.request_id}/proof`)).body, comoOperacion(a.body));
+	const v = await verificar((await pedir("GET", `${V1}/requests/${r1.body.request_id}/proof`)).body, comoOperacion(a.body));
 	assert.equal(v.valid, true, JSON.stringify(v));
 	assert.equal(v.anchor, "issuer");
 	assert.equal(v.final_state, "succeeded");
@@ -212,6 +224,6 @@ test("R2 · native only: the company starts a change inside the relationship; th
 	const c = JSON.parse(Buffer.from(buzon.at(-1)!.message.split(".")[1], "base64url").toString()).content as { request_url: string; proposal_id: string };
 	const a = await pedir("POST", `${V1}/proposals/${c.proposal_id}/accept`, { approved_by: "user" });
 	assert.equal(a.body.state, "succeeded", JSON.stringify(a.body));
-	const v = verificar((await pedir("GET", `${c.request_url}/proof`)).body, comoOperacion(a.body));
+	const v = await verificar((await pedir("GET", `${c.request_url}/proof`)).body, comoOperacion(a.body));
 	assert.equal(v.valid, true, JSON.stringify(v));
 });

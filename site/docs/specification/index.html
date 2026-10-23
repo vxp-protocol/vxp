@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specification and versions · VXP docs</title>
+<meta name="description" content="Where the normative text lives, how its rules are identified, and how versions work.">
+<link rel="alternate" type="text/markdown" href="../../docs/specification.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/vxp.css">
+<link rel="stylesheet" href="../../assets/docs.css">
+<link rel="stylesheet" href="../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../architecture/">Architecture</a></li>
+			<li><a href="../../spec/">Specification</a></li>
+			<li><a href="../../examples/">Examples</a></li>
+			<li><a href="../../verify/">Verify</a></li>
+			<li><a href="../../conformance/">Conformance</a></li>
+			<li><a href="../../implement/">Implement</a></li>
+			<li><a href="../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../docs/">VXP documentation</a></li><li><a href="../../docs/introduction/">Introduction</a></li><li><a href="../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../docs/proof/">VXP Proof</a></li><li><a href="../../docs/relationship/">VXP Relationship</a></li><li><a href="../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../docs/guides/company/">Guide for companies</a></li><li><a href="../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../docs/examples/">Examples and messages</a></li><li><a href="../../docs/specification/" aria-current="page">Specification and versions</a></li><li><a href="../../docs/conformance/">Tests and conformance</a></li><li><a href="../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">Specification and versions</h1>
+		<p class="lead">Where the normative text lives, how its rules are identified, and how versions work.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#the-normative-text">The normative text</a></li><li><a href="#stable-identifiers">Stable identifiers</a></li><li><a href="#versions">Versions</a></li><li><a href="#changing-it">Changing it</a></li></ul></nav>
+		<h2 id="the-normative-text">The normative text<a class="anchor" href="#the-normative-text" aria-label="Link to The normative text">#</a></h2>
+<p>The <a href="../../spec/">specification</a> is the only normative text of VXP. Its source is <code>spec/spec.tpl.html</code> in the repository. Current version: <b>draft 0.1</b>, revised on 22 October 2026.</p>
+<div class="tbl tbl--fit"><table><thead><tr><th>Section</th><th>What it defines</th></tr></thead><tbody><tr><td>§1–§3</td><td>What VXP is, why it exists, principles and scope</td></tr><tr><td>§4</td><td>Architecture, interoperability rules <a class="rule" href="../../spec/#i1">I1</a>–<a class="rule" href="../../spec/#i5">I5</a>, states <a class="rule" href="../../spec/#e1">E1</a>–<a class="rule" href="../../spec/#e3">E3</a></td></tr><tr><td>§5</td><td>Identity model <a class="rule" href="../../spec/#id1">ID1</a>–<a class="rule" href="../../spec/#id3">ID3</a></td></tr><tr><td>§6</td><td>VXP Proof: format, statement kinds, chain rules, <a class="rule" href="../../spec/#p1">P1</a>–<a class="rule" href="../../spec/#p8">P8</a></td></tr><tr><td>§7</td><td>VXP Relationship: <a class="rule" href="../../spec/#r1">R1</a>–<a class="rule" href="../../spec/#r17">R17</a></td></tr><tr><td>§8</td><td>Native profile and optional adapters</td></tr><tr><td>§9</td><td>Operation requirements <a class="rule" href="../../spec/#o1">O1</a>–<a class="rule" href="../../spec/#o7">O7</a>, security, privacy, errors</td></tr><tr><td>§10</td><td>Independent verification, reading a verdict, key rotation</td></tr><tr><td>§11–§13</td><td>Examples, conformance, versions and status</td></tr></tbody></table></div>
+<h2 id="stable-identifiers">Stable identifiers<a class="anchor" href="#stable-identifiers" aria-label="Link to Stable identifiers">#</a></h2>
+<p>Every requirement has an identifier you can link to: <code>https://vxpprotocol.org/spec/#r6</code>, <code>#p5</code>, <code>#o6</code>, <code>#id1</code>. The docs, the conformance matrix and the validator's report all use them. Section anchors such as <code>#native-only</code> or <code>#key-rotation</code> are stable too.</p>
+<p>The key words MUST, MUST NOT, SHOULD and MAY follow BCP 14 (RFC 2119 and RFC 8174).</p>
+<h2 id="versions">Versions<a class="anchor" href="#versions" aria-label="Link to Versions">#</a></h2>
+<ul><li>One version, the same in three places: the trust block's <code>version</code>, the A2A extension URI (<code>https://vxpprotocol.org/ext/proof/v0.1</code>) and the <code>v</code> of every statement and package.</li><li>While VXP is a 0.x draft, every new draft is treated as incompatible with the previous one. A verifier rejects a <code>v</code> it does not know (<a class="rule" href="../../spec/#versioning">§13 versioning</a>).</li><li>Each change to the specification is recorded in the <a href="../../docs/changelog/">changelog</a>.</li></ul>
+<h2 id="changing-it">Changing it<a class="anchor" href="#changing-it" aria-label="Link to Changing it">#</a></h2>
+<p>A normative change cites the identifiers it touches and comes with a test or a vector. See <code>CONTRIBUTING.md</code>.</p>
+		<div class="dfoot">
+			<a href="../../docs/specification.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/specification.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../docs/examples/"><span>Previous</span>Examples and messages</a>
+			<a href="../../docs/conformance/"><span>Next</span>Tests and conformance</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../docs/quickstart/">Quickstart</a></li><li><a href="../../spec/">Specification</a></li><li><a href="../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../verify/">Verifier</a></li><li><a href="../../demos/">Demos</a></li><li><a href="../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../docs/changelog/">Changelog</a></li><li><a href="../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../assets/site.js" defer></script>
+<script src="../../assets/docs-site.js" defer></script>
+</body>
+</html>

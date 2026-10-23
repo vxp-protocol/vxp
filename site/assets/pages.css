@@ -1,4 +1,4 @@
-/* VXP · páginas interiores (conformidad, estado, ejemplos). Usa los tokens de vxp.css. */
+/* VXP · inner pages (conformance, status, examples). Uses the tokens of vxp.css. */
 
 .page-head { padding-block: clamp(56px, 8vw, 104px) clamp(36px, 5vw, 56px); position: relative; overflow: hidden; isolation: isolate; border-bottom: 1px solid var(--line); }
 .page-head::before { content: ""; position: absolute; z-index: -1; inset: -40% -20% auto 40%; height: 160%; pointer-events: none; filter: blur(10px);
@@ -20,7 +20,7 @@
 .group__head { display: grid; gap: 10px; padding-bottom: 18px; border-bottom: 1px solid var(--ink); margin-bottom: 0; }
 .group__head p { color: var(--ink-soft); }
 
-/* ── Filas de prueba ────────────────────────────────────────────────────────── */
+/* ── Test rows ──────────────────────────────────────────────────────────────── */
 .tests { list-style: none; margin: 0; padding: 0; }
 .test { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr) minmax(0, 2.4fr); gap: clamp(18px, 3vw, 40px); padding: 26px 0; border-bottom: 1px solid var(--line); align-items: start; }
 .test h3 { font-size: 19px; letter-spacing: -0.02em; line-height: 1.25; }
@@ -46,7 +46,7 @@
 	.test dd { margin-bottom: 8px; }
 }
 
-/* ── Código copiable (tema claro) ──────────────────────────────────────────── */
+/* ── Copyable code (light theme) ───────────────────────────────────────────── */
 .codebox { position: relative; margin: 0; min-width: 0; }
 .codebox pre { margin: 0; background: var(--soft); border: 1px solid var(--line); border-radius: var(--r-md); padding: 16px 18px; overflow: auto; font-size: 12.8px; line-height: 1.65; color: var(--ink); tab-size: 2; max-height: 460px; }
 .codebox figcaption { font: 400 12.5px var(--mono); color: var(--mute); margin-bottom: 8px; padding-right: 76px; }
@@ -55,13 +55,13 @@
 .codebox--plain .copy { top: -2px; }
 .cmt { color: var(--mute); }
 
-/* ── Avisos y contexto ─────────────────────────────────────────────────────── */
+/* ── Notices and context ───────────────────────────────────────────────────── */
 .ctx { display: grid; gap: 10px; border-left: 2px solid var(--ink); padding: 4px 0 4px 18px; max-width: 86ch; }
 .ctx p, .ctx li { color: var(--ink-soft); font-size: 15.5px; }
 .ctx ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
 .ctx b { color: var(--ink); font-weight: 500; }
 
-/* ── Tablas de estado ──────────────────────────────────────────────────────── */
+/* ── Status tables ─────────────────────────────────────────────────────────── */
 .tbl--wide table { min-width: 1080px; font-size: 13.5px; }
 .tbl--wide th, .tbl--wide td { padding: 12px 12px; }
 .tbl--wide td:first-child { min-width: 180px; }
@@ -91,7 +91,7 @@
 .hist ul { margin: 8px 0 0; padding-left: 18px; color: var(--ink-soft); display: grid; gap: 4px; }
 @media (max-width: 600px) { .hist > li { grid-template-columns: 1fr; gap: 6px; } }
 
-/* ── Ejemplos ──────────────────────────────────────────────────────────────── */
+/* ── Examples ──────────────────────────────────────────────────────────────── */
 .label { font: 400 12.5px var(--mono); color: var(--ink); border-left: 2px solid var(--permit); padding-left: 10px; }
 .ex-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 24px; }
 .ex-grid > figure > p { font-size: 14px; color: var(--ink-soft); margin-top: 10px; }

@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "vxp-agent": {
+      "command": "node",
+      "args": [
+        "/ABSOLUTE/PATH/TO/vxp/agent/bin/vxp-agent.ts",
+        "mcp",
+        "--port", "3811",
+        "--state", "/ABSOLUTE/PATH/TO/your-private-dir/.vxp-agent"
+      ],
+      "env": {
+        "VXP_AGENT_ORIGIN": "https://agent.example.org",
+        "VXP_AGENT_ALLOW_HTTP": ""
+      }
+    }
+  }
+}

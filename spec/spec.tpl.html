@@ -19,6 +19,7 @@
 		<a class="mark" href="../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
 		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
 		<ul id="menu">
+			<li><a href="../docs/">Docs</a></li>
 			<li><a href="../architecture/">Architecture</a></li>
 			<li><a href="../spec/" aria-current="page">Specification</a></li>
 			<li><a href="../examples/">Examples</a></li>
@@ -358,7 +359,7 @@
 				<tr><td>The daily limit was exceeded</td><td><code>relationship_limit_exceeded</code></td></tr>
 				<tr><td>The resource is not the customer's</td><td><code>target_not_found</code></td></tr>
 			</tbody></table></div></div></div>
-		<div class="req" id="r7"><a class="req__id" href="#r7">R7</a><div><p>The message <span class="kw">MUST</span> be a JWS with <code>typ: vxp-company-request+jwt</code> carrying <code>iss</code>, <code>aud</code> (the agent), <code>sub</code>, <code>rel</code>, <code>action</code>, <code>content</code>, <code>iat</code>, <code>exp</code> (in 0.1: one hour) and <code>jti</code>. It is delivered by <code>POST {inbox_uri}</code> with <code>{"message": "&lt;jws&gt;"}</code>, and the company <span class="kw">MUST</span> record the outbound message and its HTTP result. The agent <span class="kw">MUST</span> verify the signature with the key anchored to the issuer and <span class="kw">SHOULD</span> reject a repeated <code>jti</code>. <span class="mk mk--exp">Experimental</span> <span class="mk mk--pend">Pending · jti check on the agent side</span></p></div></div>
+		<div class="req" id="r7"><a class="req__id" href="#r7">R7</a><div><p>The message <span class="kw">MUST</span> be a JWS with <code>typ: vxp-company-request+jwt</code> carrying <code>iss</code>, <code>aud</code> (the agent), <code>sub</code>, <code>rel</code>, <code>action</code>, <code>content</code>, <code>iat</code>, <code>exp</code> (in 0.1: one hour) and <code>jti</code>. It is delivered by <code>POST {inbox_uri}</code> with <code>{"message": "&lt;jws&gt;"}</code>, and the company <span class="kw">MUST</span> record the outbound message and its HTTP result. The agent <span class="kw">MUST</span> verify the signature with the key anchored to the issuer and <span class="kw">SHOULD</span> reject a repeated <code>jti</code>. <span class="mk mk--exp">Experimental</span></p></div></div>
 		<div class="req" id="r8"><a class="req__id" href="#r8">R8</a><div><p>A request that proposes a change (<code>despacho.proponer_cambio</code>) <span class="kw">MUST</span> create a normal operation: a revision with terms signed by the company, <code>user_approval_required: true</code> and its VXP Proof chain. The message cites <code>request_url</code>, <code>proposal_id</code> and <code>terms_digest</code>. Proposing <span class="kw">MUST NOT</span> execute. The agent accepts, with the user's approval, through the accept endpoint.</p></div></div>
 		<div class="req" id="r9"><a class="req__id" href="#r9">R9</a><div><p>Accepting a proposal from the relationship <span class="kw">MUST</span> check again that the relationship and the delegation are still in force. If the person revoked in the meantime, the answer is <code>403 relationship_revoked</code> and there is no effect.</p></div></div>
 	</div>
@@ -755,7 +756,7 @@ python ../verifier/verificar_paquete.py vectores ../vectors/vectores-0.1.json
 python ../verifier/verificar_paquete.py pact ../vectors/vectores-pact-0.1.json
 python scripts/cruce-verificadores.py
 python scripts/fuzz-diferencial.py 20000</pre></div>
-	<p><span class="mk mk--pend">Pending</span> A conformance kit that lets a third party check its own implementation.</p>
+	<p>A third party checks its own implementation of the native profile with the conformance validator: it acts as a personal agent against any company endpoint, cites the rule behind each check and reports each one as passed, failed, optional or manual (<code>conformance/validate.ts</code>, <code>conformance/CHECKLIST.md</code>, <code>conformance/MATRIX.md</code>). Against the reference implementation: 50 passed, 0 failed, 3 manual.</p>
 </section>
 
 <!-- ═══ 13 ══════════════════════════════════════════════════════════════════ -->
@@ -794,7 +795,7 @@ python scripts/fuzz-diferencial.py 20000</pre></div>
 			<li>Independent review of VXP Relationship and of the changes to VXP Proof.</li>
 			<li>Parts of Poppy draft 0.2 not implemented: the person's direct conversation with the company, streaming, DPoP nonce, web browsing with a shared session, OpenAPI and MCP, Direct and Mediated Sign-In, and a screen where the person sees and disconnects their agents.</li>
 						<li>Publishing the site and the repository on <code>vxpprotocol.org</code>.</li>
-			<li>A conformance kit that lets a third party check its own implementation.</li>
+			<li>A third party that runs the conformance validator (§12) against its own implementation.</li>
 		</ul>
 	</div>
 
@@ -814,8 +815,8 @@ python scripts/fuzz-diferencial.py 20000</pre></div>
 <footer class="foot">
 	<div class="foot__in">
 		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
-		<div><b>Protocol</b><ul><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
-		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li></ul></div>
+		<div><b>Protocol</b><ul><li><a href="../docs/">Docs</a></li><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../demos/">Demos</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li><li><a href="../implement/#participate">Take part</a></li></ul></div>
 	</div>
 </footer>
 <script src="../assets/site.js" defer></script>

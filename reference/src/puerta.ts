@@ -94,7 +94,9 @@ export function crearPuerta(cfg: Config) {
 	const del = new Delegaciones();
 	const poppy = new CaraPoppy(nucleo, dir, del, cfg.authOrigin);
 	const salidaHttp = cfg.fetch ?? ((u: string, i?: RequestInit) => fetch(u, i));
-	const nativo = new CaraNativa(nucleo, dir, del, cfg.authOrigin, new Relaciones(), salidaHttp, cfg.ttlPase ?? 3600);
+	const relaciones = new Relaciones();
+	relaciones.dirLlaves = cfg.dirLlaves ?? null;
+	const nativo = new CaraNativa(nucleo, dir, del, cfg.authOrigin, relaciones, salidaHttp, cfg.ttlPase ?? 3600);
 	/** Traditional channels (WhatsApp, web chat, voice): detection, structured connection offer and limits. */
 	const canales = new Canales(nucleo, cfg.authOrigin, cfg.providerOrigin);
 	/** Web Bot Auth (RFC 9421): verifies the signature of agents that identify themselves on the web (e.g. ChatGPT agent). */
@@ -229,6 +231,8 @@ export function crearPuerta(cfg: Config) {
 				return r && r.tenantId === tenant ? json(200, { revoked: true }) : json(404, { error: "relationship_not_found" });
 			}
 			if (ruta[1] === "salida") return json(200, nativo.relaciones.salida.filter((s) => s.tenantId === tenant));
+			// Runs the hotel's late-arrival rule now, or as if it were `at` (simulated clock of the test environment).
+			if (ruta[1] === "revisar-llegadas" && req.method === "POST") return json(200, await nativo.revisarLlegadas(e, body.at ? new Date(String(body.at)) : new Date()));
 		}
 		// Traditional channels: an inbound WhatsApp message or a transcribed call.
 		if (ruta[0] === "canal" && ruta[1] === "entrada" && req.method === "POST") return json(200, canales.entrante(nucleo.empresa(tenant), body));

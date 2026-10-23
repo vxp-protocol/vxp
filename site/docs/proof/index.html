@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VXP Proof · VXP docs</title>
+<meta name="description" content="The signed chain that records what was asked, approved, executed and read back, and how anyone verifies it.">
+<link rel="alternate" type="text/markdown" href="../../docs/proof.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/vxp.css">
+<link rel="stylesheet" href="../../assets/docs.css">
+<link rel="stylesheet" href="../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../architecture/">Architecture</a></li>
+			<li><a href="../../spec/">Specification</a></li>
+			<li><a href="../../examples/">Examples</a></li>
+			<li><a href="../../verify/">Verify</a></li>
+			<li><a href="../../conformance/">Conformance</a></li>
+			<li><a href="../../implement/">Implement</a></li>
+			<li><a href="../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../docs/">VXP documentation</a></li><li><a href="../../docs/introduction/">Introduction</a></li><li><a href="../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../docs/proof/" aria-current="page">VXP Proof</a></li><li><a href="../../docs/relationship/">VXP Relationship</a></li><li><a href="../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../docs/guides/company/">Guide for companies</a></li><li><a href="../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../docs/examples/">Examples and messages</a></li><li><a href="../../docs/specification/">Specification and versions</a></li><li><a href="../../docs/conformance/">Tests and conformance</a></li><li><a href="../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">VXP Proof</h1>
+		<p class="lead">The signed chain that records what was asked, approved, executed and read back, and how anyone verifies it.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#what-it-records">What it records</a></li><li><a href="#the-rules-that-make-it-worth-something">The rules that make it worth something</a></li><li><a href="#formats">Formats</a></li><li><a href="#fetching-a-proof">Fetching a proof</a></li><li><a href="#verifying-a-proof">Verifying a proof</a></li><li><a href="#keys-and-time">Keys and time</a></li></ul></nav>
+		<h2 id="what-it-records">What it records<a class="anchor" href="#what-it-records" aria-label="Link to What it records">#</a></h2>
+<p>Each operation produces a chain of signed statements. Each statement names the previous one by its digest, and is signed by the role that observed it (<a class="rule" href="../../spec/#proof">§6</a>):</p>
+<div class="tbl tbl--fit"><table><thead><tr><th><code>kind</code></th><th>Signed by</th><th>What it records</th></tr></thead><tbody><tr><td><code>request</code></td><td>operator</td><td>What was asked, and by which agent (<code>client_id</code>)</td></tr><tr><td><code>terms</code></td><td>company</td><td>Each revision: the digest of the exact terms, the commitment (<code>firm</code> or <code>conditional</code>), the expiry, what will be read back</td></tr><tr><td><code>counter</code></td><td>operator</td><td>A counter-proposal from the agent</td></tr><tr><td><code>user_approval</code></td><td>operator</td><td>Approval of the latest revision, and its method</td></tr><tr><td><code>company_review</code></td><td>company</td><td>A decision by a person at the company, when its rule requires one</td></tr><tr><td><code>execution</code></td><td>operator</td><td>The single execution, on the approved revision</td></tr><tr><td><code>read_back</code></td><td>operator</td><td>What the company's system showed afterwards, term by term</td></tr><tr><td><code>outcome</code></td><td>company</td><td><code>succeeded</code>, <code>failed</code>, <code>cancelled</code>, <code>expired</code> or <code>unknown</code></td></tr><tr><td><code>correction</code>, <code>revocation</code></td><td>company</td><td>What became known after the final state</td></tr></tbody></table></div>
+<p>Here is the chain the reference implementation produced in a native-only run:</p>
+<div class="code"><div class="code__head"><b>Proof chain (payload bodies, processed)</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">[
+  {
+    "seq": 0,
+    "kind": "request",
+    "signer": "operator",
+    "prev": null,
+    "body": {
+      "channel": "vxp",
+      "client_id": "https://agent.example/agent.json",
+      "request_digest": "sha-256:mfJleoso5oEyt_pqJS3OtbmYam7cyncRBrAcqbKfIrI"
+    }
+  },
+  {
+    "seq": 1,
+    "kind": "terms",
+    "signer": "company",
+    "prev": "sha-256:kAO5f-JoCSonqCQnG_1vki1T01wmqh4wDS5YK74U0v4",
+    "body": {
+      "capability": "pedido.reprogramar_despacho",
+      "commitment": {
+        "mode": "firm",
+        "requires": []
+      },
+      "company_review_required": false,
+      "expires_at": "2026-10-22T22:45:29.356Z",
+      "read_back_terms": [
+        "pedido",
+        "despacho_nuevo"
+      ],
+      "revision": 1,
+      "terms_digest": "sha-256:LexccQ2IrXTwkx-zM3KJ3m2Sf5-YHsqzs-po_QCxAC0",
+      "user_approval_required": true
+    }
+  },
+  {
+    "seq": 2,
+    "kind": "user_approval",
+    "signer": "operator",
+    "prev": "sha-256:lCNrubnR6MLwUhwhcNUCWaqAKxFGOVWIlx3Rafs8v08",
+    "body": {
+      "method": "agent_asserted",
+      "revision": 1,
+      "terms_digest": "sha-256:LexccQ2IrXTwkx-zM3KJ3m2Sf5-YHsqzs-po_QCxAC0"
+    }
+  },
+  {
+    "seq": 3,
+    "kind": "execution",
+    "signer": "operator",
+    "prev": "sha-256:wk4J9m_VE1zzlLhc1QEZ7l3m7USokQiF9gtICMNft5U",
+    "body": {
+      "attempt": 1,
+      "capability": "pedido.reprogramar_despacho",
+      "release": "sha-256:u1TBBxJXTKta36K5UI_j_myhQaHzbPP2HcF4rBKGxPA",
+      "revision": 1,
+      "terms_digest": "sha-256:LexccQ2IrXTwkx-zM3KJ3m2Sf5-YHsqzs-po_QCxAC0"
+    }
+  },
+  {
+    "seq": 4,
+    "kind": "read_back",
+    "signer": "operator",
+    "prev": "sha-256:Gs2GOu4azZ6aE1VaKjm2Edj91Zya-VP4zP9Fbc71VJw",
+    "body": {
+      "matches_terms": true,
+      "method": "system_read_back",
+      "observed": {
+        "_sd": [
+          "g1MZFKspn_fcTPBy5COpYIVc6rPjeQYv9bF7QBCrv5g"
+        ],
+        "despacho_nuevo": "2026-10-28",
+        "pedido": "P-1042"
+      },
+      "source": "company_system"
+    }
+  },
+  {
+    "seq": 5,
+    "kind": "outcome",
+    "signer": "company",
+    "prev": "sha-256:jfSCFRNR4QjvnD9VjmaNWdhfAg4ftVxMWy5xLrrT6Jo",
+    "body": {
+      "claimed_assurance": [
+        "issuer_key_attested",
+        "operator_observed",
+        "operator_reported_read_back",
+        "operator_reported_agent_approval"
+      ],
+      "result_summary_digest": "sha-256:aKs3uy77c1osgD7qSgTqNJ0_YITroc5iwoYHqFmSl6s",
+      "revision": 1,
+      "state": "succeeded",
+      "terms_digest": "sha-256:LexccQ2IrXTwkx-zM3KJ3m2Sf5-YHsqzs-po_QCxAC0",
+      "third_party": []
+    }
+  }
+]</pre></div>
+<h2 id="the-rules-that-make-it-worth-something">The rules that make it worth something<a class="anchor" href="#the-rules-that-make-it-worth-something" aria-label="Link to The rules that make it worth something">#</a></h2>
+<ul><li><b>Binding by digest</b> (<a class="rule" href="../../spec/#p1">P1</a>): approval, execution and outcome all cite the digest of the exact revision. Terms that change after approval no longer match.</li><li><b>No success without reading the system</b> (<a class="rule" href="../../spec/#p6">P6</a>, <a class="rule" href="../../spec/#o7">O7</a>): a capability that cannot be read back never signs <code>succeeded</code>.</li><li><b>Unknown is signed, not hidden</b> (<a class="rule" href="../../spec/#p3">P3</a>): if it is not known whether the effect happened, the company signs <code>unknown</code>, and a later fact goes in as a <code>correction</code> (<a class="rule" href="../../spec/#p4">P4</a>).</li><li><b>Contradictions stop</b> (<a class="rule" href="../../spec/#p5">P5</a>): if the system shows something other than what was approved, the read-back says so, the result stays <code>unknown</code>, and nothing is retried.</li><li><b>The verifier derives the level</b> (<a class="rule" href="../../spec/#p7">P7</a>): the issuer never declares how strong its own evidence is.</li></ul>
+<h2 id="formats">Formats<a class="anchor" href="#formats" aria-label="Link to Formats">#</a></h2>
+<ul><li>One SD-JWT per statement (RFC 9901), ES256, header <code>typ: vxp-stmt+sd-jwt</code> and <code>kid</code> = RFC 7638 thumbprint.</li><li>Payload in JCS (RFC 8785). Personal data travels only as selective disclosures.</li><li>The trust members, meaning whose keys these are, where they are published, who holds the company's key and which log is used, are published in the issuer's RFC 8414 metadata as <code>vxp_proof</code>, never inside the package.</li></ul>
+<p>Details: <a class="rule" href="../../spec/#proof-statement-format">§6, format</a>, <a class="rule" href="../../spec/#proof-chain-rules">§6, chain rules</a>.</p>
+<h2 id="fetching-a-proof">Fetching a proof<a class="anchor" href="#fetching-a-proof" aria-label="Link to Fetching a proof">#</a></h2>
+<p>In the native profile, the agent fetches the package of its own request:</p>
+<div class="code"><div class="code__head"><b>Fetch the proof</b><span>http</span></div><pre data-copy tabindex="0">GET /v1/requests/{request_id}/proof
+Authorization: DPoP &lt;token&gt;
+DPoP: &lt;proof&gt;</pre></div>
+<p>The package is <code>{v, company, op, statements[], log}</code>. Someone else's request and a missing one answer the same way: <code>404 request_not_found</code>.</p>
+<h2 id="verifying-a-proof">Verifying a proof<a class="anchor" href="#verifying-a-proof" aria-label="Link to Verifying a proof">#</a></h2>
+<p>Anyone can verify a package with the company's public material: the issuer's metadata and the key sets it names. The <a href="../../docs/guides/verifier/">verifier guide</a> shows how, offline or live. This is the verdict for the chain above:</p>
+<div class="code"><div class="code__head"><b>Verifier verdict</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "valid": true,
+  "final_state": "succeeded",
+  "revision": 1,
+  "approval": "agent_asserted",
+  "derived_assurance": [
+    "issuer_key_attested",
+    "operator_observed",
+    "operator_reported_read_back",
+    "operator_reported_agent_approval"
+  ],
+  "single_root": "operator",
+  "custody_declared": "operator_hosted",
+  "logged": false,
+  "company": "https://store.example/e/ferreteria-demo",
+  "anchor": "issuer",
+  "key_source": "issuer_metadata_live",
+  "profile": "issuer",
+  "statements": 6,
+  "log_inclusion": "ok",
+  "tree_size": 6,
+  "live_tree_size": 6,
+  "consistency": "ok",
+  "witnesses": 0,
+  "operation": "matches"
+}</pre></div>
+<p>Read it with the table in <a class="rule" href="../../spec/#reading-a-verdict">§10, reading a verdict</a>:</p>
+<ul><li><code>valid</code> is integrity;</li><li><code>company</code>, <code>anchor</code> and <code>key_source</code> are provenance;</li><li><code>approval</code> is the method of approval;</li><li><code>final_state</code> is what the company asserts;</li><li><code>derived_assurance</code>, <code>single_root</code> and <code>logged</code> are how much supports it.</li></ul>
+<p>Here <code>single_root: operator</code> and <code>logged: false</code>: an attestation signed by the operator, intact and ordered, not an independent confirmation.</p>
+<h2 id="keys-and-time">Keys and time<a class="anchor" href="#keys-and-time" aria-label="Link to Keys and time">#</a></h2>
+<p>Proofs are only as durable as the keys that verify them. Keep proof keys persistent. When you rotate, keep the earlier public key published for as long as proofs signed with it are to be verified (<a class="rule" href="../../spec/#key-rotation">§10, key rotation</a>). A proof whose key was retired still verifies against public material saved while that key was published.</p>
+		<div class="dfoot">
+			<a href="../../docs/proof.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/proof.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../docs/quickstart/"><span>Previous</span>Quickstart</a>
+			<a href="../../docs/relationship/"><span>Next</span>VXP Relationship</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../docs/quickstart/">Quickstart</a></li><li><a href="../../spec/">Specification</a></li><li><a href="../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../verify/">Verifier</a></li><li><a href="../../demos/">Demos</a></li><li><a href="../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../docs/changelog/">Changelog</a></li><li><a href="../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../assets/site.js" defer></script>
+<script src="../../assets/docs-site.js" defer></script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VXP · Verifiable eXchange Protocol</title>
-<meta name="description" content="An open protocol for work that personal agents do for people inside companies. Two public components: VXP Proof, signed evidence checked against the company's own system, and VXP Relationship, the agreement the person authorized.">
+<meta name="description" content="An open protocol for the work companies do when a person's own agent asks for it: a booking, a sale, a change, a request. VXP Relationship sets what the agent may do; VXP Proof leaves signed evidence anyone can check.">
 <link rel="alternate" hreflang="en" href="https://vxpprotocol.org/">
 <link rel="alternate" hreflang="es" href="https://vxpprotocol.org/es/">
 <link rel="alternate" hreflang="x-default" href="https://vxpprotocol.org/">
@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/vxp.css">
+<link rel="stylesheet" href="assets/home.css">
 <script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
@@ -21,6 +22,7 @@
 		<a class="mark" href="./"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
 		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
 		<ul id="menu">
+			<li><a href="docs/">Docs</a></li>
 			<li><a href="architecture/">Architecture</a></li>
 			<li><a href="spec/">Specification</a></li>
 			<li><a href="examples/">Examples</a></li>
@@ -36,47 +38,105 @@
 
 <main id="main">
 <section class="hero">
-	<div class="wrap hero__in">
+	<div class="wrap hero__in hero__in--solo">
 		<p class="kicker">Open protocol · draft 0.1</p>
-		<h1 class="h1 reveal-words" data-lines>What the agent asked. What the person approved. What the system did.</h1>
-		<p class="lead">VXP is an open protocol for work that personal agents do for people inside companies. It has two public components: <b>VXP Proof</b>, signed evidence of what was asked, approved, executed and then read in the company's own system, and <b>VXP Relationship</b>, the agreement the person authorized, within which either side can start a request.</p>
+		<h1 class="h1 reveal-words" data-lines>Companies book, sell, change and fix things for people every day. Now the request comes from the person's own agent.</h1>
+		<p class="lead">VXP is an open protocol for that work. The person authorizes what their agent may do with the company, the company does it in its own systems under its own rules, and both keep signed evidence that anyone can check afterwards.</p>
 		<div class="hero__cta">
-			<a class="btn btn--solid" href="spec/">Read the specification</a>
-			<a class="btn btn--ghost" href="verify/">Verify a proof</a>
+			<a class="btn btn--solid" href="#work">See how it works</a>
+			<a class="btn btn--ghost" href="docs/">Read the docs</a>
 		</div>
-		<p class="hero__meta"><span>Native profile: experimental</span><span>Interoperates with Poppy draft 0.2 and PACT 1.0</span><span>Apache 2.0</span></p>
-		<figure class="receipt" aria-labelledby="receipt-cap" data-receipt>
-			<figcaption id="receipt-cap" class="receipt__head"><b>Proof</b><span class="receipt__op"></span></figcaption>
-			<ol class="receipt__rows"></ol>
-			<p class="receipt__verdict"></p>
-			<a class="receipt__more" href="#run">How this proof was produced</a>
+		<p class="hero__meta"><span>Draft 0.1 · the native profile is experimental</span><span>Apache 2.0</span></p>
+	</div>
+</section>
+
+<section class="sec" aria-labelledby="work-h" id="work">
+	<div class="wrap">
+		<div class="sec__head">
+			<p class="kicker">1 · The work</p>
+			<h2 class="h2" id="work-h">It starts with something a company has to resolve</h2>
+			<p class="lead">A booking, a sale, a change, a request or a problem. The company already knows how to do it, in its own systems and under its own rules. What changes is who asks.</p>
+		</div>
+		<ul class="jobs">
+			<li class="job"><p class="job__ind">Retail</p><h3>Move the delivery of an order to another day</h3><p><b>Inside the company:</b> check the route and the stock, change the date in the order system.</p></li>
+			<li class="job"><p class="job__ind">Hotels</p><h3>Book two nights, or hold a booking for a late arrival</h3><p><b>Inside the company:</b> quote the current rate, hold the room, record the guarantee.</p></li>
+			<li class="job"><p class="job__ind">Distribution</p><h3>Buy thirty units at the volume price</h3><p><b>Inside the company:</b> apply the discount policy, issue the quote, create the order.</p></li>
+			<li class="job"><p class="job__ind">Healthcare</p><h3>Reschedule an appointment</h3><p><b>Inside the company:</b> find a free slot with the same professional and update the schedule.</p></li>
+			<li class="job"><p class="job__ind">Utilities and telecom</p><h3>Report an outage at home and follow it up</h3><p><b>Inside the company:</b> open the ticket, assign a visit, report each change of state.</p></li>
+			<li class="job"><p class="job__ind">Insurance</p><h3>Open a claim after an accident</h3><p><b>Inside the company:</b> check the policy, register the claim, ask for what is missing.</p></li>
+		</ul>
+	</div>
+</section>
+
+<section class="sec" aria-labelledby="who-h" id="agent" style="background:var(--soft)">
+	<div class="wrap who">
+		<div class="sec__head" style="margin:0">
+			<p class="kicker">2 · Who asks</p>
+			<h2 class="h2" id="who-h">More and more, it is the person's own agent</h2>
+			<p class="lead">The person talks to their agent, on the phone or in a chat. The agent goes to the company to ask for something, to pick up a request already under way, or to answer when the company needs a decision. The company did not build that agent and cannot see its conversation.</p>
+			<p class="body-soft">Before it acts, the company needs four answers, and so does anyone who checks the work later:</p>
+			<ol class="origin__qs">
+				<li><span>1</span>Who asks, and on whose behalf?</li>
+				<li><span>2</span>What may that agent do here, and until when?</li>
+				<li><span>3</span>Which exact terms were accepted, and how?</li>
+				<li><span>4</span>What ran, and what did the company's system show afterwards?</li>
+			</ol>
+		</div>
+		<figure class="cast" style="margin:0" aria-label="The person, their agent and the company">
+			<div class="cast__row" aria-hidden="true">
+				<span class="cast__who"><i class="shape shape--person"></i>Person</span>
+				<span class="cast__who"><i class="shape shape--agent"></i>Personal agent</span>
+				<span class="cast__who"><i class="shape shape--company"></i>Company</span>
+			</div>
+			<ul class="lanes">
+				<li class="lane"><b>Asks</b><p>«Move my order to Wednesday.» The agent starts a request with the company.</p><span class="lane__arrow">agent → company</span></li>
+				<li class="lane"><b>Continues</b><p>Days later it comes back to the same request, and the company recognizes it.</p><span class="lane__arrow">agent → company</span></li>
+				<li class="lane lane--company"><b>Answers</b><p>The company needs a decision and asks the agent, within what the person allowed.</p><span class="lane__arrow">company → agent</span></li>
+			</ul>
 		</figure>
 	</div>
 </section>
 
-<section class="sec" aria-labelledby="origin-h">
-	<div class="wrap origin">
-		<div class="sec__head" style="margin:0">
-			<p class="kicker">Where it comes from</p>
-			<h2 class="h2" id="origin-h">Companies already do this work. Now agents ask for it.</h2>
-			<p class="lead">Every day, companies sell, book, change deliveries and handle incidents inside their own systems. More and more often the request comes from a person's own agent, which the company did not build and whose conversation it cannot see. For the company to act on that request, it needs a relationship the person authorized; for anyone to trust the result, it has to be verifiable afterwards. After each operation, the same questions come back:</p>
+<section class="sec" aria-labelledby="how-h" id="how">
+	<div class="wrap">
+		<div class="sec__head">
+			<p class="kicker">3 · What VXP adds</p>
+			<h2 class="h2" id="how-h">A relationship, exact conditions and evidence</h2>
+			<p class="lead">VXP does not replace how the company works. It gives the agent and the company a common way to agree on what may be done, to do it exactly once, and to prove it.</p>
 		</div>
-		<ol class="origin__qs">
-			<li><span>1</span>Who asked, and on whose behalf?</li>
-			<li><span>2</span>Which exact terms did the person approve, and through which channel?</li>
-			<li><span>3</span>What ran, and how many times?</li>
-			<li><span>4</span>What did the company's system record afterwards?</li>
+		<ol class="adds">
+			<li class="add">
+				<span class="add__n">Relationship</span>
+				<h3>The person decides what the agent may do</h3>
+				<p>The person links their account and authorizes the agent with the company: which operations, on which resource, up to what limit, until when. They can revoke it. Within that agreement the company can also start a request toward the agent.</p>
+				<p class="add__tag">VXP Relationship</p>
+			</li>
+			<li class="add">
+				<span class="add__n">Conditions</span>
+				<h3>The company proposes exact terms, and runs them once</h3>
+				<p>Nothing runs until one exact revision of the terms is accepted. Then it runs once, under the company's own rules. Every implementation meets the <a href="spec/#operation-requirements">operation requirements O1 to O7</a>.</p>
+				<p class="add__tag">Operation requirements</p>
+			</li>
+			<li class="add">
+				<span class="add__n">Evidence</span>
+				<h3>Each step leaves a signed statement</h3>
+				<p>The request, the terms, the approval and how it was given, the execution and what the company's system showed afterwards, each signed and linked to the one before. Anyone can check the chain.</p>
+				<p class="add__tag">VXP Proof</p>
+			</li>
 		</ol>
-		<p class="small" style="grid-column:1/-1">VXP was created by SOVRAS, which builds agents that change orders, deliveries and reservations inside companies' systems. SOVRAS's reference implementation is the first implementation of VXP.</p>
+		<div class="interop">
+			<p><b>Its own profile.</b> VXP has a native profile that needs no other protocol: discovery on the company's domain, the agent's own identity, permission per request, operations, Proof and Relationship.</p>
+			<p><b>Optional interoperability.</b> For agents that already speak Poppy or PACT, a company can also publish those adapters, on the same issuer. VXP was created by SOVRAS; anyone can implement it.</p>
+		</div>
 	</div>
 </section>
 
 <section class="sec deep" aria-labelledby="run-h" id="run">
 	<div class="wrap">
 		<div class="sec__head">
-			<p class="kicker">One operation, end to end</p>
+			<p class="kicker">4 · One operation, step by step</p>
 			<h2 class="h2" id="run-h">A person asks their agent to move a delivery</h2>
-			<p class="lead">Seven steps later the company's system has changed, and the agent and the company hold the same signed record. Every object below was captured from the reference implementation in the evening run of 22 October 2026, running VXP's native profile alone, with persistent keys, against a test company. Hosts are shown as <code>store.example</code> and <code>agent.example</code>, and long tokens are shortened.</p>
+			<p class="lead">Order P-1042 at a test hardware store, Ferretería Demo. Each step says what happens; open the messages only if you want to see them. Captured from the reference implementation running the native profile alone, on the evening of 22 October 2026.</p>
 		</div>
 		<div class="run" data-run>
 			<ol class="run__steps" aria-label="Steps"></ol>
@@ -90,154 +150,79 @@
 						<div class="run__ctl"><button type="button" data-prev aria-label="Previous step">Prev</button><button type="button" data-play aria-pressed="false">Pause</button><button type="button" data-next aria-label="Next step">Next</button></div>
 					</figcaption>
 				</figure>
-				<div class="paths" aria-label="Status of this step by entry path"></div>
-				<div class="obj">
-					<div class="obj__head"><b class="obj__title"></b><span>captured · native profile</span></div>
-					<pre tabindex="0"></pre>
+				<div class="run__more"><button type="button" class="tech-btn" data-tech aria-expanded="false" aria-controls="run-tech">Show the messages and objects</button></div>
+				<div class="run__tech" id="run-tech" hidden>
+					<p class="run__techsay"></p>
+					<ol class="wire"></ol>
+					<div class="paths"></div>
+					<div class="obj">
+						<div class="obj__head"><b class="obj__title"></b><span>captured · native profile</span></div>
+						<pre tabindex="0"></pre>
+					</div>
+					<p class="small">Hosts are shown as <code>store.example</code> and <code>agent.example</code>, and long tokens are shortened. Entry-path labels are explained in <a href="conformance/">Conformance</a>.</p>
 				</div>
 			</div>
 		</div>
-		<p class="small" style="margin-top:22px">Status labels: <b>tested</b> is an automated test in process and over the network; <b>live agent</b> means that running personal agents, not a test script, went through that step on 21 October 2026 (see <a href="examples/#observed">Examples</a>); <b>official suite</b> and <b>own test</b> are explained in <a href="conformance/">Conformance</a>.</p>
 	</div>
 </section>
 
-<section class="sec" aria-labelledby="qa-h">
+<section class="sec" aria-labelledby="proof-h" id="proof">
 	<div class="wrap">
 		<div class="sec__head">
-			<p class="kicker">Two questions</p>
-			<h2 class="h2" id="qa-h">What it allows, and what it depends on</h2>
+			<p class="kicker">5 · VXP Proof</p>
+			<h2 class="h2" id="proof-h">Six signed statements, each pointing to the one before</h2>
+			<p class="lead">The proof of the operation above. Two roles sign: the company signs the terms it offered and the result it declares; the operator, which runs the operation for the company, signs what it received, executed and read back. Choose a statement to inspect it, then try to alter it.</p>
 		</div>
-		<div class="qa">
+		<div class="pl" data-proof-lab><noscript><p>This view needs JavaScript. The same proof can be downloaded from <a href="examples/#run-2026-10-22-evening">Examples</a>.</p></noscript></div>
+	</div>
+</section>
+
+<section class="sec" aria-labelledby="rel-h" id="relationship" style="background:var(--soft)">
+	<div class="wrap">
+		<div class="sec__head">
+			<p class="kicker">6 · VXP Relationship</p>
+			<h2 class="h2" id="rel-h">An agreement the person authorized, so the company can ask too</h2>
+			<p class="lead">In the same consent as the order, the person allowed the store to propose delivery changes to their agent, twice a day at most, for one hour. Within that agreement the store started a request, and the agent answered within what was authorized.</p>
+		</div>
+		<div class="rl" data-rel-lab><noscript><p>This view needs JavaScript. The relationship is described in <a href="spec/#relationship">specification §7</a>.</p></noscript></div>
+	</div>
+</section>
+
+<section class="sec" aria-labelledby="demos-h" id="demos">
+	<div class="wrap">
+		<div class="sec__head">
+			<p class="kicker">7 · Demonstrations</p>
+			<h2 class="h2" id="demos-h">See it run, and check it yourself</h2>
+		</div>
+		<div class="twin">
 			<article>
-				<h3 class="h3">What can a personal agent do with a company that implements VXP?</h3>
-				<ul>
-					<li>Find the company and read what it offers.</li>
-					<li>Identify itself and say which person it acts for.</li>
-					<li>Receive permission for one specific operation, and ask for more when it needs it.</li>
-					<li>Ask, negotiate and receive a proposal with exact terms.</li>
-					<li>Have the person approve those terms, then see the operation run once.</li>
-					<li>Receive a signed record of what the company's system shows afterwards.</li>
-					<li>Answer when the company asks something within an agreement the person approved.</li>
-				</ul>
+				<h3>Interactive</h3>
+				<p>The step-by-step operation above, and a verifier that checks a real proof in your browser, intact or tampered with. The demos page lists every interactive demo that is published.</p>
+				<a class="btn btn--ghost" href="demos/">Demos</a>
 			</article>
 			<article>
-				<h3 class="h3">Can a company implement VXP without Poppy, PACT or the SOVRAS platform?</h3>
-				<dl>
-					<div><dt>What the specification allows</dt><dd>Yes. A company can implement VXP with the native profile alone: discovery, authorization, operations, VXP Proof and VXP Relationship. Nothing in the two components or in the operation requirements depends on Poppy or PACT, and no SOVRAS service is needed (<a href="spec/#native-only">specification §8, native-only gateway</a>).</dd></div>
-					<div><dt>What the native implementation has today</dt><dd>The reference implementation runs as a native-only gateway, with both adapters switched off. A test runs the whole cycle with an agent that signs with plain <code>node:crypto</code>, and checks the proof with the independent verifier anchored by the issuer alone. It is experimental: tested, and no agent outside SOVRAS has used it yet.</dd></div>
-					<div><dt>Where Poppy and PACT fit</dt><dd>They are optional adapters, for agents that already speak those protocols. A company can publish them next to the native profile, on the same issuer.</dd></div>
-				</dl>
+				<h3>With live agents</h3>
+				<p>On 21 October 2026, personal agents came in through the Poppy adapter, among them Nova AI, SOVRAS's personal agent in beta, and a third-party web agent, Grok, through the companies' web pages. They moved deliveries, bought and booked with a test store and a test hotel, and the hotel asked a guest's agent to keep or release a booking.</p>
+				<a class="btn btn--ghost" href="examples/#observed">What they did, with its evidence</a>
 			</article>
 		</div>
 	</div>
 </section>
 
-<section class="sec" aria-labelledby="caps-h">
+<section class="sec deep" aria-labelledby="open-h" id="docs">
 	<div class="wrap">
 		<div class="sec__head">
-			<p class="kicker">What VXP defines</p>
-			<h2 class="h2" id="caps-h">Two public components</h2>
-		</div>
-		<div class="caps">
-			<article class="cap">
-				<h3>VXP Proof</h3>
-				<p>A chain of signed statements that binds, by digest, the request, the exact terms of each revision, the approval and its method, the execution, what the company's system showed afterwards and the declared result. When the outcome is unknown, the chain says unknown. Proof is not an execution engine: it records what was asked, approved, executed and observed.</p>
-				<p class="cap__rule">The verifier derives the level of evidence. Today it reports one root of trust: the operator.</p>
-			</article>
-			<article class="cap">
-				<h3>VXP Relationship</h3>
-				<p>The agreement the person authorized between their agent and a company: both parties, the actions allowed in each direction, a daily limit, validity and revocation. Within it, the company can start a request toward the agent, such as keeping or releasing a booking. Relationship does not replace the company's authorization: each request still passes the company's own rules.</p>
-				<p class="cap__rule">Signed agreement <code>vxp-relationship+jwt</code>, signed company request, signed reply receipt.</p>
-			</article>
-		</div>
-		<p class="note" style="margin-top:28px">VXP also states <a href="spec/#operation-requirements">operation requirements O1 to O7</a>: the behaviour every implementation shows where a request becomes an operation, such as executing only the exact revision that was approved, and only once. They define no interface. How an implementation enforces them is its own decision, and VXP Proof leaves the evidence to check them afterwards.</p>
-	</div>
-</section>
-
-<section class="sec" aria-labelledby="paths-h">
-	<div class="wrap">
-		<div class="sec__head">
-			<p class="kicker">Entry paths</p>
-			<h2 class="h2" id="paths-h">Its own profile, and adapters for interoperability</h2>
-			<p class="lead">The native profile is VXP's own form. For agents that already speak Poppy or PACT, a company can publish those adapters next to it, on the same issuer.</p>
-		</div>
-		<div class="tbl"><table>
-			<thead><tr><th>Path</th><th>Discovery</th><th>Identity and authority</th><th>What has run</th></tr></thead>
-			<tbody>
-				<tr><td><b>VXP native</b></td><td><code>/.well-known/vxp.json</code></td><td>Client metadata, <code>private_key_jwt</code>, DPoP, per-operation <code>authorization_details</code></td><td><span class="st st--exp">experimental</span> · full cycle in automated tests, in process and over the network</td></tr>
-				<tr><td><b>Poppy adapter</b></td><td><code>poppy.json</code></td><td>Poppy draft 0.2 sign-in by device code, sessions, conversations, Operations</td><td><span class="st st--live">live agent</span> · personal agents on 21 Oct 2026, among them Nova AI, SOVRAS's personal agent in beta; official validator for discovery and conversations</td></tr>
-				<tr><td><b>PACT adapter</b></td><td>Agent Card</td><td>PACT 1.0 identity and delegated authority over A2A 1.0.1</td><td><span class="st">official Identity suite</span> and own delegated test · no third-party PACT agent yet</td></tr>
-				<tr><td><b>Web</b> · outside VXP</td><td>The company's site</td><td>No protocol: a SOVRAS channel. The agent browses, and approvals happen on the company's page</td><td><span class="st st--live">live agent</span> · Grok, a third-party web agent, 21 Oct 2026</td></tr>
-			</tbody>
-		</table></div>
-	</div>
-</section>
-
-<section class="sec" aria-labelledby="demo-h" style="background:var(--soft)">
-	<div class="wrap">
-		<div class="sec__head">
-			<p class="kicker">21 October 2026</p>
-			<h2 class="h2" id="demo-h">How personal agents took part</h2>
-			<p class="lead">These operations ran in SOVRAS's production with customers, first on SOVRAS's own resources. In the evidence, the companies are configured as test environments, and payments and the WhatsApp line are simulated. Personal agents came in through the Poppy adapter, among them Nova AI, SOVRAS's personal agent in beta, which works on the person's side: the person talks to it on WhatsApp, and Nova goes to the company through Poppy. A third-party web agent, Grok, came in through the companies' web pages.</p>
-		</div>
-		<div class="demos">
-			<article class="demo">
-				<h3>A delivery date moved, after a misread proposal</h3>
-				<dl><dt>Agent</dt><dd>A personal agent through the Poppy adapter, with a temporary identity</dd><dt>Authority</dt><dd>Read and change orders, granted by the person with a code</dd><dt>Operation</dt><dd>Revision 1 read the dates wrong. The agent countered, and revision 2 was approved: order moved from 24 to 28 October</dd><dt>Result</dt><dd>Read back from the store's system: delivery on 28 October</dd></dl>
-				<p class="demo__proof">Proof kept · chain consistent · signature no longer checkable</p>
-			</article>
-			<article class="demo">
-				<h3>A delivery date moved from the web</h3>
-				<dl><dt>Agent</dt><dd>Grok, browsing the store's site</dd><dt>Authority</dt><dd>No delegation: approval on the store's page, with a code sent through the company's approval channel (<code>company_channel</code>)</dd><dt>Operation</dt><dd>Order moved from 27 to 30 October, at no cost</dd><dt>Result</dt><dd>Read back from the store's system: delivery on 30 October</dd></dl>
-				<p class="demo__proof">Proof re-verified with signatures on 22 Oct 2026 · valid</p>
-			</article>
-			<article class="demo">
-				<h3>The rate went up before approval</h3>
-				<dl><dt>Agent</dt><dd>Grok, by user-agent (unsigned), through the hotel's chat and approval page</dd><dt>Authority</dt><dd>Approval on the hotel's page with a code</dd><dt>Operation</dt><dd>Two nights quoted at CLP 215,700; the room rate rose while the approval was pending</dd><dt>Result</dt><dd>Booked at the approved CLP 215,700. A new quote for the same dates came out at CLP 260,850</dd></dl>
-				<p class="demo__proof">Proof not kept for this operation</p>
-			</article>
-			<article class="demo">
-				<h3>The hotel asked the guest's agent</h3>
-				<dl><dt>Agent</dt><dd>A personal agent, inside its Poppy conversation</dd><dt>Authority</dt><dd>A relationship the guest approved on the hotel's page with a code: keep or release a booking</dd><dt>Question</dt><dd>Triggered by the hotel's operator: keep or release booking <span style="white-space:nowrap">R-3003</span>?</dd><dt>Result</dt><dd>The agent answered «keep», and the booking stayed held</dd></dl>
-				<p class="demo__proof">Answer recorded as a server event · signed receipt not kept</p>
-			</article>
-		</div>
-		<p class="note" style="margin-top:28px">The evidence keeps the Poppy sessions as temporary identities and does not separate which agent ran each operation. Two of the eight operations have no saved proof, and only one signature could be checked again, because the keys lived in memory. None was anchored in a public log. Each operation, with its evidence and its limits, is in <a href="examples/#observed">Examples</a>.</p>
-	</div>
-</section>
-
-<section class="sec deep" aria-labelledby="open-h">
-	<div class="wrap">
-		<div class="sec__head">
-			<p class="kicker">Open</p>
+			<p class="kicker">8 · Documentation</p>
 			<h2 class="h2" id="open-h">Everything needed to implement and check it</h2>
 		</div>
-		<div class="open">
-			<a href="spec/"><h3>Specification</h3><p>Thirteen sections, with stable anchors and normative MUST, SHOULD and MAY.</p></a>
+		<div class="open open--5">
+			<a href="docs/"><h3>Docs</h3><p>Guides for companies, personal agents and verifiers, from first request to proof.</p></a>
+			<a href="spec/"><h3>Specification</h3><p>The normative text, with stable anchors and MUST, SHOULD and MAY.</p></a>
+			<a href="architecture/"><h3>Architecture</h3><p>Participants, identities, entry paths and how the parts fit.</p></a>
 			<a href="verify/"><h3>Verifier</h3><p>Check a proof in the browser, with valid and tampered examples.</p></a>
 			<a href="conformance/"><h3>Conformance</h3><p>Test vectors, suites, commands and the results they produced.</p></a>
-			<a href="implement/"><h3>Implement</h3><p>Guides for companies, agent platforms and independent verifiers, and how to take part.</p></a>
+			<a href="implement/"><h3>Implement</h3><p>Step by step for companies, agent platforms and verifiers, and how to take part.</p></a>
 		</div>
-	</div>
-</section>
-
-<section class="sec" aria-labelledby="status-h">
-	<div class="wrap">
-		<div class="sec__head">
-			<p class="kicker">Status</p>
-			<h2 class="h2" id="status-h">Draft 0.1, evening revision of 22 October 2026</h2>
-		</div>
-		<div class="tbl"><table>
-			<thead><tr><th>Part</th><th>State</th><th>What is missing</th></tr></thead>
-			<tbody>
-				<tr><td>VXP Proof</td><td>Specified, implemented, tested</td><td>External witnesses and a second issuer; until then, proof is an operator attestation</td></tr>
-				<tr><td>VXP Relationship over a Poppy conversation</td><td>Run once with a live personal agent</td><td>An agent outside SOVRAS's runs; retries; notifying the person when the agent is not reading</td></tr>
-				<tr><td>VXP Relationship over an HTTP inbox</td><td>Experimental</td><td>A third-party agent with an inbox</td></tr>
-				<tr><td>Native profile</td><td>Experimental · runs as a native-only gateway</td><td>Adoption by a third-party agent</td></tr>
-				<tr><td>VXP Relationship over PACT</td><td>Pending</td><td>Specification and tests</td></tr>
-			</tbody>
-		</table></div>
-		<p class="small" style="margin-top:18px">Full list in <a href="status/">Status</a>.</p>
 	</div>
 </section>
 </main>
@@ -245,14 +230,17 @@
 <footer class="foot">
 	<div class="foot__in">
 		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
-		<div><b>Protocol</b><ul><li><a href="spec/">Specification</a></li><li><a href="architecture/">Architecture</a></li><li><a href="status/">Status</a></li></ul></div>
-		<div><b>Tools</b><ul><li><a href="verify/">Verifier</a></li><li><a href="conformance/">Conformance</a></li><li><a href="implement/">Implement</a></li><li><a href="implement/#participate">Take part</a></li></ul></div>
+		<div><b>Protocol</b><ul><li><a href="docs/">Docs</a></li><li><a href="spec/">Specification</a></li><li><a href="architecture/">Architecture</a></li><li><a href="status/">Status</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="verify/">Verifier</a></li><li><a href="demos/">Demos</a></li><li><a href="conformance/">Conformance</a></li><li><a href="implement/">Implement</a></li><li><a href="implement/#participate">Take part</a></li></ul></div>
 	</div>
 </footer>
 <script type="module">
-	import { montar, recibo } from "./assets/recorrido.js";
-	recibo(document.querySelector("[data-receipt]"));
+	import { montar } from "./assets/recorrido.js";
+	import { montarProof } from "./assets/proof-lab.js";
+	import { montarRelationship } from "./assets/relationship-lab.js";
 	montar(document.querySelector("[data-run]"));
+	montarProof(document.querySelector("[data-proof-lab]"), "verify/");
+	montarRelationship(document.querySelector("[data-rel-lab]"));
 </script>
 <script src="assets/site.js" defer></script>
 </body>

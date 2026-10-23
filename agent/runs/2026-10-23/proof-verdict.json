@@ -1,0 +1,26 @@
+{
+ "valid": true,
+ "final_state": "succeeded",
+ "revision": 2,
+ "approval": "agent_asserted",
+ "derived_assurance": [
+  "issuer_key_attested",
+  "operator_observed",
+  "operator_reported_read_back",
+  "operator_reported_agent_approval"
+ ],
+ "single_root": "operator",
+ "custody_declared": "operator_hosted",
+ "logged": false,
+ "company": "http://localhost:3810/e/hotel-demo",
+ "anchor": "issuer",
+ "key_source": "issuer_metadata_live",
+ "profile": "issuer",
+ "statements": 8,
+ "log_inclusion": "ok",
+ "tree_size": 8,
+ "live_tree_size": 8,
+ "consistency": "ok",
+ "witnesses": 0,
+ "operation": "matches"
+}

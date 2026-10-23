@@ -1,14 +1,16 @@
-// Recorrido de una operación VXP en siete pasos. Los objetos vienen de recorrido-data.js (captura real del
-// perfil nativo); este archivo sólo decide qué se dibuja y qué campo se señala en cada paso.
-// Los textos visibles van en TEXTOS, uno por idioma, elegido por <html lang>. Los objetos capturados no se traducen.
+// Walkthrough of one VXP operation in seven steps. The objects come from recorrido-data.js (a real capture of
+// the native profile); this file only decides what is drawn and which field is highlighted in each step.
+// Each step is told first in plain language; the technical messages and objects open only when the visitor
+// asks. Visible texts live in TEXTOS, one set per language, chosen by <html lang>.
+// Captured objects are not translated.
 import { RECORRIDO } from "./recorrido-data.js";
 
 const ACTORES = { person: { x: 70 }, agent: { x: 290 }, company: { x: 510 }, system: { x: 700 } };
 const LINKS = ["request", "terms", "user_approval", "execution", "read_back", "outcome"];
 const step = (id) => RECORRIDO.steps.find((s) => s.id === id);
 
-// Estructura de cada paso, común a todos los idiomas. flows: [de, a, vuelta]; paths: [vía, estado].
-// Estado por vía, de 02-ARQUITECTURA-EDITORIAL.md §3.
+// Structure of each step, shared by all languages. flows: [from, to, return]; paths: [path, state].
+// State per entry path, from 02-ARQUITECTURA-EDITORIAL.md §3.
 const PASOS = [
 	{
 		id: "discover",
@@ -29,7 +31,7 @@ const PASOS = [
 		flows: [["agent", "company"], ["company", "agent", true], ["company", "person"], ["person", "company"], ["company", "agent", true]],
 		paths: [["native", "tested"], ["poppy", "live"], ["pact", "own"]],
 		value: () => ({ request: step("authority").body, response: step("authority").response, token: { authorization_details: step("authority").token.authorization_details } }),
-		keys: ["state", "error", "identifier", "authorization_details", "type"],
+		keys: ["state", "error", "identifier", "authorization_details", "device_authorization_endpoint", "type"],
 	},
 	{
 		id: "context",
@@ -64,64 +66,80 @@ const PASOS = [
 	},
 ];
 
-// Por paso: título, explicación, rótulo de cada flecha (en el orden de flows), detalle de cada vía (en el
-// orden de paths, vacío si no lleva) y título del objeto mostrado.
+// Per step: title; say and flows in plain language (always shown); tech and wire with the real messages
+// (shown on request); detail for each path (in the order of paths, empty if none) and the object's title.
 const TEXTOS = {
 	en: {
 		actors: { person: "Person", agent: "Personal agent", company: "Company", system: "Company system" },
 		ways: { native: "Native", poppy: "Poppy draft 0.2", pact: "PACT 1.0" },
 		states: { tested: "tested", live: "live agent", suite: "official suite", own: "own test", pending: "pending" },
 		pause: "Pause", play: "Play", first: "first", none: "—",
+		techOpen: "Show the messages and objects", techClose: "Hide the messages and objects",
+		pathsLabel: "Status of this step by entry path",
 		statements: (n) => `${n} signed statements`,
 		attempt: (n) => `attempt ${n}`,
 		matches: "matches", mismatch: "mismatch", valid: "Valid", invalid: "Invalid",
 		steps: {
 			discover: {
 				title: "Discover",
-				say: "The agent reads /.well-known/vxp.json on the company's own domain: which operations exist, which ones need delegation and which ones leave proof.",
-				flows: ["GET /.well-known/vxp.json", "capabilities, issuer, endpoint"],
+				say: "The agent finds the company on the company's own website and reads what it offers: which requests it takes from agents, which ones need the person's permission, and which ones leave a signed record.",
+				flows: ["what do you offer?", "operations and their rules"],
+				tech: "The agent reads /.well-known/vxp.json on the company's domain: the issuer, the endpoint, each capability with its access and admission, and whether it leaves proof.",
+				wire: ["GET /.well-known/vxp.json", "capabilities, issuer, endpoint"],
 				extras: ["", "poppy.json", "Agent Card"],
 				obj: "GET /.well-known/vxp.json",
 			},
 			identify: {
 				title: "Identify",
-				say: "The agent signs in with its own key (private_key_jwt) and binds the token to a key only it holds (DPoP). Identity says who the agent is, nothing yet about what it may do.",
-				flows: ["token request · signed assertion + DPoP", "token_type: DPoP"],
+				say: "The agent shows who it is, with a key only it holds. The company now knows which agent is asking, but not yet what that agent may do.",
+				flows: ["this is me, signed", "a session tied to my key"],
+				tech: "The agent signs in with its own key (private_key_jwt over its client metadata) and binds the token to a key only it holds (DPoP). Identity says who the agent is, nothing yet about what it may do.",
+				wire: ["token request · signed assertion + DPoP", "token_type: DPoP"],
 				extras: [],
 				obj: "POST …/oauth/token",
 			},
 			authority: {
 				title: "Authority",
-				say: "Asking without permission returns authorization_required with the exact detail needed. The person approves that one order, with a code sent through the company's own channel.",
-				flows: ["POST /v1/requests", "authorization_required", "code through the company's channel", "approves order P-1042", "authorization_details"],
+				say: "The agent asks to move the delivery of order P-1042. The company answers that it needs the person's permission for that order. On the company's page, the person links their account with a code the company sends to their phone, and allows that one order.",
+				flows: ["move the delivery of P-1042", "needs the person's permission", "code to link the account", "allows order P-1042", "permission for P-1042"],
+				tech: "Asking without permission returns authorization_required with the exact authorization_details missing. The agent starts a device authorization (RFC 8628). On the company's linking page the person confirms with a code sent to the phone linked at the company, and grants the order and, in the same consent, the relationship of step 7. The token comes back with the details granted.",
+				wire: ["POST /v1/requests", "202 authorization_required", "linking page · code to the phone", "allow · per-order RAR", "token · authorization_details"],
 				extras: ["per-order RAR", "scopes", "delegated grant"],
 				obj: "POST …/v1/requests → 202, then the token",
 			},
 			context: {
 				title: "Context",
-				say: "The agent repeats the same request with the same Idempotency-Key. The company continues the same request instead of starting a new one.",
-				flows: ["same request · same Idempotency-Key", "same request_id, now proposed"],
+				say: "With permission in hand, the agent asks again. The company recognizes the same request and continues it, instead of starting a new one.",
+				flows: ["the same request, again", "same request, continued"],
+				tech: "The agent repeats the same request with the same Idempotency-Key. The company re-evaluates it with the new token and continues the same request_id, now proposed.",
+				wire: ["same request · same Idempotency-Key", "same request_id, now proposed"],
 				extras: ["request_id + events", "conversation", "contextId"],
 				obj: "POST …/v1/requests → 201",
 			},
 			operate: {
 				title: "Operate",
-				say: "The company signs a proposal with the exact terms and its commitment. Nothing runs until the person's approval of that revision arrives; then it runs once, under the company's own rules and the operation requirements O1 to O7.",
-				flows: ["signed proposal, revision 1", "exact terms", "approve", "accept revision 1", "execute once"],
+				say: "The company proposes exact terms: delivery on 28 October instead of 24, at no cost. The agent accepts them and tells the company the person agrees; the record notes that it was the agent who said so. Then the change runs once.",
+				flows: ["exact terms, revision 1", "here are the terms", "agreed", "accept revision 1", "change it, once"],
+				tech: "The company signs revision 1 with the exact terms and a firm commitment. The agent accepts it with approved_by: user, and the proof records that approval as agent_asserted: the agent's statement, not a confirmation through the company's channel. It runs once, under the company's own rules and the operation requirements O1 to O7.",
+				wire: ["signed proposal, revision 1", "exact terms", "approve", "accept revision 1", "execute once"],
 				extras: ["", "Operations", "A2A task"],
 				obj: "Proposal, then POST …/proposals/{id}/accept",
 			},
 			prove: {
 				title: "Proof",
-				say: "After executing, the company reads its own system. Only a read-back that matches the approved terms yields succeeded. The signed chain goes to the agent, and a verifier that shares no code with the issuer checks it.",
-				flows: ["read back", "P-1042 ships 2026-10-28", "result + signed chain"],
+				say: "After the change, the company reads its own system. Only if what it reads matches what was agreed does the operation count as done. The agent receives a signed record of every step.",
+				flows: ["read it back", "P-1042 ships on 28 Oct", "result + signed record"],
+				tech: "Only a read-back that matches the approved terms yields succeeded (P5). The signed chain of six statements goes to the agent, and a verifier that shares no code with the issuer checks it.",
+				wire: ["read back", "P-1042 ships 2026-10-28", "result + signed chain"],
 				extras: ["", "proof in the operation", "proof next to pact.receipt"],
 				obj: "Result and the verifier's verdict",
 			},
 			relate: {
 				title: "Relationship",
-				say: "With a relationship the person approved, the company can start a request toward the agent, inside its actions, daily limit and expiry. Revoking the delegation ends it.",
-				flows: ["company request (signed)", "proposed change", "approve", "accept"],
+				say: "Because the person also allowed it, the company can now come to the agent: it proposes moving another order, within the actions, the daily limit and the time the person agreed to. The agent answers within that.",
+				flows: ["company proposes a change", "proposed change", "agreed", "accept"],
+				tech: "With the relationship granted in the same consent, the company signs a request (vxp-company-request+jwt) and delivers it to the agent's HTTP inbox; the proposal is a normal operation with its own proof. Revoking the delegation ends the relationship.",
+				wire: ["company request (signed)", "proposed change", "approve", "accept"],
 				extras: ["HTTP inbox, experimental", "in the conversation"],
 				obj: "Relationship from the token, then the company's request",
 			},
@@ -132,56 +150,72 @@ const TEXTOS = {
 		ways: { native: "Nativo", poppy: "Poppy draft 0.2", pact: "PACT 1.0" },
 		states: { tested: "probado", live: "agente en vivo", suite: "suite oficial", own: "prueba propia", pending: "pendiente" },
 		pause: "Pausa", play: "Reproducir", first: "primera", none: "–",
+		techOpen: "Ver los mensajes y objetos", techClose: "Ocultar los mensajes y objetos",
+		pathsLabel: "Estado de este paso por vía de entrada",
 		statements: (n) => `${n} declaraciones firmadas`,
 		attempt: (n) => `intento ${n}`,
 		matches: "calza", mismatch: "no calza", valid: "Válida", invalid: "No válida",
 		steps: {
 			discover: {
 				title: "Descubrir",
-				say: "El agente lee /.well-known/vxp.json en el dominio de la propia empresa: qué operaciones existen, cuáles requieren delegación y cuáles dejan constancia.",
-				flows: ["GET /.well-known/vxp.json", "capabilities, issuer, endpoint"],
+				say: "El agente encuentra a la empresa en su propio sitio y lee lo que ofrece: qué solicitudes recibe de agentes, cuáles requieren el permiso de la persona y cuáles dejan un registro firmado.",
+				flows: ["¿qué ofreces?", "operaciones y sus reglas"],
+				tech: "El agente lee /.well-known/vxp.json en el dominio de la empresa: el issuer, el endpoint, cada capacidad con su acceso y admisión, y si deja constancia.",
+				wire: ["GET /.well-known/vxp.json", "capabilities, issuer, endpoint"],
 				extras: ["", "poppy.json", "Agent Card"],
 				obj: "GET /.well-known/vxp.json",
 			},
 			identify: {
-				title: "Identificar",
-				say: "El agente se autentica con su propia llave (private_key_jwt) y amarra el token a una llave que sólo él tiene (DPoP). La identidad dice quién es el agente; todavía no dice qué puede hacer.",
-				flows: ["pide token · aserción firmada + DPoP", "token_type: DPoP"],
+				title: "Identificarse",
+				say: "El agente muestra quién es, con una llave que sólo él tiene. La empresa ya sabe qué agente pregunta, pero todavía no qué puede hacer.",
+				flows: ["soy yo, firmado", "sesión amarrada a mi llave"],
+				tech: "El agente se autentica con su propia llave (private_key_jwt sobre sus metadatos de cliente) y amarra el token a una llave que sólo él tiene (DPoP). La identidad dice quién es el agente; todavía no dice qué puede hacer.",
+				wire: ["pide token · aserción firmada + DPoP", "token_type: DPoP"],
 				extras: [],
 				obj: "POST …/oauth/token",
 			},
 			authority: {
 				title: "Autoridad",
-				say: "Si pide sin permiso, recibe authorization_required con el detalle exacto que le falta. La persona aprueba ese pedido puntual con un código que le llega por el canal de la propia empresa.",
-				flows: ["POST /v1/requests", "authorization_required", "código por el canal de la empresa", "aprueba el pedido P-1042", "authorization_details"],
+				say: "El agente pide cambiar el despacho del pedido P-1042. La empresa responde que necesita el permiso de la persona para ese pedido. En la página de la empresa, la persona vincula su cuenta con un código que la empresa le envía al teléfono, y permite ese pedido puntual.",
+				flows: ["cambiar el despacho de P-1042", "falta el permiso de la persona", "código para vincular la cuenta", "permite el pedido P-1042", "permiso para P-1042"],
+				tech: "Si pide sin permiso, recibe authorization_required con el authorization_details exacto que le falta. El agente inicia una autorización de dispositivo (RFC 8628). En la página de vinculación de la empresa, la persona confirma con un código enviado al teléfono vinculado en la empresa, y otorga el pedido y, en el mismo consentimiento, la relación del paso 7. El token vuelve con lo otorgado.",
+				wire: ["POST /v1/requests", "202 authorization_required", "página de vinculación · código al teléfono", "permite · RAR por pedido", "token · authorization_details"],
 				extras: ["RAR por pedido", "scopes", "grant delegado"],
 				obj: "POST …/v1/requests → 202, y luego el token",
 			},
 			context: {
 				title: "Contexto",
-				say: "El agente repite la misma solicitud con la misma Idempotency-Key. La empresa continúa esa solicitud en vez de abrir una nueva.",
-				flows: ["misma solicitud · misma Idempotency-Key", "mismo request_id, ahora proposed"],
+				say: "Con el permiso, el agente vuelve a pedir. La empresa reconoce la misma solicitud y la continúa, en vez de abrir una nueva.",
+				flows: ["la misma solicitud, otra vez", "misma solicitud, continúa"],
+				tech: "El agente repite la misma solicitud con la misma Idempotency-Key. La empresa la reevalúa con el token nuevo y continúa el mismo request_id, ahora proposed.",
+				wire: ["misma solicitud · misma Idempotency-Key", "mismo request_id, ahora proposed"],
 				extras: ["request_id + eventos", "conversación", "contextId"],
 				obj: "POST …/v1/requests → 201",
 			},
 			operate: {
 				title: "Operar",
-				say: "La empresa firma una propuesta con los términos exactos y su compromiso. Nada se ejecuta hasta que llega la aprobación de la persona para esa revisión; entonces se ejecuta una sola vez, con las reglas de la propia empresa y los requisitos de operación O1 a O7.",
-				flows: ["propuesta firmada, revisión 1", "términos exactos", "aprueba", "acepta la revisión 1", "ejecuta una vez"],
+				say: "La empresa propone términos exactos: despacho el 28 de octubre en vez del 24, sin costo. El agente los acepta y le dice a la empresa que la persona está de acuerdo; el registro anota que fue el agente quien lo dijo. Entonces el cambio se ejecuta una sola vez.",
+				flows: ["términos exactos, revisión 1", "estos son los términos", "de acuerdo", "acepta la revisión 1", "cámbialo, una vez"],
+				tech: "La empresa firma la revisión 1 con los términos exactos y un compromiso firm. El agente la acepta con approved_by: user, y la constancia registra esa aprobación como agent_asserted: lo afirma el agente, no es una confirmación por el canal de la empresa. Se ejecuta una sola vez, con las reglas de la propia empresa y los requisitos de operación O1 a O7.",
+				wire: ["propuesta firmada, revisión 1", "términos exactos", "aprueba", "acepta la revisión 1", "ejecuta una vez"],
 				extras: ["", "Operations", "tarea A2A"],
 				obj: "Propuesta, y luego POST …/proposals/{id}/accept",
 			},
 			prove: {
 				title: "Proof",
-				say: "Después de ejecutar, la empresa lee su propio sistema. Sólo una relectura que calza con los términos aprobados da succeeded. La cadena firmada llega al agente, y la revisa un verificador que no comparte código con el emisor.",
-				flows: ["relectura", "P-1042 sale el 2026-10-28", "resultado + cadena firmada"],
+				say: "Después del cambio, la empresa lee su propio sistema. Sólo si lo que lee calza con lo acordado, la operación cuenta como hecha. El agente recibe un registro firmado de cada paso.",
+				flows: ["vuelve a leer", "P-1042 sale el 28 oct", "resultado + registro firmado"],
+				tech: "Sólo una relectura que calza con los términos aprobados da succeeded (P5). La cadena firmada de seis declaraciones llega al agente, y la revisa un verificador que no comparte código con el emisor.",
+				wire: ["relectura", "P-1042 sale el 2026-10-28", "resultado + cadena firmada"],
 				extras: ["", "constancia en la operación", "constancia junto a pact.receipt"],
 				obj: "Resultado y veredicto del verificador",
 			},
 			relate: {
 				title: "Relationship",
-				say: "Con una relación que la persona aprobó, la empresa puede iniciar una solicitud hacia el agente, dentro de sus acciones, su límite diario y su vencimiento. Si se revoca la delegación, termina.",
-				flows: ["solicitud de la empresa (firmada)", "cambio propuesto", "aprueba", "acepta"],
+				say: "Como la persona también lo permitió, ahora la empresa puede ir al agente: propone cambiar otro pedido, dentro de las acciones, el límite diario y el plazo que la persona aceptó. El agente responde dentro de eso.",
+				flows: ["la empresa propone un cambio", "cambio propuesto", "de acuerdo", "acepta"],
+				tech: "Con la relación otorgada en el mismo consentimiento, la empresa firma una solicitud (vxp-company-request+jwt) y la entrega en el inbox HTTP del agente; la propuesta es una operación normal con su propia constancia. Si se revoca la delegación, la relación termina.",
+				wire: ["solicitud de la empresa (firmada)", "cambio propuesto", "aprueba", "acepta"],
 				extras: ["inbox HTTP, experimental", "en la conversación"],
 				obj: "Relación desde el token, y luego la solicitud de la empresa",
 			},
@@ -192,7 +226,7 @@ const T = TEXTOS[document.documentElement.lang.toLowerCase().startsWith("es") ? 
 
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
 
-function jsonHtml(value, keys) {
+export function jsonHtml(value, keys = []) {
 	const marca = new Set(keys);
 	const lineas = JSON.stringify(value, null, 2).split("\n");
 	return lineas
@@ -237,6 +271,10 @@ export function montar(raiz) {
 	const pre = raiz.querySelector(".obj pre");
 	const chain = raiz.querySelector(".chain");
 	const btnPlay = raiz.querySelector("[data-play]");
+	const btnTech = raiz.querySelector("[data-tech]");
+	const panelTech = raiz.querySelector(".run__tech");
+	const techSay = raiz.querySelector(".run__techsay");
+	const wire = raiz.querySelector(".wire");
 	const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 	const ALTO = 250;
@@ -255,11 +293,12 @@ export function montar(raiz) {
 
 	lista.innerHTML = PASOS.map((p, i) => `<li><button type="button" data-i="${i}"><span class="run__n">${i + 1}</span><span class="run__t">${T.steps[p.id].title}</span><span class="run__bar"><i></i></span></button></li>`).join("");
 	const botones = [...lista.querySelectorAll("button")];
+	paths.setAttribute("aria-label", T.pathsLabel);
 
 	let actual = 0;
 	let reproduciendo = !quieto;
 	let t0 = 0;
-	const DUR = 9000;
+	const DUR = 11000;
 
 	function mostrar(i) {
 		actual = i;
@@ -267,12 +306,14 @@ export function montar(raiz) {
 		const tx = T.steps[p.id];
 		botones.forEach((b, j) => (j === i ? b.setAttribute("aria-current", "step") : b.removeAttribute("aria-current")));
 		say.textContent = tx.say;
+		techSay.textContent = tx.tech;
+		wire.innerHTML = p.flows.map(([de, a, v], k) => `<li${v ? ' class="back"' : ""}><span>${T.actors[de]} → ${T.actors[a]}</span><code>${esc(tx.wire[k])}</code></li>`).join("");
 		paths.innerHTML = p.paths.map(([v, s], k) => { const extra = tx.extras[k]; return `<span class="path" data-s="${s}"><b>${T.ways[v]}</b> · ${T.states[s]}${extra ? " · " + esc(extra) : ""}</span>`; }).join("");
 		objTitle.textContent = tx.obj;
 		pre.innerHTML = jsonHtml(p.value(), p.keys);
 		const primera = pre.querySelector(".hl");
 		pre.scrollTop = 0;
-		if (primera) pre.scrollTop = Math.max(0, primera.getBoundingClientRect().top - pre.getBoundingClientRect().top - 40);
+		if (primera && !panelTech.hidden) pre.scrollTop = Math.max(0, primera.getBoundingClientRect().top - pre.getBoundingClientRect().top - 40);
 
 		const activos = new Set(p.flows.flatMap(([a, b]) => [a, b]));
 		svg.querySelectorAll("[data-actor]").forEach((g) => g.setAttribute("opacity", activos.has(g.dataset.actor) ? "1" : "0.32"));
@@ -286,7 +327,7 @@ export function montar(raiz) {
 			const g = el("g", { color: vuelta ? "var(--on-deep-soft)" : "var(--on-deep)" }, flujos);
 			el("circle", { cx: x1, cy: y, r: 3, fill: "currentColor" }, g);
 			const path = el("path", { d, fill: "none", stroke: "currentColor", "stroke-width": 1.3, "stroke-dasharray": vuelta ? "4 4" : "none", "marker-end": "url(#vxp-arrow)" }, g);
-			const texto = el("text", { x: (x1 + x2) / 2, y: y - 8, "text-anchor": "middle", fill: "currentColor", "font-family": "var(--mono)", "font-size": 11.5 }, g);
+			const texto = el("text", { x: (x1 + x2) / 2, y: y - 8, "text-anchor": "middle", fill: "currentColor", "font-family": "var(--sans)", "font-size": 12.5 }, g);
 			texto.textContent = rotulo;
 			if (!quieto) {
 				const largo = path.getTotalLength();
@@ -323,6 +364,16 @@ export function montar(raiz) {
 		if (reproduciendo) t0 = performance.now() - parseFloat(botones[actual].querySelector(".run__bar i").style.width || "0") / 100 * DUR;
 	}
 
+	// Optional technical inspection: opening it pauses playback so it can be read.
+	btnTech.textContent = T.techOpen;
+	btnTech.addEventListener("click", () => {
+		const abrir = panelTech.hidden;
+		panelTech.hidden = !abrir;
+		btnTech.setAttribute("aria-expanded", String(abrir));
+		btnTech.textContent = abrir ? T.techClose : T.techOpen;
+		if (abrir) { pausar(true); mostrar(actual); }
+	});
+
 	botones.forEach((b) => b.addEventListener("click", () => { botones[actual].querySelector(".run__bar i").style.width = "0"; mostrar(Number(b.dataset.i)); pausar(true); }));
 	raiz.querySelector("[data-prev]").addEventListener("click", () => { botones[actual].querySelector(".run__bar i").style.width = "0"; mostrar((actual + PASOS.length - 1) % PASOS.length); pausar(true); });
 	raiz.querySelector("[data-next]").addEventListener("click", () => { botones[actual].querySelector(".run__bar i").style.width = "0"; mostrar((actual + 1) % PASOS.length); pausar(true); });
@@ -332,14 +383,14 @@ export function montar(raiz) {
 	mostrar(0);
 	pausar(!reproduciendo);
 	if (!quieto) {
-		// Empieza a correr cuando el recorrido entra en pantalla.
+		// Starts playing when the walkthrough scrolls into view.
 		pausar(true);
 		new IntersectionObserver((e, o) => { if (e[0].isIntersecting) { pausar(false); o.disconnect(); } }, { threshold: 0.35 }).observe(raiz);
 	}
 	requestAnimationFrame(tick);
 }
 
-// Constancia de la cabecera: la cadena real de la operación del recorrido, con el veredicto del verificador.
+// Summarized proof: the real chain of the walkthrough's operation, with the verifier's verdict.
 const RESUMEN = {
 	request: (b) => b.channel,
 	terms: (b) => `rev ${b.revision} · ${b.commitment?.mode}`,

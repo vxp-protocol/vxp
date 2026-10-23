@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quickstart · VXP docs</title>
+<meta name="description" content="From a clean clone to a company and a personal agent in separate processes, an operation with its proof verified, a company-initiated request answered, and a conformance report, with no Poppy, no PACT and no SOVRAS service.">
+<link rel="alternate" type="text/markdown" href="../../docs/quickstart.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/vxp.css">
+<link rel="stylesheet" href="../../assets/docs.css">
+<link rel="stylesheet" href="../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../architecture/">Architecture</a></li>
+			<li><a href="../../spec/">Specification</a></li>
+			<li><a href="../../examples/">Examples</a></li>
+			<li><a href="../../verify/">Verify</a></li>
+			<li><a href="../../conformance/">Conformance</a></li>
+			<li><a href="../../implement/">Implement</a></li>
+			<li><a href="../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../docs/">VXP documentation</a></li><li><a href="../../docs/introduction/">Introduction</a></li><li><a href="../../docs/quickstart/" aria-current="page">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../docs/proof/">VXP Proof</a></li><li><a href="../../docs/relationship/">VXP Relationship</a></li><li><a href="../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../docs/guides/company/">Guide for companies</a></li><li><a href="../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../docs/examples/">Examples and messages</a></li><li><a href="../../docs/specification/">Specification and versions</a></li><li><a href="../../docs/conformance/">Tests and conformance</a></li><li><a href="../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">Quickstart</h1>
+		<p class="lead">From a clean clone to a company and a personal agent in separate processes, an operation with its proof verified, a company-initiated request answered, and a conformance report, with no Poppy, no PACT and no SOVRAS service.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#requirements">Requirements</a></li><li><a href="#1-start-a-company">1. Start a company</a></li><li><a href="#2-run-a-personal-agent">2. Run a personal agent</a></li><li><a href="#3-verify-the-proof-yourself">3. Verify the proof yourself</a></li><li><a href="#4-the-company-starts-the-next-request">4. The company starts the next request</a></li><li><a href="#5-run-the-conformance-validator">5. Run the conformance validator</a></li><li><a href="#where-next">Where next</a></li></ul></nav>
+		<h2 id="requirements">Requirements<a class="anchor" href="#requirements" aria-label="Link to Requirements">#</a></h2>
+<ul><li>Node.js 22.18 or newer. Nothing to install with npm: the repository has no dependencies.</li><li>Python 3 with <code>cryptography</code>, for the Python verifier: <code>pip install cryptography</code>.</li><li>Git.</li></ul>
+<div class="code"><div class="code__head"><b>Clone</b><span>sh</span></div><pre data-copy tabindex="0">git clone https://github.com/vxp-protocol/vxp.git
+cd vxp</pre></div>
+<p>The commands below are for bash. In PowerShell, set each variable first (<code>$env:PORT="3100"</code>) and then run the command.</p>
+<h2 id="1-start-a-company">1. Start a company<a class="anchor" href="#1-start-a-company" aria-label="Link to 1. Start a company">#</a></h2>
+<p>The reference implementation serves fictitious test companies: Ferretería Demo at <code>localhost:3100</code> and Hotel Demo at <code>127.0.0.1:3100</code>. Start it as a native-only gateway, with persistent keys outside the repository, and with the company's channel printed to the console (the channel is simulated: it stands for the SMS or WhatsApp line through which a real company would reach its customer).</p>
+<div class="code"><div class="code__head"><b>Terminal 1 · the company</b><span>sh</span></div><pre data-copy tabindex="0">cd reference
+VXP_ADAPTERS=none VXP_KEYS_DIR=/tmp/vxp-keys VXP_SHOW_CHANNEL=1 \
+  ORIGENES_LOCALES=http://localhost:3811 node src/main.ts</pre></div>
+<p><code>ORIGENES_LOCALES</code> lets the gateway fetch your agent's documents over plain <code>http</code> on localhost. In production both sides use <code>https</code>. Check it from another terminal:</p>
+<div class="code"><div class="code__head"><b>Discovery</b><span>sh</span></div><pre data-copy tabindex="0">curl http://127.0.0.1:3100/.well-known/vxp.json</pre></div>
+<p>You get the hotel's <code>vxp.json</code>: its issuer, its <code>/v1</code> endpoint and its capabilities, with <code>"status": "experimental"</code>.</p>
+<h2 id="2-run-a-personal-agent">2. Run a personal agent<a class="anchor" href="#2-run-a-personal-agent" aria-label="Link to 2. Run a personal agent">#</a></h2>
+<p>The agent is another process with its own identity, its own keys and its own HTTP server for the documents companies fetch and for the inbox. The example does the task of the <a href="../../docs/guides/agent/">agent guide</a>: a hotel in Santiago, two nights with breakfast, up to $250,000.</p>
+<div class="code"><div class="code__head"><b>Terminal 2 · the agent</b><span>sh</span></div><pre data-copy tabindex="0">cd agent
+node examples/hotel-santiago.ts --state /tmp/vxp-agent --origin http://localhost:3811 --port 3811 \
+  --allow-http http://localhost:3100,http://127.0.0.1:3100,http://localhost:3811 \
+  localhost:3100 127.0.0.1:3100 localhost:3999</pre></div>
+<p>The last three arguments are candidate domains: VXP has no registry, so the agent starts from domains the person names or finds. The agent then:</p>
+<ol><li>discovers which candidates speak VXP and which one offers bookings (the third one does not answer);</li><li>records the person's rules: book up to $250,000, and answer «mantener» to a late-arrival question;</li><li>reads availability, rates and services, a public read with no consent;</li><li>asks for the stay. The hotel answers <code>authorization_required</code> with exactly what to ask the person for.</li></ol>
+<p>The agent prints a link on the hotel's own page and waits. <b>You are the person now:</b> open the link, enter the test phone <code>+56 9 0000 0101</code>, enter the code that Terminal 1 prints as <code>[simulated company channel …]</code>, read the consent and allow it. The consent covers the booking up to $250,000 and a relationship so the hotel can ask about a late arrival.</p>
+<p>The agent continues on its own:</p>
+<ol><li>sends the same request again with the same <code>Idempotency-Key</code> and receives signed terms;</li><li>negotiates within the hotel's policy: a discretionary discount is refused, and the «Escapada» package lowers the total in a new revision;</li><li>accepts that exact revision within your cap (<code>approved_by: "standing_permission"</code>). The hotel executes it once and reads its system back;</li><li>downloads the proof and verifies it locally, anchored by the hotel's issuer.</li></ol>
+<h2 id="3-verify-the-proof-yourself">3. Verify the proof yourself<a class="anchor" href="#3-verify-the-proof-yourself" aria-label="Link to 3. Verify the proof yourself">#</a></h2>
+<p>The agent saved what it verified in its state directory. Check the same package with the Python verifier, which shares no code with the agent's JavaScript verifier:</p>
+<div class="code"><div class="code__head"><b>From the repository root</b><span>sh</span></div><pre data-copy tabindex="0">REQ=$(ls /tmp/vxp-agent/proofs/ | grep -m1 '.package.json' | sed 's/.package.json//')
+python verifier/verificar_paquete.py material \
+  --material /tmp/vxp-agent/proofs/$REQ.material.json \
+  --paquete /tmp/vxp-agent/proofs/$REQ.package.json \
+  --operacion /tmp/vxp-agent/proofs/$REQ.operation.json</pre></div>
+<p>Expected: <code>"valid": true</code> and <code>"final_state": "succeeded"</code>. Change one character of a term in the package and run it again: the verdict is <code>"valid": false</code> with the error that names the broken link. To verify in a browser instead, paste the package in the <a href="../verify/">verifier</a>. <a href="../../docs/guides/verifier/">Verifier guide</a>.</p>
+<h2 id="4-the-company-starts-the-next-request">4. The company starts the next request<a class="anchor" href="#4-the-company-starts-the-next-request" aria-label="Link to 4. The company starts the next request">#</a></h2>
+<p>The hotel's rule asks the guest's agent, inside the relationship, whether to hold or release a booking when the guest has not arrived after 20:00 on the arrival day (<a class="rule" href="../../spec/#r17">R17</a>). The gateway checks every minute. To run the rule now, with the reference's clock moved to that evening, add these options to the example in step 2:</p>
+<div class="code"><div class="code__head"><b>Terminal 2 · add to the example</b><span>sh</span></div><pre data-copy tabindex="0">  --hotel-console http://localhost:3100 --hotel-console-key &lt;the "llave interna" printed by Terminal 1&gt;</pre></div>
+<p>The hotel signs a closed question and posts it to the agent's inbox. The agent verifies the signature with the key anchored to the issuer, rejects a repeated <code>jti</code>, answers «mantener» with the person's standing answer, and verifies the signed receipt. The <code>/interno/</code> console is the reference's test-only console, standing in for the hotel's own clock; it is not part of VXP.</p>
+<h2 id="5-run-the-conformance-validator">5. Run the conformance validator<a class="anchor" href="#5-run-the-conformance-validator" aria-label="Link to 5. Run the conformance validator">#</a></h2>
+<div class="code"><div class="code__head"><b>From the repository root</b><span>sh</span></div><pre data-copy tabindex="0">node conformance/reference/run.ts --report conformance-report.json</pre></div>
+<p>It starts its own native-only reference company, acts as a personal agent against it, and reports every check with the rule it tests. Expected: <code>{"pass":50,"fail":0,"optional":0,"manual":3,"skipped":0}</code>. The report is in <code>conformance-report.md</code>. To check your own company, see <a href="../../docs/conformance/">Conformance</a>.</p>
+<h2 id="where-next">Where next<a class="anchor" href="#where-next" aria-label="Link to Where next">#</a></h2>
+<ul><li><a href="../../docs/guides/company/">Guide for companies</a>: make your own systems speak VXP.</li><li><a href="../../docs/guides/agent/">Guide for personal agents</a>: build an agent that speaks VXP.</li><li><a href="../../docs/examples/">Examples and messages</a>: every message of one operation.</li></ul>
+		<div class="dfoot">
+			<a href="../../docs/quickstart.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/quickstart.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../docs/introduction/"><span>Previous</span>Introduction</a>
+			<a href="../../docs/proof/"><span>Next</span>VXP Proof</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../docs/quickstart/">Quickstart</a></li><li><a href="../../spec/">Specification</a></li><li><a href="../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../verify/">Verifier</a></li><li><a href="../../demos/">Demos</a></li><li><a href="../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../docs/changelog/">Changelog</a></li><li><a href="../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../assets/site.js" defer></script>
+<script src="../../assets/docs-site.js" defer></script>
+</body>
+</html>

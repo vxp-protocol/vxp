@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tests and conformance · VXP docs</title>
+<meta name="description" content="How to check an implementation against VXP, with the validator, the conformance matrix and the checklist, and which tests are whose.">
+<link rel="alternate" type="text/markdown" href="../../docs/conformance.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/vxp.css">
+<link rel="stylesheet" href="../../assets/docs.css">
+<link rel="stylesheet" href="../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../architecture/">Architecture</a></li>
+			<li><a href="../../spec/">Specification</a></li>
+			<li><a href="../../examples/">Examples</a></li>
+			<li><a href="../../verify/">Verify</a></li>
+			<li><a href="../../conformance/">Conformance</a></li>
+			<li><a href="../../implement/">Implement</a></li>
+			<li><a href="../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../docs/">VXP documentation</a></li><li><a href="../../docs/introduction/">Introduction</a></li><li><a href="../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../docs/proof/">VXP Proof</a></li><li><a href="../../docs/relationship/">VXP Relationship</a></li><li><a href="../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../docs/guides/company/">Guide for companies</a></li><li><a href="../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../docs/examples/">Examples and messages</a></li><li><a href="../../docs/specification/">Specification and versions</a></li><li><a href="../../docs/conformance/" aria-current="page">Tests and conformance</a></li><li><a href="../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">Tests and conformance</h1>
+		<p class="lead">How to check an implementation against VXP, with the validator, the conformance matrix and the checklist, and which tests are whose.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#the-validator">The validator</a></li><li><a href="#the-checklist">The checklist</a></li><li><a href="#the-matrix">The matrix</a></li><li><a href="#three-kinds-of-tests-never-added-together">Three kinds of tests, never added together</a></li><li><a href="#running-everything">Running everything</a></li><li><a href="#what-this-is-not">What this is not</a></li></ul></nav>
+		<h2 id="the-validator">The validator<a class="anchor" href="#the-validator" aria-label="Link to The validator">#</a></h2>
+<p><code>conformance/validate.ts</code> acts as a personal agent against a company's server and reports every check with the rule it tests. It shares no code with the reference implementation: it signs with <code>node:crypto</code>, and it checks the proof with the independent browser verifier, anchored by the issuer. Node.js 22.18+, no dependencies.</p>
+<div class="code"><div class="code__head"><b>Against the reference implementation (native only)</b><span>sh</span></div><pre data-copy tabindex="0">node conformance/reference/run.ts --report conformance-report.json</pre></div>
+<div class="code"><div class="code__head"><b>Against your implementation</b><span>sh</span></div><pre data-copy tabindex="0">node conformance/validate.ts my-config.json --report my-report.json</pre></div>
+<p>The config names your discovery domain, one write operation on a resource your test account owns, and how the person approves (<code>"manual"</code>, or a command). Optionally, it adds a counter-proposal, a relationship and a command that makes your company start a request. See <code>conformance/README.md</code>.</p>
+<div class="tbl tbl--fit"><table><thead><tr><th>Status</th><th>Meaning</th></tr></thead><tbody><tr><td><code>pass</code></td><td>The requirement held</td></tr><tr><td><code>fail</code></td><td>It did not (exit code 1)</td></tr><tr><td><code>optional</code></td><td>An optional capability you do not offer, or did not configure</td></tr><tr><td><code>manual</code></td><td>It cannot be seen from outside: see the checklist</td></tr><tr><td><code>skipped</code></td><td>A step it depends on could not run</td></tr></tbody></table></div>
+<p>What it checks, in order:</p>
+<ul><li>discovery and metadata;</li><li>session, DPoP and refusal without a proof;</li><li><code>Idempotency-Key</code>;</li><li>authority held until the person approves, and the device authorization;</li><li>the same request re-evaluated, the proposal and its commitment;</li><li>isolation from another user, counter-proposal and <code>terms_changed</code>;</li><li>one execution, success only after read-back, idempotent acceptance and events;</li><li>the proof verified by issuer anchoring, cross-checked with the operation, and a tampered copy rejected;</li><li>the relationship agreement and its signature;</li><li>a company-initiated proposal and a closed question;</li><li>revocation.</li></ul>
+<p>Against the reference implementation it reports 50 pass, 0 fail and 3 manual.</p>
+<h2 id="the-checklist">The checklist<a class="anchor" href="#the-checklist" aria-label="Link to The checklist">#</a></h2>
+<p><code>conformance/CHECKLIST.md</code> lists what only a person can confirm:</p>
+<ul><li>the consent screen's language (<a class="rule" href="../../spec/#r3">R3</a>);</li><li>account-linking evidence (<a class="rule" href="../../spec/#id1">ID1</a>, <a class="rule" href="../../spec/#id2">ID2</a>);</li><li>privacy;</li><li>company review (<a class="rule" href="../../spec/#o5">O5</a>);</li><li>key custody and rotation.</li></ul>
+<h2 id="the-matrix">The matrix<a class="anchor" href="#the-matrix" aria-label="Link to The matrix">#</a></h2>
+<p><code>conformance/MATRIX.md</code> lists every normative rule with the reference tests, the validator checks and the other evidence that cover it. It is generated from the specification, the tests and the validator, and the build fails if a cited test does not exist.</p>
+<h2 id="three-kinds-of-tests-never-added-together">Three kinds of tests, never added together<a class="anchor" href="#three-kinds-of-tests-never-added-together" aria-label="Link to Three kinds of tests, never added together">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Kind</th><th>What</th><th>What it does not show</th></tr></thead><tbody><tr><td>Official tools of other protocols</td><td>The Poppy validator (draft 0.2 kit) and the PACT Identity suite, unchanged</td><td>The Poppy validator skips sign-in and Operations; it is not full Poppy conformance. The official PACT delegated suite runs only against PACT's demo airline</td></tr><tr><td>Own adapter tests</td><td>Written by SOVRAS, including the delegated PACT flow with the official PACT client</td><td>That a third party agrees with them</td></tr><tr><td>VXP tests</td><td>The reference suite (in process and over the network), mutation runs, the native-only test, vectors, the three verifiers and the validator</td><td>Interoperability with an implementation written elsewhere</td></tr></tbody></table></div>
+<h2 id="running-everything">Running everything<a class="anchor" href="#running-everything" aria-label="Link to Running everything">#</a></h2>
+<div class="code"><div class="code__head"><b>From the repository root</b><span>sh</span></div><pre data-copy tabindex="0">cd reference &amp;&amp; npm test &amp;&amp; npm run test:network &amp;&amp; cd ..
+python verifier/verificar_paquete.py vectores vectors/vectores-0.1.json
+python verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json
+node verifier/tests/test-vxp-verify.mjs
+node conformance/reference/run.ts</pre></div>
+<p>Continuous integration runs all of these on every push (<code>.github/workflows/ci.yml</code>).</p>
+<h2 id="what-this-is-not">What this is not<a class="anchor" href="#what-this-is-not" aria-label="Link to What this is not">#</a></h2>
+<p>A conformance report is the implementer's own evidence. It is not a certification, and passing the official tools of Poppy or PACT on part of their scope is not conformance to those standards.</p>
+		<div class="dfoot">
+			<a href="../../docs/conformance.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/conformance.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../docs/specification/"><span>Previous</span>Specification and versions</a>
+			<a href="../../docs/security/"><span>Next</span>Security, errors, recovery and versions</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../docs/quickstart/">Quickstart</a></li><li><a href="../../spec/">Specification</a></li><li><a href="../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../verify/">Verifier</a></li><li><a href="../../demos/">Demos</a></li><li><a href="../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../docs/changelog/">Changelog</a></li><li><a href="../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../assets/site.js" defer></script>
+<script src="../../assets/docs-site.js" defer></script>
+</body>
+</html>

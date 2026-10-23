@@ -1,0 +1,5 @@
+# Agent state: private keys, access tokens, approvals, inbox. Never commit it.
+.vxp-agent/
+.vxp-example/
+*.vxp-state/
+node_modules/

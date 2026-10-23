@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introduction · VXP docs</title>
+<meta name="description" content="What VXP is, the work it comes from, its two public components, and what it does not do.">
+<link rel="alternate" type="text/markdown" href="../../docs/introduction.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/vxp.css">
+<link rel="stylesheet" href="../../assets/docs.css">
+<link rel="stylesheet" href="../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../architecture/">Architecture</a></li>
+			<li><a href="../../spec/">Specification</a></li>
+			<li><a href="../../examples/">Examples</a></li>
+			<li><a href="../../verify/">Verify</a></li>
+			<li><a href="../../conformance/">Conformance</a></li>
+			<li><a href="../../implement/">Implement</a></li>
+			<li><a href="../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../docs/">VXP documentation</a></li><li><a href="../../docs/introduction/" aria-current="page">Introduction</a></li><li><a href="../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../docs/proof/">VXP Proof</a></li><li><a href="../../docs/relationship/">VXP Relationship</a></li><li><a href="../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../docs/guides/company/">Guide for companies</a></li><li><a href="../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../docs/examples/">Examples and messages</a></li><li><a href="../../docs/specification/">Specification and versions</a></li><li><a href="../../docs/conformance/">Tests and conformance</a></li><li><a href="../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">Introduction</h1>
+		<p class="lead">What VXP is, the work it comes from, its two public components, and what it does not do.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#the-work-it-comes-from">The work it comes from</a></li><li><a href="#two-public-components">Two public components</a></li><li><a href="#how-the-parts-fit">How the parts fit</a></li><li><a href="#three-parties-kept-apart">Three parties, kept apart</a></li><li><a href="#what-vxp-does-not-do">What VXP does not do</a></li><li><a href="#status">Status</a></li></ul></nav>
+		<h2 id="the-work-it-comes-from">The work it comes from<a class="anchor" href="#the-work-it-comes-from" aria-label="Link to The work it comes from">#</a></h2>
+<p>Every day, companies take bookings, sell, change deliveries, handle claims and answer incidents in their own systems. More and more of those requests come from a person's own agent: an assistant the company did not build and whose conversation it cannot see. After each operation the same questions come back:</p>
+<ol><li>Who asked, and on whose behalf?</li><li>Which exact terms did the person approve, and how?</li><li>What ran, and how many times?</li><li>What did the company's system record afterwards?</li></ol>
+<p>And sometimes the company needs to come back to the agent: the guest has not arrived, the order needs a decision, the delivery date has to move. It may only do so within something the person authorized.</p>
+<p>VXP writes the answers to those questions into contracts that any company and any agent can implement.</p>
+<h2 id="two-public-components">Two public components<a class="anchor" href="#two-public-components" aria-label="Link to Two public components">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Component</th><th>What it gives you</th></tr></thead><tbody><tr><td><a href="../../docs/proof/">VXP Proof</a></td><td>Signed evidence that anyone can verify. By digest it binds the request, the exact terms of each revision, the approval given on them, the single execution, the later read of the company's system, the declared outcome and any correction. See [[proof</td><td>specification §6]].</td></tr><tr><td><a href="../../docs/relationship/">VXP Relationship</a></td><td>An authorized agreement between a personal agent and a company: the actions allowed in each direction, limits, validity and revocation. Within it, the company can start a request toward the agent, and the agent answers. See [[relationship</td><td>specification §7]].</td></tr></tbody></table></div>
+<p>VXP also states seven <b>operation requirements</b>, <a class="rule" href="../../spec/#o1">O1</a> to <a class="rule" href="../../spec/#o7">O7</a>, that every implementation meets where an external request becomes an operation on a company's system. Among them: execute only the exact revision that was approved, execute it once, and declare success only after reading the system back. They are requirements, not a third component: VXP defines no interface for them, VXP Proof is how anyone can check them afterwards, and how an implementation enforces them internally is its own decision. See <a class="rule" href="../../spec/#operation-requirements">specification §9</a>.</p>
+<h2 id="how-the-parts-fit">How the parts fit<a class="anchor" href="#how-the-parts-fit" aria-label="Link to How the parts fit">#</a></h2>
+<div class="code"><div class="code__head"><b>The parts</b><span>text</span></div><pre data-copy tabindex="0">Personal agent ──► discovery (vxp.json) ──► identity (private_key_jwt + DPoP)
+                ──► authority for this request (RFC 8628 + RFC 9396)
+                ──► request ──► proposal with exact terms ──► acceptance
+Company system  ◄── one execution ──► read of the system ──► outcome
+                         │
+                VXP Proof: the signed chain of all of the above
+                VXP Relationship: the agreement within which the company can start the next request</pre></div>
+<p>The <b>native profile</b> is VXP's own way to carry all of this: <code>/.well-known/vxp.json</code> and a small set of <code>/v1</code> endpoints. It is experimental and works on its own. A company may also offer the <b>optional adapters</b> for Poppy draft 0.2 and PACT 1.0, for agents that already speak those protocols. See <a href="../../docs/native-profile/">Native profile</a> and <a href="../../docs/guides/interoperability/">Interoperability</a>.</p>
+<h2 id="three-parties-kept-apart">Three parties, kept apart<a class="anchor" href="#three-parties-kept-apart" aria-label="Link to Three parties, kept apart">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Party</th><th>In VXP</th></tr></thead><tbody><tr><td>The person</td><td>Approves authority, terms and agreements, through the company's own pages and channel.</td></tr><tr><td>The personal agent</td><td>Identifies itself with its own key, asks, negotiates, accepts within what the person approved, keeps the evidence, and answers the company inside an agreement.</td></tr><tr><td>The company</td><td>Publishes what it offers, signs its exact terms, executes once, reads its own system, signs the result, and starts requests only within an agreement.</td></tr></tbody></table></div>
+<p>An <b>operator</b> may run the company's VXP endpoints for it. The evidence names who signed each link, so a verifier knows whether it is reading the company's word or the operator's (<a class="rule" href="../../spec/#p7">P7</a>).</p>
+<h2 id="what-vxp-does-not-do">What VXP does not do<a class="anchor" href="#what-vxp-does-not-do" aria-label="Link to What VXP does not do">#</a></h2>
+<ul><li>It does not build the personal agent, and it does not connect an agent to every company. Both sides need a compatible implementation and a system that can carry out what is offered.</li><li>It does not require SOVRAS, Poppy or PACT. Anyone can implement it from the specification.</li><li>It does not define payments, disputes or the person's civil identity.</li><li>A valid proof does not by itself prove that what the company asserts is true: it proves who asserted what, over which exact terms and in which order, with its root of trust named (<a class="rule" href="../../spec/#p7">P7</a>, <a class="rule" href="../../spec/#reading-a-verdict">§10, reading a verdict</a>).</li></ul>
+<p>This is the behaviour the standard targets. Today no commercial personal agent supports VXP natively, and the native profile is experimental.</p>
+<h2 id="status">Status<a class="anchor" href="#status" aria-label="Link to Status">#</a></h2>
+<p>Draft 0.1. The specification, the reference implementation, the verifiers, the vectors, the conformance validator and the agent tools are published together, under Apache 2.0. See <a href="../../docs/changelog/">Changelog</a>.</p>
+		<div class="dfoot">
+			<a href="../../docs/introduction.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/introduction.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../docs/"><span>Previous</span>VXP documentation</a>
+			<a href="../../docs/quickstart/"><span>Next</span>Quickstart</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../docs/quickstart/">Quickstart</a></li><li><a href="../../spec/">Specification</a></li><li><a href="../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../verify/">Verifier</a></li><li><a href="../../demos/">Demos</a></li><li><a href="../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../docs/changelog/">Changelog</a></li><li><a href="../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../assets/site.js" defer></script>
+<script src="../../assets/docs-site.js" defer></script>
+</body>
+</html>

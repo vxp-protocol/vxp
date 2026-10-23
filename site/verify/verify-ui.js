@@ -1,5 +1,5 @@
-// Interfaz del verificador: carga los ejemplos publicados en /downloads, aplica la alteración elegida y
-// muestra el veredicto de vxp-verify.js con la explicación de cada control.
+// Verifier interface: loads the examples published in /downloads, applies the chosen alteration and
+// shows the verdict of vxp-verify.js with the explanation of each check.
 import { explain, verdictJson, verifyPackage, verifyVectors } from "./vxp-verify.js";
 
 const EJEMPLOS = {
@@ -18,7 +18,7 @@ const b64u = {
 	enc: (t) => btoa(String.fromCharCode(...new TextEncoder().encode(t))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""),
 };
 
-// Las alteraciones se hacen sobre el texto del ejemplo, como lo haría quien intenta engañar al verificador.
+// Alterations are made on the example's text, as someone trying to fool the verifier would.
 function alterar(tipo, pkgText, opText, campo) {
 	if (tipo === "none" || tipo === "aud") return { pkgText, opText };
 	const pkg = JSON.parse(pkgText);
@@ -39,7 +39,7 @@ function alterar(tipo, pkgText, opText, campo) {
 	return { pkgText: JSON.stringify(pkg), opText };
 }
 
-// Texto que se tapa al mostrar (el paquete verificado no se toca). Las pruebas publicadas usan datos neutros: vacío.
+// Text masked on display (the verified package is not touched). Published proofs use neutral data: empty.
 const TAPAR = [];
 const tapar = (t) => TAPAR.reduce((x, [a, b]) => x.split(a).join(b), String(t));
 

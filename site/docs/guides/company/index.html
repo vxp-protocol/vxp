@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide for companies · VXP docs</title>
+<meta name="description" content="How to make a company's existing systems speak VXP with the native profile, step by step, and how to prove it.">
+<link rel="alternate" type="text/markdown" href="../../../docs/guides/company.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/vxp.css">
+<link rel="stylesheet" href="../../../assets/docs.css">
+<link rel="stylesheet" href="../../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../../architecture/">Architecture</a></li>
+			<li><a href="../../../spec/">Specification</a></li>
+			<li><a href="../../../examples/">Examples</a></li>
+			<li><a href="../../../verify/">Verify</a></li>
+			<li><a href="../../../conformance/">Conformance</a></li>
+			<li><a href="../../../implement/">Implement</a></li>
+			<li><a href="../../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../../docs/">VXP documentation</a></li><li><a href="../../../docs/introduction/">Introduction</a></li><li><a href="../../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../../docs/proof/">VXP Proof</a></li><li><a href="../../../docs/relationship/">VXP Relationship</a></li><li><a href="../../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../../docs/guides/company/" aria-current="page">Guide for companies</a></li><li><a href="../../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../../docs/examples/">Examples and messages</a></li><li><a href="../../../docs/specification/">Specification and versions</a></li><li><a href="../../../docs/conformance/">Tests and conformance</a></li><li><a href="../../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">Guide for companies</h1>
+		<p class="lead">How to make a company's existing systems speak VXP with the native profile, step by step, and how to prove it.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#what-you-build">What you build</a></li><li><a href="#1-decide-what-you-offer">1. Decide what you offer</a></li><li><a href="#2-publish-discovery">2. Publish discovery</a></li><li><a href="#3-identify-agents-and-link-accounts">3. Identify agents and link accounts</a></li><li><a href="#4-hold-requests-until-there-is-authority">4. Hold requests until there is authority</a></li><li><a href="#5-propose-exact-terms">5. Propose exact terms</a></li><li><a href="#6-execute-once-then-read-back">6. Execute once, then read back</a></li><li><a href="#7-keep-your-keys">7. Keep your keys</a></li><li><a href="#8-optionally-a-relationship">8. Optionally, a relationship</a></li><li><a href="#9-prove-it">9. Prove it</a></li><li><a href="#running-the-reference-implementation-as-your-starting-point">Running the reference implementation as your starting point</a></li></ul></nav>
+		<p>This guide adds the company side of VXP to systems you already run: an order system, a booking system, a claims queue. You do not need SOVRAS, Poppy or PACT. Each step names the rules it implements; the <a href="../../../spec/">specification</a> is the exact text.</p>
+<h2 id="what-you-build">What you build<a class="anchor" href="#what-you-build" aria-label="Link to What you build">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Piece</th><th>What it does</th><th>Rules</th></tr></thead><tbody><tr><td>Discovery</td><td>Publish <code>/.well-known/vxp.json</code> and your issuer's RFC 8414 metadata</td><td>[[native-discovery</td><td>§8 discovery]]</td></tr><tr><td>Authorization server</td><td>Clients with <code>private_key_jwt</code>, DPoP-bound tokens, device authorization with RAR</td><td>[[native-authorization</td><td>§8 authorization]], <a class="rule" href="../../../spec/#id1">ID1</a>–<a class="rule" href="../../../spec/#id3">ID3</a></td></tr><tr><td>The <code>/v1</code> endpoints</td><td>Requests, proposals, acceptance, cancellation, events, proof</td><td>[[native-endpoints</td><td>§8 endpoints]]</td></tr><tr><td>Your controls</td><td>The operation requirements, enforced in front of your systems</td><td><a class="rule" href="../../../spec/#o1">O1</a>–<a class="rule" href="../../../spec/#o7">O7</a></td></tr><tr><td>VXP Proof issuer</td><td>Sign the chain, publish your keys, keep them persistent</td><td>[[proof</td><td>§6]], [[key-rotation</td><td>§10 keys]]</td></tr><tr><td>VXP Relationship (optional)</td><td>Agreements, signed outbound requests, answers</td><td>[[relationship</td><td>§7]]</td></tr></tbody></table></div>
+<p>The reference implementation in <code>reference/</code> is one complete example, with every piece above. It is reference code, not a product: copy what helps you, and keep your own systems as the source of truth.</p>
+<h2 id="1-decide-what-you-offer">1. Decide what you offer<a class="anchor" href="#1-decide-what-you-offer" aria-label="Link to 1. Decide what you offer">#</a></h2>
+<p>List the operations an external agent may ask for. For each one, write down:</p>
+<ul><li>what it reads or changes;</li><li>whether a person must approve each revision;</li><li>what you can read back afterwards to confirm it happened.</li></ul>
+<p>An operation you cannot read back can never be declared <code>succeeded</code> (<a class="rule" href="../../../spec/#p6">P6</a>). Publish only those operations in <code>vxp.json</code> <code>capabilities</code>, each with <code>access</code> (<code>public</code> or <code>delegated</code>) and <code>admission</code> (<code>static</code> or <code>dynamic</code>).</p>
+<h2 id="2-publish-discovery">2. Publish discovery<a class="anchor" href="#2-publish-discovery" aria-label="Link to 2. Publish discovery">#</a></h2>
+<p>Serve <code>vxp.json</code> on your own domain. The <code>issuer</code> it names must serve RFC 8414 metadata with an identical <code>issuer</code>. Put the proof trust members (<code>vxp_proof</code>: your key set, the operator's, the log and the custody) <b>only</b> in that metadata, and list your discovery domain in <code>vxp_proof.domains</code>. A verifier anchors your keys there, never in a document handed over with a package (<a class="rule" href="../../../spec/#issuer-anchoring">§10 anchoring</a>).</p>
+<h2 id="3-identify-agents-and-link-accounts">3. Identify agents and link accounts<a class="anchor" href="#3-identify-agents-and-link-accounts" aria-label="Link to 3. Identify agents and link accounts">#</a></h2>
+<ul><li>Accept clients identified by a Client ID Metadata Document. Authenticate them with <code>private_key_jwt</code>, and issue DPoP-bound tokens.</li><li>Link a customer account to an agent only through an authentication you control, for example a one-time code over a channel you already have for that customer, and keep the evidence. Never link by a matching name, email or phone number (<a class="rule" href="../../../spec/#id1">ID1</a>). An identifier shared by two accounts links neither (<a class="rule" href="../../../spec/#id2">ID2</a>).</li><li>The owner of an operation is <code>(profile, client_id, sub, account)</code>. Nobody else sees it (<a class="rule" href="../../../spec/#id3">ID3</a>, <a class="rule" href="../../../spec/#o1">O1</a>).</li></ul>
+<h2 id="4-hold-requests-until-there-is-authority">4. Hold requests until there is authority<a class="anchor" href="#4-hold-requests-until-there-is-authority" aria-label="Link to 4. Hold requests until there is authority">#</a></h2>
+<p>When an agent asks without authority, answer <code>202 authorization_required</code> with exactly the <code>authorization_details</code> that are missing (<a class="rule" href="../../../spec/#o2">O2</a>). Your consent screen shows each item in business language, and the person approves on your page (<a class="rule" href="../../../spec/#r3">R3</a>). Re-evaluate the waiting request when the agent repeats it with the same <code>Idempotency-Key</code> (<a class="rule" href="../../../spec/#native-idempotency">§8 idempotency</a>).</p>
+<h2 id="5-propose-exact-terms">5. Propose exact terms<a class="anchor" href="#5-propose-exact-terms" aria-label="Link to 5. Propose exact terms">#</a></h2>
+<p>Turn the request into a revision with exact terms, a fresh <code>vxp_salt</code>, an expiry and a commitment:</p>
+<ul><li><code>firm</code>, when only your systems are involved;</li><li><code>conditional</code>, listing what depends on a third party (<a class="rule" href="../../../spec/#commitment">§8 commitment</a>).</li></ul>
+<p>Sign it into the proof (<a class="rule" href="../../../spec/#p1">P1</a>, <a class="rule" href="../../../spec/#o4">O4</a>). A change of terms is a new revision. Accepting an older one gets <code>409 terms_changed</code>.</p>
+<h2 id="6-execute-once-then-read-back">6. Execute once, then read back<a class="anchor" href="#6-execute-once-then-read-back" aria-label="Link to 6. Execute once, then read back">#</a></h2>
+<p>On acceptance:</p>
+<ol><li>Re-check authority, the policy and the precondition.</li><li>Execute <b>once</b> per resource, even if the same request arrives by several paths (<a class="rule" href="../../../spec/#o6">O6</a>, <a class="rule" href="../../../spec/#i2">I2</a>).</li><li>Read your system back.</li><li>Only if what you read matches the terms, sign <code>succeeded</code> (<a class="rule" href="../../../spec/#o7">O7</a>).</li></ol>
+<p>If you cannot tell whether it happened, sign <code>unknown</code> and correct it later (<a class="rule" href="../../../spec/#p3">P3</a>, <a class="rule" href="../../../spec/#p4">P4</a>). If what you read contradicts the terms, sign that, keep <code>unknown</code> and send it to a person (<a class="rule" href="../../../spec/#p5">P5</a>). When your rule requires it, a person at the company decides on the same digest before execution (<a class="rule" href="../../../spec/#o5">O5</a>).</p>
+<h2 id="7-keep-your-keys">7. Keep your keys<a class="anchor" href="#7-keep-your-keys" aria-label="Link to 7. Keep your keys">#</a></h2>
+<p>Generate proof keys once and keep them; publish earlier public keys after a rotation; never reuse a retired key (<a class="rule" href="../../../spec/#key-rotation">§10 key rotation</a>). Proofs signed with keys you lose can no longer be checked by anyone.</p>
+<h2 id="8-optionally-a-relationship">8. Optionally, a relationship<a class="anchor" href="#8-optionally-a-relationship" aria-label="Link to 8. Optionally, a relationship">#</a></h2>
+<p>If you want to reach agents later, publish <code>vxp_relationship</code> (its own key set and your <code>company_initiated_actions</code>), accept the relationship RAR in the same consent, and follow <a class="rule" href="../../../spec/#r1">R1</a>–<a class="rule" href="../../../spec/#r17">R17</a>. See <a href="../../../docs/relationship/">VXP Relationship</a>.</p>
+<h2 id="9-prove-it">9. Prove it<a class="anchor" href="#9-prove-it" aria-label="Link to 9. Prove it">#</a></h2>
+<p>Run the conformance validator against your deployment. It acts as a personal agent and reports every check with the rule it tests:</p>
+<div class="code"><div class="code__head"><b>Validate your implementation</b><span>sh</span></div><pre data-copy tabindex="0">node conformance/validate.ts my-config.json --report my-report.json</pre></div>
+<p>Then go through <code>conformance/CHECKLIST.md</code> for what no tool can see from outside. See <a href="../../../docs/conformance/">Tests and conformance</a>.</p>
+<h2 id="running-the-reference-implementation-as-your-starting-point">Running the reference implementation as your starting point<a class="anchor" href="#running-the-reference-implementation-as-your-starting-point" aria-label="Link to Running the reference implementation as your starting point">#</a></h2>
+<div class="code"><div class="code__head"><b>The reference company, native profile only</b><span>sh</span></div><pre data-copy tabindex="0">cd reference
+VXP_ADAPTERS=none VXP_KEYS_DIR=./.keys VXP_SHOW_CHANNEL=1 npm start</pre></div>
+<p>It serves three fictitious test companies on <code>http://localhost:3100</code>. The store's discovery is at <code>/.well-known/vxp.json</code>. <code>VXP_SHOW_CHANNEL=1</code> prints to the console what the company would send through its channel, such as the account-linking code, because that channel is simulated.</p>
+		<div class="dfoot">
+			<a href="../../../docs/guides/company.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/guides/company.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../../docs/native-profile/"><span>Previous</span>Native profile and discovery</a>
+			<a href="../../../docs/guides/agent/"><span>Next</span>Guide for personal agents</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../../docs/quickstart/">Quickstart</a></li><li><a href="../../../spec/">Specification</a></li><li><a href="../../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../../verify/">Verifier</a></li><li><a href="../../../demos/">Demos</a></li><li><a href="../../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../../docs/changelog/">Changelog</a></li><li><a href="../../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../../assets/site.js" defer></script>
+<script src="../../../assets/docs-site.js" defer></script>
+</body>
+</html>

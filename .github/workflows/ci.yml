@@ -1,0 +1,59 @@
+# Runs the VXP checks on every push and pull request: reference suite, network tests, vectors and verifiers,
+# the conformance validator against the reference, the personal-agent tools, and generated files kept in sync
+# with their sources.
+name: CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install cryptography
+
+      - name: Reference implementation, in process
+        working-directory: reference
+        run: npm test
+      - name: Reference implementation, over the network
+        working-directory: reference
+        run: npm run test:network
+
+      - name: Vectors with both Python verifiers
+        run: |
+          python verifier/verificar_paquete.py vectores vectors/vectores-0.1.json
+          python verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json
+          python verifier/verificar.py vectors/vectores-0.1.json
+      - name: Browser verifier against the Python verifier
+        run: node verifier/tests/test-vxp-verify.mjs
+
+      - name: Conformance validator against the native-only reference
+        run: node conformance/reference/run.ts --report conformance-report.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: conformance-report
+          path: conformance-report.*
+
+      - name: Personal-agent tools, against the native-only reference
+        working-directory: agent
+        run: npm test
+
+      - name: Generated files are up to date
+        run: |
+          python spec/build.py
+          node conformance/matrix.ts
+          node docs/build.ts
+          git diff --exit-code -- site/spec conformance/MATRIX.md site/docs site/llms.txt site/llms-full.txt

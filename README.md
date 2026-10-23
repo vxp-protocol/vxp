@@ -1,6 +1,6 @@
 # VXP, Verifiable eXchange Protocol
 
-**Status: draft 0.1. The native profile is experimental.** Adapters exist for Poppy draft 0.2 and PACT 1.0.
+**Status: draft 0.1. The native profile is experimental.** Optional adapters for Poppy draft 0.2 and PACT 1.0.
 
 VXP is an open protocol for work that agents do for people inside companies. It comes from building
 agents that change orders, deliveries and reservations in companies' own systems: after every one
@@ -22,6 +22,18 @@ operation, such as executing only the approved revision and only once. How an im
 them inside is its own decision. VXP can be implemented with its native profile alone, without Poppy,
 PACT or SOVRAS; the adapters for Poppy and PACT are optional.
 
+## Start here
+
+| You want to | Start with |
+|---|---|
+| Try it on your machine | [Quickstart](docs/quickstart.md): a company and a personal agent in two processes, one operation with its proof, a company-initiated request and a conformance report. |
+| Build a personal agent | [Guide for personal agents](docs/guides/agent.md) and [`agent/`](agent/): library, CLI, MCP server and the hotel example. |
+| Make a company speak VXP | [Guide for companies](docs/guides/company.md) and the [native profile](docs/native-profile.md). |
+| Check a proof | [Guide for verifiers](docs/guides/verifier.md) and [`verifier/`](verifier/). |
+| Check an implementation | [Conformance](docs/conformance.md) and [`conformance/`](conformance/): the validator, the checklist and the rule → test matrix. |
+| Read the rules | The [specification](spec/spec.tpl.html), built to `site/spec/`. |
+| Use it with a coding agent | [`AGENTS.md`](AGENTS.md) and `site/llms.txt`. |
+
 ## Repository layout
 
 | Path | What it holds |
@@ -31,6 +43,9 @@ PACT or SOVRAS; the adapters for Poppy and PACT are optional.
 | [`reference/`](reference/) | Reference implementation (Node.js, TypeScript run natively), with its tests. |
 | [`verifier/`](verifier/) | Independent verifiers: two in Python and one in JavaScript for browser and Node, plus [`CHECKS.md`](verifier/CHECKS.md). |
 | [`vectors/`](vectors/) | Conformance test vectors and the scripts that generate them. |
+| [`agent/`](agent/) | The personal-agent side: library, CLI, MCP server, example agent and tests. Native profile only. |
+| [`conformance/`](conformance/) | Validator that acts as a personal agent against any native endpoint, checklist of what is not automatable, rule → test matrix. |
+| [`docs/`](docs/) | Documentation in Markdown, built into `site/docs/`, `site/llms.txt` and `site/llms-full.txt` with `node docs/build.ts`. |
 
 ## Running the tests
 
@@ -52,6 +67,15 @@ python verifier/verificar.py vectors/vectores-0.1.json
 node verifier/tests/test-vxp-verify.mjs     # JavaScript verifier against the Python reference
 node verifier/tests/fuzz-vxp-verify.mjs     # differential fuzz, default 3000 chains
 ```
+
+The personal agent and the conformance validator, from the repository root:
+
+```sh
+cd agent && npm test && cd ..                                          # the agent against the reference, in separate processes
+node conformance/reference/run.ts --report conformance-report.json   # 50 pass, 0 fail, 3 manual
+```
+
+Continuous integration runs all of the above ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 A reproducible native-only run over the network, with persistent keys, the one published under
 `site/downloads/`:
@@ -79,6 +103,18 @@ openpactprotocol repository; see [`reference/README.md`](reference/README.md).
   before that revision keep those names inside their signed content and are published exactly as signed.
 - Proof keys: with `VXP_KEYS_DIR` the reference implementation keeps them across restarts and keeps
   earlier public keys published after a rotation (spec §10, Key rotation).
+
+## Limits
+
+- The native profile is experimental. No commercial personal agent supports VXP natively today, and the
+  personal agent in `agent/` was written by the same team as the reference implementation.
+- A valid proof shows who asserted what, over which exact terms and in which order. Its root of trust today is
+  the operator; external witnesses are pending (spec §10).
+- In the native profile the person's approval of terms is `agent_asserted`.
+
+## Project
+
+[Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
 
 ## License
 

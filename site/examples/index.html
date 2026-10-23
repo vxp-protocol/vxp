@@ -30,6 +30,7 @@
 		<a class="mark" href="../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
 		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
 		<ul id="menu">
+			<li><a href="../docs/">Docs</a></li>
 			<li><a href="../architecture/">Architecture</a></li>
 			<li><a href="../spec/">Specification</a></li>
 			<li><a href="../examples/" aria-current="page">Examples</a></li>
@@ -310,8 +311,8 @@
 				<h3>The agent asks to move a delivery</h3>
 				<dl>
 					<dt>Operation</dt><dd><code>pedido.reprogramar_despacho</code>: order P-1042 from 24 to 28 October, no cost</dd>
-					<dt>Authority</dt><dd>Per-request <code>authorization_details</code>, after the person approved on the company's page with a code from the company's channel</dd>
-					<dt>Approval</dt><dd><code>agent_asserted</code></dd>
+					<dt>Authority</dt><dd>Per-request <code>authorization_details</code>, granted by device authorization (RFC 8628): on the company's linking page the person confirmed with a code sent to the phone linked at the company, which linked the account and granted the authority</dd>
+					<dt>Approval</dt><dd><code>agent_asserted</code>: the agent stated that the person accepted the terms of revision 1. The code granted the authority; it did not approve the terms</dd>
 					<dt>System</dt><dd>Read back from the store's simulated ERP: delivery on 2026-10-28</dd>
 				</dl>
 				<p class="op__proof">Verified by the issuer alone, offline, with the saved material: valid · <a href="../downloads/native-run-2026-10-22-evening/paquete-op_XzdILOmlgiae.json">package</a> · <a href="../downloads/native-run-2026-10-22-evening/material-op_XzdILOmlgiae.json">material</a> · <a href="../downloads/native-run-2026-10-22-evening/operacion-op_XzdILOmlgiae.json">operation</a></p>
@@ -321,7 +322,7 @@
 				<h3>The company proposes a change within a relationship</h3>
 				<dl>
 					<dt>Operation</dt><dd><code>pedido.reprogramar_despacho</code>: order P-1043 from 27 to 30 October, no cost</dd>
-					<dt>Authority</dt><dd>A relationship approved in the same consent. The test triggered the company's request through the operator's internal route; it reached the agent's HTTP inbox signed, and the agent accepted the proposal</dd>
+					<dt>Authority</dt><dd>A relationship granted in the same device authorization, with its own entry in <code>authorization_details</code>. The test triggered the company's request through the operator's internal route; it reached the agent's HTTP inbox signed, and the agent accepted the proposal</dd>
 					<dt>Approval</dt><dd><code>agent_asserted</code></dd>
 					<dt>System</dt><dd>Read back from the store's simulated ERP: delivery on 2026-10-30</dd>
 				</dl>
@@ -469,8 +470,8 @@
 <footer class="foot">
 	<div class="foot__in">
 		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
-		<div><b>Protocol</b><ul><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
-		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li><li><a href="../implement/#participate">Take part</a></li></ul></div>
+		<div><b>Protocol</b><ul><li><a href="../docs/">Docs</a></li><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../demos/">Demos</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li><li><a href="../implement/#participate">Take part</a></li></ul></div>
 	</div>
 </footer>
 <script src="../assets/site.js" defer></script>

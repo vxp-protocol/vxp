@@ -21,6 +21,9 @@ const MUTACIONES = [
 	["plazo_devolucion", "CO-A: se devuelve fuera de plazo"],
 	["relacion_recurso_ajeno", "RE-A: la empresa escribe al agente sobre la reserva de otro cliente"],
 	["acceso_sin_registro", "B-H/S1/HO-A6: sin registro de accesos no hay atribución"],
+	["permanente_conector_sin_tope", "NH-P: con permiso de antemano, una revisión sobre el tope se acepta sin preguntar"],
+	["chat_sin_respuesta", "NH-C: una consulta de cuenta en el chat se queda sin respuesta"],
+	// relacion_otra_identidad is a second layer behind the client_id + sub lookup of the proposal (NH-I): no API path reaches it alone.
 ];
 
 const correr = (mut) => spawnSync(process.execPath, ["--test", "test/exigencia.test.ts"], { cwd: raiz, encoding: "utf8", env: { ...process.env, SOVRAS_MUTAR: mut } });

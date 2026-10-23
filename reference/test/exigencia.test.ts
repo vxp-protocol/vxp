@@ -1014,3 +1014,136 @@ test("S1 · simulador y registro: sin la llave interna no existe; reset vuelve s
 	assert.ok(puerta.accesos.some((a) => a.client_id === PA_PACT && a.protocolo === "pact"));
 	assert.ok(puerta.accesos.every((a) => typeof a.latencia_ms === "number"));
 });
+
+// ── Native profile, hotel: reads, a cap approved in advance, the late-arrival rule, persistent relationship key ──
+
+test("NH-L · lecturas nativas: disponibilidad pública sin permiso (sin operación ni constancia); ver reservas pide el permiso; vxp.json declara el acceso", async () => {
+	const nat = new AgenteNativo(plataforma, HOTEL, TH);
+	await nat.sesion();
+	const d = await nat.pedir("POST", `${HOTEL}/v1/requests`, { operation: "hotel.disponibilidad", parameters: { check_in: f(80), check_out: f(82), adults: 2 } });
+	assert.equal(d.status, 200, JSON.stringify(d.body));
+	assert.equal(d.body.effect, "read");
+	assert.ok(d.body.result.room_types.some((t: { tipo: string; libres: number }) => t.tipo === "DBL-EST" && t.libres > 0));
+	assert.ok(d.body.result.services.some((s: { code: string }) => s.code === "DESAYUNO"));
+	assert.ok(!("request_id" in d.body), "a read creates no request");
+	assert.ok(!JSON.stringify(d.body).includes("agencias"), "simulated agency rates are not published");
+	const r = await nat.pedir("POST", `${HOTEL}/v1/requests`, { operation: "reserva.consultar", parameters: {} });
+	assert.equal(r.status, 403);
+	assert.equal(r.body.error, "authorization_required");
+	const vxp = await (await red(`https://${DOM_HOTEL}/.well-known/vxp.json`)).json();
+	assert.equal(vxp.capabilities.find((c: { id: string }) => c.id === "hotel.disponibilidad").access, "public");
+	assert.equal(vxp.capabilities.find((c: { id: string }) => c.id === "reserva.crear").access, "delegated");
+});
+
+test("NH-P · tope aprobado de antemano: dentro del tope la revisión no pide aprobación propia y se acepta con standing_permission; sobre el tope, sí", async () => {
+	const nat = new AgenteNativo(plataforma, HOTEL, TH);
+	await nat.sesion();
+	const cuerpo = { operation: "reserva.crear", parameters: { room_type: "DBL-EST", check_in: f(84), check_out: f(86), adults: 2, services: [{ code: "DESAYUNO" }] } };
+	const llave = randomId(12);
+	const r0 = await nat.solicitar(cuerpo, llave);
+	assert.equal(r0.status, 202, JSON.stringify(r0.body));
+	const total = r0.body.quote.total as number;
+	// The person approves up to $250,000 in advance: more than this quote.
+	const tope = 250_000;
+	assert.ok(total <= tope, `the test quote (${total}) is within the cap`);
+	await nat.autorizar([{ type: RAR, actions: ["reserva.crear"], identifier: "nuevo", limits: { max_total_clp: tope } }], ["reservas:crear"]);
+	const r1 = await nat.solicitar(cuerpo, llave);
+	assert.equal(r1.status, 201, JSON.stringify(r1.body));
+	assert.equal(r1.body.proposal.user_approval_required, false, "within the cap, the signed terms say no approval of its own is needed");
+	// A counter that raises the total above the cap: the new revision needs the person again.
+	const c = await nat.pedir("POST", `${HOTEL}/v1/proposals/${r1.body.proposal.id}/counter`, { proposed_terms: { room_type: "SUI" } });
+	assert.equal(c.status, 200, JSON.stringify(c.body));
+	assert.ok(Number(c.body.proposal.terms.total) > tope, `the suite costs more than the cap (${c.body.proposal.terms.total})`);
+	{
+		assert.equal(c.body.proposal.user_approval_required, true);
+		const no = await nat.pedir("POST", `${HOTEL}/v1/proposals/${c.body.proposal.id}/accept`, { approved_by: "standing_permission" });
+		assert.ok(no.status === 403 || no.status === 409, JSON.stringify(no.body));
+		// Back to the original terms, within the cap.
+		const atras = await nat.pedir("POST", `${HOTEL}/v1/proposals/${c.body.proposal.id}/counter`, { proposed_terms: { room_type: "DBL-EST" } });
+		assert.equal(atras.status, 200, JSON.stringify(atras.body));
+		assert.equal(atras.body.proposal.user_approval_required, false);
+		r1.body.proposal = atras.body.proposal;
+	}
+	const a = await nat.pedir("POST", `${HOTEL}/v1/proposals/${r1.body.proposal.id}/accept`, { approved_by: "standing_permission" });
+	assert.ok(a.status === 200 || a.status === 202, JSON.stringify(a.body));
+	assert.equal((await nat.pedir("GET", `${HOTEL}/v1/requests/${r1.body.request_id}`)).body.state, "succeeded");
+	const ap = declaraciones((await nat.prueba(r1.body.request_id)).body).find((x) => x.kind === "user_approval");
+	assert.equal(ap.body.basis, "standing_permission", "the proof says the approval came from the cap given in advance");
+});
+
+test("NH-T · regla de llegada tardía del hotel: pasada la hora de corte del día de llegada, UNA pregunta cerrada al agente dentro de la relación; nada antes de la hora ni dos veces", async () => {
+	const pa = await nuevoAgente("huesped-tarde.test");
+	const nat = new AgenteNativo(pa, HOTEL, TH);
+	await nat.sesion();
+	const llegada = f(90);
+	const cuerpo = { operation: "reserva.crear", parameters: { room_type: "DBL-EST", check_in: llegada, check_out: masDias(llegada, 2), adults: 2 } };
+	const llave = randomId(12);
+	const r0 = await nat.solicitar(cuerpo, llave);
+	const rel = { type: RAR_REL, actions: ["alerta.mantener_o_liberar"], identifier: "relationship", limits: { max_per_day: 2, duration_seconds: 86400 * 120 } };
+	const t = await nat.autorizar([...r0.body.authorization.authorization_details, rel], ["reservas:crear", "vxp:relationship"]);
+	assert.ok(t.body.relationships?.[0]?.relationship_id, JSON.stringify(t.body));
+	const r1 = await nat.solicitar(cuerpo, llave);
+	assert.equal((await nat.aceptar(r1.body.proposal.id)).body.state, "succeeded");
+	const n0 = pa.buzon.length;
+	// Before the cut-off (19:00 Chile = 22:00 UTC): nothing.
+	assert.deepEqual(await interno("relaciones/revisar-llegadas", { tenant: TH, at: `${llegada}T22:00:00Z` }), []);
+	// After it (21:00 Chile = 00:00 UTC next day): one closed question.
+	const hecho = await interno("relaciones/revisar-llegadas", { tenant: TH, at: `${masDias(llegada, 1)}T00:00:00Z` });
+	assert.equal(hecho.length, 1, JSON.stringify(hecho));
+	assert.equal(pa.buzon.length, n0 + 1);
+	const m = await verificarFirma(HOTEL, pa.buzon.at(-1)!.message, "vxp-company-request+jwt");
+	assert.equal(m.action, "alerta.mantener_o_liberar");
+	assert.deepEqual(m.content.options, ["mantener", "liberar"]);
+	assert.deepEqual(await interno("relaciones/revisar-llegadas", { tenant: TH, at: `${masDias(llegada, 1)}T01:00:00Z` }), [], "asked once");
+	const rp = await nat.pedir("POST", m.content.reply_url, { alert_id: m.content.alert_id, decision: "mantener" });
+	assert.equal(rp.status, 200, JSON.stringify(rp.body));
+});
+
+test("NH-K · la llave de relación persiste con el directorio de llaves: un reinicio publica la misma", async () => {
+	const { Relaciones } = await import("../src/relacion.ts");
+	const dir = mkdtempSync(join(tmpdir(), "vxp-rel-"));
+	const a = new Relaciones();
+	a.dirLlaves = dir;
+	const b = new Relaciones();
+	b.dirLlaves = dir;
+	assert.equal(b.jwks(TH).keys[0].kid, a.jwks(TH).keys[0].kid);
+	assert.ok(!("d" in b.jwks(TH).keys[0]));
+});
+
+test("NH-I · una propuesta de la empresa dentro de una relación sólo la ve y la acepta la identidad de esa relación: para otro agente no existe (404) y nada cambia", async () => {
+	const pa = await nuevoAgente("huesped-relacion.test");
+	const nat = new AgenteNativo(pa, HOTEL, TH);
+	await nat.sesion();
+	const llegada = f(150);
+	const cuerpo = { operation: "reserva.crear", parameters: { room_type: "DBL-EST", check_in: llegada, check_out: masDias(llegada, 2), adults: 2 } };
+	const llave = randomId(12);
+	const r0 = await nat.solicitar(cuerpo, llave);
+	const t = await nat.autorizar([...r0.body.authorization.authorization_details, relacion(["reserva.proponer_cambio"])], ["reservas:crear", "reservas:modificar", "vxp:relationship"]);
+	const rel = t.body.relationships?.[0]?.relationship_id;
+	assert.ok(rel, JSON.stringify(t.body));
+	const r1 = await nat.solicitar(cuerpo, llave);
+	assert.equal((await nat.aceptar(r1.body.proposal.id)).body.state, "succeeded");
+	const reserva = (await estado(TH)).reservas.find((x) => x.estadia === r1.body.proposal.terms.estadia)!;
+	const ini = await interno("relaciones/iniciar", { tenant: TH, relationship_id: rel, action: "reserva.proponer_cambio", params: { reservation_ref: reserva.id, check_in: f(152), check_out: f(154) } });
+	assert.equal(ini.delivery, "entregado", JSON.stringify(ini));
+	const m = await verificarFirma(HOTEL, pa.buzon.at(-1)!.message, "vxp-company-request+jwt");
+	const otro = new AgenteNativo(otraPlataforma, HOTEL, TH);
+	await otro.sesion();
+	const ajeno = await otro.aceptar(m.content.proposal_id);
+	// The proposal is looked up by client_id + sub, so another agent cannot even see it. The relationship check in
+	// nativo.ts (mutation relacion_otra_identidad) is a second layer behind this lookup.
+	assert.equal(ajeno.status, 404, JSON.stringify(ajeno.body));
+	assert.equal(ajeno.body.error, "proposal_not_found");
+	assert.equal((await estado(TH)).reservas.find((x) => x.id === reserva.id)!.llegada, llegada, "nada cambió");
+	const propia = await nat.aceptar(m.content.proposal_id);
+	assert.equal(propia.body.state, "succeeded", JSON.stringify(propia.body));
+	assert.equal((await estado(TH)).reservas.find((x) => x.id === reserva.id)!.llegada, f(152));
+});
+
+test("NH-C · el chat de la empresa siempre responde: una consulta de cuenta de una visita que no se declara asistente recibe respuesta, no silencio", async () => {
+	for (const texto of ["¿Cuándo llega mi pedido P-1042?", "Quiero cambiar la fecha de despacho de mi pedido P-1042"]) {
+		const r = await chat(FERRETERIA, texto);
+		assert.equal(r.deteccion.probable_agente, false);
+		assert.ok(typeof r.respuesta === "string" && r.respuesta.length > 0, `${texto} → ${JSON.stringify(r)}`);
+	}
+});

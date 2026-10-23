@@ -1,4 +1,4 @@
-// Documentación: índice fijo en escritorio y desplegable en móvil, y sección actual marcada en el índice.
+// Documentation: sticky table of contents on desktop, collapsible on mobile, with the current section marked.
 (() => {
 	const toc = document.querySelector(".toc details");
 	if (!toc) return;
@@ -7,7 +7,7 @@
 	ajustar();
 	escritorio.addEventListener("change", () => { toc.open = escritorio.matches; });
 
-	// En móvil, elegir una sección cierra el índice.
+	// On mobile, choosing a section closes the table of contents.
 	toc.addEventListener("click", (e) => {
 		if (e.target.closest("a") && !escritorio.matches) toc.open = false;
 	});

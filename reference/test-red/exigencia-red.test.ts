@@ -9,7 +9,7 @@
 // Usage: node --test test-red/exigencia-red.test.ts   (uses ports 3610 and 3614)
 
 import assert from "node:assert/strict";
-import { type ChildProcess, spawn, spawnSync } from "node:child_process";
+import { type ChildProcess, spawn } from "node:child_process";
 import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
@@ -97,6 +97,18 @@ async function autorizar(detalles: unknown[], marcar: string[]) {
 	token = String(t.body.access_token);
 }
 
+// Child processes run asynchronously: a blocking spawnSync freezes this process's event loop, the server then
+// closes the idle keep-alive socket, and the next fetch reuses the dead socket and fails with ECONNRESET.
+const ejecutar = (cmd: string, args: string[]) =>
+	new Promise<{ status: number | null; stdout: string; stderr: string }>((ok) => {
+		const h = spawn(cmd, args);
+		let stdout = "";
+		let stderr = "";
+		h.stdout.on("data", (d) => (stdout += d));
+		h.stderr.on("data", (d) => (stderr += d));
+		h.on("close", (status) => ok({ status, stdout, stderr }));
+	});
+
 test("RX1 · por red, hotel: descubre en SU dominio → pide → vincula → amplía el permiso a mitad → acepta con la conexión cortada → reintenta → UNA reserva; el verificador en Python y el recolector lo confirman desde fuera", async () => {
 	const doc = await fetch(`${DOM_HOTEL}/.well-known/vxp.json`).then((r) => r.json());
 	assert.equal(doc.organization.name, "Hotel Demo");
@@ -128,12 +140,12 @@ test("RX1 · por red, hotel: descubre en SU dominio → pide → vincula → amp
 
 	const paquete = (await pedir("GET", `${HOTEL}/v1/requests/${r0.body.request_id}/proof`)).body;
 	writeFileSync(join(tmp, "p.json"), JSON.stringify(paquete));
-	const v = spawnSync("python", [join(RAIZ, "..", "verifier", "verificar_paquete.py"), "vivo", "--http-local", "--issuer", HOTEL, "--paquete", join(tmp, "p.json"), "--aud", clientId], { encoding: "utf8" });
+	const v = await ejecutar("python", [join(RAIZ, "..", "verifier", "verificar_paquete.py"), "vivo", "--http-local", "--issuer", HOTEL, "--paquete", join(tmp, "p.json"), "--aud", clientId]);
 	const veredicto = JSON.parse(v.stdout.trim().split("\n").at(-1)!);
 	assert.equal(veredicto.valid, true, v.stdout + v.stderr);
 	assert.equal(veredicto.final_state, "succeeded");
 
-	const rec = spawnSync(process.execPath, [join(RAIZ, "scripts", "recolectar-evidencia.mjs"), "--base", P, "--llave", llave, "--salida", tmp, "--etiqueta", "rx1"], { encoding: "utf8" });
+	const rec = await ejecutar(process.execPath, [join(RAIZ, "scripts", "recolectar-evidencia.mjs"), "--base", P, "--llave", llave, "--salida", tmp, "--etiqueta", "rx1"]);
 	assert.equal(rec.status, 0, rec.stdout + rec.stderr);
 	const dir = join(tmp, readdirSync(tmp).find((n) => n.endsWith("-rx1"))!);
 	const verif = JSON.parse(readFileSync(join(dir, "verificacion-paquetes.json"), "utf8")) as { client_id: string; veredicto: { valid: boolean } }[];

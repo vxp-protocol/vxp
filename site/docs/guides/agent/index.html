@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide for personal agents · VXP docs</title>
+<meta name="description" content="How a personal agent finds companies that speak VXP, acts with its user's permission, keeps its state, verifies results and answers the company within an agreement.">
+<link rel="alternate" type="text/markdown" href="../../../docs/guides/agent.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/vxp.css">
+<link rel="stylesheet" href="../../../assets/docs.css">
+<link rel="stylesheet" href="../../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../../architecture/">Architecture</a></li>
+			<li><a href="../../../spec/">Specification</a></li>
+			<li><a href="../../../examples/">Examples</a></li>
+			<li><a href="../../../verify/">Verify</a></li>
+			<li><a href="../../../conformance/">Conformance</a></li>
+			<li><a href="../../../implement/">Implement</a></li>
+			<li><a href="../../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../../docs/">VXP documentation</a></li><li><a href="../../../docs/introduction/">Introduction</a></li><li><a href="../../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../../docs/proof/">VXP Proof</a></li><li><a href="../../../docs/relationship/">VXP Relationship</a></li><li><a href="../../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../../docs/guides/company/">Guide for companies</a></li><li><a href="../../../docs/guides/agent/" aria-current="page">Guide for personal agents</a></li><li><a href="../../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../../docs/examples/">Examples and messages</a></li><li><a href="../../../docs/specification/">Specification and versions</a></li><li><a href="../../../docs/conformance/">Tests and conformance</a></li><li><a href="../../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">Guide for personal agents</h1>
+		<p class="lead">How a personal agent finds companies that speak VXP, acts with its user's permission, keeps its state, verifies results and answers the company within an agreement.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#1-have-an-identity">1. Have an identity</a></li><li><a href="#2-discover">2. Discover</a></li><li><a href="#3-open-a-session-and-ask">3. Open a session and ask</a></li><li><a href="#4-get-the-persons-permission">4. Get the person's permission</a></li><li><a href="#5-negotiate-then-accept-exactly-once">5. Negotiate, then accept exactly once</a></li><li><a href="#6-keep-your-state">6. Keep your state</a></li><li><a href="#7-get-and-verify-the-evidence">7. Get and verify the evidence</a></li><li><a href="#8-keep-the-relationship">8. Keep the relationship</a></li><li><a href="#9-optionally-poppy-and-pact">9. Optionally, Poppy and PACT</a></li><li><a href="#the-same-steps-with-agent">The same steps with agent/</a></li><li><a href="#what-you-can-rely-on-and-what-you-cannot">What you can rely on, and what you cannot</a></li></ul></nav>
+		<p>A person tells their agent: «Book a hotel in Santiago for two nights, with breakfast; negotiate the best rate and book it if it is under $250,000». This guide shows what the agent does with any company that speaks VXP, with no integration per company. The <code>agent/</code> folder of the repository implements every step as a library you can import or copy, with a command-line tool and an MCP server; the <a href="../../../docs/quickstart/">Quickstart</a> runs it.</p>
+<h2 id="1-have-an-identity">1. Have an identity<a class="anchor" href="#1-have-an-identity" aria-label="Link to 1. Have an identity">#</a></h2>
+<p>Your agent is an OAuth client identified by a URL it controls: its Client ID Metadata Document, with its public key set. Keep the private key in your agent's own storage. If you want companies to reach you later, declare an inbox in that document (<code>extensions["vxpprotocol.org/relationship"].inbox_uri</code>), on the same origin (<a class="rule" href="../../../spec/#r2">R2</a>).</p>
+<h2 id="2-discover">2. Discover<a class="anchor" href="#2-discover" aria-label="Link to 2. Discover">#</a></h2>
+<p>Start from domains you know or the person names. VXP has no global registry. For each one, fetch <code>/.well-known/vxp.json</code>, keep only companies whose <code>capabilities</code> offer what you need, and read the issuer's RFC 8414 metadata (<a class="rule" href="../../../spec/#native-discovery">§8 discovery</a>). Public capabilities, such as availability or catalog, need no consent.</p>
+<h2 id="3-open-a-session-and-ask">3. Open a session and ask<a class="anchor" href="#3-open-a-session-and-ask" aria-label="Link to 3. Open a session and ask">#</a></h2>
+<p>Get a session token with <code>private_key_jwt</code> and a DPoP proof, with <code>resource</code> = the company's endpoint. Then <code>POST /v1/requests</code> with an <code>Idempotency-Key</code> you keep. If the answer is <code>authorization_required</code>, it lists exactly what to ask the person for (<a class="rule" href="../../../spec/#o2">O2</a>).</p>
+<h2 id="4-get-the-persons-permission">4. Get the person's permission<a class="anchor" href="#4-get-the-persons-permission" aria-label="Link to 4. Get the person's permission">#</a></h2>
+<p>Start a device authorization (RFC 8628) with those <code>authorization_details</code>, and show the person the verification link. They approve on the company's page, linking their account through the company's own channel. If the person sets a limit in advance, for example «up to $250,000», ask for it as a limit in the authorization details. Within it, the agent may accept without asking again. Above it, the company asks for more authority and you go back to the person.</p>
+<h2 id="5-negotiate-then-accept-exactly-once">5. Negotiate, then accept exactly once<a class="anchor" href="#5-negotiate-then-accept-exactly-once" aria-label="Link to 5. Negotiate, then accept exactly once">#</a></h2>
+<p>Repeat the request with the same key: it becomes <code>proposed</code>, with a proposal of exact terms. Compare proposals across companies. Counter if the company allows it. Never accept a superseded revision: the company answers <code>terms_changed</code> (<a class="rule" href="../../../spec/#o4">O4</a>). Accept the revision the person approved, or one within the limit they gave. Accepting again never runs it twice (<a class="rule" href="../../../spec/#o6">O6</a>).</p>
+<h2 id="6-keep-your-state">6. Keep your state<a class="anchor" href="#6-keep-your-state" aria-label="Link to 6. Keep your state">#</a></h2>
+<p>Persist the session, the <code>Idempotency-Key</code>, the request ID, the proposal you are on and any relationship. If your process restarts, read the request (<code>GET /v1/requests/{id}</code>) and continue from its state. Repeating with the same key never creates a second operation.</p>
+<h2 id="7-get-and-verify-the-evidence">7. Get and verify the evidence<a class="anchor" href="#7-get-and-verify-the-evidence" aria-label="Link to 7. Get and verify the evidence">#</a></h2>
+<p>Fetch <code>GET /v1/requests/{id}/proof</code> and verify it yourself, anchored by the issuer you discovered, with the operation you were shown (<a class="rule" href="../../../spec/#p8">P8</a>). Keep the package and the public material with it, so the person can prove later what was agreed. See the <a href="../../../docs/guides/verifier/">verifier guide</a>.</p>
+<h2 id="8-keep-the-relationship">8. Keep the relationship<a class="anchor" href="#8-keep-the-relationship" aria-label="Link to 8. Keep the relationship">#</a></h2>
+<p>If the person approved a relationship, the company may write to your inbox (<a class="rule" href="../../../spec/#r7">R7</a>):</p>
+<ul><li><b>Verify</b> each message's signature with the relationship key anchored to the issuer, and reject a repeated <code>jti</code>.</li><li><b>A proposal</b> is a normal operation: accept it only with the person's approval or within their limit (<a class="rule" href="../../../spec/#r8">R8</a>).</li><li><b>A closed question</b>, for example «hold or release the booking», is answered once, with one of the options, at <code>reply_url</code> (<a class="rule" href="../../../spec/#r17">R17</a>).</li><li><b>Revoke</b> the relationship with <code>DELETE /v1/relationships/{id}</code> when the person asks (<a class="rule" href="../../../spec/#r10">R10</a>).</li></ul>
+<h2 id="9-optionally-poppy-and-pact">9. Optionally, Poppy and PACT<a class="anchor" href="#9-optionally-poppy-and-pact" aria-label="Link to 9. Optionally, Poppy and PACT">#</a></h2>
+<p>If a company only offers Poppy or PACT, use those protocols as written: see <a href="../../../docs/guides/interoperability/">Interoperability</a>. The VXP proof still travels in their extension points.</p>
+<h2 id="the-same-steps-with-agent">The same steps with <code>agent/</code><a class="anchor" href="#the-same-steps-with-agent" aria-label="Link to The same steps with agent/">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Step</th><th>Library (<code>VxpAgent</code>)</th><th>CLI (<code>vxp-agent</code>)</th><th>MCP tool</th></tr></thead><tbody><tr><td>1 Identity</td><td><code>VxpAgent.open({ stateDir, publicOrigin })</code>, <code>startAgentServer</code></td><td><code>serve</code></td><td><code>mcp --port</code></td></tr><tr><td>2 Discover</td><td><code>discover(domains)</code>, <code>read(company, operation, params)</code></td><td><code>discover</code>, <code>read</code></td><td><code>vxp_discover</code>, <code>vxp_read</code></td></tr><tr><td>3 Ask</td><td><code>createRequest(company, operation, target, params)</code></td><td><code>request</code></td><td><code>vxp_request</code></td></tr><tr><td>4 Permission</td><td><code>authorize(company, { forRequest, capClp, relationship })</code>, <code>pollAuthorization</code></td><td><code>authorize</code>, <code>wait-authorization</code></td><td><code>vxp_authorize</code>, <code>vxp_check_authorization</code></td></tr><tr><td>5 Negotiate, accept</td><td><code>resubmit</code>, <code>counter</code>, <code>accept</code></td><td><code>resubmit</code>, <code>counter</code>, <code>accept</code></td><td><code>vxp_resubmit</code>, <code>vxp_counter</code>, <code>vxp_accept</code></td></tr><tr><td>6 State</td><td>everything persists in <code>stateDir</code></td><td><code>--state DIR</code></td><td>the same directory</td></tr><tr><td>7 Evidence</td><td><code>proof(requestId)</code>, <code>verifySaved(requestId)</code></td><td><code>proof</code>, <code>verify</code></td><td><code>vxp_proof</code></td></tr><tr><td>8 Relationship</td><td>inbox in <code>startAgentServer</code>, <code>reply</code>, <code>revokeRelationship</code></td><td><code>inbox</code>, <code>reply</code>, <code>revoke-relationship</code></td><td><code>vxp_inbox</code>, <code>vxp_reply</code>, <code>vxp_revoke_relationship</code></td></tr></tbody></table></div>
+<p>The person's rules are set only by the person: <code>setMandate</code> (a cap) and <code>setReplyRule</code> (a standing answer), or <code>mandate set</code> and <code>mandate reply</code> in the CLI. No MCP tool sets them. <code>accept</code> sends <code>approved_by: "standing_permission"</code> only when a cap the person set covers the total <b>and</b> the company marks the revision <code>user_approval_required: false</code>; otherwise the person confirms the exact revision. Over MCP, the model receives the approval id, the summary, the amount and a link without any secret. The person decides in the host's own confirmation dialog, on the agent's page with a code shown only in their terminal, or with <code>vxp-agent approve</code>.</p>
+<p><code>agent/README.md</code> has the commands, the rule-by-rule correspondence and the limits. The tests in <code>agent/test/</code> cover the hotel task, each step in a new process, the person's refusal, a cap exceeded, revoked and expired relationships, forged and replayed company messages, and altered proofs.</p>
+<h2 id="what-you-can-rely-on-and-what-you-cannot">What you can rely on, and what you cannot<a class="anchor" href="#what-you-can-rely-on-and-what-you-cannot" aria-label="Link to What you can rely on, and what you cannot">#</a></h2>
+<ul><li>You can rely on: one execution per accepted revision; success only after the company read its system; and a proof you can check without trusting the company's server.</li><li>You cannot rely on: that the company told the truth about its own system. The proof names its root of trust; today that root is the operator (<a class="rule" href="../../../spec/#p7">P7</a>).</li></ul>
+		<div class="dfoot">
+			<a href="../../../docs/guides/agent.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/guides/agent.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../../docs/guides/company/"><span>Previous</span>Guide for companies</a>
+			<a href="../../../docs/guides/verifier/"><span>Next</span>Guide for verifiers</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../../docs/quickstart/">Quickstart</a></li><li><a href="../../../spec/">Specification</a></li><li><a href="../../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../../verify/">Verifier</a></li><li><a href="../../../demos/">Demos</a></li><li><a href="../../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../../docs/changelog/">Changelog</a></li><li><a href="../../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../../assets/site.js" defer></script>
+<script src="../../../assets/docs-site.js" defer></script>
+</body>
+</html>

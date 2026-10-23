@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Native profile and discovery · VXP docs</title>
+<meta name="description" content="How an agent finds a company that speaks VXP, identifies itself, gets authority for one request, and drives an operation through the /v1 endpoints.">
+<link rel="alternate" type="text/markdown" href="../../docs/native-profile.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/vxp.css">
+<link rel="stylesheet" href="../../assets/docs.css">
+<link rel="stylesheet" href="../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../architecture/">Architecture</a></li>
+			<li><a href="../../spec/">Specification</a></li>
+			<li><a href="../../examples/">Examples</a></li>
+			<li><a href="../../verify/">Verify</a></li>
+			<li><a href="../../conformance/">Conformance</a></li>
+			<li><a href="../../implement/">Implement</a></li>
+			<li><a href="../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../docs/">VXP documentation</a></li><li><a href="../../docs/introduction/">Introduction</a></li><li><a href="../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../docs/proof/">VXP Proof</a></li><li><a href="../../docs/relationship/">VXP Relationship</a></li><li><a href="../../docs/native-profile/" aria-current="page">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../docs/guides/company/">Guide for companies</a></li><li><a href="../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../docs/examples/">Examples and messages</a></li><li><a href="../../docs/specification/">Specification and versions</a></li><li><a href="../../docs/conformance/">Tests and conformance</a></li><li><a href="../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">Native profile and discovery</h1>
+		<p class="lead">How an agent finds a company that speaks VXP, identifies itself, gets authority for one request, and drives an operation through the /v1 endpoints.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#1-discover">1. Discover</a></li><li><a href="#2-identify">2. Identify</a></li><li><a href="#3-get-authority-for-this-request">3. Get authority for this request</a></li><li><a href="#4-keep-the-context">4. Keep the context</a></li><li><a href="#5-operate">5. Operate</a></li><li><a href="#6-prove-and-keep-the-relationship">6. Prove, and keep the relationship</a></li><li><a href="#endpoints">Endpoints</a></li><li><a href="#states">States</a></li></ul></nav>
+		<p>The native profile is VXP's own way to carry an operation. It needs neither Poppy nor PACT (<a class="rule" href="../../spec/#native-only">§8, native-only gateway</a>). It is <b>experimental</b>, and <code>vxp.json</code> says so with <code>"status": "experimental"</code>.</p>
+<h2 id="1-discover">1. Discover<a class="anchor" href="#1-discover" aria-label="Link to 1. Discover">#</a></h2>
+<p>The agent fetches <code>https://&lt;company domain&gt;/.well-known/vxp.json</code> (<a class="rule" href="../../spec/#native-discovery">§8, discovery</a>):</p>
+<div class="code"><div class="code__head"><b>GET /.well-known/vxp.json</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "protocol": "vxp",
+  "version": "0.1",
+  "organization": {
+    "name": "Ferretería Demo",
+    "domain": "store.example"
+  },
+  "issuer": "https://store.example/e/ferreteria-demo",
+  "endpoint": "https://store.example/e/ferreteria-demo/v1",
+  "capabilities": [
+    {
+      "id": "pedido.consultar",
+      "effect": "read",
+      "access": "delegated",
+      "admission": "static",
+      "authorization_details_type": "https://vxpprotocol.org/rar/capability"
+    },
+    {
+      "id": "pedido.reprogramar_despacho",
+      "effect": "write",
+      "access": "delegated",
+      "admission": "dynamic",
+      "authorization_details_type": "https://vxpprotocol.org/rar/capability",
+      "commitment_modes": [
+        "firm",
+        "conditional"
+      ],
+      "outcome_proof": true
+    }
+  ],
+  "limits": {
+    "max_revisions": 3,
+    "proposal_ttl_seconds": 900,
+    "max_accept_attempts": 3
+  },
+  "outcome_proof": {
+    "version": "0.1",
+    "trust": "issuer_metadata"
+  },
+  "status": "experimental",
+  "vxp": {
+    "version": "0.1",
+    "relationship": {
+      "authorization_details_type": "https://vxpprotocol.org/rar/relationship",
+      "company_initiated_actions": [
+        "despacho.proponer_cambio",
+        "incidencia.avisar",
+        "alerta.confirmar_o_bloquear"
+      ]
+    },
+    "proof": {
+      "trust": "issuer_metadata"
+    }
+  }
+}</pre></div>
+<ul><li><code>organization.domain</code> must be the host that served the document.</li><li><code>issuer</code> is the company's issuer; its RFC 8414 metadata lives at <code>/.well-known/oauth-authorization-server</code> + the issuer path, and its <code>issuer</code> must match character by character.</li><li><code>capabilities</code> lists only what the company offers to external agents. <code>access</code> is <code>public</code> or <code>delegated</code>; <code>admission</code> is <code>static</code> (the grant is enough) or <code>dynamic</code> (decided per request: owner, precondition, policy).</li><li><code>vxp.json</code> never carries keys. The verifier takes them from the issuer metadata (<code>vxp_proof</code>).</li></ul>
+<p>VXP has no global registry of companies. An agent starts from domains it already knows, or that the person names.</p>
+<h2 id="2-identify">2. Identify<a class="anchor" href="#2-identify" aria-label="Link to 2. Identify">#</a></h2>
+<p>The agent is an OAuth client identified by a Client ID Metadata Document at its own <code>client_id</code> URL, with its JWKS. It authenticates with <code>private_key_jwt</code> and binds its token to a DPoP key (RFC 9449, ES256). The user ID it holds for the person travels as an RFC 7523 assertion, and every native request carries <code>resource</code> = the <code>endpoint</code> from <code>vxp.json</code> (RFC 8707) (<a class="rule" href="../../spec/#native-authorization">§8, authorization</a>).</p>
+<div class="code"><div class="code__head"><b>POST {issuer}/oauth/token · session</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+  "client_id": "https://agent.example/agent.json",
+  "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+  "client_assertion": "eyJhbGciOi…",
+  "assertion": "eyJhbGciOi…"
+}</pre></div>
+<h2 id="3-get-authority-for-this-request">3. Get authority for this request<a class="anchor" href="#3-get-authority-for-this-request" aria-label="Link to 3. Get authority for this request">#</a></h2>
+<p>Asking without authority is safe: the company holds the request and says exactly what is missing (<a class="rule" href="../../spec/#o2">O2</a>).</p>
+<div class="code"><div class="code__head"><b>POST /v1/requests → 202 authorization_required</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "request_id": "req_eSTKa7J-MERu",
+  "operation": "pedido.reprogramar_despacho",
+  "target": {
+    "order_ref": "P-1042"
+  },
+  "state": "authorization_required",
+  "projections": {
+    "poppy": null,
+    "a2a": "TASK_STATE_AUTH_REQUIRED"
+  },
+  "authorization": {
+    "error": "authorization_required",
+    "authorization_details": [
+      {
+        "type": "https://vxpprotocol.org/rar/capability",
+        "actions": [
+          "pedido.reprogramar_despacho"
+        ],
+        "identifier": "P-1042"
+      }
+    ],
+    "device_authorization_endpoint": "https://store.example/e/ferreteria-demo/oauth/device",
+    "resource": "https://store.example/e/ferreteria-demo/v1"
+  }
+}</pre></div>
+<p>The agent starts a device authorization (RFC 8628) with those <code>authorization_details</code> (RFC 9396). The person approves on the company's own page, after linking their account through an authentication the company controls (<a class="rule" href="../../spec/#id1">ID1</a>). The token that follows carries exactly what was granted (<a class="rule" href="../../spec/#o2">O2</a>).</p>
+<h2 id="4-keep-the-context">4. Keep the context<a class="anchor" href="#4-keep-the-context" aria-label="Link to 4. Keep the context">#</a></h2>
+<p>The agent repeats the same request, with the same <code>Idempotency-Key</code>. It is the same request, re-evaluated with the new authority (<a class="rule" href="../../spec/#native-idempotency">§8, idempotency</a>):</p>
+<div class="code"><div class="code__head"><b>POST /v1/requests (same Idempotency-Key)</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "request_id": "req_eSTKa7J-MERu",
+  "state": "proposed",
+  "projections": {
+    "poppy": "proposed",
+    "a2a": "TASK_STATE_INPUT_REQUIRED"
+  },
+  "operation_id": "op_XzdILOmlgiae"
+}</pre></div>
+<ul><li>Same key and same body: the same request. Same key and another body: <code>409 idempotency_key_reused</code>.</li><li>No key: <code>400 idempotency_key_required</code>.</li></ul>
+<h2 id="5-operate">5. Operate<a class="anchor" href="#5-operate" aria-label="Link to 5. Operate">#</a></h2>
+<p>The company answers with a proposal: a revision with exact terms, signed into the proof, and its commitment (<a class="rule" href="../../spec/#commitment">§8, commitment</a>).</p>
+<div class="code"><div class="code__head"><b>The proposal, revision 1</b><span>captured from the reference implementation</span></div><pre data-copy tabindex="0">{
+  "id": "prop_op_XzdILOmlgiae_r1",
+  "revision": 1,
+  "state": "proposed",
+  "summary": "Cambiar el despacho del pedido P-1042 (Taladro percutor 800 W) del 2026-10-24 al 2026-10-28, a Calle Ejemplo 100, Santiago, sin costo.",
+  "terms": {
+    "pedido": "P-1042",
+    "producto": "Taladro percutor 800 W",
+    "despacho_actual": "2026-10-24",
+    "despacho_nuevo": "2026-10-28",
+    "direccion": "Calle Ejemplo 100, Santiago",
+    "costo": {
+      "amount": "0",
+      "currency": "CLP"
+    },
+    "vxp_salt": "hRQxNKbVg-MdR_aCsFbHYQ"
+  },
+  "commitment": {
+    "mode": "firm",
+    "requires": []
+  },
+  "expires_at": "2026-10-22T22:45:29.356Z",
+  "user_approval_required": true,
+  "limits": {
+    "max_revisions": 3,
+    "revisions_left": 2,
+    "max_accept_attempts": 3,
+    "accept_attempts_left": 3
+  }
+}</pre></div>
+<p>The agent may counter (<code>POST /v1/proposals/{id}/counter</code>), which produces a new revision. Accepting a superseded revision gets <code>409 terms_changed</code> and runs nothing (<a class="rule" href="../../spec/#o4">O4</a>). Accepting the current one runs it <b>once</b> (<a class="rule" href="../../spec/#o6">O6</a>), and success is declared only after the company reads its system back (<a class="rule" href="../../spec/#o7">O7</a>):</p>
+<div class="code"><div class="code__head"><b>Accept the current revision</b><span>http</span></div><pre data-copy tabindex="0">POST /v1/proposals/{proposal_id}/accept
+Authorization: DPoP &lt;token&gt;
+DPoP: &lt;proof&gt;
+Content-Type: application/json
+
+{ "approved_by": "user" }</pre></div>
+<p><code>approved_by: "user"</code> is the agent stating that the person approved: the proof records it as <code>agent_asserted</code> (<a class="rule" href="../../spec/#p2">P2</a>).</p>
+<h2 id="6-prove-and-keep-the-relationship">6. Prove, and keep the relationship<a class="anchor" href="#6-prove-and-keep-the-relationship" aria-label="Link to 6. Prove, and keep the relationship">#</a></h2>
+<p><code>GET /v1/requests/{id}/proof</code> returns the package (see <a href="../../docs/proof/">VXP Proof</a>). If the person also approved a relationship, the company can later start a request toward the agent (see <a href="../../docs/relationship/">VXP Relationship</a>).</p>
+<h2 id="endpoints">Endpoints<a class="anchor" href="#endpoints" aria-label="Link to Endpoints">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Method and path</th><th>What it does</th></tr></thead><tbody><tr><td><code>POST /v1/requests</code></td><td>Create a request <code>{operation, target, parameters}</code>, with <code>Idempotency-Key</code></td></tr><tr><td><code>GET /v1/requests/{id}</code></td><td>State, projections, proposal, effects, result, <code>proof_url</code></td></tr><tr><td><code>GET /v1/requests/{id}/events</code></td><td>Transitions</td></tr><tr><td><code>POST /v1/requests/{id}/cancel</code></td><td>Ask to stop ([[cancellation</td><td>§8, cancellation]])</td></tr><tr><td><code>GET /v1/requests/{id}/proof</code></td><td>The proof package</td></tr><tr><td><code>POST /v1/proposals/{id}/accept</code></td><td>Accept that revision</td></tr><tr><td><code>POST /v1/proposals/{id}/counter</code></td><td>Counter-proposal</td></tr><tr><td><code>GET</code>, <code>DELETE /v1/relationships/{id}</code></td><td>Read or revoke the agent's relationship</td></tr><tr><td><code>POST /v1/relationships/{id}/replies</code></td><td>Answer a closed question (<a class="rule" href="../../spec/#r17">R17</a>)</td></tr></tbody></table></div>
+<p>All of them take <code>Authorization: DPoP</code> and a DPoP proof. Full responses and errors: <a class="rule" href="../../spec/#native-endpoints">§8, endpoints</a>.</p>
+<h2 id="states">States<a class="anchor" href="#states" aria-label="Link to States">#</a></h2>
+<p>Inside, a request moves through <code>received</code>, <code>authorization_required</code>, <code>proposed</code>, <code>accepted</code>, <code>waiting_human</code>, <code>executing</code>, <code>pending_verification</code> and the final <code>succeeded</code>, <code>failed</code>, <code>cancelled</code> and <code>expired</code> (<a class="rule" href="../../spec/#e1">E1</a>). Each response also shows the projection onto Poppy's and A2A's enums (<a class="rule" href="../../spec/#e2">E2</a>). A request never moves to <code>failed</code> while it is unknown whether its effect happened.</p>
+		<div class="dfoot">
+			<a href="../../docs/native-profile.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/native-profile.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../docs/relationship/"><span>Previous</span>VXP Relationship</a>
+			<a href="../../docs/guides/company/"><span>Next</span>Guide for companies</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../docs/quickstart/">Quickstart</a></li><li><a href="../../spec/">Specification</a></li><li><a href="../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../verify/">Verifier</a></li><li><a href="../../demos/">Demos</a></li><li><a href="../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../docs/changelog/">Changelog</a></li><li><a href="../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../assets/site.js" defer></script>
+<script src="../../assets/docs-site.js" defer></script>
+</body>
+</html>

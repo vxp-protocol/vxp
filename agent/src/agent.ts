@@ -9,7 +9,7 @@
 import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
 import { type Company, type DiscoveryResult, discover, metadataUrlFor } from "./discovery.ts";
 import { type PrivateJwk, type SigningKey, assertion, decodeJws, dpopProof, generatePrivateJwk, now, randomToken, sha256b64u, signingKey, verifyJws } from "./jose.ts";
-import { Net, type NetOptions, VxpHttpError } from "./net.ts";
+import { isUnder, Net, type NetOptions, VxpHttpError } from "./net.ts";
 import { Store } from "./store.ts";
 import { type Material, collectMaterial, operationView, type Verdict, verifyWithMaterial } from "./verify.ts";
 
@@ -130,14 +130,14 @@ export function amountOf(view: any): number | null {
 	return null;
 }
 
-/** Digest of what the person approves: the proposal id (carries the revision), its summary and its terms. */
-export function bindingOf(view: any): string {
-	return bindingFor(view?.proposal?.id, view?.proposal?.summary, view?.proposal?.terms);
+/** Digest of what the person approves at one company: the proposal id (carries the revision), its summary and its terms. */
+export function bindingOf(issuer: string, view: any): string {
+	return bindingFor(issuer, view?.proposal?.id, view?.proposal?.summary, view?.proposal?.terms);
 }
 
-/** The same digest for any profile: what is approved is one proposal id (with its revision), its summary and its terms. */
-export function bindingFor(proposalId: unknown, summary: unknown, terms: unknown): string {
-	return sha256b64u(JSON.stringify({ proposal: proposalId, summary, terms }));
+/** The same digest for any profile: what is approved is one company's proposal id (with its revision), its summary and its terms. */
+export function bindingFor(issuer: unknown, proposalId: unknown, summary: unknown, terms: unknown): string {
+	return sha256b64u(JSON.stringify({ issuer, proposal: proposalId, summary, terms }));
 }
 
 /** A revision to be accepted, whatever profile it came through. */
@@ -296,7 +296,7 @@ export class VxpAgent {
 
 	/** A DPoP-bound call to the company's native endpoint. Retries once with a fresh session on invalid_token. */
 	async call(c: Company, method: string, url: string, body?: unknown, headers: Record<string, string> = {}): Promise<{ status: number; body: any }> {
-		if (!url.startsWith(`${c.endpoint}/`)) throw new Error(`refused: ${url} is not under ${c.endpoint}`);
+		if (!isUnder(url, c.endpoint)) throw new Error(`refused: ${url} is not under ${c.endpoint}`);
 		for (let i = 0; i < 2; i++) {
 			const t = await this.token(c);
 			const r = await this.net.json(url, { method, headers: { authorization: `DPoP ${t}`, dpop: dpopProof(this.dpopKey, method, url, t), "content-type": "application/json", accept: "application/json", ...headers }, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
@@ -592,7 +592,7 @@ export class VxpAgent {
 		if (!this.relationshipUsable(rel)) return this.reject(403, rel.revoked_at || rel.state === "revoked" ? "relationship_revoked" : "relationship_expired");
 		if (!rel.actions.includes(String(claims.action))) return this.reject(403, "action_not_authorized");
 		const content = (claims.content ?? {}) as Record<string, any>;
-		for (const k of ["reply_url", "request_url"]) if (content[k] !== undefined && !String(content[k]).startsWith(`${c.endpoint}/`)) return this.reject(400, `${k}_outside_endpoint`);
+		for (const k of ["reply_url", "request_url"]) if (content[k] !== undefined && !isUnder(String(content[k]), c.endpoint)) return this.reject(400, `${k}_outside_endpoint`);
 		if (content.request_id !== undefined || content.proposal_id !== undefined) {
 			if (typeof content.request_id !== "string" || !SAFE_ID.test(content.request_id) || typeof content.proposal_id !== "string" || !SAFE_ID.test(content.proposal_id)) return this.reject(400, "malformed_identifiers");
 			const prev = this.store.read<Record<string, RequestRecord>>("requests", {})[content.request_id];
@@ -777,8 +777,8 @@ export class VxpAgent {
 		const amount = r.amount_clp;
 		if (mandate && (amount === null || amount > mandate.max_total_clp))
 			return { status: "blocked_by_mandate", reason: amount === null ? "the terms state no amount to compare with the cap" : `total ${amount} CLP is above the cap of ${mandate.max_total_clp} CLP`, amount_clp: amount, mandate };
-		const binding = bindingFor(r.proposal_id, r.summary, r.terms);
-		if (this.approvals().some((a) => a.kind === "accept" && a.binding === binding && a.status === "approved")) return { status: "allowed", approved_by: "user" };
+		const binding = bindingFor(r.issuer, r.proposal_id, r.summary, r.terms);
+		if (this.approvals().some((a) => a.kind === "accept" && a.issuer === r.issuer && a.binding === binding && a.status === "approved")) return { status: "allowed", approved_by: "user" };
 		if (mandate && r.user_approval_required === false) return { status: "allowed", approved_by: "standing_permission" };
 		const approval = this.newApproval({ kind: "accept", issuer: r.issuer, ...(r.request_id ? { request_id: r.request_id } : {}), proposal_id: r.proposal_id, summary: r.summary, amount_clp: amount, binding });
 		const reason = mandate ? "the company requires the person to approve this exact revision (user_approval_required: true); a cap is not enough" : "no cap set by the person for this operation";

@@ -10,7 +10,7 @@
 import { type AcceptOutcome, SAFE_ID, type VxpAgent, amountOf } from "../agent.ts";
 import { metadataUrlFor } from "../discovery.ts";
 import { assertion, dpopProof, now, randomToken } from "../jose.ts";
-import { VxpHttpError } from "../net.ts";
+import { isUnder, VxpHttpError } from "../net.ts";
 import { collectAdapterMaterial, verifyWithMaterial } from "../verify.ts";
 import type { AdapterAuthorization, AdapterProof, AdapterTurn, ProfileAdapter } from "../adapters.ts";
 
@@ -181,7 +181,7 @@ export class PoppyAdapter implements ProfileAdapter {
 	// ── Calls with the Session Token ─────────────────────────────────────────────────────────
 
 	private async call(c: PoppyCompany, method: string, url: string, body?: unknown): Promise<{ status: number; body: any }> {
-		if (!url.startsWith(`${c.issuer}/`)) throw new Error(`refused: ${url} is not under ${c.issuer}`);
+		if (!isUnder(url, c.issuer)) throw new Error(`refused: ${url} is not under ${c.issuer}`);
 		const k = this.agent.credentials();
 		for (let i = 0; i < 2; i++) {
 			const t = await this.token(c);
@@ -199,7 +199,7 @@ export class PoppyAdapter implements ProfileAdapter {
 	private keepOperation(c: PoppyCompany, view: any, operation: string | null) {
 		if (typeof view?.operation_id !== "string" || !SAFE_ID.test(view.operation_id)) throw new Error("the company returned an operation id with an unexpected shape");
 		const member = view[POPPY_PROOF_EXTENSION];
-		if (member?.bundle_url !== undefined && !String(member.bundle_url).startsWith(`${c.issuer}/`)) throw new Error("the proof bundle_url is not under the company's issuer");
+		if (member?.bundle_url !== undefined && !isUnder(String(member.bundle_url), c.issuer)) throw new Error("the proof bundle_url is not under the company's issuer");
 		this.update((s) => {
 			const prev = s.operations[view.operation_id];
 			if (prev && prev.issuer !== c.issuer) throw new Error(`operation ${view.operation_id} belongs to another company`);

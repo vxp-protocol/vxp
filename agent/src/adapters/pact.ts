@@ -14,7 +14,7 @@
 import { SAFE_ID, type VxpAgent, amountOf } from "../agent.ts";
 import { metadataUrlFor } from "../discovery.ts";
 import { now, randomToken, signJwt } from "../jose.ts";
-import { VxpHttpError } from "../net.ts";
+import { isUnder, VxpHttpError } from "../net.ts";
 import { collectAdapterMaterial, verifyWithMaterial } from "../verify.ts";
 import type { AdapterAccept, AdapterAuthorization, AdapterProof, AdapterTurn, ProfileAdapter } from "../adapters.ts";
 
@@ -34,7 +34,7 @@ export type PactCompany = {
 	/** The company issuer named by the proof extension's block (`params.company`). */
 	companyIssuer: string;
 };
-type Delegation = { access_token: string; refresh_token: string | null; expires_at: number; scopes: string[] };
+type Delegation = { access_token: string; refresh_token: string | null; expires_at: number; scopes: string[]; token_url: string };
 type Pending = { device_code: string; user_code: string; verification_uri_complete: string; expires_at: number; interval: number; last_poll: number };
 type OperationRecord = { iface: string; operation: string | null; view: any; proof: { operation_id: string; latest: string; bundle_url: string } | null; proposal_receipt: { jws: string } | null; updated_at: string };
 type PactState = {
@@ -107,7 +107,17 @@ export class PactAdapter implements ProfileAdapter {
 		const as = await net.doc(scheme.oauth2MetadataUrl);
 		// The PACT authorization server carries an identical copy of the company's trust block (spec §10).
 		if (typeof as.issuer !== "string" || as.vxp_proof?.company !== ext.params.company) return null;
+		// The Card's endpoints must be the authorization server's own: its metadata is at the issuer's well-known
+		// location (RFC 8414, or the issuer followed by the well-known suffix), and the device and token endpoints
+		// are the ones it publishes, on the issuer's origin. A Card cannot point the agent's credentials elsewhere.
+		const metaAt = [metadataUrlFor(as.issuer), `${as.issuer.replace(/\/$/, "")}/.well-known/oauth-authorization-server`];
+		const origin = new URL(as.issuer).origin;
+		if (!metaAt.includes(scheme.oauth2MetadataUrl) || as.token_endpoint !== flow.tokenUrl || as.device_authorization_endpoint !== flow.deviceAuthorizationUrl) return null;
+		if (new URL(flow.tokenUrl).origin !== origin || new URL(flow.deviceAuthorizationUrl).origin !== origin) return null;
 		const c: PactCompany = { profile: "pact-1.0", domain: d, name: String(card.name ?? d), interface: iface, deviceUrl: flow.deviceAuthorizationUrl, tokenUrl: flow.tokenUrl, asIssuer: as.issuer, scopes: flow.scopes ?? {}, companyIssuer: String(ext.params.company) };
+		// A company already known under this interface keeps its endpoints: another Card cannot rewrite them.
+		const prev = this.state().companies[iface];
+		if (prev && (prev.domain !== c.domain || prev.tokenUrl !== c.tokenUrl || prev.deviceUrl !== c.deviceUrl || prev.asIssuer !== c.asIssuer || prev.companyIssuer !== c.companyIssuer)) return null;
 		this.update((s) => void (s.companies[iface] = c));
 		return c;
 	}
@@ -119,7 +129,7 @@ export class PactAdapter implements ProfileAdapter {
 	}
 
 	private saveDelegation(c: PactCompany, body: any) {
-		const del: Delegation = { access_token: String(body.access_token), refresh_token: body.refresh_token ? String(body.refresh_token) : null, expires_at: now() + Number(body.expires_in ?? 300), scopes: String(body.scope ?? "").split(" ").filter(Boolean) };
+		const del: Delegation = { access_token: String(body.access_token), refresh_token: body.refresh_token ? String(body.refresh_token) : null, expires_at: now() + Number(body.expires_in ?? 300), scopes: String(body.scope ?? "").split(" ").filter(Boolean), token_url: c.tokenUrl };
 		this.update((s) => void (s.delegations[c.interface] = del));
 		return del;
 	}
@@ -127,7 +137,8 @@ export class PactAdapter implements ProfileAdapter {
 	/** The delegation token, refreshed (and rotated, PACT §5) when it has expired. Null without a delegation. */
 	private async delegation(c: PactCompany): Promise<string | null> {
 		const del = this.state().delegations[c.interface];
-		if (!del) return null;
+		// A delegation is only ever used with, or refreshed at, the token endpoint that issued it.
+		if (!del || del.token_url !== c.tokenUrl) return null;
 		if (del.expires_at - 30 > now()) return del.access_token;
 		if (!del.refresh_token) return null;
 		const r = await this.oauth(c, c.tokenUrl, { grant_type: "refresh_token", refresh_token: del.refresh_token });
@@ -190,7 +201,7 @@ export class PactAdapter implements ProfileAdapter {
 
 	private keep(c: PactCompany, view: any, meta: any, receipt: any, operation: string | null) {
 		if (typeof view?.operation_id !== "string" || !SAFE_ID.test(view.operation_id)) throw new Error("the company returned an operation id with an unexpected shape");
-		if (meta && (meta.operation_id !== view.operation_id || !String(meta.bundle_url ?? "").startsWith(`${c.interface}/`))) throw new Error("the proof metadata does not match the operation or is not under the interface");
+		if (meta && (meta.operation_id !== view.operation_id || !isUnder(String(meta.bundle_url ?? ""), c.interface))) throw new Error("the proof metadata does not match the operation or is not under the interface");
 		this.update((s) => {
 			const prev = s.operations[view.operation_id];
 			if (prev && prev.iface !== c.interface) throw new Error(`operation ${view.operation_id} belongs to another company`);

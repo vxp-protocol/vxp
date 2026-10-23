@@ -22,6 +22,28 @@ export class VxpHttpError extends Error {
 
 const MAX_BYTES = 2_000_000;
 
+/**
+ * True when `url` is under `base`, decided on parsed URLs rather than on text: the same origin, no
+ * credentials, a path below the base path on a segment boundary, and no dot segments or encoded separators
+ * that a server could resolve elsewhere. Used before sending a company's credentials to a URL it gave us.
+ */
+export function isUnder(url: string, base: string): boolean {
+	let u: URL;
+	let b: URL;
+	try {
+		u = new URL(url);
+		b = new URL(base);
+	} catch {
+		return false;
+	}
+	if (u.origin !== b.origin || u.username || u.password) return false;
+	// The path as written, before the URL parser resolves dot segments away.
+	const path = String(url).match(/^[a-z][a-z0-9+.-]*:\/\/[^/?#]*([^?#]*)/i)?.[1] ?? "";
+	if (/(^|\/)\.{1,2}(\/|$)|%2e|%2f|%5c|\\/i.test(path)) return false;
+	const prefix = b.pathname.endsWith("/") ? b.pathname : `${b.pathname}/`;
+	return u.pathname.startsWith(prefix);
+}
+
 export class Net {
 	private readonly f: FetchLike;
 	readonly allowHttp: Set<string>;

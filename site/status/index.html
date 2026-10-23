@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Status · VXP</title>
-<meta name="description" content="VXP draft 0.1, evening revision of 22 October 2026: maturity of each part, what is experimental, what is pending, identifiers renamed from the 0.1 annex, and history.">
+<meta name="description" content="VXP draft 0.1, revision of 23 October 2026: maturity of each part, what is experimental, what is pending, identifiers renamed from the 0.1 annex, and history.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -36,9 +36,9 @@
 <section class="page-head">
 	<div class="wrap">
 		<p class="kicker">Status</p>
-		<h1>Draft 0.1, evening revision of 22 October 2026</h1>
+		<h1>Draft 0.1, revision of 23 October 2026</h1>
 		<p class="lead">VXP is a draft. This page follows <a href="../spec/#versions">specification §13</a>: how far each part has gone, from written rule to running code, to tests, to a live server, to someone outside SOVRAS; which parts are experimental and which are pending; and what changed from the 0.1 annex.</p>
-		<p class="page-meta"><span>Version: draft 0.1</span><span>Revised: 22 Oct 2026, evening</span><span>License: Apache 2.0</span><span>Tested with Poppy draft 0.2 and PACT 1.0 over A2A 1.0.1</span></p>
+		<p class="page-meta"><span>Version: draft 0.1</span><span>Revised: 23 Oct 2026 · repository 0.1.0-rc.2</span><span>License: Apache 2.0</span><span>Tested with Poppy draft 0.2 and PACT 1.0 over A2A 1.0.1</span></p>
 		<ul class="toc" aria-label="On this page">
 			<li><a href="#maturity">Maturity by part</a></li>
 			<li><a href="#experimental">Experimental</a></li>
@@ -159,6 +159,7 @@
 			<h2 class="h3" id="history">Versions of draft 0.1</h2>
 		</div>
 		<ol class="hist">
+			<li><time datetime="2026-10-23">23 Oct 2026</time><div><p>Revision of the specification and release candidate 0.1.0-rc.2 of the repository.</p><ul><li>Native endpoints: read capabilities answered at once, without a request or a proof; <code>approved_by</code> and <code>user_approval_required</code> stated, with <code>standing_permission</code> recorded in the approval.</li><li>JSON Schemas for every object of the draft, checked against real runs and by the conformance validator.</li><li>Documentation, conformance validator and personal-agent tools (library, CLI, MCP server, optional Poppy and PACT adapters) in the repository.</li></ul></div></li>
 			<li><time datetime="2026-10-22">22 Oct 2026, evening</time><div><p>Second revision of the specification that day.</p><ul><li>Two public components, VXP Proof and VXP Relationship, and operation requirements O1 to O7: required behaviour with no interface, kept apart from the evidence that shows it and from each implementation's internal controls.</li><li>Native-only gateway: VXP implemented with the native profile alone, without Poppy or PACT.</li><li>Implementation paths: only the well-known locations and the native endpoints are fixed; every other path is discovered through the metadata.</li><li>Reading a verdict, key rotation and historical verification.</li><li>Three classes of tests kept apart in conformance.</li></ul></div></li>
 			<li><time datetime="2026-10-22">22 Oct 2026</time><div><p>First revision of the specification that day.</p><ul><li>Protocol identifiers renamed to <code>vxp</code> (table above).</li><li>Interoperability rule I1 made precise: inside an adapter, VXP keeps the external contract literally; the native profile lives beside the adapters on the same issuer.</li><li>The rules where a request becomes an operation written as behaviour with no endpoint; that evening they became the operation requirements O1 to O7.</li><li>Conformance with Poppy draft 0.2 §4.4: expanding permissions grants only what was requested.</li><li>Every figure reconciled with a run logged that day. Figures from earlier days without a log were replaced.</li></ul></div></li>
 			<li><time datetime="2026-10-21">21 Oct 2026</time><div><p>Specification consolidated as VXP draft 0.1, on top of the 0.1 annex: VXP Relationship and VXP Proof as public contracts, the native profile as experimental, and adapters for Poppy and PACT. The same day, personal agents through the Poppy adapter, among them Nova AI, SOVRAS's personal agent in beta, and a third-party web agent, Grok, operated in SOVRAS's production with customers, first on SOVRAS's own resources.</p></div></li>

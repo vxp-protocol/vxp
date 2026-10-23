@@ -5,7 +5,7 @@
 All notable changes to the VXP specification and to this repository. Draft versions are incompatible
 with each other until 1.0.
 
-## 0.1.0-rc.2 · unreleased
+## 0.1.0-rc.2 · 23 October 2026
 
 ### Specification
 - Two public components, VXP Proof and VXP Relationship. Operation requirements O1–O7 replace the

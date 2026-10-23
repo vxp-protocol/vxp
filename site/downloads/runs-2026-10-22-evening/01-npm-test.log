@@ -1,61 +1,61 @@
-== 01-npm-test · 2026-10-22T04:42:35Z · npm test
+== 01-npm-test · 2026-10-22T22:13:55Z · npm test
 
-> test
+> vxp-reference@0.1.0-draft test
 > node --test test/*.test.ts
 
 TAP version 13
 # Subtest: m1: la aprobación que afirma el agente se nombra por su raíz real, el operador
 ok 1 - m1: la aprobación que afirma el agente se nombra por su raíz real, el operador
   ---
-  duration_ms: 1172.2036
+  duration_ms: 952.5782
   type: 'test'
   ...
 # Subtest: M1: una lectura de vuelta firmada que contradice la fecha aprobada no pasa con la operación en la mano
 ok 2 - M1: una lectura de vuelta firmada que contradice la fecha aprobada no pasa con la operación en la mano
   ---
-  duration_ms: 1195.3606
+  duration_ms: 623.3486
   type: 'test'
   ...
 # Subtest: M1: una lectura de vuelta que no observa el efecto aprobado no respalda `succeeded` (sin la operación)
 ok 3 - M1: una lectura de vuelta que no observa el efecto aprobado no respalda `succeeded` (sin la operación)
   ---
-  duration_ms: 1369.6206
+  duration_ms: 629.2553
   type: 'test'
   ...
 # Subtest: M2: otro sub u otro agente del mismo cliente no reescribe la operación propuesta de otro
 ok 4 - M2: otro sub u otro agente del mismo cliente no reescribe la operación propuesta de otro
   ---
-  duration_ms: 767.9435
+  duration_ms: 607.0628
   type: 'test'
   ...
 # Subtest: M2: una revisión nueva pedida por el agente queda registrada en la cadena (counter + answers)
 ok 5 - M2: una revisión nueva pedida por el agente queda registrada en la cadena (counter + answers)
   ---
-  duration_ms: 24.2229
+  duration_ms: 26.9666
   type: 'test'
   ...
 # Subtest: M3: dos operaciones sobre el mismo pedido no terminan las dos en `succeeded`
 ok 6 - M3: dos operaciones sobre el mismo pedido no terminan las dos en `succeeded`
   ---
-  duration_ms: 644.3698
+  duration_ms: 638.8953
   type: 'test'
   ...
 # Subtest: m3: si la empresa exige revisión, un operador que la omite no produce una cadena válida
 ok 7 - m3: si la empresa exige revisión, un operador que la omite no produce una cadena válida
   ---
-  duration_ms: 648.762
+  duration_ms: 612.0437
   type: 'test'
   ...
 # Subtest: m2: la huella de términos no permite confirmar una dirección candidata
 ok 8 - m2: la huella de términos no permite confirmar una dirección candidata
   ---
-  duration_ms: 9.4902
+  duration_ms: 12.7183
   type: 'test'
   ...
 # Subtest: m4: una respuesta por WhatsApp a una operación vencida no se informa como aceptada
 ok 9 - m4: una respuesta por WhatsApp a una operación vencida no se informa como aceptada
   ---
-  duration_ms: 3.1574
+  duration_ms: 3.8979
   type: 'test'
   ...
 # Poppy validator: {"pass":59,"skip":15}
@@ -74,10 +74,10 @@ ok 9 - m4: una respuesta por WhatsApp a una operación vencida no se informa com
 #   skip mcp.dpop-server-accepted:  
 #   skip mcp.other-resource-rejected:  
 #   skip mcp.bearer-elsewhere-rejected:  
-# Subtest: S2 · el validador oficial de Poppy pasa los hitos foundation + interfaces en el [test hotel]
-ok 10 - S2 · el validador oficial de Poppy pasa los hitos foundation + interfaces en el [test hotel]
+# Subtest: S2 · el validador oficial de Poppy pasa los hitos foundation + interfaces en el Hotel Demo
+ok 10 - S2 · el validador oficial de Poppy pasa los hitos foundation + interfaces en el Hotel Demo
   ---
-  duration_ms: 1905.3986
+  duration_ms: 1791.4598
   type: 'test'
   ...
 # Poppy validator: {"pass":59,"skip":15}
@@ -96,346 +96,382 @@ ok 10 - S2 · el validador oficial de Poppy pasa los hitos foundation + interfac
 #   skip mcp.dpop-server-accepted:  
 #   skip mcp.other-resource-rejected:  
 #   skip mcp.bearer-elsewhere-rejected:  
-# Subtest: S2 · el validador oficial de Poppy pasa los hitos foundation + interfaces en [test store] con devoluciones
-ok 11 - S2 · el validador oficial de Poppy pasa los hitos foundation + interfaces en [test store] con devoluciones
+# Subtest: S2 · el validador oficial de Poppy pasa los hitos foundation + interfaces en Ferretería Demo con devoluciones
+ok 11 - S2 · el validador oficial de Poppy pasa los hitos foundation + interfaces en Ferretería Demo con devoluciones
   ---
-  duration_ms: 1788.4521
+  duration_ms: 1190.3048
   type: 'test'
   ...
 # Subtest: CO-N · devolución normal por Poppy: el pedido entregado P-1044 se devuelve con la política (retiro, plazo) y el reembolso simulado sale UNA vez; el verificador acepta
 ok 12 - CO-N · devolución normal por Poppy: el pedido entregado P-1044 se devuelve con la política (retiro, plazo) y el reembolso simulado sale UNA vez; el verificador acepta
   ---
-  duration_ms: 1221.5696
+  duration_ms: 1025.6571
   type: 'test'
   ...
 # Subtest: CO-N2 · compra y anulación por la API nativa: el pedido creado se anula antes del despacho; el stock vuelve; nada que reembolsar
 ok 13 - CO-N2 · compra y anulación por la API nativa: el pedido creado se anula antes del despacho; el stock vuelve; nada que reembolsar
   ---
-  duration_ms: 154.3781
+  duration_ms: 82.3205
   type: 'test'
   ...
 # Subtest: CO-C · condiciones cambiantes: el precio sube entre la cotización y la aceptación → el pedido sale al precio APROBADO; la cotización nueva usa el nuevo. Se agota el stock (simulador) → aceptar falla sin efecto
 ok 14 - CO-C · condiciones cambiantes: el precio sube entre la cotización y la aceptación → el pedido sale al precio APROBADO; la cotización nueva usa el nuevo. Se agota el stock (simulador) → aceptar falla sin efecto
   ---
-  duration_ms: 131.2254
+  duration_ms: 45.8115
   type: 'test'
   ...
 # Subtest: CO-C2 · el ERP pierde la respuesta de una devolución: `unknown` firmado; al leer, corrección a `succeeded`; UN reembolso
 ok 15 - CO-C2 · el ERP pierde la respuesta de una devolución: `unknown` firmado; al leer, corrección a `succeeded`; UN reembolso
   ---
-  duration_ms: 2363.6469
+  duration_ms: 1231.8779
   type: 'test'
   ...
 # Subtest: CO-A · adversarial: descuentos repetidos nunca pasan el 8% y el límite de revisiones cierra sin efecto; doble devolución, fuera de plazo y pedido ajeno se rechazan
 ok 16 - CO-A · adversarial: descuentos repetidos nunca pasan el 8% y el límite de revisiones cierra sin efecto; doble devolución, fuera de plazo y pedido ajeno se rechazan
   ---
-  duration_ms: 77.9039
+  duration_ms: 63.6342
   type: 'test'
   ...
-# Subtest: HO-N1g · las frases de Grok (21-oct): fechas sueltas «sábado 14 de noviembre» y «resérvala» repitiendo los datos reserva ESA cotización
-ok 17 - HO-N1g · las frases de Grok (21-oct): fechas sueltas «sábado 14 de noviembre» y «resérvala» repitiendo los datos reserva ESA cotización
+# Subtest: HO-N1g · las frases del agente externo A (21-oct): fechas sueltas «sábado 14 de noviembre» y «resérvala» repitiendo los datos reserva ESA cotización
+ok 17 - HO-N1g · las frases del agente externo A (21-oct): fechas sueltas «sábado 14 de noviembre» y «resérvala» repitiendo los datos reserva ESA cotización
   ---
-  duration_ms: 28.3528
+  duration_ms: 19.8939
   type: 'test'
   ...
 # Subtest: HO-N1h · chat web: «¿quedó confirmada la reserva?» explica cómo consultarla; insistir con Booking pide el dato para verificar, reconoce la insistencia y mantiene el total
 ok 18 - HO-N1h · chat web: «¿quedó confirmada la reserva?» explica cómo consultarla; insistir con Booking pide el dato para verificar, reconoce la insistencia y mantiene el total
   ---
-  duration_ms: 8.0482
+  duration_ms: 8.2414
   type: 'test'
   ...
 # Subtest: HO-N1 · chat web sin credenciales: disponibilidad, tarifa directa vs. agencias (SIMULADA), servicios reales y cotización; reservar a nombre de alguien se deriva; el chat no crea reservas
 ok 19 - HO-N1 · chat web sin credenciales: disponibilidad, tarifa directa vs. agencias (SIMULADA), servicios reales y cotización; reservar a nombre de alguien se deriva; el chat no crea reservas
   ---
-  duration_ms: 46.3125
+  duration_ms: 43.7051
   type: 'test'
   ...
 # Subtest: HO-N2 · Poppy: reservar → PMS + garantía por el total (UNA); cambiar fechas → garantía ajustada; agregar traslado; cancelar en plazo → sin cargo y garantía liberada; las cuatro cadenas verifican
 ok 20 - HO-N2 · Poppy: reservar → PMS + garantía por el total (UNA); cambiar fechas → garantía ajustada; agregar traslado; cancelar en plazo → sin cargo y garantía liberada; las cuatro cadenas verifican
   ---
-  duration_ms: 2400.5804
+  duration_ms: 2347.0879
   type: 'test'
   ...
 # Subtest: HO-N3 · PACT reserva con aprobación por WhatsApp (company_channel) y la API nativa reserva con tope de monto
 ok 21 - HO-N3 · PACT reserva con aprobación por WhatsApp (company_channel) y la API nativa reserva con tope de monto
   ---
-  duration_ms: 666.4417
+  duration_ms: 551.3396
   type: 'test'
   ...
 # Subtest: HO-C1 · la tarifa sube entre la cotización y la aceptación → la reserva sale al total APROBADO y la garantía también; una cotización nueva usa la tarifa nueva
 ok 22 - HO-C1 · la tarifa sube entre la cotización y la aceptación → la reserva sale al total APROBADO y la garantía también; una cotización nueva usa la tarifa nueva
   ---
-  duration_ms: 29.008
+  duration_ms: 21.9557
   type: 'test'
   ...
 # Subtest: HO-C2 · la disponibilidad se agota (bloqueo en el PMS) entre la propuesta y la aceptación → `failed` por precondición, sin reserva y sin movimiento de pago
 ok 23 - HO-C2 · la disponibilidad se agota (bloqueo en el PMS) entre la propuesta y la aceptación → `failed` por precondición, sin reserva y sin movimiento de pago
   ---
-  duration_ms: 734.1341
+  duration_ms: 491.851
   type: 'test'
   ...
 # Subtest: HO-C3 · el PMS pierde la respuesta: `unknown` firmado, sin reintento; al leer, corrección a `succeeded`; UNA reserva y UNA garantía
 ok 24 - HO-C3 · el PMS pierde la respuesta: `unknown` firmado, sin reintento; al leer, corrección a `succeeded`; UNA reserva y UNA garantía
   ---
-  duration_ms: 721.7659
+  duration_ms: 522.6178
   type: 'test'
   ...
 # Subtest: HO-C4 · el proveedor de pago no responde: SOVRAS consulta por idempotencia y concilia; nunca hay dos pre-autorizaciones
 ok 25 - HO-C4 · el proveedor de pago no responde: SOVRAS consulta por idempotencia y concilia; nunca hay dos pre-autorizaciones
   ---
-  duration_ms: 20.8894
+  duration_ms: 15.7408
   type: 'test'
   ...
 # Subtest: HO-C5 · el channel manager (simulado) contradice al PMS: muestra una suite que el PMS no tiene → no se cotiza ni se reserva; y si una agencia publica menos, se iguala sólo esa tarifa publicada
 ok 26 - HO-C5 · el channel manager (simulado) contradice al PMS: muestra una suite que el PMS no tiene → no se cotiza ni se reserva; y si una agencia publica menos, se iguala sólo esa tarifa publicada
   ---
-  duration_ms: 15.9588
+  duration_ms: 12.6115
   type: 'test'
   ...
 # Subtest: HO-A1 · adversarial: una tarifa «de Booking» citada por el agente no se iguala; pedir descuento tres veces da la misma respuesta y el mismo total; un servicio que el hotel no ofrece (spa) no se inventa
 ok 27 - HO-A1 · adversarial: una tarifa «de Booking» citada por el agente no se iguala; pedir descuento tres veces da la misma respuesta y el mismo total; un servicio que el hotel no ofrece (spa) no se inventa
   ---
-  duration_ms: 16.6224
+  duration_ms: 16.1353
   type: 'test'
   ...
 # Subtest: HO-A2 · el pago se rechaza → sin reserva ni cargo; el libro de pagos no muestra la garantía (contradicción) → nunca `succeeded`: lectura que no calza, `unknown` y una persona
 ok 28 - HO-A2 · el pago se rechaza → sin reserva ni cargo; el libro de pagos no muestra la garantía (contradicción) → nunca `succeeded`: lectura que no calza, `unknown` y una persona
   ---
-  duration_ms: 617.4732
+  duration_ms: 522.8483
   type: 'test'
   ...
 # Subtest: HO-A3 · cancelación tardía: R-3003 (mañana) cobra la primera noche y lo dice en los términos; si el plazo gratis se cruza después de proponer (reloj de la política), aceptar falla sin efecto
 ok 29 - HO-A3 · cancelación tardía: R-3003 (mañana) cobra la primera noche y lo dice en los términos; si el plazo gratis se cruza después de proponer (reloj de la política), aceptar falla sin efecto
   ---
-  duration_ms: 27.9342
+  duration_ms: 20.1998
   type: 'test'
   ...
 # Subtest: HO-A4 · intervención humana: cambiar R-3003 a menos de 72 h espera al hotel (aprueba → aplica); con revisión humana total, una reserva espera y si el hotel rechaza no se crea
 ok 30 - HO-A4 · intervención humana: cambiar R-3003 a menos de 72 h espera al hotel (aprueba → aplica); con revisión humana total, una reserva espera y si el hotel rechaza no se crea
   ---
-  duration_ms: 37.869
+  duration_ms: 32.8134
   type: 'test'
   ...
 # Subtest: HO-A5 · identidad y permisos: Bruno no ve ni cancela la reserva de Ana; otro agente no lee la operación de Ana; el token del hotel no vale en la ferretería; con sólo `reservas:leer`, cancelar pide `reservas:cancelar`
 ok 31 - HO-A5 · identidad y permisos: Bruno no ve ni cancela la reserva de Ana; otro agente no lee la operación de Ana; el token del hotel no vale en la ferretería; con sólo `reservas:leer`, cancelar pide `reservas:cancelar`
   ---
-  duration_ms: 56.5065
+  duration_ms: 47.114
   type: 'test'
   ...
 # Subtest: HO-A6 · duplicados y caída de conexión: el mismo mensaje dos veces es una operación; la misma Idempotency-Key es la misma solicitud; si se corta la respuesta al aceptar, reintentar ve el mismo estado; UNA reserva
 ok 32 - HO-A6 · duplicados y caída de conexión: el mismo mensaje dos veces es una operación; la misma Idempotency-Key es la misma solicitud; si se corta la respuesta al aceptar, reintentar ve el mismo estado; UNA reserva
   ---
-  duration_ms: 51.6259
+  duration_ms: 47.6503
   type: 'test'
   ...
 # Subtest: HO-A7 · aprobación vencida y revocación: vencer la propuesta, el código de dispositivo y el pase; revocar la delegación entre proponer y confirmar → nada se ejecuta
 ok 33 - HO-A7 · aprobación vencida y revocación: vencer la propuesta, el código de dispositivo y el pase; revocar la delegación entre proponer y confirmar → nada se ejecuta
   ---
-  duration_ms: 64.9543
+  duration_ms: 48.2638
   type: 'test'
   ...
 # Subtest: RE-N · el hotel propone cambiar las fechas de R-3001 dentro de una relación autorizada: mensaje firmado al buzón, el agente acepta con la aprobación del usuario, se aplica y verifica
 ok 34 - RE-N · el hotel propone cambiar las fechas de R-3001 dentro de una relación autorizada: mensaje firmado al buzón, el agente acepta con la aprobación del usuario, se aplica y verifica
   ---
-  duration_ms: 655.4041
+  duration_ms: 504.2344
   type: 'test'
   ...
 # Subtest: RE-C · condiciones cambiantes en la relación: si la reserva cambia por otra vía antes de que el agente acepte, aceptar falla sin efecto; sin disponibilidad, la empresa no puede proponer
 ok 35 - RE-C · condiciones cambiantes en la relación: si la reserva cambia por otra vía antes de que el agente acepte, aceptar falla sin efecto; sin disponibilidad, la empresa no puede proponer
   ---
-  duration_ms: 24.1627
+  duration_ms: 24.6809
   type: 'test'
   ...
 # Subtest: RE-A · adversarial en la relación: acción no incluida, reserva de otro cliente, otro usuario del mismo agente, tope por día y relación revocada se rechazan antes de firmar nada
 ok 36 - RE-A · adversarial en la relación: acción no incluida, reserva de otro cliente, otro usuario del mismo agente, tope por día y relación revocada se rechazan antes de firmar nada
   ---
-  duration_ms: 26.3277
+  duration_ms: 18.3826
   type: 'test'
   ...
 # Subtest: B-H · hotel, perfil nativo: llega por el chat sin credenciales → detectado (no identidad) → descubre → vincula y autoriza UNA reserva hasta un tope + relación → AMPLIACIÓN a mitad (agrega traslado y supera el tope) → misma propuesta, UNA reserva → relación posterior aceptada con el permiso nuevo → revocada; cada paso en el registro del servidor
 ok 37 - B-H · hotel, perfil nativo: llega por el chat sin credenciales → detectado (no identidad) → descubre → vincula y autoriza UNA reserva hasta un tope + relación → AMPLIACIÓN a mitad (agrega traslado y supera el tope) → misma propuesta, UNA reserva → relación posterior aceptada con el permiso nuevo → revocada; cada paso en el registro del servidor
   ---
-  duration_ms: 1833.2991
+  duration_ms: 1040.0679
   type: 'test'
   ...
 # Subtest: B-C · ferretería por Poppy: del chat a poppy.json, sign-in, compra en la conversación; devolver pide `devoluciones:crear` en la MISMA conversación; nuevo sign-in con todos los alcances; sigue la misma conversación y nada se duplica
 ok 38 - B-C · ferretería por Poppy: del chat a poppy.json, sign-in, compra en la conversación; devolver pide `devoluciones:crear` en la MISMA conversación; nuevo sign-in con todos los alcances; sigue la misma conversación y nada se duplica
   ---
-  duration_ms: 71.0941
+  duration_ms: 34.9895
   type: 'test'
   ...
 # Subtest: B-P · hotel por PACT: AUTH_REQUIRED con missingScopes en el mismo contextId; tras la delegación nueva, la conversación sigue y la cancelación se aprueba por WhatsApp
 ok 39 - B-P · hotel por PACT: AUTH_REQUIRED con missingScopes en el mismo contextId; tras la delegación nueva, la conversación sigue y la cancelación se aprueba por WhatsApp
   ---
-  duration_ms: 54.7507
+  duration_ms: 28.9018
   type: 'test'
   ...
 # Subtest: S1 · simulador y registro: sin la llave interna no existe; reset vuelve stock, tarifas, reservas y pagos a la foto inicial y vence lo propuesto con su resultado firmado; el registro atribuye por client_id y nunca guarda tokens
 ok 40 - S1 · simulador y registro: sin la llave interna no existe; reset vuelve stock, tarifas, reservas y pagos a la foto inicial y vence lo propuesto con su resultado firmado; el registro atribuye por client_id y nunca guarda tokens
   ---
-  duration_ms: 58.8861
+  duration_ms: 38.0354
+  type: 'test'
+  ...
+# Subtest: llaves persistentes: un reinicio con el mismo directorio publica las mismas llaves
+ok 41 - llaves persistentes: un reinicio con el mismo directorio publica las mismas llaves
+  ---
+  duration_ms: 88.2442
+  type: 'test'
+  ...
+# Subtest: llaves persistentes: una rotación sobrevive al reinicio y deja la llave anterior publicada
+ok 42 - llaves persistentes: una rotación sobrevive al reinicio y deja la llave anterior publicada
+  ---
+  duration_ms: 196.9389
+  type: 'test'
+  ...
+# Subtest: llaves: ningún JWKS publica una llave privada, con o sin directorio
+ok 43 - llaves: ningún JWKS publica una llave privada, con o sin directorio
+  ---
+  duration_ms: 35.2921
+  type: 'test'
+  ...
+# Subtest: llaves en memoria: sin directorio, cada arranque genera llaves nuevas (comportamiento anterior)
+ok 44 - llaves en memoria: sin directorio, cada arranque genera llaves nuevas (comportamiento anterior)
+  ---
+  duration_ms: 2.4365
+  type: 'test'
+  ...
+# Subtest: nativo sin adaptadores: no hay poppy.json, ni Agent Card, ni A2A, ni rutas Poppy; la metadata del issuer no trae miembros de Poppy
+ok 45 - nativo sin adaptadores: no hay poppy.json, ni Agent Card, ni A2A, ni rutas Poppy; la metadata del issuer no trae miembros de Poppy
+  ---
+  duration_ms: 119.5531
+  type: 'test'
+  ...
+# Subtest: nativo sin adaptadores: recorrido completo — autoridad por pedido, propuesta firmada, una ejecución, lectura de vuelta, constancia verificada por el issuer, y relación
+ok 46 - nativo sin adaptadores: recorrido completo — autoridad por pedido, propuesta firmada, una ejecución, lectura de vuelta, constancia verificada por el issuer, y relación
+  ---
+  duration_ms: 870.1579
   type: 'test'
   ...
 # Subtest: 0 · descubrimiento: vxp.json en el dominio, sin llaves; la confianza sale de la metadata RFC 8414 del mismo issuer
-ok 41 - 0 · descubrimiento: vxp.json en el dominio, sin llaves; la confianza sale de la metadata RFC 8414 del mismo issuer
+ok 47 - 0 · descubrimiento: vxp.json en el dominio, sin llaves; la confianza sale de la metadata RFC 8414 del mismo issuer
   ---
-  duration_ms: 17.3066
+  duration_ms: 8.4078
   type: 'test'
   ...
 # Subtest: 7 · idempotencia: sin clave 400; misma clave y cuerpo, la misma solicitud; otro cuerpo, 409; tras vincular, la misma solicitud se reevalúa
-ok 42 - 7 · idempotencia: sin clave 400; misma clave y cuerpo, la misma solicitud; otro cuerpo, 409; tras vincular, la misma solicitud se reevalúa
+ok 48 - 7 · idempotencia: sin clave 400; misma clave y cuerpo, la misma solicitud; otro cuerpo, 409; tras vincular, la misma solicitud se reevalúa
   ---
-  duration_ms: 180.1315
+  duration_ms: 142.8718
   type: 'test'
   ...
 # Subtest: 1a · propuesta condicional: no llega a succeeded hasta carrier_acceptance; con la aceptación, la lectura cierra y el verificador lo acepta
-ok 43 - 1a · propuesta condicional: no llega a succeeded hasta carrier_acceptance; con la aceptación, la lectura cierra y el verificador lo acepta
+ok 49 - 1a · propuesta condicional: no llega a succeeded hasta carrier_acceptance; con la aceptación, la lectura cierra y el verificador lo acepta
   ---
-  duration_ms: 1286.4574
+  duration_ms: 1015.4242
   type: 'test'
   ...
 # Subtest: 1b · el transportista rechaza: failed con efectos parciales declarados (ERP aplicado y revertido), y el verificador lo acepta como failed
-ok 44 - 1b · el transportista rechaza: failed con efectos parciales declarados (ERP aplicado y revertido), y el verificador lo acepta como failed
+ok 50 - 1b · el transportista rechaza: failed con efectos parciales declarados (ERP aplicado y revertido), y el verificador lo acepta como failed
   ---
-  duration_ms: 1605.8598
+  duration_ms: 600.1161
   type: 'test'
   ...
 # Subtest: 6 · el transportista no responde: sin reintento ni failed; leer sólo consulta; la lectura posterior cierra
-ok 45 - 6 · el transportista no responde: sin reintento ni failed; leer sólo consulta; la lectura posterior cierra
+ok 51 - 6 · el transportista no responde: sin reintento ni failed; leer sólo consulta; la lectura posterior cierra
   ---
-  duration_ms: 961.4324
+  duration_ms: 639.7323
   type: 'test'
   ...
 # Subtest: 3 · cancelar durante la ejecución pide detener: no promete revertir y el estado lo dice
-ok 46 - 3 · cancelar durante la ejecución pide detener: no promete revertir y el estado lo dice
+ok 52 - 3 · cancelar durante la ejecución pide detener: no promete revertir y el estado lo dice
   ---
-  duration_ms: 23.5818
+  duration_ms: 23.8071
   type: 'test'
   ...
 # Subtest: 2 · límites: superado el máximo de revisiones o la vigencia, o los intentos, accept da error y no hay efecto
-ok 47 - 2 · límites: superado el máximo de revisiones o la vigencia, o los intentos, accept da error y no hay efecto
+ok 53 - 2 · límites: superado el máximo de revisiones o la vigencia, o los intentos, accept da error y no hay efecto
   ---
-  duration_ms: 1356.7742
+  duration_ms: 1344.9527
   type: 'test'
   ...
 # Subtest: 5 · RFC 9396: un grant para P-1042 no sirve para P-1043, ni para aceptar con otro token; un pedido ajeno no se concede
-ok 48 - 5 · RFC 9396: un grant para P-1042 no sirve para P-1043, ni para aceptar con otro token; un pedido ajeno no se concede
+ok 54 - 5 · RFC 9396: un grant para P-1042 no sirve para P-1043, ni para aceptar con otro token; un pedido ajeno no se concede
   ---
-  duration_ms: 66.6065
+  duration_ms: 48.3765
   type: 'test'
   ...
 # Subtest: 4 · la misma operación por nativo, Poppy y PACT: tres registros con identidades separadas; ninguno ve ni reescribe el del otro
-ok 49 - 4 · la misma operación por nativo, Poppy y PACT: tres registros con identidades separadas; ninguno ve ni reescribe el del otro
+ok 55 - 4 · la misma operación por nativo, Poppy y PACT: tres registros con identidades separadas; ninguno ve ni reescribe el del otro
   ---
-  duration_ms: 126.3791
+  duration_ms: 91.0378
   type: 'test'
   ...
 # Subtest: 4b · el mismo teléfono no fusiona usuarios: un número compartido por dos clientes no vincula a ninguno
-ok 50 - 4b · el mismo teléfono no fusiona usuarios: un número compartido por dos clientes no vincula a ninguno
+ok 56 - 4b · el mismo teléfono no fusiona usuarios: un número compartido por dos clientes no vincula a ninguno
   ---
-  duration_ms: 19.9341
+  duration_ms: 22.3875
   type: 'test'
   ...
 # Subtest: 8 · transiciones: la tabla es la del diseño; lo ilegal se rechaza; todo lo que pasó en este archivo fue legal
-ok 51 - 8 · transiciones: la tabla es la del diseño; lo ilegal se rechaza; todo lo que pasó en este archivo fue legal
+ok 57 - 8 · transiciones: la tabla es la del diseño; lo ilegal se rechaza; todo lo que pasó en este archivo fue legal
   ---
-  duration_ms: 23.3192
+  duration_ms: 39.1884
   type: 'test'
   ...
 # Subtest: 9 · proyección: cada estado nativo cae en un valor existente de Poppy y de A2A; Poppy nunca ve un valor nativo
-ok 52 - 9 · proyección: cada estado nativo cae en un valor existente de Poppy y de A2A; Poppy nunca ve un valor nativo
+ok 58 - 9 · proyección: cada estado nativo cae en un valor existente de Poppy y de A2A; Poppy nunca ve un valor nativo
   ---
-  duration_ms: 24.7363
+  duration_ms: 24.9523
   type: 'test'
   ...
 # Subtest: sin cuenta vinculada: el agente de la empresa responde, pero no entrega datos de pedidos
-ok 53 - sin cuenta vinculada: el agente de la empresa responde, pero no entrega datos de pedidos
+ok 59 - sin cuenta vinculada: el agente de la empresa responde, pero no entrega datos de pedidos
   ---
-  duration_ms: 239.7551
+  duration_ms: 146.2024
   type: 'test'
   ...
 # Subtest: un número que no es cliente recibe la misma pantalla y ningún WhatsApp
-ok 54 - un número que no es cliente recibe la misma pantalla y ningún WhatsApp
+ok 60 - un número que no es cliente recibe la misma pantalla y ningún WhatsApp
   ---
-  duration_ms: 90.3823
+  duration_ms: 52.4878
   type: 'test'
   ...
 # Subtest: vincular con WhatsApp entrega una cuenta con los alcances marcados, y la lectura es sólo de la clienta
-ok 55 - vincular con WhatsApp entrega una cuenta con los alcances marcados, y la lectura es sólo de la clienta
+ok 61 - vincular con WhatsApp entrega una cuenta con los alcances marcados, y la lectura es sólo de la clienta
   ---
-  duration_ms: 69.0886
+  duration_ms: 106.7556
   type: 'test'
   ...
 # Subtest: proponer no ejecuta; un mensaje que dice «confirmo» tampoco
-ok 56 - proponer no ejecuta; un mensaje que dice «confirmo» tampoco
+ok 62 - proponer no ejecuta; un mensaje que dice «confirmo» tampoco
   ---
-  duration_ms: 56.7959
+  duration_ms: 22.6266
   type: 'test'
   ...
 # Subtest: un permiso permanente no basta cuando la empresa exige aprobación de la revisión
-ok 57 - un permiso permanente no basta cuando la empresa exige aprobación de la revisión
+ok 63 - un permiso permanente no basta cuando la empresa exige aprobación de la revisión
   ---
-  duration_ms: 13.4512
+  duration_ms: 5.9517
   type: 'test'
   ...
 # Subtest: confirmar la revisión exacta ejecuta una vez y el resultado sale de leer el sistema
-ok 58 - confirmar la revisión exacta ejecuta una vez y el resultado sale de leer el sistema
+ok 64 - confirmar la revisión exacta ejecuta una vez y el resultado sale de leer el sistema
   ---
-  duration_ms: 39.1284
+  duration_ms: 15.4299
   type: 'test'
   ...
 # Subtest: si cambian los términos, confirmar la revisión vieja da terms_changed
-ok 59 - si cambian los términos, confirmar la revisión vieja da terms_changed
+ok 65 - si cambian los términos, confirmar la revisión vieja da terms_changed
   ---
-  duration_ms: 94.2201
+  duration_ms: 61.3373
   type: 'test'
   ...
 # Subtest: un corrimiento grande espera a una persona de la empresa: aprobar ejecuta, rechazar no
-ok 60 - un corrimiento grande espera a una persona de la empresa: aprobar ejecuta, rechazar no
+ok 66 - un corrimiento grande espera a una persona de la empresa: aprobar ejecuta, rechazar no
   ---
-  duration_ms: 86.4539
+  duration_ms: 44.964
   type: 'test'
   ...
 # Subtest: si el sistema no responde, la operación sigue en curso (no `failed`) hasta verificar
-ok 61 - si el sistema no responde, la operación sigue en curso (no `failed`) hasta verificar
+ok 67 - si el sistema no responde, la operación sigue en curso (no `failed`) hasta verificar
   ---
-  duration_ms: 38.6667
+  duration_ms: 20.9467
   type: 'test'
   ...
 # Subtest: el pedido de otro cliente no se puede proponer ni descubrir
-ok 62 - el pedido de otro cliente no se puede proponer ni descubrir
+ok 68 - el pedido de otro cliente no se puede proponer ni descubrir
   ---
-  duration_ms: 9.9283
+  duration_ms: 10.4862
   type: 'test'
   ...
 # Subtest: nada cruza de una empresa a otra: token, conversación ni pedidos
-ok 63 - nada cruza de una empresa a otra: token, conversación ni pedidos
+ok 69 - nada cruza de una empresa a otra: token, conversación ni pedidos
   ---
-  duration_ms: 57.9935
+  duration_ms: 54.8327
   type: 'test'
   ...
 # Subtest: con sólo lectura, cambiar algo pide el alcance que falta
-ok 64 - con sólo lectura, cambiar algo pide el alcance que falta
+ok 70 - con sólo lectura, cambiar algo pide el alcance que falta
   ---
-  duration_ms: 92.8432
+  duration_ms: 44.9151
   type: 'test'
   ...
 # Subtest: un agente sin la extensión operations no obtiene escrituras por texto
-ok 65 - un agente sin la extensión operations no obtiene escrituras por texto
+ok 71 - un agente sin la extensión operations no obtiene escrituras por texto
   ---
-  duration_ms: 94.4113
+  duration_ms: 29.4934
   type: 'test'
   ...
 # Subtest: desconectar corta el acceso a la cuenta de inmediato y la conversación pide volver a entrar
-ok 66 - desconectar corta el acceso a la cuenta de inmediato y la conversación pide volver a entrar
+ok 72 - desconectar corta el acceso a la cuenta de inmediato y la conversación pide volver a entrar
   ---
-  duration_ms: 14.5534
+  duration_ms: 22.4672
   type: 'test'
   ...
 # Subtest: el feedback de tareas imposibles queda como dato para la empresa
-ok 67 - el feedback de tareas imposibles queda como dato para la empresa
+ok 73 - el feedback de tareas imposibles queda como dato para la empresa
   ---
-  duration_ms: 12.0876
+  duration_ms: 27.4781
   type: 'test'
   ...
 # Poppy validator: {"pass":59,"skip":15}
@@ -455,432 +491,468 @@ ok 67 - el feedback de tareas imposibles queda como dato para la empresa
 #   skip mcp.other-resource-rejected:  
 #   skip mcp.bearer-elsewhere-rejected:  
 # Subtest: el validador oficial de Poppy pasa los hitos foundation + interfaces
-ok 68 - el validador oficial de Poppy pasa los hitos foundation + interfaces
+ok 74 - el validador oficial de Poppy pasa los hitos foundation + interfaces
   ---
-  duration_ms: 1749.5163
+  duration_ms: 1625.2357
   type: 'test'
   ...
 # Subtest: poppy.json declara la extensión con custodia, registro sin testigos y sólo la capacidad de escritura
-ok 69 - poppy.json declara la extensión con custodia, registro sin testigos y sólo la capacidad de escritura
+ok 75 - poppy.json declara la extensión con custodia, registro sin testigos y sólo la capacidad de escritura
   ---
-  duration_ms: 11.5848
+  duration_ms: 11.435
   type: 'test'
   ...
 # Subtest: feliz: propuesta → contrapropuesta → revisión 2 → confirmar → lectura de vuelta → resultado, y el verificador independiente lo acepta
-ok 70 - feliz: propuesta → contrapropuesta → revisión 2 → confirmar → lectura de vuelta → resultado, y el verificador independiente lo acepta
+ok 76 - feliz: propuesta → contrapropuesta → revisión 2 → confirmar → lectura de vuelta → resultado, y el verificador independiente lo acepta
   ---
-  duration_ms: 1237.5005
+  duration_ms: 981.8384
   type: 'test'
   ...
 # Subtest: privacidad: la dirección y el teléfono no viajan en claro; la dirección sólo como divulgación
-ok 71 - privacidad: la dirección y el teléfono no viajan en claro; la dirección sólo como divulgación
+ok 77 - privacidad: la dirección y el teléfono no viajan en claro; la dirección sólo como divulgación
   ---
-  duration_ms: 1.2188
+  duration_ms: 0.7332
   type: 'test'
   ...
 # Subtest: B1 (ronda 1): las llaves salen del issuer, no del documento que entrega quien presenta el paquete
-ok 72 - B1 (ronda 1): las llaves salen del issuer, no del documento que entrega quien presenta el paquete
+ok 78 - B1 (ronda 1): las llaves salen del issuer, no del documento que entrega quien presenta el paquete
   ---
-  duration_ms: 2864.9918
+  duration_ms: 1631.6248
   type: 'test'
   ...
 # Subtest: ronda 2 (M1): un cliente sólo-PACT ancla la prueba con lo que PACT le da (dominio de la marca o AS de PACT)
-ok 73 - ronda 2 (M1): un cliente sólo-PACT ancla la prueba con lo que PACT le da (dominio de la marca o AS de PACT)
+ok 79 - ronda 2 (M1): un cliente sólo-PACT ancla la prueba con lo que PACT le da (dominio de la marca o AS de PACT)
   ---
-  duration_ms: 2168.2753
+  duration_ms: 2143.5136
   type: 'test'
   ...
 # Subtest: negativo: una prueba alterada sin volver a firmar → signature_invalid
-ok 74 - negativo: una prueba alterada sin volver a firmar → signature_invalid
+ok 80 - negativo: una prueba alterada sin volver a firmar → signature_invalid
   ---
-  duration_ms: 590.7179
+  duration_ms: 508.8874
   type: 'test'
   ...
 # Subtest: negativo: términos cambiados — el agente vio otro resumen que el que firmó la empresa → operation_terms_mismatch
-ok 75 - negativo: términos cambiados — el agente vio otro resumen que el que firmó la empresa → operation_terms_mismatch
+ok 81 - negativo: términos cambiados — el agente vio otro resumen que el que firmó la empresa → operation_terms_mismatch
   ---
-  duration_ms: 1419.3328
+  duration_ms: 1002.4835
   type: 'test'
   ...
 # Subtest: negativo: el operador re-firma la ejecución sobre la revisión 1 → execution_terms_mismatch
-ok 76 - negativo: el operador re-firma la ejecución sobre la revisión 1 → execution_terms_mismatch
+ok 82 - negativo: el operador re-firma la ejecución sobre la revisión 1 → execution_terms_mismatch
   ---
-  duration_ms: 588.5745
+  duration_ms: 491.5213
   type: 'test'
   ...
 # Subtest: negativo: resultado `succeeded` sin lectura de vuelta (se saca la lectura y se re-firma) → succeeded_without_matching_read_back
-ok 77 - negativo: resultado `succeeded` sin lectura de vuelta (se saca la lectura y se re-firma) → succeeded_without_matching_read_back
+ok 83 - negativo: resultado `succeeded` sin lectura de vuelta (se saca la lectura y se re-firma) → succeeded_without_matching_read_back
   ---
-  duration_ms: 1204.1116
+  duration_ms: 991.1642
   type: 'test'
   ...
-# Subtest: negativo: otra empresa — un paquete de [test bookshop] no valida con el material de [test store], ni un eslabón suyo dentro de una cadena de [test store]
-ok 78 - negativo: otra empresa — un paquete de [test bookshop] no valida con el material de [test store], ni un eslabón suyo dentro de una cadena de [test store]
+# Subtest: negativo: otra empresa — un paquete de Librería Demo no valida con el material de Ferretería Demo, ni un eslabón suyo dentro de una cadena de Demo
+ok 84 - negativo: otra empresa — un paquete de Librería Demo no valida con el material de Ferretería Demo, ni un eslabón suyo dentro de una cadena de Demo
   ---
-  duration_ms: 2369.4504
+  duration_ms: 1418.0198
   type: 'test'
   ...
 # Subtest: negativo: replay — un resultado de otra operación insertado, o el paquete presentado por otro agente
-ok 79 - negativo: replay — un resultado de otra operación insertado, o el paquete presentado por otro agente
+ok 85 - negativo: replay — un resultado de otra operación insertado, o el paquete presentado por otro agente
   ---
-  duration_ms: 1338.5588
+  duration_ms: 981.8666
   type: 'test'
   ...
 # Subtest: negativo: equivocación — una cadena alternativa bien firmada no está en el registro, y un checkpoint distinto del mismo tamaño se detecta
-ok 80 - negativo: equivocación — una cadena alternativa bien firmada no está en el registro, y un checkpoint distinto del mismo tamaño se detecta
+ok 86 - negativo: equivocación — una cadena alternativa bien firmada no está en el registro, y un checkpoint distinto del mismo tamaño se detecta
   ---
-  duration_ms: 1844.0228
+  duration_ms: 1457.7812
   type: 'test'
   ...
 # Subtest: negativo: el paquete de una operación no se le entrega a otra persona del mismo agente
-ok 81 - negativo: el paquete de una operación no se le entrega a otra persona del mismo agente
+ok 87 - negativo: el paquete de una operación no se le entrega a otra persona del mismo agente
   ---
-  duration_ms: 18.6656
+  duration_ms: 21.048
   type: 'test'
   ...
 # Subtest: un agente que no lista la extensión no recibe el miembro en la operación
-ok 82 - un agente que no lista la extensión no recibe el miembro en la operación
+ok 88 - un agente que no lista la extensión no recibe el miembro en la operación
   ---
-  duration_ms: 21.1017
+  duration_ms: 14.458
   type: 'test'
   ...
 # Subtest: un agente que lista otra versión de la extensión (Poppy §3.3: la mayor) no recibe el miembro
-ok 83 - un agente que lista otra versión de la extensión (Poppy §3.3: la mayor) no recibe el miembro
+ok 89 - un agente que lista otra versión de la extensión (Poppy §3.3: la mayor) no recibe el miembro
   ---
-  duration_ms: 17.3301
+  duration_ms: 14.6301
   type: 'test'
   ...
 # Subtest: timeout (VXP Proof): mientras no se sabe, la empresa firma `unknown`; al leer de vuelta, una corrección a `succeeded` que cita esa lectura
-ok 84 - timeout (VXP Proof): mientras no se sabe, la empresa firma `unknown`; al leer de vuelta, una corrección a `succeeded` que cita esa lectura
+ok 90 - timeout (VXP Proof): mientras no se sabe, la empresa firma `unknown`; al leer de vuelta, una corrección a `succeeded` que cita esa lectura
   ---
-  duration_ms: 1197.3776
+  duration_ms: 992.7537
   type: 'test'
   ...
 # Subtest: falla definitiva: hay ejecución y resultado `failed`, sin lectura de vuelta
-ok 85 - falla definitiva: hay ejecución y resultado `failed`, sin lectura de vuelta
+ok 91 - falla definitiva: hay ejecución y resultado `failed`, sin lectura de vuelta
   ---
-  duration_ms: 623.9082
+  duration_ms: 508.7331
   type: 'test'
   ...
 # Subtest: revisión de la empresa: va después de la aprobación del cliente sobre la misma huella; aprobar y rechazar
-ok 86 - revisión de la empresa: va después de la aprobación del cliente sobre la misma huella; aprobar y rechazar
+ok 92 - revisión de la empresa: va después de la aprobación del cliente sobre la misma huella; aprobar y rechazar
   ---
-  duration_ms: 1221.6328
+  duration_ms: 997.0915
   type: 'test'
   ...
 # Subtest: el emisor no deja que un rol firme lo que es del otro (SPEC §9.5 regla 3), ni números fuera del perfil JCS
-ok 87 - el emisor no deja que un rol firme lo que es del otro (SPEC §9.5 regla 3), ni números fuera del perfil JCS
+ok 93 - el emisor no deja que un rol firme lo que es del otro (SPEC §9.5 regla 3), ni números fuera del perfil JCS
   ---
-  duration_ms: 1.2382
+  duration_ms: 1.3986
   type: 'test'
   ...
 # Subtest: una revisión nueva que cruza el umbral exige revisión de la empresa aunque la revisión 1 no la exigía
-ok 88 - una revisión nueva que cruza el umbral exige revisión de la empresa aunque la revisión 1 no la exigía
+ok 94 - una revisión nueva que cruza el umbral exige revisión de la empresa aunque la revisión 1 no la exigía
   ---
-  duration_ms: 11.2568
+  duration_ms: 11.8697
+  type: 'test'
+  ...
+# Subtest: rutas: el material de prueba vive bajo /vxp/ y /sovras/ sigue como alias del mismo contenido (compatibilidad con material capturado antes de la revisión de la tarde del 22-oct)
+ok 95 - rutas: el material de prueba vive bajo /vxp/ y /sovras/ sigue como alias del mismo contenido (compatibilidad con material capturado antes de la revisión de la tarde del 22-oct)
+  ---
+  duration_ms: 15.7893
+  type: 'test'
+  ...
+# Subtest: llaves: tras rotar, una constancia anterior sigue verificando con la llave anterior publicada; al retirarla, sólo verifica con material guardado antes (verificación histórica)
+ok 96 - llaves: tras rotar, una constancia anterior sigue verificando con la llave anterior publicada; al retirarla, sólo verifica con material guardado antes (verificación histórica)
+  ---
+  duration_ms: 1910.8079
   type: 'test'
   ...
 # Subtest: RP1 · comercio: el agente pide el acuerdo en su conversación, la persona lo aprueba y la empresa le pregunta «confirmar o bloquear» ahí mismo
-ok 89 - RP1 · comercio: el agente pide el acuerdo en su conversación, la persona lo aprueba y la empresa le pregunta «confirmar o bloquear» ahí mismo
+ok 97 - RP1 · comercio: el agente pide el acuerdo en su conversación, la persona lo aprueba y la empresa le pregunta «confirmar o bloquear» ahí mismo
   ---
-  duration_ms: 379.9983
+  duration_ms: 336.7106
   type: 'test'
   ...
 # Subtest: RP2 · hotel: el huésped no llega y el hotel pregunta «mantener o liberar»; «liberar» suelta la reserva
-ok 90 - RP2 · hotel: el huésped no llega y el hotel pregunta «mantener o liberar»; «liberar» suelta la reserva
+ok 98 - RP2 · hotel: el huésped no llega y el hotel pregunta «mantener o liberar»; «liberar» suelta la reserva
   ---
-  duration_ms: 96.8489
+  duration_ms: 84.8228
   type: 'test'
   ...
 # Subtest: RP3 · revocada la cuenta, la empresa ya no puede preguntar y una respuesta tardía no cuenta
-ok 91 - RP3 · revocada la cuenta, la empresa ya no puede preguntar y una respuesta tardía no cuenta
+ok 99 - RP3 · revocada la cuenta, la empresa ya no puede preguntar y una respuesta tardía no cuenta
   ---
-  duration_ms: 95.5682
+  duration_ms: 60.3715
   type: 'test'
   ...
 # Subtest: RP4 · preguntar las condiciones de cancelación basta con el permiso de lectura: el hotel dice el cargo exacto y pide el de cancelar sólo para ejecutar
-ok 92 - RP4 · preguntar las condiciones de cancelación basta con el permiso de lectura: el hotel dice el cargo exacto y pide el de cancelar sólo para ejecutar
+ok 100 - RP4 · preguntar las condiciones de cancelación basta con el permiso de lectura: el hotel dice el cargo exacto y pide el de cancelar sólo para ejecutar
   ---
-  duration_ms: 137.7319
+  duration_ms: 58.5748
   type: 'test'
   ...
 # Subtest: M1: con `toda_escritura`, Policy (agente_personal) pide revisión y hay dos decisiones sobre la misma huella
-ok 93 - M1: con `toda_escritura`, Policy (agente_personal) pide revisión y hay dos decisiones sobre la misma huella
+ok 101 - M1: con `toda_escritura`, Policy (agente_personal) pide revisión y hay dos decisiones sobre la misma huella
   ---
-  duration_ms: 19.2525
+  duration_ms: 24.318
   type: 'test'
   ...
 # Subtest: M1: con `regla_de_la_empresa`, la escritura queda sujeta sólo a la aprobación exacta del cliente
-ok 94 - M1: con `regla_de_la_empresa`, la escritura queda sujeta sólo a la aprobación exacta del cliente
+ok 102 - M1: con `regla_de_la_empresa`, la escritura queda sujeta sólo a la aprobación exacta del cliente
   ---
-  duration_ms: 3.543
+  duration_ms: 5.3861
   type: 'test'
   ...
 # Subtest: M3: dos operaciones en un mismo Case dan dos verificaciones y dos resultados, uno por ejecución
-ok 95 - M3: dos operaciones en un mismo Case dan dos verificaciones y dos resultados, uno por ejecución
+ok 103 - M3: dos operaciones en un mismo Case dan dos verificaciones y dos resultados, uno por ejecución
   ---
-  duration_ms: 13.4376
+  duration_ms: 10.2104
   type: 'test'
   ...
 # Subtest: M5: fuera de la ventana de 24 h y sin plantilla, la aprobación no se entrega y la operación no se ejecuta
-ok 96 - M5: fuera de la ventana de 24 h y sin plantilla, la aprobación no se entrega y la operación no se ejecuta
+ok 104 - M5: fuera de la ventana de 24 h y sin plantilla, la aprobación no se entrega y la operación no se ejecuta
   ---
-  duration_ms: 6.1496
+  duration_ms: 6.6739
   type: 'test'
   ...
 # Subtest: M5: fuera de la ventana, con plantilla aprobada sale la plantilla; sin consentimiento de servicio no sale nada
-ok 97 - M5: fuera de la ventana, con plantilla aprobada sale la plantilla; sin consentimiento de servicio no sale nada
+ok 105 - M5: fuera de la ventana, con plantilla aprobada sale la plantilla; sin consentimiento de servicio no sale nada
   ---
-  duration_ms: 2.7879
+  duration_ms: 3.0516
   type: 'test'
   ...
 # Subtest: M6: el dueño sale del vínculo con el ERP; sin vínculo, nada; lo ajeno y lo inexistente responden igual
-ok 98 - M6: el dueño sale del vínculo con el ERP; sin vínculo, nada; lo ajeno y lo inexistente responden igual
+ok 106 - M6: el dueño sale del vínculo con el ERP; sin vínculo, nada; lo ajeno y lo inexistente responden igual
   ---
-  duration_ms: 1.0127
+  duration_ms: 1.1695
   type: 'test'
   ...
 # Subtest: A1 · el mismo pedido pedido por Poppy, PACT y nativo: tres operaciones separadas, UNA ejecución; las otras fallan sin efecto y con su evidencia
-ok 99 - A1 · el mismo pedido pedido por Poppy, PACT y nativo: tres operaciones separadas, UNA ejecución; las otras fallan sin efecto y con su evidencia
+ok 107 - A1 · el mismo pedido pedido por Poppy, PACT y nativo: tres operaciones separadas, UNA ejecución; las otras fallan sin efecto y con su evidencia
   ---
-  duration_ms: 1296.7942
+  duration_ms: 881.3194
   type: 'test'
   ...
 # Subtest: B1 · revisión antigua: tras una contrapropuesta, aceptar la revisión 1 da terms_changed y no hay efecto
-ok 100 - B1 · revisión antigua: tras una contrapropuesta, aceptar la revisión 1 da terms_changed y no hay efecto
+ok 108 - B1 · revisión antigua: tras una contrapropuesta, aceptar la revisión 1 da terms_changed y no hay efecto
   ---
-  duration_ms: 53.0901
+  duration_ms: 30.0846
   type: 'test'
   ...
 # Subtest: B2 · permiso de otro recurso: un grant para P-5003 no sirve para pedir ni aceptar sobre P-5006
-ok 101 - B2 · permiso de otro recurso: un grant para P-5003 no sirve para pedir ni aceptar sobre P-5006
+ok 109 - B2 · permiso de otro recurso: un grant para P-5003 no sirve para pedir ni aceptar sobre P-5006
   ---
-  duration_ms: 4.3474
+  duration_ms: 4.7462
   type: 'test'
   ...
 # Subtest: B3 · reutilización: aceptar dos veces ejecuta una vez; el código de WhatsApp ya usado no aprueba otra cosa
-ok 102 - B3 · reutilización: aceptar dos veces ejecuta una vez; el código de WhatsApp ya usado no aprueba otra cosa
+ok 110 - B3 · reutilización: aceptar dos veces ejecuta una vez; el código de WhatsApp ya usado no aprueba otra cosa
   ---
-  duration_ms: 58.1524
+  duration_ms: 29.5862
   type: 'test'
   ...
 # Subtest: B4 · revocación: la persona revoca entre la propuesta y la aceptación; aceptar ya no ejecuta
-ok 103 - B4 · revocación: la persona revoca entre la propuesta y la aceptación; aceptar ya no ejecuta
+ok 111 - B4 · revocación: la persona revoca entre la propuesta y la aceptación; aceptar ya no ejecuta
   ---
-  duration_ms: 100.7875
+  duration_ms: 20.8215
   type: 'test'
   ...
 # Subtest: B5 · cambio de identidad: otra llave DPoP, otro usuario del mismo agente u otro agente no usan la solicitud de Ana
-ok 104 - B5 · cambio de identidad: otra llave DPoP, otro usuario del mismo agente u otro agente no usan la solicitud de Ana
+ok 112 - B5 · cambio de identidad: otra llave DPoP, otro usuario del mismo agente u otro agente no usan la solicitud de Ana
   ---
-  duration_ms: 81.4493
+  duration_ms: 26.2021
   type: 'test'
   ...
 # Subtest: C1 · pendiente: el transportista no responde → la empresa firma `unknown` (válido); al saberse, corrección a `succeeded`
-ok 105 - C1 · pendiente: el transportista no responde → la empresa firma `unknown` (válido); al saberse, corrección a `succeeded`
+ok 113 - C1 · pendiente: el transportista no responde → la empresa firma `unknown` (válido); al saberse, corrección a `succeeded`
   ---
-  duration_ms: 2361.3239
+  duration_ms: 1196.7248
   type: 'test'
   ...
 # Subtest: C2 · contradictorio: se ejecutó pero el sistema muestra otra fecha → lectura firmada que NO calza, `unknown`, persona; nunca `succeeded`
-ok 106 - C2 · contradictorio: se ejecutó pero el sistema muestra otra fecha → lectura firmada que NO calza, `unknown`, persona; nunca `succeeded`
+ok 114 - C2 · contradictorio: se ejecutó pero el sistema muestra otra fecha → lectura firmada que NO calza, `unknown`, persona; nunca `succeeded`
   ---
-  duration_ms: 718.7485
+  duration_ms: 593.5056
   type: 'test'
   ...
 # Subtest: C3 · no comprobable: una capacidad sin lectura de vuelta nunca firma `succeeded`; su máximo es `unknown`
-ok 107 - C3 · no comprobable: una capacidad sin lectura de vuelta nunca firma `succeeded`; su máximo es `unknown`
+ok 115 - C3 · no comprobable: una capacidad sin lectura de vuelta nunca firma `succeeded`; su máximo es `unknown`
   ---
-  duration_ms: 670.3954
+  duration_ms: 573.0987
   type: 'test'
   ...
 # Subtest: D1 · WhatsApp: un asistente que se declara pide un cambio → no se ejecuta en el canal; se ofrece la conexión estructurada
-ok 108 - D1 · WhatsApp: un asistente que se declara pide un cambio → no se ejecuta en el canal; se ofrece la conexión estructurada
+ok 116 - D1 · WhatsApp: un asistente que se declara pide un cambio → no se ejecuta en el canal; se ofrece la conexión estructurada
   ---
-  duration_ms: 8.9301
+  duration_ms: 5.852
   type: 'test'
   ...
 # Subtest: D2 · WhatsApp sin conexión estructurada: un asistente puede leer sólo lo del número, y sólo si el número es de UNA persona
-ok 109 - D2 · WhatsApp sin conexión estructurada: un asistente puede leer sólo lo del número, y sólo si el número es de UNA persona
+ok 117 - D2 · WhatsApp sin conexión estructurada: un asistente puede leer sólo lo del número, y sólo si el número es de UNA persona
   ---
-  duration_ms: 5.1049
+  duration_ms: 4.6653
   type: 'test'
   ...
 # Subtest: D3 · voz y chat web: sin identidad del canal no hay datos de cuenta; las cabeceras de bot son señales, no identidad
-ok 110 - D3 · voz y chat web: sin identidad del canal no hay datos de cuenta; las cabeceras de bot son señales, no identidad
+ok 118 - D3 · voz y chat web: sin identidad del canal no hay datos de cuenta; las cabeceras de bot son señales, no identidad
   ---
-  duration_ms: 9.7465
+  duration_ms: 10.938
   type: 'test'
   ...
 # Subtest: D4 · transición: desde la oferta del canal, el agente descubre, vincula y opera por la conexión estructurada
-ok 111 - D4 · transición: desde la oferta del canal, el agente descubre, vincula y opera por la conexión estructurada
+ok 119 - D4 · transición: desde la oferta del canal, el agente descubre, vincula y opera por la conexión estructurada
   ---
-  duration_ms: 41.6031
+  duration_ms: 26.3895
   type: 'test'
   ...
 # Subtest: D5 · una empresa sin WhatsApp: el canal no existe para ella y la oferta no promete vinculación por WhatsApp
-ok 112 - D5 · una empresa sin WhatsApp: el canal no existe para ella y la oferta no promete vinculación por WhatsApp
+ok 120 - D5 · una empresa sin WhatsApp: el canal no existe para ella y la oferta no promete vinculación por WhatsApp
   ---
-  duration_ms: 4.0949
+  duration_ms: 4.4614
   type: 'test'
   ...
 # Subtest: D6 · Web Bot Auth (RFC 9421): una firma válida del operador se verifica; alterada, vencida o con llave no publicada, no
-ok 113 - D6 · Web Bot Auth (RFC 9421): una firma válida del operador se verifica; alterada, vencida o con llave no publicada, no
+ok 121 - D6 · Web Bot Auth (RFC 9421): una firma válida del operador se verifica; alterada, vencida o con llave no publicada, no
   ---
-  duration_ms: 8.8755
+  duration_ms: 12.2738
   type: 'test'
   ...
 # Subtest: E1 · sin autorización previa no hay relación: si la persona desmarca la casilla, no nace; la empresa no puede iniciar nada
-ok 114 - E1 · sin autorización previa no hay relación: si la persona desmarca la casilla, no nace; la empresa no puede iniciar nada
+ok 122 - E1 · sin autorización previa no hay relación: si la persona desmarca la casilla, no nace; la empresa no puede iniciar nada
   ---
-  duration_ms: 30.6736
+  duration_ms: 33.0678
   type: 'test'
   ...
 # Subtest: E2 · con autorización: acuerdo firmado; la empresa propone un cambio, el mensaje firmado llega al buzón y el agente lo acepta con evidencia
-ok 115 - E2 · con autorización: acuerdo firmado; la empresa propone un cambio, el mensaje firmado llega al buzón y el agente lo acepta con evidencia
+ok 123 - E2 · con autorización: acuerdo firmado; la empresa propone un cambio, el mensaje firmado llega al buzón y el agente lo acepta con evidencia
   ---
-  duration_ms: 527.3935
+  duration_ms: 654.8062
   type: 'test'
   ...
 # Subtest: E3 · límites: acción no autorizada, pedido de otro cliente y tope por día se rechazan antes de firmar nada
-ok 116 - E3 · límites: acción no autorizada, pedido de otro cliente y tope por día se rechazan antes de firmar nada
+ok 124 - E3 · límites: acción no autorizada, pedido de otro cliente y tope por día se rechazan antes de firmar nada
   ---
-  duration_ms: 8.9168
+  duration_ms: 6.1555
   type: 'test'
   ...
 # Subtest: E4 · revocación: si la persona revoca, la empresa no puede iniciar y una propuesta pendiente de la relación ya no se acepta
-ok 117 - E4 · revocación: si la persona revoca, la empresa no puede iniciar y una propuesta pendiente de la relación ya no se acepta
+ok 125 - E4 · revocación: si la persona revoca, la empresa no puede iniciar y una propuesta pendiente de la relación ya no se acepta
   ---
-  duration_ms: 6.4809
+  duration_ms: 12.4136
   type: 'test'
   ...
 # Subtest: E5 · vencimiento y revocación por el agente: una relación vencida o borrada por el agente no admite gestiones
-ok 118 - E5 · vencimiento y revocación por el agente: una relación vencida o borrada por el agente no admite gestiones
+ok 126 - E5 · vencimiento y revocación por el agente: una relación vencida o borrada por el agente no admite gestiones
   ---
-  duration_ms: 1366.6163
+  duration_ms: 1355.3493
   type: 'test'
   ...
 # Subtest: F1 · agente insistente a las 3 AM: el carril lento corta en su cupo con 429 y Retry-After; a las 4 AM, el mismo cupo; otro visitante no paga
-ok 119 - F1 · agente insistente a las 3 AM: el carril lento corta en su cupo con 429 y Retry-After; a las 4 AM, el mismo cupo; otro visitante no paga
+ok 127 - F1 · agente insistente a las 3 AM: el carril lento corta en su cupo con 429 y Retry-After; a las 4 AM, el mismo cupo; otro visitante no paga
   ---
-  duration_ms: 49.3976
+  duration_ms: 35.4085
   type: 'test'
   ...
 # Subtest: F1b · llamadas o WhatsApp a las 3 AM, una y otra vez: mismo cupo por número, respuesta pública y oferta, nunca una escritura
-ok 120 - F1b · llamadas o WhatsApp a las 3 AM, una y otra vez: mismo cupo por número, respuesta pública y oferta, nunca una escritura
+ok 128 - F1b · llamadas o WhatsApp a las 3 AM, una y otra vez: mismo cupo por número, respuesta pública y oferta, nunca una escritura
   ---
-  duration_ms: 14.5532
+  duration_ms: 12.4571
   type: 'test'
   ...
 # Subtest: F2 · un agente no puede bombardear a una persona con códigos de WhatsApp: tope por número, misma respuesta, queda registrado
-ok 121 - F2 · un agente no puede bombardear a una persona con códigos de WhatsApp: tope por número, misma respuesta, queda registrado
+ok 129 - F2 · un agente no puede bombardear a una persona con códigos de WhatsApp: tope por número, misma respuesta, queda registrado
   ---
-  duration_ms: 33.5248
+  duration_ms: 18.3511
   type: 'test'
   ...
 # Subtest: F3 · un agente que no acepta un no: repetir 20 veces una escritura que no le corresponde no cambia nada ni abre otra vía
-ok 122 - F3 · un agente que no acepta un no: repetir 20 veces una escritura que no le corresponde no cambia nada ni abre otra vía
+ok 130 - F3 · un agente que no acepta un no: repetir 20 veces una escritura que no le corresponde no cambia nada ni abre otra vía
   ---
-  duration_ms: 65.8945
+  duration_ms: 44.9693
   type: 'test'
   ...
 # Subtest: F4 · rampa de acceso: el pase es corto; vencido, no sirve y no ejecuta
-ok 123 - F4 · rampa de acceso: el pase es corto; vencido, no sirve y no ejecuta
+ok 131 - F4 · rampa de acceso: el pase es corto; vencido, no sirve y no ejecuta
   ---
-  duration_ms: 2132.3098
+  duration_ms: 2117.4579
   type: 'test'
   ...
 # Subtest: F5 · 3 AM, «confirmar o bloquear, nada más»: la empresa pregunta, el agente elige una opción una vez, con recibo firmado y sin intervención humana
-ok 124 - F5 · 3 AM, «confirmar o bloquear, nada más»: la empresa pregunta, el agente elige una opción una vez, con recibo firmado y sin intervención humana
+ok 132 - F5 · 3 AM, «confirmar o bloquear, nada más»: la empresa pregunta, el agente elige una opción una vez, con recibo firmado y sin intervención humana
   ---
-  duration_ms: 1253.5332
+  duration_ms: 1244.0183
   type: 'test'
   ...
 # Subtest: G1 · chat web, un asistente cotiza: catálogo con precios, cotización con descuento por volumen y despacho, negociación dentro de la política y conversación que se conserva
-ok 125 - G1 · chat web, un asistente cotiza: catálogo con precios, cotización con descuento por volumen y despacho, negociación dentro de la política y conversación que se conserva
+ok 133 - G1 · chat web, un asistente cotiza: catálogo con precios, cotización con descuento por volumen y despacho, negociación dentro de la política y conversación que se conserva
   ---
-  duration_ms: 81.1381
+  duration_ms: 47.8862
   type: 'test'
   ...
 # Subtest: G2 · API: pedir un pedido nuevo → falta autorizar el monto → la persona autoriza hasta un tope → propuesta firmada → contrapropuesta → aceptar → pedido creado UNA vez, verificado y con evidencia
-ok 126 - G2 · API: pedir un pedido nuevo → falta autorizar el monto → la persona autoriza hasta un tope → propuesta firmada → contrapropuesta → aceptar → pedido creado UNA vez, verificado y con evidencia
+ok 134 - G2 · API: pedir un pedido nuevo → falta autorizar el monto → la persona autoriza hasta un tope → propuesta firmada → contrapropuesta → aceptar → pedido creado UNA vez, verificado y con evidencia
   ---
-  duration_ms: 1035.3038
+  duration_ms: 513.4506
   type: 'test'
   ...
 # Subtest: G3 · límites de una compra: sobre el monto aprobado no se acepta; si el stock cambió antes de aceptar, no se crea nada
-ok 127 - G3 · límites de una compra: sobre el monto aprobado no se acepta; si el stock cambió antes de aceptar, no se crea nada
+ok 135 - G3 · límites de una compra: sobre el monto aprobado no se acepta; si el stock cambió antes de aceptar, no se crea nada
   ---
-  duration_ms: 48.034
+  duration_ms: 29.6886
   type: 'test'
   ...
 # Subtest: G4 · Poppy, conversando con el agente de la empresa: cotiza, negocia la fecha y hace el pedido como operación que se confirma; un «confirmo» en el chat no compra
-ok 128 - G4 · Poppy, conversando con el agente de la empresa: cotiza, negocia la fecha y hace el pedido como operación que se confirma; un «confirmo» en el chat no compra
+ok 136 - G4 · Poppy, conversando con el agente de la empresa: cotiza, negocia la fecha y hace el pedido como operación que se confirma; un «confirmo» en el chat no compra
   ---
-  duration_ms: 41.4624
+  duration_ms: 29.3676
   type: 'test'
   ...
 # Subtest: G5 · chat web frenado por insistencia: el visitante ve un mensaje del chat, su conversación y la casilla (no un JSON)
-ok 129 - G5 · chat web frenado por insistencia: el visitante ve un mensaje del chat, su conversación y la casilla (no un JSON)
+ok 137 - G5 · chat web frenado por insistencia: el visitante ve un mensaje del chat, su conversación y la casilla (no un JSON)
   ---
-  duration_ms: 24.1924
+  duration_ms: 19.911
   type: 'test'
   ...
-# Subtest: H1 · (Grok) «déjala en espera para que el cliente la apruebe»: la cotización queda reservada y el chat entrega el enlace; el cliente aprueba los términos exactos con código a su WhatsApp; se crea UN pedido con evidencia de aprobación por canal
-ok 130 - H1 · (Grok) «déjala en espera para que el cliente la apruebe»: la cotización queda reservada y el chat entrega el enlace; el cliente aprueba los términos exactos con código a su WhatsApp; se crea UN pedido con evidencia de aprobación por canal
+# Subtest: H1 · (agente externo A) «déjala en espera para que el cliente la apruebe»: la cotización queda reservada y el chat entrega el enlace; el cliente aprueba los términos exactos con código a su WhatsApp; se crea UN pedido con evidencia de aprobación por canal
+ok 138 - H1 · (agente externo A) «déjala en espera para que el cliente la apruebe»: la cotización queda reservada y el chat entrega el enlace; el cliente aprueba los términos exactos con código a su WhatsApp; se crea UN pedido con evidencia de aprobación por canal
   ---
-  duration_ms: 697.6998
+  duration_ms: 491.464
   type: 'test'
   ...
-# Subtest: H1b · (Grok, 05:37:21) la frase exacta que no se reconocía: «¿pueden dejar la cotización COT-… (revisión 2) lista y reservada mientras mi cliente la aprueba? ¿Qué tiene que hacer exactamente el cliente para aprobarla?» entrega el enlace
-ok 131 - H1b · (Grok, 05:37:21) la frase exacta que no se reconocía: «¿pueden dejar la cotización COT-… (revisión 2) lista y reservada mientras mi cliente la aprueba? ¿Qué tiene que hacer exactamente el cliente para aprobarla?» entrega el enlace
+# Subtest: H1b · (agente externo A, 05:37:21) la frase exacta que no se reconocía: «¿pueden dejar la cotización COT-… (revisión 2) lista y reservada mientras mi cliente la aprueba? ¿Qué tiene que hacer exactamente el cliente para aprobarla?» entrega el enlace
+ok 139 - H1b · (agente externo A, 05:37:21) la frase exacta que no se reconocía: «¿pueden dejar la cotización COT-… (revisión 2) lista y reservada mientras mi cliente la aprueba? ¿Qué tiene que hacer exactamente el cliente para aprobarla?» entrega el enlace
   ---
-  duration_ms: 7.3757
+  duration_ms: 5.3111
   type: 'test'
   ...
-# Subtest: H1c · (fundador, en vivo) un código mal escrito no deja sin salida: la página vuelve a mostrar la casilla y los intentos que quedan; el código correcto después sí aprueba
-ok 132 - H1c · (fundador, en vivo) un código mal escrito no deja sin salida: la página vuelve a mostrar la casilla y los intentos que quedan; el código correcto después sí aprueba
+# Subtest: H1c · (prueba manual, en vivo) un código mal escrito no deja sin salida: la página vuelve a mostrar la casilla y los intentos que quedan; el código correcto después sí aprueba
+ok 140 - H1c · (prueba manual, en vivo) un código mal escrito no deja sin salida: la página vuelve a mostrar la casilla y los intentos que quedan; el código correcto después sí aprueba
   ---
-  duration_ms: 27.0145
+  duration_ms: 16.9899
   type: 'test'
   ...
 # Subtest: H1d · (agente de prueba B, 05:59:35) la fecha de destino es la que sigue a «al/para», no la primera del mensaje; un cambio a la misma fecha no se propone
-ok 133 - H1d · (agente de prueba B, 05:59:35) la fecha de destino es la que sigue a «al/para», no la primera del mensaje; un cambio a la misma fecha no se propone
+ok 141 - H1d · (agente de prueba B, 05:59:35) la fecha de destino es la que sigue a «al/para», no la primera del mensaje; un cambio a la misma fecha no se propone
   ---
-  duration_ms: 23.3611
+  duration_ms: 19.9082
   type: 'test'
   ...
-# Subtest: H1e · (Grok) cambio de fecha por la web: el chat no cambia nada pero entrega un enlace; el enlace no revela el pedido hasta identificarse; la clienta aprueba el cambio exacto y se ejecuta UNA vez con evidencia de canal
-ok 134 - H1e · (Grok) cambio de fecha por la web: el chat no cambia nada pero entrega un enlace; el enlace no revela el pedido hasta identificarse; la clienta aprueba el cambio exacto y se ejecuta UNA vez con evidencia de canal
+# Subtest: H1e · (agente externo A) cambio de fecha por la web: el chat no cambia nada pero entrega un enlace; el enlace no revela el pedido hasta identificarse; la clienta aprueba el cambio exacto y se ejecuta UNA vez con evidencia de canal
+ok 142 - H1e · (agente externo A) cambio de fecha por la web: el chat no cambia nada pero entrega un enlace; el enlace no revela el pedido hasta identificarse; la clienta aprueba el cambio exacto y se ejecuta UNA vez con evidencia de canal
   ---
-  duration_ms: 694.1909
+  duration_ms: 498.3945
   type: 'test'
   ...
 # Subtest: H2 · (agente de prueba B) al reconectarse en otra conversación, la cotización se retoma (por su número o por ser del mismo agente) y no se cotiza de cero
-ok 135 - H2 · (agente de prueba B) al reconectarse en otra conversación, la cotización se retoma (por su número o por ser del mismo agente) y no se cotiza de cero
+ok 143 - H2 · (agente de prueba B) al reconectarse en otra conversación, la cotización se retoma (por su número o por ser del mismo agente) y no se cotiza de cero
   ---
-  duration_ms: 22.3771
+  duration_ms: 26.8093
   type: 'test'
   ...
 # Subtest: H3 · (Poppy §4.4) ampliar el permiso concede sólo lo pedido; para conservar la lectura, el agente la pide junto con la compra
-ok 136 - H3 · (Poppy §4.4) ampliar el permiso concede sólo lo pedido; para conservar la lectura, el agente la pide junto con la compra
+ok 144 - H3 · (Poppy §4.4) ampliar el permiso concede sólo lo pedido; para conservar la lectura, el agente la pide junto con la compra
   ---
-  duration_ms: 43.6671
+  duration_ms: 31.2088
   type: 'test'
   ...
 # Subtest: H4 · permiso permanente: el cliente aprueba UNA vez con tope; dentro del tope el agente cierra solo (standing_permission) con evidencia; sobre el tope, igual tiene que preguntar
-ok 137 - H4 · permiso permanente: el cliente aprueba UNA vez con tope; dentro del tope el agente cierra solo (standing_permission) con evidencia; sobre el tope, igual tiene que preguntar
+ok 145 - H4 · permiso permanente: el cliente aprueba UNA vez con tope; dentro del tope el agente cierra solo (standing_permission) con evidencia; sobre el tope, igual tiene que preguntar
   ---
-  duration_ms: 652.6684
+  duration_ms: 514.3606
   type: 'test'
   ...
-1..137
-# tests 137
+# Subtest: WBA-S1 · no se pide el directorio de llaves a hosts internos ni a puertos fuera del estándar
+ok 146 - WBA-S1 · no se pide el directorio de llaves a hosts internos ni a puertos fuera del estándar
+  ---
+  duration_ms: 59.8654
+  type: 'test'
+  ...
+# Subtest: WBA-S2 · un directorio que falla se recuerda un rato: una ráfaga firmada no se vuelve una ráfaga de fetch
+ok 147 - WBA-S2 · un directorio que falla se recuerda un rato: una ráfaga firmada no se vuelve una ráfaga de fetch
+  ---
+  duration_ms: 17.5412
+  type: 'test'
+  ...
+# Subtest: WBA-S3 · el registro tiene tope
+ok 148 - WBA-S3 · el registro tiene tope
+  ---
+  duration_ms: 13.6723
+  type: 'test'
+  ...
+# Subtest: WBA-S4 · sólo un operador permitido comparte cupo entre IPs; uno cualquiera con firma válida, no
+ok 149 - WBA-S4 · sólo un operador permitido comparte cupo entre IPs; uno cualquiera con firma válida, no
+  ---
+  duration_ms: 10.63
+  type: 'test'
+  ...
+1..149
+# tests 149
 # suites 0
-# pass 137
+# pass 149
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 20637.0682
+# duration_ms 17459.4099
 exit 0

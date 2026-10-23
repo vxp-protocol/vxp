@@ -1,7 +1,7 @@
-== 07-vectores-verificar · 2026-10-22T06:12:11Z · python verifier/verificar.py vectors/vectores-0.1.json (vectores publicados, datos neutros)
+== 07-vectores-verificar · 2026-10-22T22:28:54Z · python verifier/verificar.py vectors/vectores-0.1.json
 OK    terms_digest_2 recalculado
 OK    jcs(terminos2) identico al del emisor
-OK    display_code recalculado - 320843
+OK    display_code recalculado - 693058
 OK    request_digest = huella JCS del insumo
 OK    idempotency_key_digest = huella JCS del insumo
 OK    counter_digest = huella JCS del insumo
@@ -77,8 +77,8 @@ OK    N33 - obtuvo bad_terms en seq 1; esperado bad_terms
 OK    N34 - obtuvo order_violation en seq 5; esperado order_violation
 OK    N35 - obtuvo read_back_incomplete en seq 10; esperado read_back_incomplete
 OK    N31 - obtuvo bad_approval_method en seq 4; esperado bad_approval_method
-OK    D1 - https://auth.sovras.io/e/ferreteria-demo
-OK    D2 - https://auth.sovras.io/e/ferreteria-demo
+OK    D1 - https://auth.operator.example/e/ferreteria-demo
+OK    D2 - https://auth.operator.example/e/ferreteria-demo
 OK    D3 - obtuvo issuer_not_anchored; esperado issuer_not_anchored
 OK    D4 - obtuvo issuer_not_anchored; esperado issuer_not_anchored
 OK    D5 - obtuvo issuer_not_anchored; esperado issuer_not_anchored

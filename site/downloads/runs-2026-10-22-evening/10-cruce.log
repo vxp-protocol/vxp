@@ -1,4 +1,4 @@
-== 10-cruce · 2026-10-22T04:53:16Z · python scripts/cruce-verificadores.py
+== 10-cruce · 2026-10-22T22:28:56Z · python scripts/cruce-verificadores.py
 IGUAL    V1 -> {"approval": "company_channel", "custody_declared": "operator_hosted", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "final_state": "succeeded", "logged": false, "revision": 2, "single_root": "operator", "valid": true}
 IGUAL    V2 -> {"approval": "company_channel", "custody_declared": "operator_hosted", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "final_state": "failed", "logged": false, "revision": 2, "single_root": "operator", "valid": true}
 IGUAL    V3 -> {"approval": "company_channel", "custody_declared": "operator_hosted", "derived_assurance": ["issuer_key_attested", "operator_observed", "operator_reported_read_back", "operator_reported_channel_approval"], "final_state": "succeeded", "logged": false, "revision": 2, "single_root": "operator", "valid": true}

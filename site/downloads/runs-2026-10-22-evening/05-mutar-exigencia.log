@@ -1,4 +1,4 @@
-== 05-mutar-exigencia · 2026-10-22T04:48:44Z · node scripts/mutar-exigencia.mjs
+== 05-mutar-exigencia · 2026-10-22T22:18:58Z · node scripts/mutar-exigencia.mjs
 sin mutación: exit 0 (# pass 29, # fail 0)
 DETECTADA  precondicion_conector              HO-C2: se reserva aunque el PMS ya no tenga la habitación
     fallan: HO-C2 · la disponibilidad se agota (bloq | HO-A3 · cancelación tardía: R-3003 (maña | HO-A4 · intervención humana: cambiar R-3 | HO-A5 · identidad y permisos: Bruno no v | HO-A6 · duplicados y caída de conexión:  | HO-A7 · aprobación vencida y revocación: | RE-N · el hotel propone cambiar las fech | RE-C · condiciones cambiantes en la rela | RE-A · adversarial en la relación: acció | B-H · hotel, perfil nativo: llega por el | B-C · ferretería por Poppy: del chat a p | B-P · hotel por PACT: AUTH_REQUIRED con  | S1 · simulador y registro: sin la llave 

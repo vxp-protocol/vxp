@@ -3,8 +3,8 @@
 import { explain, verdictJson, verifyPackage, verifyVectors } from "./vxp-verify.js";
 
 const EJEMPLOS = {
-	native: { dir: "../downloads/native-run-2026-10-22/", pkg: "paquete-op_B6__ICZlCe_c.json", mat: "material-op_B6__ICZlCe_c.json", op: "operacion-op_B6__ICZlCe_c.json", naming: "vxp", campo: "despacho_nuevo" },
-	channel: { dir: "../downloads/pact-run-2026-10-22/", pkg: "pact-op_01NpsuOhdE3C.json", mat: "pact-op_01NpsuOhdE3C.material.json", op: null, naming: "vxp", campo: null },
+	native: { dir: "../downloads/native-run-2026-10-22-evening/", pkg: "paquete-op_XzdILOmlgiae.json", mat: "material-op_XzdILOmlgiae.json", op: "operacion-op_XzdILOmlgiae.json", naming: "vxp", campo: "despacho_nuevo" },
+	channel: { dir: "../downloads/pact-run-2026-10-22-evening/", pkg: "pact-op_R6F-x006Gxsg.json", mat: "pact-op_R6F-x006Gxsg.material.json", op: null, naming: "vxp", campo: null },
 };
 const $ = (s) => document.querySelector(s);
 const valor = (n) => document.querySelector(`input[name="${n}"]:checked`).value;

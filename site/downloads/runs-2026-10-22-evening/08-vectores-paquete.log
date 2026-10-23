@@ -1,4 +1,4 @@
-== 08-vectores-paquete · 2026-10-22T06:12:12Z · python verifier/verificar_paquete.py vectores vectors/vectores-0.1.json (vectores publicados, datos neutros)
+== 08-vectores-paquete · 2026-10-22T22:28:54Z · python verifier/verificar_paquete.py vectores vectors/vectores-0.1.json
 OK    terms_digest_1
 OK    terms_digest_2
 OK    display_code_2
@@ -82,8 +82,8 @@ OK    N33 - bad_terms en seq 1; esperado bad_terms
 OK    N34 - order_violation en seq 5; esperado order_violation
 OK    N35 - read_back_incomplete en seq 10; esperado read_back_incomplete
 OK    N31 - bad_approval_method en seq 4; esperado bad_approval_method
-OK    D1 - anclado a https://auth.sovras.io/e/ferreteria-demo
-OK    D2 - anclado a https://auth.sovras.io/e/ferreteria-demo
+OK    D1 - anclado a https://auth.operator.example/e/ferreteria-demo
+OK    D2 - anclado a https://auth.operator.example/e/ferreteria-demo
 OK    D3 - issuer_not_anchored; esperado issuer_not_anchored
 OK    D4 - issuer_not_anchored; esperado issuer_not_anchored
 OK    D5 - issuer_not_anchored; esperado issuer_not_anchored

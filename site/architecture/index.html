@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VXP Architecture</title>
-<meta name="description" content="How VXP fits together: participants, identities, discovery, entries and adapters, the Capability Gate, Relationship, Proof, execution, states, recovery and trust boundaries.">
+<meta name="description" content="How VXP fits together: participants, identities, discovery, entries and adapters, the operation requirements, VXP Relationship, VXP Proof, execution, states, recovery and trust boundaries.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -60,9 +60,9 @@
 			<li><a href="#identities"><span>2</span>Identities</a></li>
 			<li><a href="#discovery"><span>3</span>Native profile and discovery</a></li>
 			<li><a href="#entries"><span>4</span>Entries and adapters</a></li>
-			<li><a href="#capability-gate"><span>5</span>Capability Gate</a></li>
-			<li><a href="#relationship"><span>6</span>Relationship</a></li>
-			<li><a href="#proof"><span>7</span>Proof</a></li>
+			<li><a href="#operation-requirements"><span>5</span>Operation requirements</a></li>
+			<li><a href="#relationship"><span>6</span>VXP Relationship</a></li>
+				<li><a href="#proof"><span>7</span>VXP Proof</a></li>
 			<li><a href="#execution"><span>8</span>Enterprise execution</a></li>
 			<li><a href="#states"><span>9</span>States</a></li>
 			<li><a href="#recovery"><span>10</span>Recovery</a></li>
@@ -123,7 +123,7 @@
 <!-- ═══ 3 Discovery ════════════════════════════════════════════════════════ -->
 <section class="dsec" id="discovery" aria-labelledby="discovery-h">
 	<h2 id="discovery-h"><span class="n">3</span>Native profile and discovery <span class="mk mk--exp">Experimental</span><a class="anchor" href="#discovery" aria-label="Link to Native profile and discovery">#</a></h2>
-	<p>The native profile is VXP's own form: an agent that speaks neither Poppy nor PACT discovers the company, identifies, receives authority per request, operates, obtains the proof and keeps the relationship with it alone. A company can publish it next to the adapters. All entries share one issuer, one authorization server and one set of metadata.</p>
+	<p>The native profile is VXP's own form: an agent that speaks neither Poppy nor PACT discovers the company, identifies, receives authority per request, operates, obtains the proof and keeps the relationship with it alone. It works alone, without either adapter (<a href="../spec/#native-only">specification §8, native-only gateway</a>), and a company can also publish it next to the adapters. All entries share one issuer, one authorization server and one set of metadata.</p>
 	<div class="tbl tbl--fit"><table>
 		<thead><tr><th>Document</th><th>Where</th><th>What it carries</th></tr></thead>
 		<tbody>
@@ -133,16 +133,16 @@
 			<tr><td>Agent Card</td><td>The PACT provider, or redirected from the brand's domain</td><td>The PACT 1.0 card over A2A 1.0.1, as written, with <code>https://vxpprotocol.org/ext/proof/v0.1</code></td></tr>
 		</tbody>
 	</table></div>
-	<p>The trust members live in one place, the issuer metadata. Any copy in <code>poppy.json</code> or the Agent Card must be identical, and <code>vxp.json</code> carries none. Discovery, authorization and endpoints in detail: <a href="../spec/#native-profile">specification, §8</a>.</p>
+	<p>The trust members live in one place, the issuer metadata. Any copy in <code>poppy.json</code> or the Agent Card must be identical, and <code>vxp.json</code> carries none. Only the well-known locations and the native endpoints are fixed; every other location, such as the key sets or the log, is read from the metadata and is the implementation's own choice (<a href="../spec/#implementation-paths">implementation paths</a>). Discovery, authorization and endpoints in detail: <a href="../spec/#native-profile">specification, §8</a>.</p>
 </section>
 
 <!-- ═══ 4 Entries ══════════════════════════════════════════════════════════ -->
 <section class="dsec" id="entries" aria-labelledby="entries-h">
 	<h2 id="entries-h"><span class="n">4</span>Entries and adapters<a class="anchor" href="#entries" aria-label="Link to Entries and adapters">#</a></h2>
-	<p>A request can arrive through the native profile or through an adapter. An adapter speaks the external protocol literally; what VXP adds travels only in that protocol's extension points. All entries end in one normalized request and one Capability Gate.</p>
+	<p>A request can arrive through the native profile or through an adapter. An adapter speaks the external protocol literally; what VXP adds travels only in that protocol's extension points. All entries end in one normalized request, the same operation requirements and one enterprise execution.</p>
 	<figure class="fig fig--narrow">
 		<svg viewBox="0 0 480 590" role="img" aria-labelledby="fig-en-t">
-			<title id="fig-en-t">Entries: native profile, Poppy adapter, PACT adapter and traditional channels converge on a normalized request, the Capability Gate, one execution, and then VXP Proof and VXP Relationship</title>
+			<title id="fig-en-t">Entries: native profile, Poppy adapter, PACT adapter and traditional channels converge on a normalized request, the operation requirements, one execution, and then VXP Proof and VXP Relationship</title>
 			<use href="#g-agent" x="222" y="6" width="36" height="36"/>
 			<text class="sm" x="240" y="58" text-anchor="middle">Personal agent</text>
 			<path class="ln" d="M240 64 V80" marker-end="url(#ah)"/>
@@ -165,7 +165,7 @@
 			<text class="sm" x="240" y="284" text-anchor="middle">identity · authority · company · operation</text>
 			<path class="ln" d="M240 294 V312" marker-end="url(#ah)"/>
 			<rect class="box" x="30" y="316" width="420" height="76" rx="8" style="stroke-width:1.8"/>
-			<text class="lg" x="240" y="342" text-anchor="middle">Capability Gate</text>
+			<text class="lg" x="240" y="342" text-anchor="middle">Operation requirements O1 to O7</text>
 			<text class="sm" x="240" y="362" text-anchor="middle">owner · scope · resource · terms</text>
 			<text class="sm" x="240" y="380" text-anchor="middle">review · once · read-back</text>
 			<path class="ln" d="M240 392 V410" marker-end="url(#ah)"/>
@@ -198,13 +198,13 @@
 	<p>Whatever the entry, the company needs no conversational agent of its own: a deterministic intermediary serves the Poppy API and the PACT A2A service (I3). Interoperability rules I1 to I5: <a href="../spec/#interoperability-rules">specification, §4</a>.</p>
 </section>
 
-<!-- ═══ 5 Capability Gate ══════════════════════════════════════════════════ -->
-<section class="dsec" id="capability-gate" aria-labelledby="capability-gate-h">
-	<h2 id="capability-gate-h"><span class="n">5</span>Capability Gate<a class="anchor" href="#capability-gate" aria-label="Link to Capability Gate">#</a></h2>
-	<p>A valid identity is a starting point. What runs is the intersection of three things, and the Gate is the boundary where that intersection is computed. VXP defines its rules and no endpoint; how an implementation builds it inside is up to the implementer.</p>
+<!-- ═══ 5 Operation requirements ═════════════════════════════════════════════ -->
+<section class="dsec" id="operation-requirements" aria-labelledby="operation-requirements-h">
+	<h2 id="operation-requirements-h"><span class="n">5</span>Operation requirements<a class="anchor" href="#operation-requirements" aria-label="Link to Operation requirements">#</a></h2>
+	<p>A valid identity is a starting point. What passes is the intersection of what the person delegated, what the company allows and what the resource admits. VXP states this as operation requirements O1 to O7: the behaviour every implementation shows where an external request becomes an operation. They are requirements, not a component: VXP defines no interface for them, and how an implementation builds them inside is its own decision.</p>
 	<figure class="fig fig--narrow">
-		<svg class="halo" viewBox="0 0 480 420" role="img" aria-labelledby="fig-gate-t">
-			<title id="fig-gate-t">Three overlapping circles: delegated by the person, allowed by the company, admitted by the resource. Only their intersection runs.</title>
+		<svg class="halo" viewBox="0 0 480 420" role="img" aria-labelledby="fig-req-t">
+			<title id="fig-req-t">Three overlapping circles: delegated by the person, allowed by the company, admitted by the resource. Only their intersection runs.</title>
 			<circle cx="172" cy="152" r="122" fill="rgba(107,139,158,0.10)" stroke="var(--person)" stroke-width="1.6"/>
 			<circle cx="308" cy="152" r="122" fill="rgba(243,243,239,0.05)" stroke="var(--company)" stroke-width="1.6"/>
 			<circle cx="240" cy="270" r="122" fill="rgba(255,255,255,0.03)" stroke="var(--on-deep-soft)" stroke-width="1.6" stroke-dasharray="5 4"/>
@@ -224,33 +224,35 @@
 		</svg>
 		<figcaption>Outside the intersection the answer is <code>authorization_required</code>, or the same not-found answer for someone else's resource and for a missing one.</figcaption>
 	</figure>
+	<div class="tbl tbl--fit"><table>
+		<thead><tr><th>Requirement</th><th>What the implementation does</th><th>Evidence in VXP Proof</th></tr></thead>
+		<tbody>
+			<tr><td><a href="../spec/#o1">O1</a> Identity and owner</td><td>Links an account only through an authentication the company controls; the owner is <code>(profile, client_id, sub, account)</code></td><td>Not shown by the chain; still required</td></tr>
+			<tr><td><a href="../spec/#o2">O2</a> Scope</td><td>What is asked fits the delegation and what the company publishes</td><td>Not shown by the chain; still required</td></tr>
+			<tr><td><a href="../spec/#o3">O3</a> Own resource</td><td>Someone else's, missing and unlinked resources answer the same</td><td>Not shown by the chain; still required</td></tr>
+			<tr><td><a href="../spec/#o4">O4</a> Terms and commitment</td><td>The company signs the exact revision and its commitment; a change is a new revision</td><td><code>terms</code> and <code>user_approval</code> on the same digest</td></tr>
+			<tr><td><a href="../spec/#o5">O5</a> Company review</td><td>When its rule requires it, a person at the company decides on the same digest</td><td><code>company_review</code></td></tr>
+			<tr><td><a href="../spec/#o6">O6</a> One execution</td><td>One per resource, with precondition and idempotency key</td><td>One <code>execution</code> on the approved digest</td></tr>
+			<tr><td><a href="../spec/#o7">O7</a> Read-back</td><td>No <code>succeeded</code> without it; a contradiction goes to <code>waiting_human</code></td><td><code>read_back</code>, by term name</td></tr>
+		</tbody>
+	</table></div>
 	<div class="split">
-		<div><span class="mk mk--norm" style="justify-self:start">Normative</span><h4>Rules the Gate enforces</h4><ul>
-			<li><b>Owner:</b> account linked only by company-controlled authentication; owner is <code>(profile, client_id, sub, account)</code></li>
-			<li><b>Scope:</b> what is asked fits the delegation and what the company publishes</li>
-			<li><b>Resource:</b> someone else's, missing and unlinked answer the same</li>
-			<li><b>Terms:</b> the company signs the exact revision and its commitment</li>
-			<li><b>Review:</b> when its rule requires it, a person at the company decides on the same digest</li>
-			<li><b>Once:</b> one execution per resource, with precondition and idempotency key</li>
-			<li><b>Read-back:</b> no <code>succeeded</code> without it</li>
+		<div><span class="mk mk--norm" style="justify-self:start">Normative</span><h4>Requirement and evidence</h4><ul>
+			<li><b>Required behaviour:</b> rules O1 to O7, defined by the specification.</li>
+			<li><b>Evidence:</b> what VXP Proof records so that anyone can check that behaviour afterwards. A rule the chain cannot show is still required; the verifier only reports what the chain carries.</li>
 		</ul></div>
-		<div><span class="mk mk--info" style="justify-self:start">Informative</span><h4>How the reference implementation composes it</h4><ul>
-			<li><b>Catalog:</b> released capabilities and the actions the company may start</li>
-			<li><b>Prior read:</b> does the resource belong to the linked ERP customer</li>
-			<li><b>Policy:</b> scope ∩ released capabilities ∩ owner</li>
-			<li><b>Commitment:</b> <code>firm</code> or <code>conditional</code> from what the capability can execute and verify</li>
-			<li><b>Execution:</b> one, with precondition</li>
-			<li><b>Read-back:</b> checks the effect in the system</li>
-			<li><b>Projection:</b> internal state to Poppy and A2A</li>
+		<div><span class="mk mk--info" style="justify-self:start">Informative</span><h4>Internal controls, outside VXP</h4><ul>
+			<li>The catalog, policies, checks and locks that enforce the rules inside one company's systems belong to each implementation.</li>
+			<li>In the reference implementation they are SOVRAS's own mechanism: catalog, prior read in the ERP, policy, commitment, one execution, read-back and projection to Poppy and A2A.</li>
 		</ul></div>
 	</div>
-	<p>Each rule with its identifiers: <a href="../spec/#gate-rules">specification, §9</a>.</p>
+	<p>Each rule with its identifiers, and the table of requirement, evidence and control: <a href="../spec/#operation-requirements">specification, §9</a>.</p>
 </section>
 
 <!-- ═══ 6 Relationship ═════════════════════════════════════════════════════ -->
 <section class="dsec" id="relationship" aria-labelledby="relationship-h">
 	<h2 id="relationship-h"><span class="n">6</span>Relationship<a class="anchor" href="#relationship" aria-label="Link to Relationship">#</a></h2>
-	<p>With an agreement the person approved, the company can start a request toward the person's agent. The agreement names its actions, a daily limit and an expiry, and ends when the delegation is revoked. Before signing or sending anything, the company checks that all of it still holds (R6).</p>
+	<p>With an agreement the person approved, the company can start a request toward the person's agent. The agreement names its actions, a daily limit and an expiry, and ends when the delegation is revoked. Before signing or sending anything, the company checks that all of it still holds (R6). A relationship does not replace the company's authorization: inside it, each request still passes the company's own rules.</p>
 	<figure class="fig">
 		<svg class="halo seq" viewBox="0 0 600 470" role="img" aria-labelledby="fig-rel-t">
 			<title id="fig-rel-t">Sequence of a relationship over HTTP: consent, signed agreement, a company request, the person's approval, acceptance and a single execution</title>
@@ -300,7 +302,7 @@
 		<thead><tr><th>Delivery path</th><th>How the agent receives and answers</th><th>State</th></tr></thead>
 		<tbody>
 			<tr><td>HTTP inbox</td><td><code>POST {inbox_uri}</code> declared in the agent's client metadata, on the same origin as its <code>client_id</code></td><td><span class="mk mk--exp">Experimental</span> Tested only with a server of SOVRAS's own</td></tr>
-			<tr><td>Poppy conversation</td><td>Messages with <code>data["vxpprotocol.org/relationship"]</code> inside the agent's conversation; offer, agreement, request, answer and a signed reply receipt</td><td>Run with Nova AI (SOVRAS's personal agent, beta); no third-party agent yet</td></tr>
+			<tr><td>Poppy conversation</td><td>Messages with <code>data["vxpprotocol.org/relationship"]</code> inside the agent's conversation; offer, agreement, request, answer and a signed reply receipt</td><td>Run once with a live personal agent through the Poppy adapter; no agent outside SOVRAS's runs yet</td></tr>
 			<tr><td>PACT</td><td>Not specified yet</td><td><span class="mk mk--pend">Pending</span></td></tr>
 		</tbody>
 	</table></div>
@@ -310,7 +312,7 @@
 <!-- ═══ 7 Proof ════════════════════════════════════════════════════════════ -->
 <section class="dsec" id="proof" aria-labelledby="proof-h">
 	<h2 id="proof-h"><span class="n">7</span>Proof<a class="anchor" href="#proof" aria-label="Link to Proof">#</a></h2>
-	<p>Each operation leaves a chain of signed statements. Each one names the previous by its digest and is signed by the role that observed it, so a verifier knows who said what at every link. The terms digest ties the approval, the execution and the result to one exact revision.</p>
+	<p>Each operation leaves a chain of signed statements. Each one names the previous by its digest and is signed by the role that observed it, so a verifier knows who said what at every link. The terms digest ties the approval, the execution and the result to one exact revision. VXP Proof is not an execution engine: it records what was asked, approved, executed and observed.</p>
 	<figure class="fig fig--narrow">
 		<svg viewBox="0 0 460 600" role="img" aria-labelledby="fig-proof-t">
 			<title id="fig-proof-t">Proof chain: statements alternate between the company column and the operator column, each pointing to the previous one by digest; counter, company review and correction are optional</title>
@@ -494,7 +496,7 @@
 			<li>A second independent issuer.</li>
 		</ul></div>
 	</div>
-	<p>The relationship has its own key, published as <code>vxp_relationship.jwks_uri</code> and different from the proof keys and from the Poppy and PACT keys (R5). Assurance levels and the verification algorithm: <a href="../spec/#verification">specification, §10</a>. Check a proof yourself in <a href="../verify/">Verify</a>.</p>
+	<p>The relationship has its own key, published as <code>vxp_relationship.jwks_uri</code> and different from the proof keys and from the Poppy and PACT keys (R5). Each statement names its key by <code>kid</code>; an issuer that rotates a key keeps the earlier public key published, so older proofs still verify (<a href="../spec/#key-rotation">key rotation</a>). How to read each part of a verdict: <a href="../spec/#reading-a-verdict">reading a verdict</a>. Assurance levels and the verification algorithm: <a href="../spec/#verification">specification, §10</a>. Check a proof yourself in <a href="../verify/">Verify</a>.</p>
 
 	<div class="doc-next">
 		<p>Every rule behind these diagrams, with its identifier.</p>
@@ -510,7 +512,7 @@
 	<div class="foot__in">
 		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
 		<div><b>Protocol</b><ul><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
-		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li><li><a href="../implement/#participate">Take part</a></li></ul></div>
 	</div>
 </footer>
 <script src="../assets/site.js" defer></script>

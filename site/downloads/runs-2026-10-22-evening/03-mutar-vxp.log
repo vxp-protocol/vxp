@@ -1,13 +1,13 @@
-== 03-mutar-vxp · 2026-10-22T04:43:02Z · node scripts/mutar-vxp.mjs
+== 03-mutar-vxp · 2026-10-22T22:14:19Z · node scripts/mutar-vxp.mjs
 sin mutación: exit 0 (# pass 39, # fail 0)
 DETECTADA  sin_lectura_succeeded    C3: una capacidad sin lectura de vuelta se trata como si pudiera comprobarse
     fallan: C3 · no comprobable: una capacidad sin lectura de vuelta nun
 DETECTADA  contradiccion_es_exito   C2: una lectura que contradice lo aprobado se da por éxito
-    fallan: C2 · contradictorio: se ejecutó pero el sistema muestra otra | G2 · API: pedir un pedido nuevo → falta autorizar el monto → | G4 · Poppy, conversando con el agente de la empresa: cotiza, | H1 · (Grok) «déjala en espera para que el cliente la apruebe | H4 · permiso permanente: el cliente aprueba UNA vez con tope
+    fallan: C2 · contradictorio: se ejecutó pero el sistema muestra otra | G2 · API: pedir un pedido nuevo → falta autorizar el monto → | G4 · Poppy, conversando con el agente de la empresa: cotiza, | H1 · (agente externo A) «déjala en espera para que el client | H4 · permiso permanente: el cliente aprueba UNA vez con tope
 DETECTADA  no_failed_incierto       C1: sin respuesta del transportista → failed
     fallan: C1 · pendiente: el transportista no responde → la empresa fi
 DETECTADA  escritura_en_canal       D1: un asistente sospechado puede pedir escrituras por el canal
-    fallan: D1 · WhatsApp: un asistente que se declara pide un cambio →  | F1b · llamadas o WhatsApp a las 3 AM, una y otra vez: mismo  | H1e · (Grok) cambio de fecha por la web: el chat no cambia n
+    fallan: D1 · WhatsApp: un asistente que se declara pide un cambio →  | F1b · llamadas o WhatsApp a las 3 AM, una y otra vez: mismo  | H1e · (agente externo A) cambio de fecha por la web: el chat
 DETECTADA  telefono_ambiguo         D2: un número compartido identifica al primer cliente
     fallan: D2 · WhatsApp sin conexión estructurada: un asistente puede 
 DETECTADA  relacion_revocada        E4/E5: una relación revocada sigue valiendo
@@ -39,9 +39,9 @@ DETECTADA  permanente_sin_tope      H4: el permiso permanente cierra pedidos sob
 DETECTADA  permisos_suman           H3: ampliar un permiso concede más de lo pedido (Poppy §4.4)
     fallan: H3 · (Poppy §4.4) ampliar el permiso concede sólo lo pedido;
 DETECTADA  cotizacion_por_conversacion H2: al reconectarse se pierde la cotización y se cotiza de cero
-    fallan: H2 · (agente de prueba B) al reconectarse en otra conversación, la cot
+    fallan: H2 · (agente de prueba B) al reconectarse en otra conversaci
 DETECTADA  cambio_nulo              H1d: se propone «cambiar» a la fecha que ya tiene
-    fallan: H1d · (agente de prueba B, 05:59:35) la fecha de destino es la que sig
+    fallan: H1d · (agente de prueba B, 05:59:35) la fecha de destino es 
 
 mutaciones detectadas: 21/21
 exit 0

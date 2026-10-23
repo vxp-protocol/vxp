@@ -1,0 +1,14 @@
+== 17-fuzz-web · 2026-10-22T22:32:10Z · node fuzz-vxp-verify.mjs
+== 17-fuzz-web · 2026-10-22T22:32:11.085Z · node fuzz-vxp-verify.mjs 3000 20261022 (v22.20.0)
+generator: verifier/tests/fuzz_vxp_gen.py (reuses reference/scripts/fuzz-diferencial.py: cadena, guion, cuerpo, test keys)
+(node:49040) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///verifier/vxp-verify.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to <local>\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+chains: 3000 (1200 from fuzz-diferencial.cadena unchanged, 750 guided protocol chains, 1050 mutated), valid per reference: 744, reference exceptions: 3
+primitives: b64d 3000, leer_json 3000
+verdicts: {"revision_error":547,"order_violation":329,"valid:failed":212,"valid:unknown":211,"bad_terms":184,"disclosure_malformed":180,"user_mismatch":145,"valid:succeeded":121,"unknown_key":120,"weak_salt":120,"valid:revoked":114,"non_canonical_encoding":87,"bad_approval_method":56,"display_code_mismatch":54,"valid:cancelled":45,"non_canonical_payload":45,"valid:expired":41,"disclosure_repeated":36,"bad_sd_alg":36,"succeeded_without_matching_read_back":29,"read_back_incomplete":28,"disclosure_bad_name":28,"not_sd_jwt":25,"approval_not_latest_revision":24,"approval_terms_mismatch":24,"outcome_terms_mismatch":18,"disclosure_claim_exists":17,"sd_digest_repeated":16,"bad_header":14,"number_out_of_profile":14,"bad_read_back":13,"bad_state":12,"disclosure_digest_mismatch":12,"execution_terms_mismatch":10,"bad_decision":6,"correction_without_read_back":6,"duplicate_member":6,"no_outcome":4,"lone_surrogate":4,"python_exception":3,"after_final":2,"outcome_after_denial":2}
+distinct verdicts: 42 · seconds: 19.5
+
+TOTAL: 9000 differential cases (3000 chains + 6000 primitive inputs), 0 discrepancies
+exit 0

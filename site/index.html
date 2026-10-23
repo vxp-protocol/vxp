@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VXP · Verifiable eXchange Protocol</title>
-<meta name="description" content="An open protocol for work that agents do for people inside companies: scoped authority, a relationship in both directions, and signed proof checked against the company's own system.">
+<meta name="description" content="An open protocol for work that personal agents do for people inside companies. Two public components: VXP Proof, signed evidence checked against the company's own system, and VXP Relationship, the agreement the person authorized.">
 <link rel="alternate" hreflang="en" href="https://vxpprotocol.org/">
 <link rel="alternate" hreflang="es" href="https://vxpprotocol.org/es/">
 <link rel="alternate" hreflang="x-default" href="https://vxpprotocol.org/">
@@ -39,12 +39,12 @@
 	<div class="wrap hero__in">
 		<p class="kicker">Open protocol · draft 0.1</p>
 		<h1 class="h1 reveal-words" data-lines>What the agent asked. What the person approved. What the system did.</h1>
-		<p class="lead">VXP is an open protocol for work that agents do for people inside companies. It decides what an agent may do, keeps an authorized relationship that either side can start, and leaves signed proof checked against the company's own system.</p>
+		<p class="lead">VXP is an open protocol for work that personal agents do for people inside companies. It has two public components: <b>VXP Proof</b>, signed evidence of what was asked, approved, executed and then read in the company's own system, and <b>VXP Relationship</b>, the agreement the person authorized, within which either side can start a request.</p>
 		<div class="hero__cta">
 			<a class="btn btn--solid" href="spec/">Read the specification</a>
 			<a class="btn btn--ghost" href="verify/">Verify a proof</a>
 		</div>
-		<p class="hero__meta"><span>Native profile: experimental</span><span>Adapters for Poppy draft 0.2 and PACT 1.0</span><span>Apache 2.0, proposed</span></p>
+		<p class="hero__meta"><span>Native profile: experimental</span><span>Interoperates with Poppy draft 0.2 and PACT 1.0</span><span>Apache 2.0</span></p>
 		<figure class="receipt" aria-labelledby="receipt-cap" data-receipt>
 			<figcaption id="receipt-cap" class="receipt__head"><b>Proof</b><span class="receipt__op"></span></figcaption>
 			<ol class="receipt__rows"></ol>
@@ -58,14 +58,16 @@
 	<div class="wrap origin">
 		<div class="sec__head" style="margin:0">
 			<p class="kicker">Where it comes from</p>
-			<h2 class="h2" id="origin-h">Three questions every operation leaves behind</h2>
-			<p class="lead">SOVRAS builds agents that change orders, deliveries and reservations inside companies' systems. After each of those operations, someone eventually asks the same three questions. When the request comes from a person's own agent, the company did not build that agent and cannot see its conversation, so the answers have to travel with the operation. VXP writes them into the protocol.</p>
+			<h2 class="h2" id="origin-h">Companies already do this work. Now agents ask for it.</h2>
+			<p class="lead">Every day, companies sell, book, change deliveries and handle incidents inside their own systems. More and more often the request comes from a person's own agent, which the company did not build and whose conversation it cannot see. For the company to act on that request, it needs a relationship the person authorized; for anyone to trust the result, it has to be verifiable afterwards. After each operation, the same questions come back:</p>
 		</div>
 		<ol class="origin__qs">
 			<li><span>1</span>Who asked, and on whose behalf?</li>
 			<li><span>2</span>Which exact terms did the person approve, and through which channel?</li>
-			<li><span>3</span>What did the company's system actually record afterwards?</li>
+			<li><span>3</span>What ran, and how many times?</li>
+			<li><span>4</span>What did the company's system record afterwards?</li>
 		</ol>
+		<p class="small" style="grid-column:1/-1">VXP was created by SOVRAS, which builds agents that change orders, deliveries and reservations inside companies' systems. SOVRAS's reference implementation is the first implementation of VXP.</p>
 	</div>
 </section>
 
@@ -74,7 +76,7 @@
 		<div class="sec__head">
 			<p class="kicker">One operation, end to end</p>
 			<h2 class="h2" id="run-h">A person asks their agent to move a delivery</h2>
-			<p class="lead">Seven steps later the company's system has changed, and the agent and the company hold the same signed record. Every object below was captured from the reference implementation on 22 October 2026, running VXP's native profile against a test company. Hosts are shown as <code>store.example</code> and <code>agent.example</code>, and long tokens are shortened.</p>
+			<p class="lead">Seven steps later the company's system has changed, and the agent and the company hold the same signed record. Every object below was captured from the reference implementation in the evening run of 22 October 2026, running VXP's native profile alone, with persistent keys, against a test company. Hosts are shown as <code>store.example</code> and <code>agent.example</code>, and long tokens are shortened.</p>
 		</div>
 		<div class="run" data-run>
 			<ol class="run__steps" aria-label="Steps"></ol>
@@ -95,7 +97,7 @@
 				</div>
 			</div>
 		</div>
-		<p class="small" style="margin-top:22px">Status labels: <b>tested</b> is an automated test in process and over the network; <b>live agent</b> means a running personal agent, not a test script, ran it on 21 October 2026 against test companies with simulated payments and WhatsApp line; third-party only where stated; <b>official suite</b> and <b>own test</b> are explained in <a href="conformance/">Conformance</a>.</p>
+		<p class="small" style="margin-top:22px">Status labels: <b>tested</b> is an automated test in process and over the network; <b>live agent</b> means that running personal agents, not a test script, went through that step on 21 October 2026 (see <a href="examples/#observed">Examples</a>); <b>official suite</b> and <b>own test</b> are explained in <a href="conformance/">Conformance</a>.</p>
 	</div>
 </section>
 
@@ -121,9 +123,9 @@
 			<article>
 				<h3 class="h3">Can a company implement VXP without Poppy, PACT or the SOVRAS platform?</h3>
 				<dl>
-					<div><dt>The specification</dt><dd>Yes. VXP has its own profile for discovery, authorization, operations, proof and relationships. Poppy and PACT are optional adapters.</dd></div>
-					<div><dt>An implementation today</dt><dd>The reference implementation by SOVRAS, to be published under Apache 2.0 with the verifier, the test vectors and the conformance kit.</dd></div>
-					<div><dt>Maturity</dt><dd>The native profile is experimental: it passes its tests, and no third-party agent uses it yet. On 21 October, SOVRAS's own personal agent in beta (Nova AI) entered through the Poppy adapter, and one third-party web agent (Grok) through the web.</dd></div>
+					<div><dt>What the specification allows</dt><dd>Yes. A company can implement VXP with the native profile alone: discovery, authorization, operations, VXP Proof and VXP Relationship. Nothing in the two components or in the operation requirements depends on Poppy or PACT, and no SOVRAS service is needed (<a href="spec/#native-only">specification §8, native-only gateway</a>).</dd></div>
+					<div><dt>What the native implementation has today</dt><dd>The reference implementation runs as a native-only gateway, with both adapters switched off. A test runs the whole cycle with an agent that signs with plain <code>node:crypto</code>, and checks the proof with the independent verifier anchored by the issuer alone. It is experimental: tested, and no agent outside SOVRAS has used it yet.</dd></div>
+					<div><dt>Where Poppy and PACT fit</dt><dd>They are optional adapters, for agents that already speak those protocols. A company can publish them next to the native profile, on the same issuer.</dd></div>
 				</dl>
 			</article>
 		</div>
@@ -134,25 +136,21 @@
 	<div class="wrap">
 		<div class="sec__head">
 			<p class="kicker">What VXP defines</p>
-			<h2 class="h2" id="caps-h">Three capabilities of its own</h2>
+			<h2 class="h2" id="caps-h">Two public components</h2>
 		</div>
 		<div class="caps">
 			<article class="cap">
-				<h3>Capability Gate</h3>
-				<p>A valid identity is a starting point. What runs is the intersection of what the person delegated, what the company allows and what the resource admits. VXP defines these as rules any implementation must enforce, with no endpoint of its own.</p>
-				<p class="cap__rule">Owner = (profile, client_id, sub, account). One execution per resource. No read-back, no <code>succeeded</code>.</p>
+				<h3>VXP Proof</h3>
+				<p>A chain of signed statements that binds, by digest, the request, the exact terms of each revision, the approval and its method, the execution, what the company's system showed afterwards and the declared result. When the outcome is unknown, the chain says unknown. Proof is not an execution engine: it records what was asked, approved, executed and observed.</p>
+				<p class="cap__rule">The verifier derives the level of evidence. Today it reports one root of trust: the operator.</p>
 			</article>
 			<article class="cap">
-				<h3>Relationship</h3>
-				<p>With an agreement the person approved, the company can start a request toward the person's agent: confirm or block a dispatch, keep or release a booking. The agreement names its actions, daily limit and expiry, and ends when the delegation is revoked.</p>
-				<p class="cap__rule">Signed agreement <code>vxp-relationship+jwt</code>, signed request, signed reply receipt.</p>
-			</article>
-			<article class="cap">
-				<h3>Proof</h3>
-				<p>A chain of signed statements that binds the exact terms, the approval and its channel, the execution, what the company's system showed afterwards and the result. When the outcome is unknown, the chain says unknown.</p>
-				<p class="cap__rule">The verifier derives the assurance level. Today it reports one root of trust: the operator.</p>
+				<h3>VXP Relationship</h3>
+				<p>The agreement the person authorized between their agent and a company: both parties, the actions allowed in each direction, a daily limit, validity and revocation. Within it, the company can start a request toward the agent, such as keeping or releasing a booking. Relationship does not replace the company's authorization: each request still passes the company's own rules.</p>
+				<p class="cap__rule">Signed agreement <code>vxp-relationship+jwt</code>, signed company request, signed reply receipt.</p>
 			</article>
 		</div>
+		<p class="note" style="margin-top:28px">VXP also states <a href="spec/#operation-requirements">operation requirements O1 to O7</a>: the behaviour every implementation shows where a request becomes an operation, such as executing only the exact revision that was approved, and only once. They define no interface. How an implementation enforces them is its own decision, and VXP Proof leaves the evidence to check them afterwards.</p>
 	</div>
 </section>
 
@@ -160,16 +158,16 @@
 	<div class="wrap">
 		<div class="sec__head">
 			<p class="kicker">Entry paths</p>
-			<h2 class="h2" id="paths-h">Its own profile first, then adapters</h2>
-			<p class="lead">A company can publish the native profile and the adapters at the same time, on the same issuer. An agent that already speaks Poppy or PACT does not need the native profile.</p>
+			<h2 class="h2" id="paths-h">Its own profile, and adapters for interoperability</h2>
+			<p class="lead">The native profile is VXP's own form. For agents that already speak Poppy or PACT, a company can publish those adapters next to it, on the same issuer.</p>
 		</div>
 		<div class="tbl"><table>
 			<thead><tr><th>Path</th><th>Discovery</th><th>Identity and authority</th><th>What has run</th></tr></thead>
 			<tbody>
 				<tr><td><b>VXP native</b></td><td><code>/.well-known/vxp.json</code></td><td>Client metadata, <code>private_key_jwt</code>, DPoP, per-operation <code>authorization_details</code></td><td><span class="st st--exp">experimental</span> · full cycle in automated tests, in process and over the network</td></tr>
-				<tr><td><b>Poppy adapter</b></td><td><code>poppy.json</code></td><td>Poppy draft 0.2 sign-in by device code, sessions, conversations, Operations</td><td><span class="st st--live">live agent</span> · Nova AI (SOVRAS's personal agent, beta), 21 Oct 2026; no third-party agent yet; official validator for discovery and conversations</td></tr>
+				<tr><td><b>Poppy adapter</b></td><td><code>poppy.json</code></td><td>Poppy draft 0.2 sign-in by device code, sessions, conversations, Operations</td><td><span class="st st--live">live agent</span> · personal agents on 21 Oct 2026, among them Nova AI, SOVRAS's personal agent in beta; official validator for discovery and conversations</td></tr>
 				<tr><td><b>PACT adapter</b></td><td>Agent Card</td><td>PACT 1.0 identity and delegated authority over A2A 1.0.1</td><td><span class="st">official Identity suite</span> and own delegated test · no third-party PACT agent yet</td></tr>
-				<tr><td><b>Web</b></td><td>The company's site</td><td>No protocol: the agent browses; approvals happen on the company's page</td><td><span class="st st--live">live agent</span> · Grok, third-party, 21 Oct 2026</td></tr>
+				<tr><td><b>Web</b> · outside VXP</td><td>The company's site</td><td>No protocol: a SOVRAS channel. The agent browses, and approvals happen on the company's page</td><td><span class="st st--live">live agent</span> · Grok, a third-party web agent, 21 Oct 2026</td></tr>
 			</tbody>
 		</table></div>
 	</div>
@@ -178,33 +176,33 @@
 <section class="sec" aria-labelledby="demo-h" style="background:var(--soft)">
 	<div class="wrap">
 		<div class="sec__head">
-			<p class="kicker">Demonstrations</p>
-			<h2 class="h2" id="demo-h">Run with real personal agents</h2>
-			<p class="lead">On 21 October 2026, SOVRAS's own personal agent in beta (Nova AI) and one third-party web agent (Grok) operated against a hardware store and a hotel configured in SOVRAS for these tests. Inventory, payments and the WhatsApp line were simulated. The agents and their decisions were real.</p>
+			<p class="kicker">21 October 2026</p>
+			<h2 class="h2" id="demo-h">How personal agents took part</h2>
+			<p class="lead">These operations ran in SOVRAS's production with customers, first on SOVRAS's own resources. In the evidence, the companies are configured as test environments, and payments and the WhatsApp line are simulated. Personal agents came in through the Poppy adapter, among them Nova AI, SOVRAS's personal agent in beta, which works on the person's side: the person talks to it on WhatsApp, and Nova goes to the company through Poppy. A third-party web agent, Grok, came in through the companies' web pages.</p>
 		</div>
 		<div class="demos">
 			<article class="demo">
 				<h3>A delivery date moved, after a misread proposal</h3>
-				<dl><dt>Agent</dt><dd>Nova AI, through the Poppy adapter</dd><dt>Authority</dt><dd>Read and change orders, granted by the person with a code</dd><dt>Operation</dt><dd>Revision 1 read the dates wrong. The agent countered and approved revision 2: order moved from 24 to 28 October</dd><dt>Result</dt><dd>Read back from the store's system: delivery on 28 October</dd></dl>
-				<p class="demo__proof">Proof kept · 8 statements · chain consistent</p>
+				<dl><dt>Agent</dt><dd>A personal agent through the Poppy adapter, with a temporary identity</dd><dt>Authority</dt><dd>Read and change orders, granted by the person with a code</dd><dt>Operation</dt><dd>Revision 1 read the dates wrong. The agent countered, and revision 2 was approved: order moved from 24 to 28 October</dd><dt>Result</dt><dd>Read back from the store's system: delivery on 28 October</dd></dl>
+				<p class="demo__proof">Proof kept · chain consistent · signature no longer checkable</p>
 			</article>
 			<article class="demo">
 				<h3>A delivery date moved from the web</h3>
-				<dl><dt>Agent</dt><dd>Grok, browsing the store's site</dd><dt>Authority</dt><dd>No delegation: the person approved on the store's page with a code (<code>company_channel</code>)</dd><dt>Operation</dt><dd>Order moved from 27 to 30 October, at no cost</dd><dt>Result</dt><dd>Read back from the store's system: delivery on 30 October</dd></dl>
+				<dl><dt>Agent</dt><dd>Grok, browsing the store's site</dd><dt>Authority</dt><dd>No delegation: approval on the store's page, with a code sent through the company's approval channel (<code>company_channel</code>)</dd><dt>Operation</dt><dd>Order moved from 27 to 30 October, at no cost</dd><dt>Result</dt><dd>Read back from the store's system: delivery on 30 October</dd></dl>
 				<p class="demo__proof">Proof re-verified with signatures on 22 Oct 2026 · valid</p>
 			</article>
 			<article class="demo">
 				<h3>The rate went up before approval</h3>
-				<dl><dt>Agent</dt><dd>Grok, through the hotel's chat and approval page</dd><dt>Authority</dt><dd>Approval on the hotel's page with a code</dd><dt>Operation</dt><dd>Two nights quoted at CLP 215,700; the room rate rose while the person was approving</dd><dt>Result</dt><dd>Booked at the approved CLP 215,700. A new quote for the same dates came out at CLP 260,850</dd></dl>
-				<p class="demo__proof">Proof not kept for this run</p>
+				<dl><dt>Agent</dt><dd>Grok, by user-agent (unsigned), through the hotel's chat and approval page</dd><dt>Authority</dt><dd>Approval on the hotel's page with a code</dd><dt>Operation</dt><dd>Two nights quoted at CLP 215,700; the room rate rose while the approval was pending</dd><dt>Result</dt><dd>Booked at the approved CLP 215,700. A new quote for the same dates came out at CLP 260,850</dd></dl>
+				<p class="demo__proof">Proof not kept for this operation</p>
 			</article>
 			<article class="demo">
 				<h3>The hotel asked the guest's agent</h3>
-				<dl><dt>Agent</dt><dd>Nova AI, inside its Poppy conversation</dd><dt>Authority</dt><dd>A relationship the guest approved with a code: keep or release a booking</dd><dt>Operation</dt><dd>No check-in by 23:00; the hotel asked: keep or release?</dd><dt>Result</dt><dd>The agent answered «keep» on its own. The question was triggered by the hotel's operator</dd></dl>
-				<p class="demo__proof">Reply recorded · signed receipt not kept</p>
+				<dl><dt>Agent</dt><dd>A personal agent, inside its Poppy conversation</dd><dt>Authority</dt><dd>A relationship the guest approved on the hotel's page with a code: keep or release a booking</dd><dt>Question</dt><dd>Triggered by the hotel's operator: keep or release booking <span style="white-space:nowrap">R-3003</span>?</dd><dt>Result</dt><dd>The agent answered «keep», and the booking stayed held</dd></dl>
+				<p class="demo__proof">Answer recorded as a server event · signed receipt not kept</p>
 			</article>
 		</div>
-		<p class="note" style="margin-top:28px">Eight operations ran in total. Six kept their proof; one live-agent proof, Grok's date change, has been re-verified with signatures, because the test servers used short-lived keys. The proofs published for download come from runs on 22 October 2026 with neutral test data. None was anchored in a public log. The full record is in <a href="examples/">Examples</a>.</p>
+		<p class="note" style="margin-top:28px">The evidence keeps the Poppy sessions as temporary identities and does not separate which agent ran each operation. Two of the eight operations have no saved proof, and only one signature could be checked again, because the keys lived in memory. None was anchored in a public log. Each operation, with its evidence and its limits, is in <a href="examples/#observed">Examples</a>.</p>
 	</div>
 </section>
 
@@ -218,7 +216,7 @@
 			<a href="spec/"><h3>Specification</h3><p>Thirteen sections, with stable anchors and normative MUST, SHOULD and MAY.</p></a>
 			<a href="verify/"><h3>Verifier</h3><p>Check a proof in the browser, with valid and tampered examples.</p></a>
 			<a href="conformance/"><h3>Conformance</h3><p>Test vectors, suites, commands and the results they produced.</p></a>
-			<a href="implement/"><h3>Implement</h3><p>Guides for companies, agent platforms and independent verifiers.</p></a>
+			<a href="implement/"><h3>Implement</h3><p>Guides for companies, agent platforms and independent verifiers, and how to take part.</p></a>
 		</div>
 	</div>
 </section>
@@ -227,16 +225,16 @@
 	<div class="wrap">
 		<div class="sec__head">
 			<p class="kicker">Status</p>
-			<h2 class="h2" id="status-h">Draft 0.1, 22 October 2026</h2>
+			<h2 class="h2" id="status-h">Draft 0.1, evening revision of 22 October 2026</h2>
 		</div>
 		<div class="tbl"><table>
 			<thead><tr><th>Part</th><th>State</th><th>What is missing</th></tr></thead>
 			<tbody>
-				<tr><td>Proof</td><td>Specified, implemented, tested</td><td>External witnesses and a second issuer; until then, proof is an operator attestation</td></tr>
-				<tr><td>Relationship over a Poppy conversation</td><td>Run with a live agent</td><td>Retries and notifying the person when the agent is not reading</td></tr>
-				<tr><td>Relationship over HTTP inbox</td><td>Experimental</td><td>A third-party agent with an inbox</td></tr>
-				<tr><td>Native profile</td><td>Experimental</td><td>Adoption by a third-party agent</td></tr>
-				<tr><td>PACT adapter, relationship</td><td>Pending</td><td>Specification and tests</td></tr>
+				<tr><td>VXP Proof</td><td>Specified, implemented, tested</td><td>External witnesses and a second issuer; until then, proof is an operator attestation</td></tr>
+				<tr><td>VXP Relationship over a Poppy conversation</td><td>Run once with a live personal agent</td><td>An agent outside SOVRAS's runs; retries; notifying the person when the agent is not reading</td></tr>
+				<tr><td>VXP Relationship over an HTTP inbox</td><td>Experimental</td><td>A third-party agent with an inbox</td></tr>
+				<tr><td>Native profile</td><td>Experimental · runs as a native-only gateway</td><td>Adoption by a third-party agent</td></tr>
+				<tr><td>VXP Relationship over PACT</td><td>Pending</td><td>Specification and tests</td></tr>
 			</tbody>
 		</table></div>
 		<p class="small" style="margin-top:18px">Full list in <a href="status/">Status</a>.</p>
@@ -248,7 +246,7 @@
 	<div class="foot__in">
 		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
 		<div><b>Protocol</b><ul><li><a href="spec/">Specification</a></li><li><a href="architecture/">Architecture</a></li><li><a href="status/">Status</a></li></ul></div>
-		<div><b>Tools</b><ul><li><a href="verify/">Verifier</a></li><li><a href="conformance/">Conformance</a></li><li><a href="implement/">Implement</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="verify/">Verifier</a></li><li><a href="conformance/">Conformance</a></li><li><a href="implement/">Implement</a></li><li><a href="implement/#participate">Take part</a></li></ul></div>
 	</div>
 </footer>
 <script type="module">

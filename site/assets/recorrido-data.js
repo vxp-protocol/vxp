@@ -76,7 +76,7 @@ export const RECORRIDO = {
     "DPoP": "eyJ0eXAiOiJkcG9wK2p3dC…"
    },
    "response": {
-    "access_token": "nt_UtuI…",
+    "access_token": "nt_NzWl…",
     "token_type": "DPoP",
     "expires_in": 3600
    }
@@ -94,7 +94,7 @@ export const RECORRIDO = {
     }
    },
    "response": {
-    "request_id": "req_-vyAp7zx7DAE",
+    "request_id": "req_eSTKa7J-MERu",
     "operation": "pedido.reprogramar_despacho",
     "target": {
      "order_ref": "P-1042"
@@ -123,7 +123,7 @@ export const RECORRIDO = {
     "authorization_details": "[{\"type\":\"https://vxpprotocol.org/rar/capability\",\"actions\":[\"pedido.reprogramar_despacho\"],\"identifier\":\"P-1042\"},{\"type\":\"https://vxpprotocol.org/rar/relationship\",\"actions\":[\"despacho.proponer_cambio\"],\"identifier\":\"relationship\",\"limits\":{\"max_per_day\":2,\"duration_seconds\":3600}}]"
    },
    "token": {
-    "access_token": "nt_-dzl…",
+    "access_token": "nt_pt_q…",
     "token_type": "DPoP",
     "expires_in": 3600,
     "authorization_details": [
@@ -137,7 +137,7 @@ export const RECORRIDO = {
     ],
     "relationships": [
      {
-      "relationship_id": "rel_ayzZTfb3pINy",
+      "relationship_id": "rel_X9sUhyHhjsLp",
       "state": "active",
       "actions": [
        "despacho.proponer_cambio"
@@ -145,7 +145,7 @@ export const RECORRIDO = {
       "limits": {
        "max_per_day": 2
       },
-      "expires_at": "2026-10-22T23:09:52.000Z",
+      "expires_at": "2026-10-22T23:30:29.000Z",
       "agreement": "eyJhbGciO…"
      }
     ]
@@ -155,20 +155,20 @@ export const RECORRIDO = {
    "id": "context",
    "request": "POST /e/ferreteria-demo/v1/requests  (same Idempotency-Key)",
    "response": {
-    "request_id": "req_-vyAp7zx7DAE",
+    "request_id": "req_eSTKa7J-MERu",
     "state": "proposed",
     "projections": {
      "poppy": "proposed",
      "a2a": "TASK_STATE_INPUT_REQUIRED"
     },
-    "operation_id": "op_aYpChVup-9Cw"
+    "operation_id": "op_XzdILOmlgiae"
    }
   },
   {
    "id": "operate",
    "request": "POST /e/ferreteria-demo/v1/proposals/{id}/accept",
    "proposal": {
-    "id": "prop_op_aYpChVup-9Cw_r1",
+    "id": "prop_op_XzdILOmlgiae_r1",
     "revision": 1,
     "state": "proposed",
     "summary": "Cambiar el despacho del pedido P-1042 (Taladro percutor 800 W) del 2026-10-24 al 2026-10-28, a Calle Ejemplo 100, Santiago, sin costo.",
@@ -182,13 +182,13 @@ export const RECORRIDO = {
       "amount": "0",
       "currency": "CLP"
      },
-     "vxp_salt": "p2ej7qNL99V3o8lvKGQ2MA"
+     "vxp_salt": "hRQxNKbVg-MdR_aCsFbHYQ"
     },
     "commitment": {
      "mode": "firm",
      "requires": []
     },
-    "expires_at": "2026-10-22T22:24:52.047Z",
+    "expires_at": "2026-10-22T22:45:29.356Z",
     "user_approval_required": true,
     "limits": {
      "max_revisions": 3,
@@ -228,7 +228,7 @@ export const RECORRIDO = {
      }
     },
     "reason": "read_back_matches",
-    "proof_url": "https://store.example/e/ferreteria-demo/v1/requests/req_-vyAp7zx7DAE/proof"
+    "proof_url": "https://store.example/e/ferreteria-demo/v1/requests/req_eSTKa7J-MERu/proof"
    },
    "chain": [
     {
@@ -246,7 +246,7 @@ export const RECORRIDO = {
      "seq": 1,
      "kind": "terms",
      "signer": "company",
-     "prev": "sha-256:cqjp7_jwKGs9M62p1ve9doGfv3UH4c6bmsw_a-JEiD0",
+     "prev": "sha-256:kAO5f-JoCSonqCQnG_1vki1T01wmqh4wDS5YK74U0v4",
      "body": {
       "capability": "pedido.reprogramar_despacho",
       "commitment": {
@@ -254,13 +254,13 @@ export const RECORRIDO = {
        "requires": []
       },
       "company_review_required": false,
-      "expires_at": "2026-10-22T22:24:52.047Z",
+      "expires_at": "2026-10-22T22:45:29.356Z",
       "read_back_terms": [
        "pedido",
        "despacho_nuevo"
       ],
       "revision": 1,
-      "terms_digest": "sha-256:qGM1Z7pJRDYnsRlDNFA0RcuouxQLU9Eu9Fsa3H00I-I",
+      "terms_digest": "sha-256:LexccQ2IrXTwkx-zM3KJ3m2Sf5-YHsqzs-po_QCxAC0",
       "user_approval_required": true
      }
     },
@@ -268,37 +268,37 @@ export const RECORRIDO = {
      "seq": 2,
      "kind": "user_approval",
      "signer": "operator",
-     "prev": "sha-256:rn-zRY18ZNpTclvZWr45HXGMSw0YBzpbeo1O88oE8UI",
+     "prev": "sha-256:lCNrubnR6MLwUhwhcNUCWaqAKxFGOVWIlx3Rafs8v08",
      "body": {
       "method": "agent_asserted",
       "revision": 1,
-      "terms_digest": "sha-256:qGM1Z7pJRDYnsRlDNFA0RcuouxQLU9Eu9Fsa3H00I-I"
+      "terms_digest": "sha-256:LexccQ2IrXTwkx-zM3KJ3m2Sf5-YHsqzs-po_QCxAC0"
      }
     },
     {
      "seq": 3,
      "kind": "execution",
      "signer": "operator",
-     "prev": "sha-256:N6SEdktNzLwm_tsJrxtjVEkg3PILszucEochXOxcIlY",
+     "prev": "sha-256:wk4J9m_VE1zzlLhc1QEZ7l3m7USokQiF9gtICMNft5U",
      "body": {
       "attempt": 1,
       "capability": "pedido.reprogramar_despacho",
       "release": "sha-256:u1TBBxJXTKta36K5UI_j_myhQaHzbPP2HcF4rBKGxPA",
       "revision": 1,
-      "terms_digest": "sha-256:qGM1Z7pJRDYnsRlDNFA0RcuouxQLU9Eu9Fsa3H00I-I"
+      "terms_digest": "sha-256:LexccQ2IrXTwkx-zM3KJ3m2Sf5-YHsqzs-po_QCxAC0"
      }
     },
     {
      "seq": 4,
      "kind": "read_back",
      "signer": "operator",
-     "prev": "sha-256:OpYdkWqWVTiASFXItE8Vo0d4IkD4vAeuPGvCBIfAkkk",
+     "prev": "sha-256:Gs2GOu4azZ6aE1VaKjm2Edj91Zya-VP4zP9Fbc71VJw",
      "body": {
       "matches_terms": true,
       "method": "system_read_back",
       "observed": {
        "_sd": [
-        "NFzOJz6ouQ75UiPZGE_mmLihy4yFL5L4Lu57b7reCg4"
+        "g1MZFKspn_fcTPBy5COpYIVc6rPjeQYv9bF7QBCrv5g"
        ],
        "despacho_nuevo": "2026-10-28",
        "pedido": "P-1042"
@@ -310,7 +310,7 @@ export const RECORRIDO = {
      "seq": 5,
      "kind": "outcome",
      "signer": "company",
-     "prev": "sha-256:0bN89b_4AjQkH2sualzrsxn65lvMZ1EYxdjLyw5EMA8",
+     "prev": "sha-256:jfSCFRNR4QjvnD9VjmaNWdhfAg4ftVxMWy5xLrrT6Jo",
      "body": {
       "claimed_assurance": [
        "issuer_key_attested",
@@ -321,7 +321,7 @@ export const RECORRIDO = {
       "result_summary_digest": "sha-256:aKs3uy77c1osgD7qSgTqNJ0_YITroc5iwoYHqFmSl6s",
       "revision": 1,
       "state": "succeeded",
-      "terms_digest": "sha-256:qGM1Z7pJRDYnsRlDNFA0RcuouxQLU9Eu9Fsa3H00I-I",
+      "terms_digest": "sha-256:LexccQ2IrXTwkx-zM3KJ3m2Sf5-YHsqzs-po_QCxAC0",
       "third_party": []
      }
     }
@@ -356,7 +356,7 @@ export const RECORRIDO = {
   {
    "id": "relate",
    "relationship": {
-    "relationship_id": "rel_ayzZTfb3pINy",
+    "relationship_id": "rel_X9sUhyHhjsLp",
     "state": "active",
     "actions": [
      "despacho.proponer_cambio"
@@ -364,20 +364,20 @@ export const RECORRIDO = {
     "limits": {
      "max_per_day": 2
     },
-    "expires_at": "2026-10-22T23:09:52.000Z",
+    "expires_at": "2026-10-22T23:30:29.000Z",
     "agreement": "eyJhbGciO…"
    },
    "outbox": {
-    "outbox_id": "out_wORHkFRMVtz6",
+    "outbox_id": "out_c_bdRdvaL42s",
     "delivery": "entregado",
     "http": 202,
     "content": {
-     "request_id": "req_E7B4ubQ9OKNH",
-     "request_url": "https://store.example/e/ferreteria-demo/v1/requests/req_E7B4ubQ9OKNH",
-     "proposal_id": "prop_op_Qz06acebNGWJ_r1",
-     "operation_id": "op_Qz06acebNGWJ",
+     "request_id": "req_1tEWlrG-_6eq",
+     "request_url": "https://store.example/e/ferreteria-demo/v1/requests/req_1tEWlrG-_6eq",
+     "proposal_id": "prop_op_wHbfb8mjcZI7_r1",
+     "operation_id": "op_wHbfb8mjcZI7",
      "summary": "Cambiar el despacho del pedido P-1043 (Escalera de aluminio 6 peldaños) del 2026-10-27 al 2026-10-30, a Calle Ejemplo 100, Santiago, sin costo.",
-     "terms_digest": "sha-256:x2gr6M6U_AmbsawG13Cj7pl3DUuetAxLpovH8sPjAxw"
+     "terms_digest": "sha-256:u-oBOmfP_-UahdQqZhwaNaeQAq1ro4hzhaDCy69JhG8"
     }
    },
    "accepted": {

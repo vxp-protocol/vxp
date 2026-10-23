@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Status · VXP</title>
-<meta name="description" content="VXP draft 0.1, 22 October 2026: what is experimental, what is pending, identifiers renamed from the 0.1 annex, history and maturity by capability.">
+<meta name="description" content="VXP draft 0.1, evening revision of 22 October 2026: maturity of each part, what is experimental, what is pending, identifiers renamed from the 0.1 annex, and history.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -35,11 +35,11 @@
 <section class="page-head">
 	<div class="wrap">
 		<p class="kicker">Status</p>
-		<h1>Draft 0.1, 22 October 2026</h1>
-		<p class="lead">VXP is a draft. This page says which parts are experimental, which are pending, what changed from the 0.1 annex, and how far each capability has gone: from written rule to running code, to tests, to a live server, to someone outside SOVRAS.</p>
-		<p class="page-meta"><span>Version: draft 0.1</span><span>Revised: 22 Oct 2026</span><span>License: Apache 2.0, proposed</span><span>Tested with Poppy draft 0.2 and PACT 1.0 over A2A 1.0.1</span></p>
+		<h1>Draft 0.1, evening revision of 22 October 2026</h1>
+		<p class="lead">VXP is a draft. This page follows <a href="../spec/#versions">specification §13</a>: how far each part has gone, from written rule to running code, to tests, to a live server, to someone outside SOVRAS; which parts are experimental and which are pending; and what changed from the 0.1 annex.</p>
+		<p class="page-meta"><span>Version: draft 0.1</span><span>Revised: 22 Oct 2026, evening</span><span>License: Apache 2.0</span><span>Tested with Poppy draft 0.2 and PACT 1.0 over A2A 1.0.1</span></p>
 		<ul class="toc" aria-label="On this page">
-			<li><a href="#maturity">Maturity by capability</a></li>
+			<li><a href="#maturity">Maturity by part</a></li>
 			<li><a href="#experimental">Experimental</a></li>
 			<li><a href="#pending">Pending</a></li>
 			<li><a href="#renamed">Changes from the 0.1 annex</a></li>
@@ -52,8 +52,8 @@
 	<div class="wrap">
 		<div class="sec__head sec__head--sm">
 			<p class="kicker">Maturity</p>
-			<h2 class="h3" id="maturity">How far each capability has gone</h2>
-			<p class="lead">Results and their logs are on <a href="../conformance/">Conformance</a>. The operations with real agents are on <a href="../examples/#real">Examples</a>.</p>
+			<h2 class="h3" id="maturity">How far each part has gone</h2>
+			<p class="lead">Results and their logs are on <a href="../conformance/">Conformance</a>. The operations observed with personal agents are on <a href="../examples/#observed">Examples</a>.</p>
 		</div>
 		<dl class="legend">
 			<div><dt>specified</dt><dd>A normative rule in the specification</dd></div>
@@ -66,21 +66,21 @@
 			<div><dt>pending</dt><dd>What is still missing</dd></div>
 		</dl>
 		<div class="tbl tbl--wide"><table>
-			<thead><tr><th>Capability</th><th>specified</th><th>implemented</th><th>tested locally</th><th>tested against a live server</th><th>verified externally</th><th>published</th><th>experimental</th><th>pending</th></tr></thead>
+			<thead><tr><th>Part</th><th>specified</th><th>implemented</th><th>tested locally</th><th>tested against a live server</th><th>verified externally</th><th>published</th><th>experimental</th><th>pending</th></tr></thead>
 			<tbody>
 				<tr><td><b>VXP Proof</b><small>Signed chain: terms, approval, execution, read-back, outcome</small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes<small>live verifier, local server</small></td><td class="part">Partial<small>Timestamps and a Rekor entry exist only for an earlier test log, from before the operations</small></td><td class="no">Not yet</td><td class="no">No</td><td>External witnesses and a second issuer. Until then, an attestation by the operator</td></tr>
 				<tr><td><b>Verifier</b><small>Python, <code>cryptography</code></small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No<small>Both verifiers are by the same team</small></td><td class="part">Prepared<small>In Downloads on this site, not yet online</small></td><td class="no">No</td><td>A verifier written outside SOVRAS</td></tr>
 				<tr><td><b>Test vectors</b></td><td class="yes">Yes<small>0.1 annex, appendix A</small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">Not applicable</td><td class="no">No<small>Nobody outside SOVRAS has run them</small></td><td class="part">Prepared<small>In Downloads on this site, not yet online</small></td><td class="no">No</td><td>Runs by third parties</td></tr>
-				<tr><td><b>Capability Gate</b><small>Behavior rules, no endpoint</small></td><td class="yes">Yes</td><td class="yes">Yes<small>in the reference implementation</small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="part">Indirect<small>The operations of 21 Oct went through it</small></td><td class="no">Not yet</td><td class="no">No</td><td>Building it in the SOVRAS platform</td></tr>
-				<tr><td><b>VXP Relationship over a Poppy conversation</b></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes<small>public tunnel, 21 Oct</small></td><td class="part">Own agent<small>Nova AI (SOVRAS's personal agent, beta) answered once; the signed receipt was not kept; no third-party agent yet</small></td><td class="no">Not yet</td><td class="no">No</td><td>Retries, and notifying the person when the agent is not reading</td></tr>
+				<tr><td><b>Operation requirements O1 to O7</b><small>Required behaviour, no interface</small></td><td class="yes">Yes</td><td class="yes">Yes<small>by the reference implementation's own internal controls</small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="part">Indirect<small>The operations of 21 Oct went through those controls</small></td><td class="no">Not yet</td><td class="no">No</td><td>A conformance kit that lets a third party check them in its own implementation</td></tr>
+				<tr><td><b>VXP Relationship over a Poppy conversation</b></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes<small>public tunnel, 21 Oct</small></td><td class="part">Live agent<small>Run once on 21 Oct with a live personal agent through the Poppy adapter; the signed receipt was not kept; no agent outside SOVRAS's runs yet</small></td><td class="no">Not yet</td><td class="no">No</td><td>Retries, and notifying the person when the agent is not reading</td></tr>
 				<tr><td><b>VXP Relationship over an HTTP inbox</b></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes<small>with SOVRAS's own test inbox</small></td><td class="no">No</td><td class="no">Not yet</td><td class="part">Yes<small>uses native profile routes</small></td><td>A third party that implements the inbox</td></tr>
-				<tr><td><b>Native profile</b><small><code>/.well-known/vxp.json</code> and <code>/v1</code></small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes<small>local server</small></td><td class="no">No<small>No third-party agent has called it</small></td><td class="no">Not yet</td><td class="part">Yes</td><td>Adoption by a third-party agent</td></tr>
-				<tr><td><b>Poppy adapter</b><small>Poppy draft 0.2</small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes<small>public tunnel, hardware store</small></td><td class="part">Partial<small>Official validator for discovery and conversations; Nova AI, SOVRAS's own agent, used sign-in and Operations; no third-party agent yet</small></td><td class="no">Not yet</td><td class="no">No</td><td>The parts of Poppy draft 0.2 listed below as not implemented</td></tr>
+				<tr><td><b>Native profile</b><small><code>/.well-known/vxp.json</code> and <code>/v1</code></small></td><td class="yes">Yes</td><td class="yes">Yes<small>also as a native-only gateway, with no adapter</small></td><td class="yes">Yes<small>including the native-only test</small></td><td class="yes">Yes<small>local server</small></td><td class="no">No<small>No third-party agent has called it</small></td><td class="no">Not yet</td><td class="part">Yes</td><td>Adoption by a third-party agent</td></tr>
+				<tr><td><b>Poppy adapter</b><small>Poppy draft 0.2</small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes<small>public tunnel, hardware store</small></td><td class="part">Partial<small>Official validator for discovery and conversations, which is not full conformance; on 21 Oct, live personal agents used sign-in and Operations, among them Nova AI, SOVRAS's personal agent in beta</small></td><td class="no">Not yet</td><td class="no">No</td><td>The parts of Poppy draft 0.2 listed below as not implemented</td></tr>
 				<tr><td><b>PACT adapter</b><small>PACT 1.0 over A2A 1.0.1</small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes<small>local server</small></td><td class="part">Official suite<small>Identity suite; no third-party PACT agent yet</small></td><td class="no">Not yet</td><td class="no">No</td><td>A PACT agent outside SOVRAS</td></tr>
 				<tr><td><b>Relationship over PACT</b></td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td>Specification and tests</td></tr>
 				<tr><td><b>Approval through a company channel</b><small><code>company_channel</code></small></td><td class="yes">Yes</td><td class="part">In PACT and on the company's approval pages</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="part">Web agent<small>on the company's pages, 21 Oct</small></td><td class="no">Not yet</td><td class="no">No</td><td>In the native profile and in Poppy, where approval is <code>agent_asserted</code> today</td></tr>
 				<tr><td><b>Conformance kit</b></td><td class="no">No section yet</td><td class="part">In pieces<small>vectors, verifier, network tests, live verifier script</small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td><td class="part">Logs and vectors prepared in Downloads</td><td class="no">No</td><td>Packaging it as one kit</td></tr>
-				<tr><td><b>Traditional channels</b><small>A SOVRAS capability, outside the protocol</small></td><td class="yes">Yes<small>§5</small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="part">Web agent; one Web Bot Auth signature from a real crawler</td><td class="no">Not yet</td><td class="no">No</td><td>Real WhatsApp line, real voice, linking without WhatsApp</td></tr>
+				<tr><td><b>Traditional channels</b><small>A SOVRAS capability, outside the protocol</small></td><td class="yes">Yes<small>§3, informative</small></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="part">Web agent; one Web Bot Auth signature from a real crawler</td><td class="no">Not yet</td><td class="no">No</td><td>Real WhatsApp line, real voice, linking without WhatsApp</td></tr>
 			</tbody>
 		</table></div>
 	</div>
@@ -94,7 +94,8 @@
 		</div>
 		<div class="ctx">
 			<p><b>The native profile.</b> <code>/.well-known/vxp.json</code> (with <code>"status": "experimental"</code> in the document) and the endpoints <code>/v1/requests</code>, <code>/v1/proposals/{id}/accept|counter</code>, <code>/v1/requests/{id}/cancel|events|proof</code> and <code>/v1/relationships/{id}</code>. With them, an agent that speaks neither Poppy nor PACT runs the whole cycle: discover, identify itself with <code>private_key_jwt</code> and DPoP, receive per-request authority with <code>authorization_details</code>, ask, receive a proposal, accept, follow events, cancel, get the proof and keep the relationship. It passes its tests in process and over the network. Adoption by a third-party agent is pending.</p>
-			<p><b>VXP Relationship over HTTP.</b> Querying and revoking a relationship (R10, R11) and the HTTP inbox (R2, R7) use native profile routes, so they share its maturity. The path over a Poppy conversation (§3.4) is the one a running agent, Nova AI, has run.</p>
+			<p><b>Native-only gateway.</b> The native profile needs neither adapter. The reference implementation runs that way with both adapters off, and a test runs the whole cycle with an agent that signs with plain <code>node:crypto</code>, checked by the independent verifier anchored by the issuer alone (<a href="../spec/#native-only">specification §8</a>). No agent outside SOVRAS has used it yet.</p>
+			<p><b>VXP Relationship over HTTP.</b> Querying and revoking a relationship (R10, R11) and the HTTP inbox (R2, R7) use native profile routes, so they share its maturity. The path over a Poppy conversation (<a href="../spec/#relationship-poppy-conversation">§7</a>) is the one a live personal agent ran, once, through the Poppy adapter.</p>
 			<p>A company <b>may</b> publish <code>vxp.json</code>, <code>poppy.json</code> and the PACT Agent Card at the same time, with the same issuer, authorization server and metadata. An agent that speaks Poppy or PACT does not need the native profile.</p>
 		</div>
 	</div>
@@ -105,21 +106,21 @@
 		<div class="sec__head sec__head--sm">
 			<p class="kicker">Pending</p>
 			<h2 class="h3" id="pending">What is missing, stated as missing</h2>
-			<p class="lead">Section 12 of the specification, in full.</p>
+			<p class="lead">The open items of <a href="../spec/#open-items">specification §13</a>, with their detail.</p>
 		</div>
 		<ol class="pend">
-			<li><div><h3>Real agents</h3></div><div><p>SOVRAS's own personal agent in beta (Nova AI) operated live through the Poppy adapter, with temporary identities, and one third-party web agent (Grok) operated through the web. Still missing: a third-party agent on the Poppy adapter, the PACT adapter or the native profile, and an agent with a stable identity. ChatGPT agent was not tested live.</p></div></li>
-			<li><div><h3>External counterpart for the two-way relationship</h3></div><div><p>Run with Nova AI, SOVRAS's own agent, over the path of §3.4. A third-party agent on this path, and a third party implementing the HTTP inbox of R2, are still missing.</p></div></li>
+			<li><div><h3>Real agents</h3></div><div><p>On 21 October, personal agents went through the Poppy adapter with temporary identities, among them Nova AI, SOVRAS's personal agent in beta, and a third-party web agent, Grok, went through the companies' web pages. Still missing: a third-party agent on the Poppy adapter, the PACT adapter or the native profile, and an agent with a stable identity.</p></div></li>
+			<li><div><h3>External counterpart for the two-way relationship</h3></div><div><p>Run once with a live personal agent over a Poppy conversation (<a href="../spec/#relationship-poppy-conversation">§7</a>). An agent outside SOVRAS's runs on this path, and a third party implementing the HTTP inbox of R2, are still missing.</p></div></li>
 			<li><div><h3>Independence of the evidence</h3></div><div><ul><li>There are no external witnesses of the log.</li><li>The operator holds the company's key.</li><li>There is no second independent issuer.</li><li>Until these exist, VXP Proof is an attestation by the operator, and its evidence depends on SOVRAS.</li></ul></div></li>
 			<li><div><h3>Approval through the company's channel in the native profile and in Poppy</h3></div><div><p>Today it is <code>agent_asserted</code>. <code>company_channel</code> exists in PACT and on the company's approval pages (approve, change, authorize), run with Grok.</p></div></li>
 			<li><div><h3>Real channels</h3></div><div><p>Meta's WhatsApp integration, real voice, and account linking without WhatsApp. Web Bot Auth was verified live with the signature of a real crawler.</p></div></li>
-			<li><div><h3>Production</h3></div><div><ul><li>State lives in memory.</li><li>There are rate limits per client type and a cap on codes per number (active in the public sandbox); real anti-SSRF DNS protection is missing.</li><li>Nothing has been built yet in the SOVRAS platform repository, and a known gap in its policy layer remains open.</li></ul></div></li>
+			<li><div><h3>Production</h3></div><div><ul><li>State lives in memory. Proof keys persist across restarts since the evening revision of 22 October (<a href="../spec/#key-rotation">§10, key rotation</a>).</li><li>There are rate limits per client type and a cap on codes per number (active in the public sandbox); real anti-SSRF DNS protection is missing.</li><li>Nothing has been built yet in the SOVRAS platform repository, and a known gap in its policy layer remains open.</li></ul></div></li>
 			<li><div><h3>Independent review</h3></div><div><p>Five review rounds examined the 0.1 specification and left corrections; none closed as an approval without observations. <b>Nobody has yet independently reviewed VXP Relationship, the channels, or the changes to VXP Proof</b> in this draft.</p></div></li>
 			<li><div><h3>Poppy draft 0.2, a subset</h3></div><div><p>Not implemented: the person's direct conversation with the company (Poppy §7.10), streaming, DPoP nonce, web browsing with a shared session, OpenAPI and MCP, Direct Sign-In and Mediated Sign-In, and a screen where the person sees and disconnects their agents. Poppy may break compatibility before 1.0.</p></div></li>
-			<li><div><h3>Protocol domain</h3></div><div><p><code>vxpprotocol.org</code> was registered on 22 October 2026 and is under SOVRAS's control, so the extension identifiers use a domain the author controls, as Poppy requires. Still to do: publish this site and the documents on that domain.</p></div></li>
-			<li><div><h3>Evidence for the operations of 21 October</h3></div><div><p>Two operations have no saved proof, the keys were ephemeral (only OP-5 was re-verified with signatures, on 22 October; its package carries earlier test data and is available on request) and none was anchored. The next runs must use persistent keys and save each proof with its material and its verdict.</p></div></li>
-			<li><div><h3>License</h3></div><div><p>Apache 2.0 is the proposed license; the <code>LICENSE</code> file is still missing from the repository to be published.</p></div></li>
-			<li><div><h3>Relationship over HTTP and the native profile</h3></div><div><p>Querying and revoking the relationship (R10, R11) and the HTTP inbox (R2, R7) use routes of the native profile, which is experimental: VXP Relationship over HTTP has that same maturity. The path over the Poppy conversation (§3.4) is the one a running agent, Nova AI, ran.</p></div></li>
+			<li><div><h3>Protocol domain</h3></div><div><p><code>vxpprotocol.org</code> was registered on 22 October 2026 and is under SOVRAS's control, so the extension identifiers use a domain the publisher controls, as Poppy requires. Still to do: publish this site, the documents and the repository on that domain.</p></div></li>
+			<li><div><h3>Evidence for the operations of 21 October</h3></div><div><p>Two operations have no saved proof, the keys lived in memory (only OP-5 was re-verified with signatures, on 22 October; its package carries earlier test data and is available on request) and none was anchored. The reference implementation now keeps its keys persistent, so later runs save each proof with material that can be checked again.</p></div></li>
+			<li><div><h3>Relationship over HTTP and the native profile</h3></div><div><p>Querying and revoking the relationship (R10, R11) and the HTTP inbox (R2, R7) use routes of the native profile, which is experimental: VXP Relationship over HTTP has that same maturity. The path over the Poppy conversation (<a href="../spec/#relationship-poppy-conversation">§7</a>) is the one a live personal agent ran.</p></div></li>
+			<li><div><h3>Conformance kit</h3></div><div><p>A kit that lets a third party check its own implementation. Today the vectors, the verifiers, the network tests and the live verifier script exist as separate pieces (<a href="../conformance/">Conformance</a>).</p></div></li>
 		</ol>
 	</div>
 </section>
@@ -129,7 +130,7 @@
 		<div class="sec__head sec__head--sm">
 			<p class="kicker">Incompatible changes</p>
 			<h2 class="h3" id="renamed">Identifiers renamed from the 0.1 annex</h2>
-			<p class="lead">VXP is independent of SOVRAS. The protocol identifiers that the 0.1 annex named with «sovras» are used as follows from 22 October 2026. A proof signed with the earlier names does not verify with the current verifier. Paths of the reference implementation, such as <code>/sovras/log/</code>, belong to SOVRAS as operator and are outside the protocol.</p>
+			<p class="lead">VXP is independent of SOVRAS. The protocol identifiers that the 0.1 annex named with «sovras» are used as follows from 22 October 2026. A proof signed with the earlier names does not verify with the current verifier. Paths for keys, log and bundles are each implementation's own, discovered through the issuer metadata (<a href="../spec/#implementation-paths">specification §8, implementation paths</a>); the reference implementation moved its own from <code>/sovras/</code> to <code>/vxp/</code> in the evening revision of 22 October and still answers at the old ones.</p>
 		</div>
 		<div class="tbl"><table>
 			<thead><tr><th>0.1 annex</th><th>VXP 0.1</th></tr></thead>
@@ -155,8 +156,9 @@
 			<h2 class="h3" id="history">Versions of draft 0.1</h2>
 		</div>
 		<ol class="hist">
-			<li><time datetime="2026-10-22">22 Oct 2026</time><div><p>Revision of the specification.</p><ul><li>Protocol identifiers renamed to <code>vxp</code> (table above).</li><li>Interoperability rule I1 made precise: inside an adapter, VXP keeps the external contract literally; the native profile lives beside the adapters on the same issuer.</li><li>Capability Gate written as a behavior contract with no endpoint.</li><li>Conformance with Poppy draft 0.2 §4.4: expanding permissions grants only what was requested.</li><li>Every figure reconciled with a run logged that day. Figures from earlier days without a log were replaced.</li></ul></div></li>
-			<li><time datetime="2026-10-21">21 Oct 2026</time><div><p>Specification consolidated as VXP draft 0.1, on top of the 0.1 annex: VXP Relationship and VXP Proof as public contracts, the native profile as experimental, and adapters for Poppy and PACT. The same day, SOVRAS's own personal agent in beta (Nova AI) and one third-party web agent (Grok) operated against test companies configured in SOVRAS.</p></div></li>
+			<li><time datetime="2026-10-22">22 Oct 2026, evening</time><div><p>Second revision of the specification that day.</p><ul><li>Two public components, VXP Proof and VXP Relationship, and operation requirements O1 to O7: required behaviour with no interface, kept apart from the evidence that shows it and from each implementation's internal controls.</li><li>Native-only gateway: VXP implemented with the native profile alone, without Poppy or PACT.</li><li>Implementation paths: only the well-known locations and the native endpoints are fixed; every other path is discovered through the metadata.</li><li>Reading a verdict, key rotation and historical verification.</li><li>Three classes of tests kept apart in conformance.</li></ul></div></li>
+			<li><time datetime="2026-10-22">22 Oct 2026</time><div><p>First revision of the specification that day.</p><ul><li>Protocol identifiers renamed to <code>vxp</code> (table above).</li><li>Interoperability rule I1 made precise: inside an adapter, VXP keeps the external contract literally; the native profile lives beside the adapters on the same issuer.</li><li>The rules where a request becomes an operation written as behaviour with no endpoint; that evening they became the operation requirements O1 to O7.</li><li>Conformance with Poppy draft 0.2 §4.4: expanding permissions grants only what was requested.</li><li>Every figure reconciled with a run logged that day. Figures from earlier days without a log were replaced.</li></ul></div></li>
+			<li><time datetime="2026-10-21">21 Oct 2026</time><div><p>Specification consolidated as VXP draft 0.1, on top of the 0.1 annex: VXP Relationship and VXP Proof as public contracts, the native profile as experimental, and adapters for Poppy and PACT. The same day, personal agents through the Poppy adapter, among them Nova AI, SOVRAS's personal agent in beta, and a third-party web agent, Grok, operated in SOVRAS's production with customers, first on SOVRAS's own resources.</p></div></li>
 		</ol>
 	</div>
 </section>
@@ -166,7 +168,7 @@
 	<div class="foot__in">
 		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">Developed by SOVRAS, Santiago de Chile. Anyone can implement VXP; SOVRAS publishes the reference implementation.</p></div>
 		<div><b>Protocol</b><ul><li><a href="../spec/">Specification</a></li><li><a href="../architecture/">Architecture</a></li><li><a href="../status/">Status</a></li></ul></div>
-		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../verify/">Verifier</a></li><li><a href="../conformance/">Conformance</a></li><li><a href="../implement/">Implement</a></li><li><a href="../implement/#participate">Take part</a></li></ul></div>
 	</div>
 </footer>
 <script src="../assets/site.js" defer></script>

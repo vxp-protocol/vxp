@@ -1,4 +1,4 @@
-== 04-mutar-nativo · 2026-10-22T04:47:45Z · node scripts/mutar-nativo.mjs
+== 04-mutar-nativo · 2026-10-22T22:18:11Z · node scripts/mutar-nativo.mjs
 sin mutación: exit 0 (# pass 12, # fail 0)
 DETECTADA  condicion                1a: la condición carrier_acceptance se da por cumplida sin preguntar
     fallan: 1a · propuesta condicional: no llega a succeeded hasta carri | 1b · el transportista rechaza: failed con efectos parciales  | 6 · el transportista no responde: sin reintento ni failed; l | 3 · cancelar durante la ejecución pide detener: no promete r | 8 · transiciones: la tabla es la del diseño; lo ilegal se re | 9 · proyección: cada estado nativo cae en un valor existente

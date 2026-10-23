@@ -1,0 +1,856 @@
+[
+ {
+  "at": "2026-10-22T22:30:29.183Z",
+  "method": "GET",
+  "url": "http://localhost:3730/.well-known/poppy.json",
+  "headers": {},
+  "request": null,
+  "status": 404,
+  "response": ""
+ },
+ {
+  "at": "2026-10-22T22:30:29.192Z",
+  "method": "GET",
+  "url": "http://localhost:3730/.well-known/agent-card.json",
+  "headers": {},
+  "request": null,
+  "status": 404,
+  "response": ""
+ },
+ {
+  "at": "2026-10-22T22:30:29.201Z",
+  "method": "GET",
+  "url": "http://localhost:3730/.well-known/vxp.json",
+  "headers": {},
+  "request": null,
+  "status": 200,
+  "response": {
+   "protocol": "vxp",
+   "version": "0.1",
+   "organization": {
+    "name": "Ferretería Demo",
+    "domain": "localhost:3730"
+   },
+   "issuer": "http://localhost:3730/e/ferreteria-demo",
+   "endpoint": "http://localhost:3730/e/ferreteria-demo/v1",
+   "capabilities": [
+    {
+     "id": "pedido.consultar",
+     "effect": "read",
+     "access": "delegated",
+     "admission": "static",
+     "authorization_details_type": "https://vxpprotocol.org/rar/capability"
+    },
+    {
+     "id": "pedido.reprogramar_despacho",
+     "effect": "write",
+     "access": "delegated",
+     "admission": "dynamic",
+     "authorization_details_type": "https://vxpprotocol.org/rar/capability",
+     "commitment_modes": [
+      "firm",
+      "conditional"
+     ],
+     "outcome_proof": true
+    },
+    {
+     "id": "catalogo.consultar",
+     "effect": "read",
+     "access": "delegated",
+     "admission": "static",
+     "authorization_details_type": "https://vxpprotocol.org/rar/capability"
+    },
+    {
+     "id": "pedido.crear",
+     "effect": "write",
+     "access": "delegated",
+     "admission": "dynamic",
+     "authorization_details_type": "https://vxpprotocol.org/rar/capability",
+     "commitment_modes": [
+      "firm",
+      "conditional"
+     ],
+     "outcome_proof": true
+    },
+    {
+     "id": "pedido.devolver",
+     "effect": "write",
+     "access": "delegated",
+     "admission": "dynamic",
+     "authorization_details_type": "https://vxpprotocol.org/rar/capability",
+     "commitment_modes": [
+      "firm",
+      "conditional"
+     ],
+     "outcome_proof": true
+    }
+   ],
+   "limits": {
+    "max_revisions": 3,
+    "proposal_ttl_seconds": 900,
+    "max_accept_attempts": 3
+   },
+   "outcome_proof": {
+    "version": "0.1",
+    "trust": "issuer_metadata"
+   },
+   "status": "experimental",
+   "vxp": {
+    "version": "0.1",
+    "relationship": {
+     "authorization_details_type": "https://vxpprotocol.org/rar/relationship",
+     "company_initiated_actions": [
+      "despacho.proponer_cambio",
+      "incidencia.avisar",
+      "alerta.confirmar_o_bloquear"
+     ]
+    },
+    "proof": {
+     "trust": "issuer_metadata"
+    }
+   }
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:29.206Z",
+  "method": "GET",
+  "url": "http://localhost:3730/.well-known/oauth-authorization-server/e/ferreteria-demo",
+  "headers": {},
+  "request": null,
+  "status": 200,
+  "response": {
+   "issuer": "http://localhost:3730/e/ferreteria-demo",
+   "token_endpoint": "http://localhost:3730/e/ferreteria-demo/oauth/token",
+   "revocation_endpoint": "http://localhost:3730/e/ferreteria-demo/oauth/revoke",
+   "device_authorization_endpoint": "http://localhost:3730/e/ferreteria-demo/oauth/device",
+   "dpop_signing_alg_values_supported": [
+    "ES256"
+   ],
+   "token_endpoint_auth_methods_supported": [
+    "private_key_jwt"
+   ],
+   "grant_types_supported": [
+    "urn:ietf:params:oauth:grant-type:jwt-bearer",
+    "urn:ietf:params:oauth:grant-type:device_code",
+    "refresh_token"
+   ],
+   "authorization_details_types_supported": [
+    "https://vxpprotocol.org/rar/capability",
+    "https://vxpprotocol.org/rar/relationship"
+   ],
+   "vxp_proof": {
+    "version": "0.1",
+    "company": "http://localhost:3730/e/ferreteria-demo",
+    "domains": [
+     "localhost:3730"
+    ],
+    "pact": [],
+    "jwks_uri": "http://localhost:3730/e/ferreteria-demo/vxp/proof-jwks.json",
+    "operator": {
+     "issuer": "http://localhost:3730/vxp/operator",
+     "jwks_uri": "http://localhost:3730/vxp/operator/proof-jwks.json"
+    },
+    "custody": "operator_hosted",
+    "log": {
+     "origin": "localhost:3730/vxp/log/v0",
+     "checkpoint_url": "http://localhost:3730/vxp/log/checkpoint",
+     "consistency_url": "http://localhost:3730/vxp/log/consistency",
+     "jwks_uri": "http://localhost:3730/vxp/log/jwks.json",
+     "witnesses": []
+    }
+   },
+   "vxp_relationship": {
+    "version": "0.1",
+    "jwks_uri": "http://localhost:3730/e/ferreteria-demo/vxp/relationship-jwks.json",
+    "company_initiated_actions": [
+     "despacho.proponer_cambio",
+     "incidencia.avisar",
+     "alerta.confirmar_o_bloquear"
+    ]
+   }
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:29.291Z",
+  "method": "POST",
+  "url": "http://localhost:3730/e/ferreteria-demo/oauth/token",
+  "headers": {
+   "content-type": "application/x-www-form-urlencoded",
+   "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJ1NTdVUGJ3N0xTSllxNUwzIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtby9vYXV0aC90b2tlbiIsImlhdCI6MTc5MjcwODIyOX0.uViMsIC7uhM2U5q_nIZD2oBlG6x4puBc5YGrw7_rYB07ULgB7NMeLDexE0rY04bRfG8w2M-12h-TkEfzE1l8_A"
+  },
+  "request": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&client_id=http%3A%2F%2Flocalhost%3A3734%2Fagent.json&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer&resource=http%3A%2F%2Flocalhost%3A3730%2Fe%2Fferreteria-demo%2Fv1&client_assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczNC9hZ2VudC5qc29uIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNzA4MjI5LCJleHAiOjE3OTI3MDgyODksImp0aSI6IkFQd2dpOG9lR3NWM1hhNTAifQ.TCQFzdx-Uw5dajNK0VNOCskjwvy8CyzdJK8GiO55sHwCNNzymX6dAwzHq5fY7U_u-Lkn1fha1SgqbKJ8vsEccg&assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6InVzcl8wMTI0ZWY0MCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtbyIsImlhdCI6MTc5MjcwODIyOSwiZXhwIjoxNzkyNzA4Mjg5LCJqdGkiOiJ0S2ZFWWxEZU5ZUGozNFVmIn0.k7Nsy9XtA5_q7st1FLKYf-G03V_zelNT3b7HlB1ZoZOjb6DSfr6UkwA35ko0OeE5LCZ4FmFm1fViL9OXY6zuPQ",
+  "status": 200,
+  "response": {
+   "access_token": "nt_NzWld5QybEBxrEY2Sl9STyOpwWqhTT9O",
+   "token_type": "DPoP",
+   "expires_in": 3600
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:29.303Z",
+  "method": "POST",
+  "url": "http://localhost:3730/e/ferreteria-demo/v1/requests",
+  "headers": {
+   "authorization": "DPoP nt_NzWld5QybEBxrEY2Sl9STyOpwWqhTT9O",
+   "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiI5TXkwQkhUQXBVYXFUVFd4IiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtby92MS9yZXF1ZXN0cyIsImlhdCI6MTc5MjcwODIyOSwiYXRoIjoieVk1VWJTUG1qX2t5NkJKNWNMV3g1ZklWRU05a2w1R29nMHNjTlRhQUZZYyJ9.lzD-_2OxYwwguqTOdtZdeiyv6Q7mJmRpQd6v1LkLJXz2mu-KzkrJHAbd8S_iFPoDzISUYdAB-TeJW9OeYEeeGA",
+   "content-type": "application/json",
+   "idempotency-key": "cW61M-FmasZ6"
+  },
+  "request": {
+   "operation": "pedido.reprogramar_despacho",
+   "target": {
+    "order_ref": "P-1042"
+   },
+   "parameters": {
+    "delivery_date": "2026-10-28"
+   }
+  },
+  "status": 202,
+  "response": {
+   "request_id": "req_eSTKa7J-MERu",
+   "operation": "pedido.reprogramar_despacho",
+   "target": {
+    "order_ref": "P-1042"
+   },
+   "state": "authorization_required",
+   "projections": {
+    "poppy": null,
+    "a2a": "TASK_STATE_AUTH_REQUIRED"
+   },
+   "authorization": {
+    "error": "authorization_required",
+    "authorization_details": [
+     {
+      "type": "https://vxpprotocol.org/rar/capability",
+      "actions": [
+       "pedido.reprogramar_despacho"
+      ],
+      "identifier": "P-1042"
+     }
+    ],
+    "device_authorization_endpoint": "http://localhost:3730/e/ferreteria-demo/oauth/device",
+    "resource": "http://localhost:3730/e/ferreteria-demo/v1"
+   }
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:29.313Z",
+  "method": "POST",
+  "url": "http://localhost:3730/e/ferreteria-demo/oauth/device",
+  "headers": {},
+  "request": "client_id=http%3A%2F%2Flocalhost%3A3734%2Fagent.json&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer&resource=http%3A%2F%2Flocalhost%3A3730%2Fe%2Fferreteria-demo%2Fv1&client_assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczNC9hZ2VudC5qc29uIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNzA4MjI5LCJleHAiOjE3OTI3MDgyODksImp0aSI6InFXTkVxVGxKSl9oQ0V6X2kifQ.Ip9dO2XdJliiihqNMwRLqr_ERkS38sQ3jDMr3wXm4n38RO-88dJ2E9l8lbRqAfqGPOYbEv9x5cq03TzYZsl6uQ&authorization_details=%5B%7B%22type%22%3A%22https%3A%2F%2Fvxpprotocol.org%2Frar%2Fcapability%22%2C%22actions%22%3A%5B%22pedido.reprogramar_despacho%22%5D%2C%22identifier%22%3A%22P-1042%22%7D%2C%7B%22type%22%3A%22https%3A%2F%2Fvxpprotocol.org%2Frar%2Frelationship%22%2C%22actions%22%3A%5B%22despacho.proponer_cambio%22%5D%2C%22identifier%22%3A%22relationship%22%2C%22limits%22%3A%7B%22max_per_day%22%3A2%2C%22duration_seconds%22%3A3600%7D%7D%5D",
+  "status": 200,
+  "response": {
+   "device_code": "dc_sccQ4bC2G3b8vIKm24UUUDhNHif9kyt1",
+   "user_code": "SBCN-KSMT",
+   "verification_uri": "http://localhost:3730/e/ferreteria-demo/vincular",
+   "verification_uri_complete": "http://localhost:3730/e/ferreteria-demo/vincular?user_code=SBCN-KSMT",
+   "expires_in": 600,
+   "interval": 5
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:29.318Z",
+  "method": "GET",
+  "url": "http://localhost:3730/e/ferreteria-demo/vincular?user_code=SBCN-KSMT",
+  "headers": {},
+  "request": null,
+  "status": 200,
+  "response": "<!doctype html><html lang=\"es\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Vincular cuenta</title><body style=\"font:16px system-ui;max-width:28rem;margin:3rem auto;padding:0 1rem;color:#111\"><p><b>Test assistant (native profile)</b> pide acceso a tu cuenta de <b>Ferretería Demo</b>.</p><p>Sólo para: cambiar la fecha de despacho del pedido P-1042; permitir que Ferretería Demo contacte a tu asistente para proponerte cambios de fecha de despacho de tus pedidos, hasta 2 veces por día, durante 1 día.</p><p style=\"color:#555\">Sigue sólo si tú le pediste a tu asistente que hiciera algo con Ferretería Demo. Código: <b>SBCN-KSMT</b></p><form method=\"post\" action=\"/e/ferreteria-demo/vincular/telefono\"><input type=\"hidden\" name=\"user_code\" value=\"SBCN-KSMT\"><label>Tu número de WhatsApp<br><input name=\"telefono\" inputmode=\"tel\" required></label> <button>Enviarme un código</button></form></body></html>"
+ },
+ {
+  "at": "2026-10-22T22:30:29.326Z",
+  "method": "POST",
+  "url": "http://localhost:3730/e/ferreteria-demo/vincular/telefono",
+  "headers": {},
+  "request": "user_code=SBCN-KSMT&telefono=%2B56+9+0000+0101",
+  "status": 200,
+  "response": "<!doctype html><html lang=\"es\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Código enviado</title><body style=\"font:16px system-ui;max-width:28rem;margin:3rem auto;padding:0 1rem;color:#111\"><p><b>Test assistant (native profile)</b> pide acceso a tu cuenta de <b>Ferretería Demo</b>.</p><p>Sólo para: cambiar la fecha de despacho del pedido P-1042; permitir que Ferretería Demo contacte a tu asistente para proponerte cambios de fecha de despacho de tus pedidos, hasta 2 veces por día, durante 1 día.</p><p style=\"color:#555\">Sigue sólo si tú le pediste a tu asistente que hiciera algo con Ferretería Demo. Código: <b>SBCN-KSMT</b></p><p>Si ese número es de un cliente de Ferretería Demo, le llegó un código por WhatsApp.</p><form method=\"post\" action=\"/e/ferreteria-demo/vincular/codigo\"><input type=\"hidden\" name=\"user_code\" value=\"SBCN-KSMT\"><label>Código<br><input name=\"codigo\" inputmode=\"numeric\" required></label> <button>Seguir</button></form></body></html>"
+ },
+ {
+  "at": "2026-10-22T22:30:29.335Z",
+  "method": "POST",
+  "url": "http://localhost:3730/e/ferreteria-demo/vincular/codigo",
+  "headers": {},
+  "request": "user_code=SBCN-KSMT&codigo=663901",
+  "status": 200,
+  "response": "<!doctype html><html lang=\"es\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Dar acceso</title><body style=\"font:16px system-ui;max-width:28rem;margin:3rem auto;padding:0 1rem;color:#111\"><p><b>Test assistant (native profile)</b> pide acceso a tu cuenta de <b>Ferretería Demo</b>.</p><p>Sólo para: cambiar la fecha de despacho del pedido P-1042; permitir que Ferretería Demo contacte a tu asistente para proponerte cambios de fecha de despacho de tus pedidos, hasta 2 veces por día, durante 1 día.</p><p style=\"color:#555\">Sigue sólo si tú le pediste a tu asistente que hiciera algo con Ferretería Demo. Código: <b>SBCN-KSMT</b></p><form method=\"post\" action=\"/e/ferreteria-demo/vincular/decision\"><input type=\"hidden\" name=\"user_code\" value=\"SBCN-KSMT\"><label style=\"display:block;margin:.4rem 0\"><input type=\"checkbox\" name=\"scope\" value=\"pedidos:modificar\" checked> Cambiar la fecha de despacho de un pedido que aún no sale</label><label style=\"display:block;margin:.4rem 0\"><input type=\"checkbox\" name=\"scope\" value=\"vxp:relationship\" checked> Que la empresa contacte a tu asistente sólo para lo que se indica arriba</label><button name=\"decision\" value=\"allow\">Permitir</button> <button name=\"decision\" value=\"deny\">No permitir</button></form></body></html>"
+ },
+ {
+  "at": "2026-10-22T22:30:29.339Z",
+  "method": "POST",
+  "url": "http://localhost:3730/e/ferreteria-demo/vincular/decision",
+  "headers": {},
+  "request": "user_code=SBCN-KSMT&decision=allow&scope=pedidos%3Amodificar&scope=vxp%3Arelationship",
+  "status": 303,
+  "response": ""
+ },
+ {
+  "at": "2026-10-22T22:30:29.349Z",
+  "method": "POST",
+  "url": "http://localhost:3730/e/ferreteria-demo/oauth/token",
+  "headers": {
+   "content-type": "application/x-www-form-urlencoded",
+   "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJtaUdyNXVNeEMtNUdCRFlqIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtby9vYXV0aC90b2tlbiIsImlhdCI6MTc5MjcwODIyOX0.BDWAAdj-24-jQmMolKgU-vQgPJc7FfppC4CqSgxc-wSnbZdsLB3P609AlWlsErtVuiiwcmg9J1EZmbb-GTHCzQ"
+  },
+  "request": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=dc_sccQ4bC2G3b8vIKm24UUUDhNHif9kyt1&client_id=http%3A%2F%2Flocalhost%3A3734%2Fagent.json&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer&resource=http%3A%2F%2Flocalhost%3A3730%2Fe%2Fferreteria-demo%2Fv1&client_assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczNC9hZ2VudC5qc29uIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNzA4MjI5LCJleHAiOjE3OTI3MDgyODksImp0aSI6IkdWZmgxMFhHN1dGVUU5dE8ifQ.gRnr3ZUQ2ynt9CaIC1Y39hUYQ7suOXykNLk3iI0js_TIDzhzc5sjw3jAwKLf52_LxhQ5w4wf8d_3K0KnKE_OIg&assertion=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6InVzcl8wMTI0ZWY0MCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtbyIsImlhdCI6MTc5MjcwODIyOSwiZXhwIjoxNzkyNzA4Mjg5LCJqdGkiOiJXeEF6NW9ZUnhVRmROaWoxIn0.F3-8iPPkDbn4o1sNOfh-2q00WUJ5lSCJKDpk4S-otTWWaIsjG_q4GqUQEXE6KKRt4iVVNk7qkDBtGVNYWH9mow",
+  "status": 200,
+  "response": {
+   "access_token": "nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "token_type": "DPoP",
+   "expires_in": 3600,
+   "authorization_details": [
+    {
+     "type": "https://vxpprotocol.org/rar/capability",
+     "actions": [
+      "pedido.reprogramar_despacho"
+     ],
+     "identifier": "P-1042"
+    }
+   ],
+   "relationships": [
+    {
+     "relationship_id": "rel_X9sUhyHhjsLp",
+     "state": "active",
+     "actions": [
+      "despacho.proponer_cambio"
+     ],
+     "limits": {
+      "max_per_day": 2
+     },
+     "expires_at": "2026-10-22T23:30:29.000Z",
+     "agreement": "eyJhbGciOiJFUzI1NiIsInR5cCI6InZ4cC1yZWxhdGlvbnNoaXArand0Iiwia2lkIjoicEVNNlJuYndzVEFjb1phVXgxQnctMms4cjhDTmlYd1BTVjdTcGNRaGl0MCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzAvZS9mZXJyZXRlcmlhLWRlbW8iLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsInN1YiI6InVzcl8wMTI0ZWY0MCIsInJlbCI6InJlbF9YOXNVaHlIaGpzTHAiLCJhY3Rpb25zIjpbImRlc3BhY2hvLnByb3BvbmVyX2NhbWJpbyJdLCJsaW1pdHMiOnsibWF4X3Blcl9kYXkiOjJ9LCJpYXQiOjE3OTI3MDgyMjksImV4cCI6MTc5MjcxMTgyOSwianRpIjoiY1B3N3AyRVI4T2dndjZGUSJ9.XmuIhVebsrBUEIjcUudeSoHdrL-Rt_JRTSvFvJEaswaf-9D6kzCn-5BDcTMMAGfKeWcVM2vvK2ewmnykMjN-rg"
+    }
+   ]
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:29.359Z",
+  "method": "POST",
+  "url": "http://localhost:3730/e/ferreteria-demo/v1/requests",
+  "headers": {
+   "authorization": "DPoP nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJIV0F6U1p6YzlhQTAwOVdWIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtby92MS9yZXF1ZXN0cyIsImlhdCI6MTc5MjcwODIyOSwiYXRoIjoiVk5Sc1hwbGdxSFg3WGhXSFlKWmJYR0hkQlZ2NnJRVVpXS3VwMmsxc2FuSSJ9.HDGwU6GkrRQb62BpI7FnJpmtfqA4SjuT0H5iREwAZNJVKGPym2Nx1iVeT2kyN0mxcQE8BJgW5XvWSwX7rabLKA",
+   "content-type": "application/json",
+   "idempotency-key": "cW61M-FmasZ6"
+  },
+  "request": {
+   "operation": "pedido.reprogramar_despacho",
+   "target": {
+    "order_ref": "P-1042"
+   },
+   "parameters": {
+    "delivery_date": "2026-10-28"
+   }
+  },
+  "status": 201,
+  "response": {
+   "request_id": "req_eSTKa7J-MERu",
+   "operation": "pedido.reprogramar_despacho",
+   "target": {
+    "order_ref": "P-1042"
+   },
+   "state": "proposed",
+   "projections": {
+    "poppy": "proposed",
+    "a2a": "TASK_STATE_INPUT_REQUIRED"
+   },
+   "operation_id": "op_XzdILOmlgiae",
+   "proposal": {
+    "id": "prop_op_XzdILOmlgiae_r1",
+    "revision": 1,
+    "state": "proposed",
+    "summary": "Cambiar el despacho del pedido P-1042 (Taladro percutor 800 W) del 2026-10-24 al 2026-10-28, a Calle Ejemplo 100, Santiago, sin costo.",
+    "terms": {
+     "pedido": "P-1042",
+     "producto": "Taladro percutor 800 W",
+     "despacho_actual": "2026-10-24",
+     "despacho_nuevo": "2026-10-28",
+     "direccion": "Calle Ejemplo 100, Santiago",
+     "costo": {
+      "amount": "0",
+      "currency": "CLP"
+     },
+     "vxp_salt": "hRQxNKbVg-MdR_aCsFbHYQ"
+    },
+    "commitment": {
+     "mode": "firm",
+     "requires": []
+    },
+    "expires_at": "2026-10-22T22:45:29.356Z",
+    "user_approval_required": true,
+    "limits": {
+     "max_revisions": 3,
+     "revisions_left": 2,
+     "max_accept_attempts": 3,
+     "accept_attempts_left": 3
+    }
+   },
+   "effects": [],
+   "cancellation": null,
+   "result": null,
+   "proof_url": "http://localhost:3730/e/ferreteria-demo/v1/requests/req_eSTKa7J-MERu/proof"
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:29.369Z",
+  "method": "POST",
+  "url": "http://localhost:3730/e/ferreteria-demo/v1/proposals/prop_op_XzdILOmlgiae_r1/accept",
+  "headers": {
+   "authorization": "DPoP nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJhOWZpY2Q5eFdJaUk4b2RUIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtby92MS9wcm9wb3NhbHMvcHJvcF9vcF9YemRJTE9tbGdpYWVfcjEvYWNjZXB0IiwiaWF0IjoxNzkyNzA4MjI5LCJhdGgiOiJWTlJzWHBsZ3FIWDdYaFdIWUpaYlhHSGRCVnY2clFVWldLdXAyazFzYW5JIn0.LETB_jmiM4uUt44agBTGaferrO-S_8tuOD6NLfagbxZy3hDtJBBWgSsEyknAkD0P5UEKwb_kUNx9vYQLogIh2Q",
+   "content-type": "application/json"
+  },
+  "request": {
+   "approved_by": "user"
+  },
+  "status": 200,
+  "response": {
+   "request_id": "req_eSTKa7J-MERu",
+   "operation": "pedido.reprogramar_despacho",
+   "target": {
+    "order_ref": "P-1042"
+   },
+   "state": "succeeded",
+   "projections": {
+    "poppy": "succeeded",
+    "a2a": "TASK_STATE_COMPLETED"
+   },
+   "operation_id": "op_XzdILOmlgiae",
+   "proposal": {
+    "id": "prop_op_XzdILOmlgiae_r1",
+    "revision": 1,
+    "state": "accepted",
+    "summary": "Cambiar el despacho del pedido P-1042 (Taladro percutor 800 W) del 2026-10-24 al 2026-10-28, a Calle Ejemplo 100, Santiago, sin costo.",
+    "terms": {
+     "pedido": "P-1042",
+     "producto": "Taladro percutor 800 W",
+     "despacho_actual": "2026-10-24",
+     "despacho_nuevo": "2026-10-28",
+     "direccion": "Calle Ejemplo 100, Santiago",
+     "costo": {
+      "amount": "0",
+      "currency": "CLP"
+     },
+     "vxp_salt": "hRQxNKbVg-MdR_aCsFbHYQ"
+    },
+    "commitment": {
+     "mode": "firm",
+     "requires": []
+    },
+    "expires_at": "2026-10-22T22:45:29.356Z",
+    "user_approval_required": true,
+    "limits": {
+     "max_revisions": 3,
+     "revisions_left": 2,
+     "max_accept_attempts": 3,
+     "accept_attempts_left": 3
+    }
+   },
+   "effects": [
+    {
+     "system": "erp",
+     "change": "despacho 2026-10-24 → 2026-10-28",
+     "applied": true
+    }
+   ],
+   "cancellation": null,
+   "result": {
+    "summary": "Listo: el pedido P-1042 se despacha el 2026-10-28 (antes 2026-10-24). Verificado en el sistema de Ferretería Demo.",
+    "data": {
+     "pedido": "P-1042",
+     "despacho": "2026-10-28",
+     "verificado": "lectura_del_sistema",
+     "effects": [
+      {
+       "system": "erp",
+       "change": "despacho 2026-10-24 → 2026-10-28",
+       "applied": true
+      }
+     ]
+    }
+   },
+   "reason": "read_back_matches",
+   "proof_url": "http://localhost:3730/e/ferreteria-demo/v1/requests/req_eSTKa7J-MERu/proof"
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:29.375Z",
+  "method": "GET",
+  "url": "http://localhost:3730/e/ferreteria-demo/v1/requests/req_eSTKa7J-MERu/proof",
+  "headers": {
+   "authorization": "DPoP nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJ5NFVja1R1TlZ1em0zUU1RIiwiaHRtIjoiR0VUIiwiaHR1IjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vL3YxL3JlcXVlc3RzL3JlcV9lU1RLYTdKLU1FUnUvcHJvb2YiLCJpYXQiOjE3OTI3MDgyMjksImF0aCI6IlZOUnNYcGxncUhYN1hoV0hZSlpiWEdIZEJWdjZyUVVaV0t1cDJrMXNhbkkifQ.DjP6uRJBttpmtniUlugw7KUNO9sqM6DS4Pr9QR6uObden4vOC1RHfeKJMmH0WzSJcCMM-O1FRs9dKu5NtQbT3Q",
+   "content-type": "application/json"
+  },
+  "request": null,
+  "status": 200,
+  "response": {
+   "v": "0.1",
+   "company": "http://localhost:3730/e/ferreteria-demo",
+   "op": "op_XzdILOmlgiae",
+   "statements": [
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IkJOZ1RhMjhFS0R2a2pVRFUwdFdlcjNuZVZ0ZVBuNVZxeFR1X1RqUzNfSXMiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsiY2hhbm5lbCI6InZ4cCIsImNsaWVudF9pZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczNC9hZ2VudC5qc29uIiwicmVxdWVzdF9kaWdlc3QiOiJzaGEtMjU2Om1mSmxlb3NvNW9FeXRfcHFKUzNPdGJtWWFtN2N5bmNSQnJBY3FiS2ZJckkifSwiY29tcGFueSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtbyIsImlhdCI6MTc5MjcwODIyOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL3Z4cC9vcGVyYXRvciIsImtpbmQiOiJyZXF1ZXN0Iiwib3AiOiJvcF9YemRJTE9tbGdpYWUiLCJwcmV2IjpudWxsLCJzZXEiOjAsInVzZXIiOiJ1c3JfMDEyNGVmNDAiLCJ2IjoiMC4xIn0.wBOyvDXVc8EQXuv-kCOiICCtOKHvWW9lWvDDKPYJAqFKL4SbYHHg33vvxdMew86tIa-nG-jheyHP-kKps6Oojg~",
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IlFfTG02WWJJcWxSblEzYmxROXdqLWwybE9MM3JGWlF0ZHI4SzI4VGVLdzgiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsiY2FwYWJpbGl0eSI6InBlZGlkby5yZXByb2dyYW1hcl9kZXNwYWNobyIsImNvbW1pdG1lbnQiOnsibW9kZSI6ImZpcm0iLCJyZXF1aXJlcyI6W119LCJjb21wYW55X3Jldmlld19yZXF1aXJlZCI6ZmFsc2UsImV4cGlyZXNfYXQiOiIyMDI2LTEwLTIyVDIyOjQ1OjI5LjM1NloiLCJyZWFkX2JhY2tfdGVybXMiOlsicGVkaWRvIiwiZGVzcGFjaG9fbnVldm8iXSwicmV2aXNpb24iOjEsInRlcm1zX2RpZ2VzdCI6InNoYS0yNTY6TGV4Y2NRMklyWFR3a3gtek0zS0ozbTJTZjUtWUhzcXpzLXBvX1FDeEFDMCIsInVzZXJfYXBwcm92YWxfcmVxdWlyZWQiOnRydWV9LCJjb21wYW55IjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNzA4MjI5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzAvZS9mZXJyZXRlcmlhLWRlbW8iLCJraW5kIjoidGVybXMiLCJvcCI6Im9wX1h6ZElMT21sZ2lhZSIsInByZXYiOiJzaGEtMjU2OmtBTzVmLUpvQ1NvbnFDUW5HXzF2a2kxVDAxd21xaDR3RFM1WUs3NFUwdjQiLCJzZXEiOjEsInVzZXIiOiJ1c3JfMDEyNGVmNDAiLCJ2IjoiMC4xIn0.9cVCeSmxG2uT_vp55aSfLYgb0EQW4W6qGRRJQ8DhVUU92GbUvcfEX6R_m5vwb4LxGOPHEHmT9Bci5Oh0T0UmxA~",
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IkJOZ1RhMjhFS0R2a2pVRFUwdFdlcjNuZVZ0ZVBuNVZxeFR1X1RqUzNfSXMiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsibWV0aG9kIjoiYWdlbnRfYXNzZXJ0ZWQiLCJyZXZpc2lvbiI6MSwidGVybXNfZGlnZXN0Ijoic2hhLTI1NjpMZXhjY1EySXJYVHdreC16TTNLSjNtMlNmNS1ZSHNxenMtcG9fUUN4QUMwIn0sImNvbXBhbnkiOiJodHRwOi8vbG9jYWxob3N0OjM3MzAvZS9mZXJyZXRlcmlhLWRlbW8iLCJpYXQiOjE3OTI3MDgyMjksImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC92eHAvb3BlcmF0b3IiLCJraW5kIjoidXNlcl9hcHByb3ZhbCIsIm9wIjoib3BfWHpkSUxPbWxnaWFlIiwicHJldiI6InNoYS0yNTY6bENOcnViblI2TUx3VWh3aGNOVUNXYXFBS3hGR09WV0lseDNSYWZzOHYwOCIsInNlcSI6MiwidXNlciI6InVzcl8wMTI0ZWY0MCIsInYiOiIwLjEifQ.FFjDhDLBcRuIVOc60lwpZx5SEoA9Dy40_W58Ap6E2wuPfFUIxs7kaOiI56HTksmRT5IxLf71fjm4ABgv_ThUFg~",
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IkJOZ1RhMjhFS0R2a2pVRFUwdFdlcjNuZVZ0ZVBuNVZxeFR1X1RqUzNfSXMiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsiYXR0ZW1wdCI6MSwiY2FwYWJpbGl0eSI6InBlZGlkby5yZXByb2dyYW1hcl9kZXNwYWNobyIsInJlbGVhc2UiOiJzaGEtMjU2OnUxVEJCeEpYVEt0YTM2SzVVSV9qX215aFFhSHpiUFAySGNGNHJCS0d4UEEiLCJyZXZpc2lvbiI6MSwidGVybXNfZGlnZXN0Ijoic2hhLTI1NjpMZXhjY1EySXJYVHdreC16TTNLSjNtMlNmNS1ZSHNxenMtcG9fUUN4QUMwIn0sImNvbXBhbnkiOiJodHRwOi8vbG9jYWxob3N0OjM3MzAvZS9mZXJyZXRlcmlhLWRlbW8iLCJpYXQiOjE3OTI3MDgyMjksImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC92eHAvb3BlcmF0b3IiLCJraW5kIjoiZXhlY3V0aW9uIiwib3AiOiJvcF9YemRJTE9tbGdpYWUiLCJwcmV2Ijoic2hhLTI1Njp3azRKOW1fVkUxenpsTGhjMVFFWjdsM203VVNva1FpRjlndElDTU5mdDVVIiwic2VxIjozLCJ1c2VyIjoidXNyXzAxMjRlZjQwIiwidiI6IjAuMSJ9.5U51U-MIBN1otI0xKcmrAlKvcUWNOsjYPUXy_9tATEpaThDSwDGZwCuNQMaVXN7c4Cqlh6WD_JKqpY2OfdOG0g~",
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IkJOZ1RhMjhFS0R2a2pVRFUwdFdlcjNuZVZ0ZVBuNVZxeFR1X1RqUzNfSXMiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsibWF0Y2hlc190ZXJtcyI6dHJ1ZSwibWV0aG9kIjoic3lzdGVtX3JlYWRfYmFjayIsIm9ic2VydmVkIjp7Il9zZCI6WyJnMU1aRktzcG5fZmNUUEJ5NUNPcFlJVmM2clBqZVFZdjliRjdRQkNydjVnIl0sImRlc3BhY2hvX251ZXZvIjoiMjAyNi0xMC0yOCIsInBlZGlkbyI6IlAtMTA0MiJ9LCJzb3VyY2UiOiJjb21wYW55X3N5c3RlbSJ9LCJjb21wYW55IjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNzA4MjI5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzAvdnhwL29wZXJhdG9yIiwia2luZCI6InJlYWRfYmFjayIsIm9wIjoib3BfWHpkSUxPbWxnaWFlIiwicHJldiI6InNoYS0yNTY6R3MyR091NGF6WjZhRTFWYUtqbTJFZGo5MVp5YS1WUDR6UDlGYmM3MVZKdyIsInNlcSI6NCwidXNlciI6InVzcl8wMTI0ZWY0MCIsInYiOiIwLjEifQ.JM6iyYZuNQ8s98EwZN8r12y0-7wGFyME_SViSlvhHTjuH6z2N1bgLB7SbpODFBNUWNdd7YIvA-5bBAuoxAyD7g~WyJEMU1ldzk2alJVbU43NWtVRnpqblR3IiwiZGlyZWNjaW9uIiwiQ2FsbGUgRWplbXBsbyAxMDAsIFNhbnRpYWdvIl0~",
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IlFfTG02WWJJcWxSblEzYmxROXdqLWwybE9MM3JGWlF0ZHI4SzI4VGVLdzgiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsiY2xhaW1lZF9hc3N1cmFuY2UiOlsiaXNzdWVyX2tleV9hdHRlc3RlZCIsIm9wZXJhdG9yX29ic2VydmVkIiwib3BlcmF0b3JfcmVwb3J0ZWRfcmVhZF9iYWNrIiwib3BlcmF0b3JfcmVwb3J0ZWRfYWdlbnRfYXBwcm92YWwiXSwicmVzdWx0X3N1bW1hcnlfZGlnZXN0Ijoic2hhLTI1NjphS3MzdXk3N2Mxb3NnRDdxU2dUcU5KMF9ZSVRyb2M1aXdvWUhxRm1TbDZzIiwicmV2aXNpb24iOjEsInN0YXRlIjoic3VjY2VlZGVkIiwidGVybXNfZGlnZXN0Ijoic2hhLTI1NjpMZXhjY1EySXJYVHdreC16TTNLSjNtMlNmNS1ZSHNxenMtcG9fUUN4QUMwIiwidGhpcmRfcGFydHkiOltdfSwiY29tcGFueSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtbyIsImlhdCI6MTc5MjcwODIyOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwia2luZCI6Im91dGNvbWUiLCJvcCI6Im9wX1h6ZElMT21sZ2lhZSIsInByZXYiOiJzaGEtMjU2OmpmU0NGUk5SNFFqdm5EOVZqbWFOV2RoZkFnNGZ0VnhNV3k1eExyclQ2Sm8iLCJzZXEiOjUsInVzZXIiOiJ1c3JfMDEyNGVmNDAiLCJ2IjoiMC4xIn0.NHStX963GyqJjd3VAnhOnVXPclK95HTi-0kndyDPVmTrfceLclbz3wf6460UvRbCPp6cZ09JcKtx1dgdHKHI0w~"
+   ],
+   "log": {
+    "origin": "localhost:3730/vxp/log/v0",
+    "checkpoint": "eyJhbGciOiJFUzI1NiIsImtpZCI6IjN3bEhOdkdaNVdxLW92UllqN3VkM0ZRcm0yYnZfYnh5cnpsZDRzTEZJR28iLCJ0eXAiOiJ2eHAtY2hlY2twb2ludCtqd3QifQ.eyJpYXQiOjE3OTI3MDgyMjksIm9yaWdpbiI6ImxvY2FsaG9zdDozNzMwL3Z4cC9sb2cvdjAiLCJyb290X2hhc2giOiJrZUZNTmRpV2c0VWwxVTRxYmJxX09iWjZlQ3JFSHJYRjY2MHVGX25sTUdjIiwidHJlZV9zaXplIjo2fQ.sSiHWiKqyIaXW4Rdq82OgzwL3vPRX2AMgfIOpdAvIxmF21LEz6xtD5VMv7tiZUP2tYtZMyT0N0VE-G8XAaqXmA",
+    "cosignatures": [],
+    "inclusion": [
+     {
+      "seq": 0,
+      "leaf_index": 0,
+      "salt": "eOxqGkCJgVZ6sMV1Kq3l1a7ASiC0vqBzwBr2ItaA6bw",
+      "tag": "5ssKNd3GSi8GROYEsJsqA_exJD-_XO66fq6JZH8L3h8",
+      "path": [
+       "cWYNDivHRGqsUumBbabgSTfpgECE0b5kEJtDXUKmEJ8",
+       "9h78ruq4ki1hAV9rrXf_b9fvo4jumR2dKB5Qf1_ClkA",
+       "Bwwi19T2_87M1Mi0GCxRbFZEcSmzGMOr4aruXLwDfQg"
+      ]
+     },
+     {
+      "seq": 1,
+      "leaf_index": 1,
+      "salt": "7iAvSlVISfXw2QWgHAKlxRwQhVI4tz1W8iEnEJ5BAb8",
+      "tag": "2dnhcZNgVcExvk2wnaTRnVJ1oqgczrHleC4sNEI9UFA",
+      "path": [
+       "TXwCDRZ2muPq1DqCc7bisqGXCckNYz2DvU87b-pF9kU",
+       "9h78ruq4ki1hAV9rrXf_b9fvo4jumR2dKB5Qf1_ClkA",
+       "Bwwi19T2_87M1Mi0GCxRbFZEcSmzGMOr4aruXLwDfQg"
+      ]
+     },
+     {
+      "seq": 2,
+      "leaf_index": 2,
+      "salt": "3Mgulk4Lp4InUhQl2eLZVg8U9mfIiBT3mV3TCPP-T6Y",
+      "tag": "DbrBd5Eq2B55l02CbHE7H6k08YoPD3DWI0iheWMdEHY",
+      "path": [
+       "yOVqwF6vyv_k8y4aAr2-pyKUDCuVPa-odHg0GRUgN0Q",
+       "DkqJLxhFZaH53zIpywcZAXTk7DP0Bv5Mkv2fMl57UZU",
+       "Bwwi19T2_87M1Mi0GCxRbFZEcSmzGMOr4aruXLwDfQg"
+      ]
+     },
+     {
+      "seq": 3,
+      "leaf_index": 3,
+      "salt": "4OXxePvlMU1atWkKojvRuZBLecMNmy1ZkpeHvHpjeWo",
+      "tag": "B5RFwMqhdutV64sZY1U0cOSzAw7TWN_k7FEW69uAcHg",
+      "path": [
+       "cYj0JnFmosKM5SguSO3hL5y4M6NslbSvzF8VZ9IFUhc",
+       "DkqJLxhFZaH53zIpywcZAXTk7DP0Bv5Mkv2fMl57UZU",
+       "Bwwi19T2_87M1Mi0GCxRbFZEcSmzGMOr4aruXLwDfQg"
+      ]
+     },
+     {
+      "seq": 4,
+      "leaf_index": 4,
+      "salt": "K3IMAlRe93Sz2how8-rJKwp2354WBhhsGrwXgdL2Skg",
+      "tag": "ly9pcRMjwN0awavTY1pl9G7CiEnOSBuCu63HtIiOVpk",
+      "path": [
+       "Pp90UtKPepXOD29GhnOHHtdDvr03ivJwvD-1ZNoT4V8",
+       "f-9SHhvaAdhkB91YGYcqbXZaytDbVeby-_BIllGh0W4"
+      ]
+     },
+     {
+      "seq": 5,
+      "leaf_index": 5,
+      "salt": "jN-LAmmNq3YTiN9FseTrN9xRZGhnmOE5vXNElXaaLwo",
+      "tag": "HbMUP4yAlKA6Y6MRYSsjDy67hcpzeN_8iSiuLQuOT28",
+      "path": [
+       "kkoXiMFIGN5XFXiCVPB70Gymn5BaXaCwqDEbq2ZEgD8",
+       "f-9SHhvaAdhkB91YGYcqbXZaytDbVeby-_BIllGh0W4"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:30.598Z",
+  "verifier": "verifier/verificar_paquete.py vivo",
+  "op": "op_XzdILOmlgiae",
+  "verdict": {
+   "valid": true,
+   "final_state": "succeeded",
+   "revision": 1,
+   "approval": "agent_asserted",
+   "derived_assurance": [
+    "issuer_key_attested",
+    "operator_observed",
+    "operator_reported_read_back",
+    "operator_reported_agent_approval"
+   ],
+   "single_root": "operator",
+   "custody_declared": "operator_hosted",
+   "logged": false,
+   "company": "http://localhost:3730/e/ferreteria-demo",
+   "anchor": "issuer",
+   "key_source": "issuer_metadata_live",
+   "profile": "issuer",
+   "statements": 6,
+   "log_inclusion": "ok",
+   "tree_size": 6,
+   "live_tree_size": 6,
+   "consistency": "ok",
+   "witnesses": 0,
+   "operation": "matches"
+  },
+  "material_capture": [
+   "documents: 5\r",
+   "{\"valid\": true, \"final_state\": \"succeeded\", \"revision\": 1, \"approval\": \"agent_asserted\", \"derived_assurance\": [\"issuer_key_attested\", \"operator_observed\", \"operator_reported_read_back\", \"operator_reported_agent_approval\"], \"single_root\": \"operator\", \"custody_declared\": \"operator_hosted\", \"logged\": false, \"company\": \"http://localhost:3730/e/ferreteria-demo\", \"anchor\": \"issuer\", \"key_source\": \"issuer_metadata_live\", \"profile\": \"issuer\", \"statements\": 6, \"log_inclusion\": \"ok\", \"tree_size\": 6, \"live_tree_size\": 6, \"consistency\": \"ok\", \"witnesses\": 0, \"operation\": \"matches\"}"
+  ]
+ },
+ {
+  "at": "2026-10-22T22:30:30.612Z",
+  "method": "POST",
+  "url": "http://localhost:3730/interno/relaciones/iniciar",
+  "headers": {
+   "content-type": "application/json"
+  },
+  "request": {
+   "tenant": "t_ferreteria_demo",
+   "relationship_id": "rel_X9sUhyHhjsLp",
+   "action": "despacho.proponer_cambio",
+   "params": {
+    "order_ref": "P-1043",
+    "delivery_date": "2026-10-30"
+   }
+  },
+  "status": 201,
+  "response": {
+   "outbox_id": "out_c_bdRdvaL42s",
+   "delivery": "entregado",
+   "http": 202,
+   "content": {
+    "request_id": "req_1tEWlrG-_6eq",
+    "request_url": "http://localhost:3730/e/ferreteria-demo/v1/requests/req_1tEWlrG-_6eq",
+    "proposal_id": "prop_op_wHbfb8mjcZI7_r1",
+    "operation_id": "op_wHbfb8mjcZI7",
+    "summary": "Cambiar el despacho del pedido P-1043 (Escalera de aluminio 6 peldaños) del 2026-10-27 al 2026-10-30, a Calle Ejemplo 100, Santiago, sin costo.",
+    "terms_digest": "sha-256:u-oBOmfP_-UahdQqZhwaNaeQAq1ro4hzhaDCy69JhG8"
+   }
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:30.619Z",
+  "method": "POST",
+  "url": "http://localhost:3730/e/ferreteria-demo/v1/proposals/prop_op_wHbfb8mjcZI7_r1/accept",
+  "headers": {
+   "authorization": "DPoP nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJuS0NDWUxRS3d1X1UxeDRxIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtby92MS9wcm9wb3NhbHMvcHJvcF9vcF93SGJmYjhtamNaSTdfcjEvYWNjZXB0IiwiaWF0IjoxNzkyNzA4MjMwLCJhdGgiOiJWTlJzWHBsZ3FIWDdYaFdIWUpaYlhHSGRCVnY2clFVWldLdXAyazFzYW5JIn0.qLyehFQqUBRa16RR2wxXoIwef4_Ej2RxBIsonmm9_iXQyf0Y0jwKQXszPoj3he7ZQ8Jcx0H-i4zLzKZdIbLiXA",
+   "content-type": "application/json"
+  },
+  "request": {
+   "approved_by": "user"
+  },
+  "status": 200,
+  "response": {
+   "request_id": "req_1tEWlrG-_6eq",
+   "operation": "pedido.reprogramar_despacho",
+   "target": {
+    "order_ref": "P-1043"
+   },
+   "state": "succeeded",
+   "projections": {
+    "poppy": "succeeded",
+    "a2a": "TASK_STATE_COMPLETED"
+   },
+   "operation_id": "op_wHbfb8mjcZI7",
+   "proposal": {
+    "id": "prop_op_wHbfb8mjcZI7_r1",
+    "revision": 1,
+    "state": "accepted",
+    "summary": "Cambiar el despacho del pedido P-1043 (Escalera de aluminio 6 peldaños) del 2026-10-27 al 2026-10-30, a Calle Ejemplo 100, Santiago, sin costo.",
+    "terms": {
+     "pedido": "P-1043",
+     "producto": "Escalera de aluminio 6 peldaños",
+     "despacho_actual": "2026-10-27",
+     "despacho_nuevo": "2026-10-30",
+     "direccion": "Calle Ejemplo 100, Santiago",
+     "costo": {
+      "amount": "0",
+      "currency": "CLP"
+     },
+     "vxp_salt": "U-x1o6Rd6BvJxy04YMrtUA"
+    },
+    "commitment": {
+     "mode": "firm",
+     "requires": []
+    },
+    "expires_at": "2026-10-22T22:45:30.605Z",
+    "user_approval_required": true,
+    "limits": {
+     "max_revisions": 3,
+     "revisions_left": 2,
+     "max_accept_attempts": 3,
+     "accept_attempts_left": 3
+    }
+   },
+   "effects": [
+    {
+     "system": "erp",
+     "change": "despacho 2026-10-27 → 2026-10-30",
+     "applied": true
+    }
+   ],
+   "cancellation": null,
+   "result": {
+    "summary": "Listo: el pedido P-1043 se despacha el 2026-10-30 (antes 2026-10-27). Verificado en el sistema de Ferretería Demo.",
+    "data": {
+     "pedido": "P-1043",
+     "despacho": "2026-10-30",
+     "verificado": "lectura_del_sistema",
+     "effects": [
+      {
+       "system": "erp",
+       "change": "despacho 2026-10-27 → 2026-10-30",
+       "applied": true
+      }
+     ]
+    }
+   },
+   "reason": "read_back_matches",
+   "proof_url": "http://localhost:3730/e/ferreteria-demo/v1/requests/req_1tEWlrG-_6eq/proof"
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:30.625Z",
+  "method": "GET",
+  "url": "http://localhost:3730/e/ferreteria-demo/v1/requests/req_1tEWlrG-_6eq/proof",
+  "headers": {
+   "authorization": "DPoP nt_pt_qFu0nzxs26EKyHDd8GuwvQ8nHBtn-",
+   "dpop": "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand0IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZDdIbndGN2U3UFRrNUE1WVdfWVBnQzFsdzY4RFQwd2xycThDcFNkLTJBRSIsInkiOiJGSTU4ZWNSeU56dzdNYTZETVk0YmZOcHlaTVMzUXVtSzlGejAxX2lnT2NvIn19.eyJqdGkiOiJTUkR4Q1ZHUnF3Q1lkby01IiwiaHRtIjoiR0VUIiwiaHR1IjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vL3YxL3JlcXVlc3RzL3JlcV8xdEVXbHJHLV82ZXEvcHJvb2YiLCJpYXQiOjE3OTI3MDgyMzAsImF0aCI6IlZOUnNYcGxncUhYN1hoV0hZSlpiWEdIZEJWdjZyUVVaV0t1cDJrMXNhbkkifQ.pvtD28BLWIstaeHlCHJAxDCQAPRWY41MGBWOB-lqEdXCFTEgCU4fSvG772tE4jpv4YBH4-kb5lPl82HXK6s6_Q",
+   "content-type": "application/json"
+  },
+  "request": null,
+  "status": 200,
+  "response": {
+   "v": "0.1",
+   "company": "http://localhost:3730/e/ferreteria-demo",
+   "op": "op_wHbfb8mjcZI7",
+   "statements": [
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IkJOZ1RhMjhFS0R2a2pVRFUwdFdlcjNuZVZ0ZVBuNVZxeFR1X1RqUzNfSXMiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsiY2hhbm5lbCI6InZ4cCIsImNsaWVudF9pZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczNC9hZ2VudC5qc29uIiwicmVxdWVzdF9kaWdlc3QiOiJzaGEtMjU2OkpoZ19kUVkzcFJpemlsVDlWOC1FV0xwZjJ4Z2lJOVBTU25pQ3Y1STFvVFkifSwiY29tcGFueSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtbyIsImlhdCI6MTc5MjcwODIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL3Z4cC9vcGVyYXRvciIsImtpbmQiOiJyZXF1ZXN0Iiwib3AiOiJvcF93SGJmYjhtamNaSTciLCJwcmV2IjpudWxsLCJzZXEiOjAsInVzZXIiOiJ1c3JfMDEyNGVmNDAiLCJ2IjoiMC4xIn0.z3znzRlb0uVJrRW9qSWtu6QlUembibajYR4Rv98_4bLqurBzhblkl5Nc8WqkQtnR0T526Rz48FLzgioYACyBmA~",
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IlFfTG02WWJJcWxSblEzYmxROXdqLWwybE9MM3JGWlF0ZHI4SzI4VGVLdzgiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsiY2FwYWJpbGl0eSI6InBlZGlkby5yZXByb2dyYW1hcl9kZXNwYWNobyIsImNvbW1pdG1lbnQiOnsibW9kZSI6ImZpcm0iLCJyZXF1aXJlcyI6W119LCJjb21wYW55X3Jldmlld19yZXF1aXJlZCI6ZmFsc2UsImV4cGlyZXNfYXQiOiIyMDI2LTEwLTIyVDIyOjQ1OjMwLjYwNVoiLCJyZWFkX2JhY2tfdGVybXMiOlsicGVkaWRvIiwiZGVzcGFjaG9fbnVldm8iXSwicmV2aXNpb24iOjEsInRlcm1zX2RpZ2VzdCI6InNoYS0yNTY6dS1vQk9tZlBfLVVhaGRRcVpod2FOYWVRQXExcm80aHpoYURDeTY5SmhHOCIsInVzZXJfYXBwcm92YWxfcmVxdWlyZWQiOnRydWV9LCJjb21wYW55IjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNzA4MjMwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzAvZS9mZXJyZXRlcmlhLWRlbW8iLCJraW5kIjoidGVybXMiLCJvcCI6Im9wX3dIYmZiOG1qY1pJNyIsInByZXYiOiJzaGEtMjU2Ok1kRWRMNDEyS25QT1luVFVlVDVQVE13cnJFV1pyaEJkcG5NMFhjUGVZWnMiLCJzZXEiOjEsInVzZXIiOiJ1c3JfMDEyNGVmNDAiLCJ2IjoiMC4xIn0.NutL9sw5H3xWVegkI6W856lBYWdIu2oOKUvHmRUgV54OV06uNekCEfZzIIpZ79QlvPhRbBbrMe03D49adI19BQ~",
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IkJOZ1RhMjhFS0R2a2pVRFUwdFdlcjNuZVZ0ZVBuNVZxeFR1X1RqUzNfSXMiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsibWV0aG9kIjoiYWdlbnRfYXNzZXJ0ZWQiLCJyZXZpc2lvbiI6MSwidGVybXNfZGlnZXN0Ijoic2hhLTI1Njp1LW9CT21mUF8tVWFoZFFxWmh3YU5hZVFBcTFybzRoemhhREN5NjlKaEc4In0sImNvbXBhbnkiOiJodHRwOi8vbG9jYWxob3N0OjM3MzAvZS9mZXJyZXRlcmlhLWRlbW8iLCJpYXQiOjE3OTI3MDgyMzAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC92eHAvb3BlcmF0b3IiLCJraW5kIjoidXNlcl9hcHByb3ZhbCIsIm9wIjoib3Bfd0hiZmI4bWpjWkk3IiwicHJldiI6InNoYS0yNTY6UmNFYjkwMUMzcFVGeWg4SmlqR2xSMG1TTTdFOUU3ZGJNV3czeUpHRXFTUSIsInNlcSI6MiwidXNlciI6InVzcl8wMTI0ZWY0MCIsInYiOiIwLjEifQ.FKlkG0QH8X4hbcbngtrcQ_sKp8tERzuzl3Z2DOUZof1qNKeNKuFF7lCTK0eYn23D_Gn34hZ4nzb-qlonuhJW3g~",
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IkJOZ1RhMjhFS0R2a2pVRFUwdFdlcjNuZVZ0ZVBuNVZxeFR1X1RqUzNfSXMiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsiYXR0ZW1wdCI6MSwiY2FwYWJpbGl0eSI6InBlZGlkby5yZXByb2dyYW1hcl9kZXNwYWNobyIsInJlbGVhc2UiOiJzaGEtMjU2OnUxVEJCeEpYVEt0YTM2SzVVSV9qX215aFFhSHpiUFAySGNGNHJCS0d4UEEiLCJyZXZpc2lvbiI6MSwidGVybXNfZGlnZXN0Ijoic2hhLTI1Njp1LW9CT21mUF8tVWFoZFFxWmh3YU5hZVFBcTFybzRoemhhREN5NjlKaEc4In0sImNvbXBhbnkiOiJodHRwOi8vbG9jYWxob3N0OjM3MzAvZS9mZXJyZXRlcmlhLWRlbW8iLCJpYXQiOjE3OTI3MDgyMzAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC92eHAvb3BlcmF0b3IiLCJraW5kIjoiZXhlY3V0aW9uIiwib3AiOiJvcF93SGJmYjhtamNaSTciLCJwcmV2Ijoic2hhLTI1NjpDdnJJaGV2TkdIbDJMMVpieGlYM19BZUVPQk9IajNOYVY4Y2lNS0hxUl9FIiwic2VxIjozLCJ1c2VyIjoidXNyXzAxMjRlZjQwIiwidiI6IjAuMSJ9.GRgZFC2rPWid7q2DPq6uvxFfkiqcVoPczHtDB-j0taizPSwK42hrNfAJmuTnKRqBxuQGJJCifFSTo2Wpc-yjnA~",
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IkJOZ1RhMjhFS0R2a2pVRFUwdFdlcjNuZVZ0ZVBuNVZxeFR1X1RqUzNfSXMiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsibWF0Y2hlc190ZXJtcyI6dHJ1ZSwibWV0aG9kIjoic3lzdGVtX3JlYWRfYmFjayIsIm9ic2VydmVkIjp7Il9zZCI6WyJGX0ZSNWN2NUw0RjMweDZFZXlZaWxRbnk2RVRrODhBU0hwM3FUWUxwU1pJIl0sImRlc3BhY2hvX251ZXZvIjoiMjAyNi0xMC0zMCIsInBlZGlkbyI6IlAtMTA0MyJ9LCJzb3VyY2UiOiJjb21wYW55X3N5c3RlbSJ9LCJjb21wYW55IjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwiaWF0IjoxNzkyNzA4MjMwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjM3MzAvdnhwL29wZXJhdG9yIiwia2luZCI6InJlYWRfYmFjayIsIm9wIjoib3Bfd0hiZmI4bWpjWkk3IiwicHJldiI6InNoYS0yNTY6b09XaHhCSkFrNEQ1WGhjOUFQd2tLd1VmbHJGcEd3VG5td1E1VS1JRkE0RSIsInNlcSI6NCwidXNlciI6InVzcl8wMTI0ZWY0MCIsInYiOiIwLjEifQ.ez4eh4OWSDH1plAGOJ309147BsF3l8ejoG0N2BgaYpjGXUJ5ByHSydTnvQFGjtIddOQZ9lwJeqvXfluKVMToKw~WyJCQ01GYUxJd2FQbkw0bEM0UW5URW1nIiwiZGlyZWNjaW9uIiwiQ2FsbGUgRWplbXBsbyAxMDAsIFNhbnRpYWdvIl0~",
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IlFfTG02WWJJcWxSblEzYmxROXdqLWwybE9MM3JGWlF0ZHI4SzI4VGVLdzgiLCJ0eXAiOiJ2eHAtc3RtdCtzZC1qd3QifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjM3MzQvYWdlbnQuanNvbiIsImJvZHkiOnsiY2xhaW1lZF9hc3N1cmFuY2UiOlsiaXNzdWVyX2tleV9hdHRlc3RlZCIsIm9wZXJhdG9yX29ic2VydmVkIiwib3BlcmF0b3JfcmVwb3J0ZWRfcmVhZF9iYWNrIiwib3BlcmF0b3JfcmVwb3J0ZWRfYWdlbnRfYXBwcm92YWwiXSwicmVzdWx0X3N1bW1hcnlfZGlnZXN0Ijoic2hhLTI1NjpKNnFMSTRrenk4SU5IQWJpYjlibUhHN09wUGR0cFlEUlM3emFlNXNsMXBVIiwicmV2aXNpb24iOjEsInN0YXRlIjoic3VjY2VlZGVkIiwidGVybXNfZGlnZXN0Ijoic2hhLTI1Njp1LW9CT21mUF8tVWFoZFFxWmh3YU5hZVFBcTFybzRoemhhREN5NjlKaEc4IiwidGhpcmRfcGFydHkiOltdfSwiY29tcGFueSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzczMC9lL2ZlcnJldGVyaWEtZGVtbyIsImlhdCI6MTc5MjcwODIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozNzMwL2UvZmVycmV0ZXJpYS1kZW1vIiwia2luZCI6Im91dGNvbWUiLCJvcCI6Im9wX3dIYmZiOG1qY1pJNyIsInByZXYiOiJzaGEtMjU2OlNrZHhYWFNkcVFrRjNoa3ZFZTBWTHRST3ZLUmtJNi1KUHE0bXhiRkNXYkUiLCJzZXEiOjUsInVzZXIiOiJ1c3JfMDEyNGVmNDAiLCJ2IjoiMC4xIn0.ZR-RbIgIAczHhUUUxpJl2CyTijdy67G4WQZx3LLwOOqoXMDLtM0YENDzjRQTQ5JSXwGEij1R6t_6AIpu3y1Irw~"
+   ],
+   "log": {
+    "origin": "localhost:3730/vxp/log/v0",
+    "checkpoint": "eyJhbGciOiJFUzI1NiIsImtpZCI6IjN3bEhOdkdaNVdxLW92UllqN3VkM0ZRcm0yYnZfYnh5cnpsZDRzTEZJR28iLCJ0eXAiOiJ2eHAtY2hlY2twb2ludCtqd3QifQ.eyJpYXQiOjE3OTI3MDgyMzAsIm9yaWdpbiI6ImxvY2FsaG9zdDozNzMwL3Z4cC9sb2cvdjAiLCJyb290X2hhc2giOiJyazRvQ05VVjVVOUR0VnNJcXhlUS1YcmJmU1F3VUNTSm9qaHNiM0QzemlNIiwidHJlZV9zaXplIjoxMn0.dc6l1IzeYlRIL5ym5uuI1UMRFaPqlsOLbDyVuTSZ9koOc-YG9nwgQDM2oL7E8izY_aIbbZMrGcayrt58G3njSQ",
+    "cosignatures": [],
+    "inclusion": [
+     {
+      "seq": 0,
+      "leaf_index": 6,
+      "salt": "NbFAbiRNXAcX5C2tUmZfdqT6YHGcIdbTxh4k8jO1kjA",
+      "tag": "Jn1Ql6nHnnTEpmO47cCS1e4DzqPcSo_n9ElRGkDZ-b8",
+      "path": [
+       "1oO83m13eDhUclKvOk4rdRCVdFejYxQLkKxISJbPvb0",
+       "Bwwi19T2_87M1Mi0GCxRbFZEcSmzGMOr4aruXLwDfQg",
+       "f-9SHhvaAdhkB91YGYcqbXZaytDbVeby-_BIllGh0W4",
+       "bw9yslIF9Ic1gk_cBZc97vBav7aa55y5XxDyVxoZ81Q"
+      ]
+     },
+     {
+      "seq": 1,
+      "leaf_index": 7,
+      "salt": "waBZIriT7eKuM8BLqZxHUodj82Q6FCZm3pEz9-037GM",
+      "tag": "LEh7o38CKzrzza1RBVLB9n-nOXHx8DuuG3WyxJzfUFI",
+      "path": [
+       "gPDl8HVoG3uHhCoCDio6fUNXeCGdm3no3Sls1cXQoeY",
+       "Bwwi19T2_87M1Mi0GCxRbFZEcSmzGMOr4aruXLwDfQg",
+       "f-9SHhvaAdhkB91YGYcqbXZaytDbVeby-_BIllGh0W4",
+       "bw9yslIF9Ic1gk_cBZc97vBav7aa55y5XxDyVxoZ81Q"
+      ]
+     },
+     {
+      "seq": 2,
+      "leaf_index": 8,
+      "salt": "9D_Jn9FcifWLeXsPhI831n1NbiAgTpqQj4WZ7p6MnJ8",
+      "tag": "uOZ8xzNoN6UFYoABsQIcK8-3RBylFcVx55bvYTUF96g",
+      "path": [
+       "S731DgFCw-BG3QaLtCTz8wl5VeguIBkqUAjzN1dMFG0",
+       "2bEtMMY1S9Z1n6uTWY6xjVoNV1EIgWQxtEsFHrFhoBo",
+       "kJuJCNmMOQPV-wABlUk0LJbkgFd06fNFjtI3g9v0DKE"
+      ]
+     },
+     {
+      "seq": 3,
+      "leaf_index": 9,
+      "salt": "SUOqtwJGi0RrqjzReKA8r3wK1MV80WEwRQrBkLoTeAQ",
+      "tag": "XhyxAt-NsA14IvvxAt6K4-uFnJUuaKnenf1_4rvv-gA",
+      "path": [
+       "D5iuHx_2ZaBpQqWcC3s31Iht8omhs5DOSMakDeSb6T8",
+       "2bEtMMY1S9Z1n6uTWY6xjVoNV1EIgWQxtEsFHrFhoBo",
+       "kJuJCNmMOQPV-wABlUk0LJbkgFd06fNFjtI3g9v0DKE"
+      ]
+     },
+     {
+      "seq": 4,
+      "leaf_index": 10,
+      "salt": "Udz211sGF_OdniDajt7jts6i7e12l5HWR9D1dvnUVBs",
+      "tag": "6KqjosrL0brpsriMiQ9cZYpVGGgRS-pO6IDNBv_Q09M",
+      "path": [
+       "fKNzw0gvY8ULPTNmqGPjC_hkmC4tfWBizEVleNjf4Ps",
+       "-RFOanRcqM3imJ1Uv-O3qwn1BGbv6t9YHKh1tb9EfSM",
+       "kJuJCNmMOQPV-wABlUk0LJbkgFd06fNFjtI3g9v0DKE"
+      ]
+     },
+     {
+      "seq": 5,
+      "leaf_index": 11,
+      "salt": "ctbKRGXE0GF1wB5X8isP1uLMqF7tGKF_Q5zTpdv4cYA",
+      "tag": "ehtxOWqTPOGlzgvdKdjAKzm2d4kz_PbrBeSd23L2_UQ",
+      "path": [
+       "78nNlYM3c5laRyuoW8n8Ou4b0vpqbOLP6zJQYbH4U9E",
+       "-RFOanRcqM3imJ1Uv-O3qwn1BGbv6t9YHKh1tb9EfSM",
+       "kJuJCNmMOQPV-wABlUk0LJbkgFd06fNFjtI3g9v0DKE"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ {
+  "at": "2026-10-22T22:30:31.871Z",
+  "verifier": "verifier/verificar_paquete.py vivo",
+  "op": "op_wHbfb8mjcZI7",
+  "verdict": {
+   "valid": true,
+   "final_state": "succeeded",
+   "revision": 1,
+   "approval": "agent_asserted",
+   "derived_assurance": [
+    "issuer_key_attested",
+    "operator_observed",
+    "operator_reported_read_back",
+    "operator_reported_agent_approval"
+   ],
+   "single_root": "operator",
+   "custody_declared": "operator_hosted",
+   "logged": false,
+   "company": "http://localhost:3730/e/ferreteria-demo",
+   "anchor": "issuer",
+   "key_source": "issuer_metadata_live",
+   "profile": "issuer",
+   "statements": 6,
+   "log_inclusion": "ok",
+   "tree_size": 12,
+   "live_tree_size": 12,
+   "consistency": "ok",
+   "witnesses": 0,
+   "operation": "matches"
+  },
+  "material_capture": [
+   "documents: 5\r",
+   "{\"valid\": true, \"final_state\": \"succeeded\", \"revision\": 1, \"approval\": \"agent_asserted\", \"derived_assurance\": [\"issuer_key_attested\", \"operator_observed\", \"operator_reported_read_back\", \"operator_reported_agent_approval\"], \"single_root\": \"operator\", \"custody_declared\": \"operator_hosted\", \"logged\": false, \"company\": \"http://localhost:3730/e/ferreteria-demo\", \"anchor\": \"issuer\", \"key_source\": \"issuer_metadata_live\", \"profile\": \"issuer\", \"statements\": 6, \"log_inclusion\": \"ok\", \"tree_size\": 12, \"live_tree_size\": 12, \"consistency\": \"ok\", \"witnesses\": 0, \"operation\": \"matches\"}"
+  ]
+ }
+]

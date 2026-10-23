@@ -1,0 +1,12 @@
+== 14-pact-hotel-identity · 2026-10-22T22:31:25Z · bash -c cd <openpactprotocol clone>/e2e && E2E_PROVIDER=any PROVIDER_URL=http://localhost:3620 CUSTOMER_ID=t_hotel_demo OTHER_CUSTOMER_ID=t_libreria_demo PA_ISSUER=http://localhost:3622 PA_AUDIENCE=http://localhost:3620/a2a PA_PRIVATE_JWK="$(cat reference/.prueba/pa-private.jwk)" npx vitest run pact.test.ts
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90m<openpactprotocol clone>/e2e[39m
+
+ [32m✓[39m pact.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 300[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m10 passed[39m[22m[90m (10)[39m
+[2m   Start at [22m 19:31:27
+[2m   Duration [22m 1.48s[2m (transform 151ms, setup 0ms, collect 455ms, tests 300ms, environment 0ms, prepare 250ms)[22m
+
+exit 0

@@ -1,6 +1,6 @@
-== 09-vectores-pact · 2026-10-22T06:12:13Z · python verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json (vectores publicados, datos neutros)
-OK    PD1 - {"valid": true, "company": "https://auth.sovras.io/e/ferreteria-demo", "anchor": "brand_domain", "final_state": "succeeded", "pact_receipt": "verified"}
-OK    PD2 - {"valid": true, "company": "https://auth.sovras.io/e/ferreteria-demo", "anchor": "pact_issuer", "final_state": "succeeded", "pact_receipt": "not_presented"}
+== 09-vectores-pact · 2026-10-22T22:28:55Z · python verifier/verificar_paquete.py pact vectors/vectores-pact-0.1.json
+OK    PD1 - {"valid": true, "company": "https://auth.operator.example/e/ferreteria-demo", "anchor": "brand_domain", "final_state": "succeeded", "pact_receipt": "verified"}
+OK    PD2 - {"valid": true, "company": "https://auth.operator.example/e/ferreteria-demo", "anchor": "pact_issuer", "final_state": "succeeded", "pact_receipt": "not_presented"}
 OK    PD3 - issuer_not_anchored en seq None; esperado issuer_not_anchored
 OK    PD4 - issuer_not_anchored en seq None; esperado issuer_not_anchored
 OK    PD5 - company_mismatch en seq None; esperado company_mismatch

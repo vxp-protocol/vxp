@@ -1,0 +1,122 @@
+== 16-verificador-web · 2026-10-22T22:34:42Z · node test-vxp-verify.mjs (after the downloads were rebuilt)
+== 16-verificador-web · 2026-10-22T22:34:43.027Z · node test-vxp-verify.mjs (v22.20.0)
+module: verifier/vxp-verify.js · reference: verifier\verificar_paquete.py · legacy reference: null
+(node:23696) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///verifier/vxp-verify.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to <local>\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[vectores] vectors\vectores-0.1.json: python "92 comprobaciones, 0 fallas" (exit 0) · js "92 comprobaciones, 0 fallas" · 92 checks compared line by line, 0 discrepancies
+[pact] vectors\vectores-pact-0.1.json: python "16 comprobaciones, 0 fallas" (exit 0) · js "16 comprobaciones, 0 fallas" · 16 checks compared line by line, 0 discrepancies
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · as captured · vxp naming -> valid:true final_state=succeeded issuer_key_attested,operator_observed,operator_reported_read_back,operator_reported_agent_approval single_root=operator logged=false
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · aud of another agent · vxp naming -> valid:false aud_mismatch seq=0
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · signature of the last statement altered · vxp naming -> valid:false signature_invalid seq=5
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · signed terms digest altered (term changed in the statement) · vxp naming -> valid:false signature_invalid seq=1
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · operation term 'pedido' changed · vxp naming -> valid:false operation_terms_mismatch
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · operation state changed · vxp naming -> valid:false operation_state_mismatch
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · order: statements 2 and 3 swapped · vxp naming -> valid:false seq_error seq=2
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · last statement dropped · vxp naming -> valid:false no_outcome
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · only the request · vxp naming -> valid:false no_outcome
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · log inclusion of seq 0 removed · vxp naming -> valid:false log_inclusion_missing seq=0
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · log inclusion path cut · vxp naming -> valid:false log_inclusion_failed seq=1
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · anchor to another domain · vxp naming -> valid:false issuer_not_anchored
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · metadata issuer not identical · vxp naming -> valid:false issuer_not_anchored
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · company key in material altered · vxp naming -> valid:false unknown_key seq=1
+SAME native-run-2026-10-22/op_B6__ICZlCe_c · unreferenced disclosure appended · vxp naming -> valid:false disclosure_digest_mismatch seq=1
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · as captured · vxp naming -> valid:true final_state=succeeded issuer_key_attested,operator_observed,operator_reported_read_back,operator_reported_agent_approval single_root=operator logged=false
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · aud of another agent · vxp naming -> valid:false aud_mismatch seq=0
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · signature of the last statement altered · vxp naming -> valid:false signature_invalid seq=5
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · signed terms digest altered (term changed in the statement) · vxp naming -> valid:false signature_invalid seq=1
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · operation term 'pedido' changed · vxp naming -> valid:false operation_terms_mismatch
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · operation state changed · vxp naming -> valid:false operation_state_mismatch
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · order: statements 2 and 3 swapped · vxp naming -> valid:false seq_error seq=2
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · last statement dropped · vxp naming -> valid:false no_outcome
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · only the request · vxp naming -> valid:false no_outcome
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · log inclusion of seq 0 removed · vxp naming -> valid:false log_inclusion_missing seq=0
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · log inclusion path cut · vxp naming -> valid:false log_inclusion_failed seq=1
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · anchor to another domain · vxp naming -> valid:false issuer_not_anchored
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · metadata issuer not identical · vxp naming -> valid:false issuer_not_anchored
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · company key in material altered · vxp naming -> valid:false unknown_key seq=1
+SAME native-run-2026-10-22/op_NBbN47CrhrtM · unreferenced disclosure appended · vxp naming -> valid:false disclosure_digest_mismatch seq=1
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · as captured · vxp naming -> valid:true final_state=succeeded issuer_key_attested,operator_observed,operator_reported_read_back,operator_reported_agent_approval single_root=operator logged=false
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · aud of another agent · vxp naming -> valid:false aud_mismatch seq=0
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · signature of the last statement altered · vxp naming -> valid:false signature_invalid seq=5
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · signed terms digest altered (term changed in the statement) · vxp naming -> valid:false signature_invalid seq=1
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · operation term 'pedido' changed · vxp naming -> valid:false operation_terms_mismatch
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · operation state changed · vxp naming -> valid:false operation_state_mismatch
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · order: statements 2 and 3 swapped · vxp naming -> valid:false seq_error seq=2
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · last statement dropped · vxp naming -> valid:false no_outcome
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · only the request · vxp naming -> valid:false no_outcome
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · log inclusion of seq 0 removed · vxp naming -> valid:false log_inclusion_missing seq=0
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · log inclusion path cut · vxp naming -> valid:false log_inclusion_failed seq=1
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · anchor to another domain · vxp naming -> valid:false issuer_not_anchored
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · metadata issuer not identical · vxp naming -> valid:false issuer_not_anchored
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · company key in material altered · vxp naming -> valid:false unknown_key seq=1
+SAME native-run-2026-10-22-evening/op_XzdILOmlgiae · unreferenced disclosure appended · vxp naming -> valid:false disclosure_digest_mismatch seq=1
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · as captured · vxp naming -> valid:true final_state=succeeded issuer_key_attested,operator_observed,operator_reported_read_back,operator_reported_agent_approval single_root=operator logged=false
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · aud of another agent · vxp naming -> valid:false aud_mismatch seq=0
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · signature of the last statement altered · vxp naming -> valid:false signature_invalid seq=5
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · signed terms digest altered (term changed in the statement) · vxp naming -> valid:false signature_invalid seq=1
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · operation term 'pedido' changed · vxp naming -> valid:false operation_terms_mismatch
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · operation state changed · vxp naming -> valid:false operation_state_mismatch
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · order: statements 2 and 3 swapped · vxp naming -> valid:false seq_error seq=2
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · last statement dropped · vxp naming -> valid:false no_outcome
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · only the request · vxp naming -> valid:false no_outcome
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · log inclusion of seq 0 removed · vxp naming -> valid:false log_inclusion_missing seq=0
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · log inclusion path cut · vxp naming -> valid:false log_inclusion_failed seq=1
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · anchor to another domain · vxp naming -> valid:false issuer_not_anchored
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · metadata issuer not identical · vxp naming -> valid:false issuer_not_anchored
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · company key in material altered · vxp naming -> valid:false unknown_key seq=1
+SAME native-run-2026-10-22-evening/op_wHbfb8mjcZI7 · unreferenced disclosure appended · vxp naming -> valid:false disclosure_digest_mismatch seq=1
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · as captured · vxp naming -> valid:true final_state=succeeded issuer_key_attested,operator_observed,operator_reported_read_back,operator_reported_channel_approval single_root=operator logged=false
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · aud of another agent · vxp naming -> valid:false aud_mismatch seq=0
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · signature of the last statement altered · vxp naming -> valid:false signature_invalid seq=7
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · signed terms digest altered (term changed in the statement) · vxp naming -> valid:false signature_invalid seq=1
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · order: statements 2 and 3 swapped · vxp naming -> valid:false seq_error seq=2
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · last statement dropped · vxp naming -> valid:false no_outcome
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · only the request · vxp naming -> valid:false no_outcome
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · log inclusion of seq 0 removed · vxp naming -> valid:false log_inclusion_missing seq=0
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · log inclusion path cut · vxp naming -> valid:false log_inclusion_failed seq=1
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · anchor to another domain · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · metadata issuer not identical · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · company key in material altered · vxp naming -> valid:false unknown_key seq=1
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · unreferenced disclosure appended · vxp naming -> valid:false disclosure_digest_mismatch seq=1
+SAME pact-run-2026-10-22-evening/pact-op_R6F-x006Gxsg · with PACT receipt (Poppy anchor) · vxp naming -> valid:false pact_receipt_not_anchored seq=0
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · as captured · vxp naming -> valid:true final_state=succeeded issuer_key_attested,operator_observed,operator_reported_read_back,operator_reported_channel_approval single_root=operator logged=false
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · aud of another agent · vxp naming -> valid:false aud_mismatch seq=0
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · signature of the last statement altered · vxp naming -> valid:false signature_invalid seq=5
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · signed terms digest altered (term changed in the statement) · vxp naming -> valid:false signature_invalid seq=1
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · operation term 'pedido' changed · vxp naming -> valid:false operation_terms_mismatch
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · operation state changed · vxp naming -> valid:false operation_state_mismatch
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · order: statements 2 and 3 swapped · vxp naming -> valid:false seq_error seq=2
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · last statement dropped · vxp naming -> valid:false no_outcome
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · only the request · vxp naming -> valid:false no_outcome
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · log inclusion of seq 0 removed · vxp naming -> valid:false log_inclusion_missing seq=0
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · log inclusion path cut · vxp naming -> valid:false log_inclusion_failed seq=1
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · anchor to another domain · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · metadata issuer not identical · vxp naming -> valid:false issuer_not_anchored
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · company key in material altered · vxp naming -> valid:false unknown_key seq=1
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · unreferenced disclosure appended · vxp naming -> valid:false disclosure_digest_mismatch seq=1
+SAME pact-run-2026-10-22-evening/pact-op_YxV3xdcUxo5- · with PACT receipt (Poppy anchor) · vxp naming -> valid:false pact_receipt_not_anchored seq=0
+[material] real proofs: 6 captured proofs, 90 verdicts compared (captured + altered + cross-naming)
+[explain] native-run-2026-10-22-evening/op_XzdILOmlgiae: 18 controls; 16 pass, 0 fail
+    pass       anchor: Anchored to http://localhost:3730/e/ferreteria-demo via issuer (profile issuer).
+    pass       keys: Company and operator keys taken from the issuer's RFC 8414 metadata (issuer_metadata_live), never from the package.
+    pass       package: Version 0.1, company and op match the chain.
+    pass       statement_format: All 6 statements passed this check.
+    pass       issuer_and_key: All 6 statements passed this check.
+    pass       signature: All 6 statements passed this check.
+    pass       canonical_payload: All 6 statements passed this check.
+    pass       role: All 6 statements passed this check.
+    pass       selective_disclosure: All 6 statements passed this check.
+    pass       chain_binding: All 6 statements passed this check.
+    pass       chain_order: All 6 statements passed this check.
+    pass       terms_and_approval: All 6 statements passed this check.
+    pass       execution_and_read_back: All 6 statements passed this check.
+    pass       final_state: Final state: succeeded; approval agent_asserted on revision 1.
+    pass       log: Every statement is included in the log checkpoint (tree 6, live tree 6, consistent). Witnesses: 0, so not `logged`.
+    pass       operation: The operation the agent saw hashes to the signed terms, and its state is the last final statement.
+    info       pact_receipt: No PACT receipt cited.
+    info       assurance: Derived by this verifier, never by the issuer: issuer_key_attested = a final statement is signed by the key anchored to the company issuer (whoever controls that key; not that the claim is true); operator_observed = the operator signed an execution (the operator's word, not the company system's); operator_reported_read_back = the operator reports a system read-back that matches the terms (reported, not signed by the system of record); operator_reported_agent_approval = the operator reports that the agent said the user approved (nothing signed by the agent). single_root: operator (no evidence of a second, independent root); logged: false (no external witness). A valid signature does not prove the claim is true.
+
+TOTAL: 202 comparisons with the Python reference, 0 discrepancies
+exit 0

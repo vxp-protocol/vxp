@@ -1,4 +1,4 @@
-# VXP, Verifiable eXchange Protocol
+# SOVRAS VXP · Verifiable eXchange Protocol
 
 **Status: draft 0.1. The native profile is experimental.** Optional adapters for Poppy draft 0.2 and PACT 1.0.
 

@@ -1,0 +1,590 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/statement.schema.json",
+  "title": "VXP 0.1 statement payload",
+  "description": "Payload of one statement's SD-JWT, as signed: personal data travels as selective disclosures (_sd), never in clear (spec §6, Format; Statement kinds; P1–P6). The payload is in JCS form with integers only and amounts as strings. company-signed kinds: terms, company_review, outcome, correction, revocation; operator-signed kinds: request, counter, user_approval, execution, read_back. A verifier also applies the chain rules, which a schema cannot express (order, digests, signatures).",
+  "type": "object",
+  "required": [
+    "v",
+    "kind",
+    "iss",
+    "company",
+    "op",
+    "seq",
+    "prev",
+    "iat",
+    "aud",
+    "user",
+    "body"
+  ],
+  "properties": {
+    "v": {
+      "const": "0.1"
+    },
+    "kind": {
+      "enum": [
+        "request",
+        "terms",
+        "counter",
+        "user_approval",
+        "company_review",
+        "execution",
+        "read_back",
+        "outcome",
+        "correction",
+        "revocation"
+      ]
+    },
+    "iss": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "company": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "op": {
+      "type": "string",
+      "pattern": "^op_[A-Za-z0-9_-]+$"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "prev": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "common.schema.json#/$defs/digest"
+        }
+      ]
+    },
+    "iat": {
+      "$ref": "common.schema.json#/$defs/numericDate"
+    },
+    "aud": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "user": {
+      "type": "string",
+      "minLength": 1
+    },
+    "body": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "description": "seq 0 has no previous statement; every other one names it by digest.",
+      "if": {
+        "properties": {
+          "seq": {
+            "const": 0
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "prev": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "prev": {
+            "$ref": "common.schema.json#/$defs/digest"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/request"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "terms"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/terms"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "counter"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/counter"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "user_approval"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/user_approval"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "company_review"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/company_review"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "execution"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/execution"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "read_back"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/read_back"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "outcome"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/outcome"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "correction"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/correction"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "revocation"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/revocation"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "request": {
+      "description": "Operator, at seq 0: channel, client_id, digest of what was asked, optional idempotency key digest.",
+      "type": "object",
+      "required": [
+        "channel",
+        "client_id",
+        "request_digest"
+      ],
+      "properties": {
+        "channel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "client_id": {
+          "$ref": "common.schema.json#/$defs/url"
+        },
+        "request_digest": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "idempotency_key_digest": {
+          "$ref": "common.schema.json#/$defs/digest"
+        }
+      }
+    },
+    "terms": {
+      "description": "Company, each revision: the digest of the exact revision and what the company commits to read back.",
+      "type": "object",
+      "required": [
+        "revision",
+        "terms_digest",
+        "capability",
+        "expires_at",
+        "company_review_required",
+        "read_back_terms"
+      ],
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "terms_digest": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "capability": {
+          "$ref": "common.schema.json#/$defs/capabilityId"
+        },
+        "commitment": {
+          "$ref": "common.schema.json#/$defs/commitment"
+        },
+        "expires_at": {
+          "$ref": "common.schema.json#/$defs/dateTime"
+        },
+        "company_review_required": {
+          "type": "boolean"
+        },
+        "read_back_terms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "user_approval_required": {
+          "type": "boolean"
+        },
+        "answers": {
+          "$ref": "common.schema.json#/$defs/digest"
+        }
+      }
+    },
+    "counter": {
+      "description": "Operator: a counter-proposal from the agent, by digest.",
+      "type": "object",
+      "required": [
+        "base_revision",
+        "counter_digest",
+        "from"
+      ],
+      "properties": {
+        "base_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "counter_digest": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "from": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "user_approval": {
+      "description": "Operator: approval of the latest revision and its method (P2). With company_channel, the channel and the display_code; with standing_permission, the person authorized it beforehand within a limit.",
+      "type": "object",
+      "required": [
+        "revision",
+        "terms_digest",
+        "method"
+      ],
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "terms_digest": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "method": {
+          "enum": [
+            "agent_asserted",
+            "company_channel"
+          ]
+        },
+        "channel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display_code": {
+          "type": "string",
+          "pattern": "^[0-9]{6}$"
+        },
+        "evidence": {
+          "type": "object"
+        },
+        "basis": {
+          "const": "standing_permission"
+        },
+        "poppy_confirmation": {
+          "type": "object"
+        }
+      },
+      "if": {
+        "properties": {
+          "method": {
+            "const": "company_channel"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "channel",
+          "display_code"
+        ]
+      }
+    },
+    "company_review": {
+      "description": "Company: a decision by a person at the company, by role, after the customer's approval and before execution.",
+      "type": "object",
+      "required": [
+        "revision",
+        "terms_digest",
+        "decision",
+        "role"
+      ],
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "terms_digest": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "decision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "execution": {
+      "description": "Operator: the single execution, on the approved revision and digest.",
+      "type": "object",
+      "required": [
+        "revision",
+        "terms_digest",
+        "attempt",
+        "capability"
+      ],
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "terms_digest": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "capability": {
+          "$ref": "common.schema.json#/$defs/capabilityId"
+        },
+        "release": {
+          "$ref": "common.schema.json#/$defs/digest"
+        }
+      }
+    },
+    "read_back": {
+      "description": "Operator: what the company's system showed afterwards, named by term (P1, P5, P6). method none for a capability without read-back.",
+      "type": "object",
+      "required": [
+        "method"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string"
+        },
+        "matches_terms": {
+          "type": "boolean"
+        },
+        "observed": {
+          "type": "object"
+        }
+      },
+      "if": {
+        "properties": {
+          "method": {
+            "not": {
+              "const": "none"
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "matches_terms",
+          "observed"
+        ]
+      }
+    },
+    "outcome": {
+      "description": "Company: the result (P3, P6).",
+      "type": "object",
+      "required": [
+        "state"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "succeeded",
+            "failed",
+            "cancelled",
+            "expired",
+            "unknown"
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "terms_digest": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "result_summary_digest": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "claimed_assurance": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "third_party": {
+          "type": "array"
+        }
+      }
+    },
+    "correction": {
+      "description": "Company: what became known after the final state; corrects names the latest final statement (P4; spec §6, Corrections and revocations).",
+      "type": "object",
+      "required": [
+        "corrects",
+        "state",
+        "reason"
+      ],
+      "properties": {
+        "corrects": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "state": {
+          "enum": [
+            "succeeded",
+            "failed",
+            "cancelled",
+            "expired",
+            "unknown"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "note_digest": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "read_back": {
+          "$ref": "common.schema.json#/$defs/digest"
+        }
+      }
+    },
+    "revocation": {
+      "description": "Company: the referred statement was wrong; the verifier reports final_state revoked.",
+      "type": "object",
+      "required": [
+        "revokes",
+        "reason"
+      ],
+      "properties": {
+        "revokes": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

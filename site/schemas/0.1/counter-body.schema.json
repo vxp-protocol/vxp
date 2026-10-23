@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/counter-body.schema.json",
+  "title": "VXP 0.1 counter-proposal body",
+  "description": "Body of POST {endpoint}/proposals/{id}/counter (spec §8, Endpoints). The company answers 200 with a new revision, or 409 counter_rejected or negotiation_limit_exceeded. The shape of proposed_terms is the capability's own.",
+  "type": "object",
+  "required": [
+    "proposed_terms"
+  ],
+  "properties": {
+    "proposed_terms": {
+      "type": "object"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

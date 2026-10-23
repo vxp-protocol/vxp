@@ -30,6 +30,8 @@ PACT or SOVRAS; the adapters for Poppy and PACT are optional.
 | Build a personal agent | [Guide for personal agents](docs/guides/agent.md) and [`agent/`](agent/): library, CLI, MCP server and the hotel example. |
 | Make a company speak VXP | [Guide for companies](docs/guides/company.md) and the [native profile](docs/native-profile.md). |
 | Check a proof | [Guide for verifiers](docs/guides/verifier.md) and [`verifier/`](verifier/). |
+| Check the shape of an object | [JSON Schemas](docs/schemas.md) in [`schemas/0.1/`](schemas/0.1/). |
+| Know what happens when something fails | [Failures and how VXP behaves](docs/failures.md): each case with the test that covers it. |
 | Check an implementation | [Conformance](docs/conformance.md) and [`conformance/`](conformance/): the validator, the checklist and the rule → test matrix. |
 | Read the rules | The [specification](spec/spec.tpl.html), built to `site/spec/`. |
 | Use it with a coding agent | [`AGENTS.md`](AGENTS.md) and `site/llms.txt`. |
@@ -44,6 +46,7 @@ PACT or SOVRAS; the adapters for Poppy and PACT are optional.
 | [`verifier/`](verifier/) | Independent verifiers: two in Python and one in JavaScript for browser and Node, plus [`CHECKS.md`](verifier/CHECKS.md). |
 | [`vectors/`](vectors/) | Conformance test vectors and the scripts that generate them. |
 | [`agent/`](agent/) | The personal-agent side: library, CLI, MCP server, example agent and tests. Native profile only. |
+| [`schemas/`](schemas/) | JSON Schemas (2020-12) for every object of VXP 0.1, published at `vxpprotocol.org/schemas/0.1/`, with `check.ts`. |
 | [`conformance/`](conformance/) | Validator that acts as a personal agent against any native endpoint, checklist of what is not automatable, rule → test matrix. |
 | [`docs/`](docs/) | Documentation in Markdown, built into `site/docs/`, `site/llms.txt` and `site/llms-full.txt` with `node docs/build.ts`. |
 
@@ -72,7 +75,8 @@ The personal agent and the conformance validator, from the repository root:
 
 ```sh
 cd agent && npm test && cd ..                                          # the agent against the reference, in separate processes
-node conformance/reference/run.ts --report conformance-report.json   # 50 pass, 0 fail, 3 manual
+node schemas/check.ts                                                # the JSON Schemas against real objects
+node conformance/reference/run.ts --report conformance-report.json   # 51 pass, 0 fail, 3 manual
 ```
 
 Continuous integration runs all of the above ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).

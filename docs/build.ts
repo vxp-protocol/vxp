@@ -8,7 +8,7 @@
 //
 // Usage, from the repository root: node docs/build.ts
 
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, posix } from "node:path";
 
 const RAIZ = join(import.meta.dirname, "..");
@@ -318,6 +318,7 @@ const llms = [
 	"## Normative",
 	"",
 	`- [Specification, draft ${nav.version}](${URL_BASE}/spec/): the rules, with stable identifiers (I, ID, E, P, R, O).`,
+	`- [JSON Schemas ${nav.version}](${URL_BASE}/schemas/${nav.version}/index.json): every object of the protocol as JSON Schema 2020-12.`,
 	"",
 	"## Code",
 	"",
@@ -326,9 +327,13 @@ const llms = [
 ].join("\n");
 writeFileSync(join(SITE, "llms.txt"), llms);
 writeFileSync(join(SITE, "llms-full.txt"), todas.map((p) => markdownPublicado(p)).join("\n\n---\n\n"));
+// The JSON Schemas are published as they are in schemas/, at the URLs their $id names.
+const ESQUEMAS = join(SITE, "schemas", nav.version);
+rmSync(ESQUEMAS, { recursive: true, force: true });
+cpSync(join(RAIZ, "schemas", nav.version), ESQUEMAS, { recursive: true });
 
 if (errores.length) {
 	console.error(errores.join("\n"));
 	process.exit(1);
 }
-console.log(`docs: ${todas.length} pages → site/docs/, plus site/llms.txt and site/llms-full.txt`);
+console.log(`docs: ${todas.length} pages → site/docs/, plus site/llms.txt, site/llms-full.txt and site/schemas/${nav.version}/`);

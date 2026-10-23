@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/inbox-delivery.schema.json",
+  "title": "VXP 0.1 inbox delivery",
+  "description": "Body of POST {inbox_uri}: one signed company request (R7). The agent verifies it with the key anchored to the issuer and rejects a repeated jti.",
+  "type": "object",
+  "required": [
+    "message"
+  ],
+  "properties": {
+    "message": {
+      "$ref": "common.schema.json#/$defs/jws"
+    }
+  },
+  "additionalProperties": false
+}

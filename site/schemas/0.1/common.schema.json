@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/common.schema.json",
+  "title": "VXP 0.1 common definitions",
+  "description": "Definitions shared by the VXP 0.1 schemas. Informative restatement of the specification; where they differ, the specification governs.",
+  "$defs": {
+    "digest": {
+      "description": "A SHA-256 digest, base64url without padding, prefixed with the algorithm (spec §6, Format).",
+      "type": "string",
+      "pattern": "^sha-256:[A-Za-z0-9_-]{43}$"
+    },
+    "b64u": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "jws": {
+      "description": "A JWS in compact serialization.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$"
+    },
+    "sdJwt": {
+      "description": "An SD-JWT (RFC 9901 §4): a compact JWS followed by its disclosures, each ending in «~».",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+~([A-Za-z0-9_-]+~)*$"
+    },
+    "url": {
+      "description": "An absolute URL. Deployments use https; http appears only in local test runs.",
+      "type": "string",
+      "pattern": "^https?://[^\\s]+$"
+    },
+    "dateTime": {
+      "description": "An RFC 3339 date and time.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}"
+    },
+    "numericDate": {
+      "description": "Seconds since the epoch (RFC 7519 NumericDate), an integer.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "capabilityId": {
+      "description": "A capability or action identifier the company publishes, such as pedido.reprogramar_despacho.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+    },
+    "state": {
+      "description": "The internal state model (spec §4, E1).",
+      "enum": [
+        "received",
+        "authorization_required",
+        "proposed",
+        "accepted",
+        "waiting_human",
+        "executing",
+        "pending_verification",
+        "succeeded",
+        "failed",
+        "cancelled",
+        "expired"
+      ]
+    },
+    "poppyState": {
+      "description": "The projection onto Poppy operations (spec §4, Projection); null while there is no operation yet.",
+      "enum": [
+        "proposed",
+        "in_progress",
+        "succeeded",
+        "failed",
+        "cancelled",
+        "expired",
+        null
+      ]
+    },
+    "a2aState": {
+      "description": "The projection onto A2A 1.0.1 TaskState (spec §4, Projection).",
+      "enum": [
+        "TASK_STATE_SUBMITTED",
+        "TASK_STATE_AUTH_REQUIRED",
+        "TASK_STATE_INPUT_REQUIRED",
+        "TASK_STATE_WORKING",
+        "TASK_STATE_COMPLETED",
+        "TASK_STATE_FAILED",
+        "TASK_STATE_CANCELED"
+      ]
+    },
+    "commitment": {
+      "description": "The commitment of a revision (spec §8, Commitment of a revision): firm with no conditions, or conditional with at least one.",
+      "type": "object",
+      "required": [
+        "mode",
+        "requires"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "firm",
+            "conditional"
+          ]
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "firm"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "requires": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "requires": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    "capabilityDetail": {
+      "description": "authorization_details entry (RFC 9396) that authorizes asking for a capability on a resource (spec §8, Authorization).",
+      "type": "object",
+      "required": [
+        "type",
+        "actions"
+      ],
+      "properties": {
+        "type": {
+          "const": "https://vxpprotocol.org/rar/capability"
+        },
+        "actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/capabilityId"
+          }
+        },
+        "identifier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limits": {
+          "type": "object"
+        }
+      }
+    },
+    "relationshipDetail": {
+      "description": "authorization_details entry (RFC 9396) that asks for a VXP Relationship (spec §7, Birth; R1).",
+      "type": "object",
+      "required": [
+        "type",
+        "actions",
+        "identifier",
+        "limits"
+      ],
+      "properties": {
+        "type": {
+          "const": "https://vxpprotocol.org/rar/relationship"
+        },
+        "actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/capabilityId"
+          }
+        },
+        "identifier": {
+          "const": "relationship"
+        },
+        "limits": {
+          "type": "object",
+          "required": [
+            "max_per_day",
+            "duration_seconds"
+          ],
+          "properties": {
+            "max_per_day": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "duration_seconds": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "authorizationDetail": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/capabilityDetail"
+        },
+        {
+          "$ref": "#/$defs/relationshipDetail"
+        }
+      ]
+    },
+    "effect": {
+      "description": "A known effect of a request on a company system (spec §8, Cancellation).",
+      "type": "object",
+      "required": [
+        "system",
+        "change",
+        "applied"
+      ],
+      "properties": {
+        "system": {
+          "type": "string"
+        },
+        "change": {
+          "type": "string"
+        },
+        "applied": {
+          "type": "boolean"
+        },
+        "reverted": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

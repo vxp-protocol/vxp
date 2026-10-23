@@ -12,10 +12,11 @@
 
 import { spawn } from "node:child_process";
 import { createHash, generateKeyPairSync, type KeyObject, randomBytes, sign } from "node:crypto";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { validateSchema } from "../reference/vendor/poppy-kit/validate/schema.ts";
 
 type Status = "pass" | "fail" | "optional" | "manual" | "skipped";
 type Check = { id: string; rules: string[]; title: string; status: Status; detail: string };
@@ -52,6 +53,17 @@ function check(id: string, rules: string[], title: string, status: Status, detai
 	console.log(`${mark}  ${id.padEnd(5)} ${title}${detail ? ` — ${detail}` : ""}  [${rules.join(", ")}]`);
 }
 const ok = (cond: boolean, id: string, rules: string[], title: string, detail = "") => (check(id, rules, title, cond ? "pass" : "fail", detail), cond);
+
+// ── What the company returns, checked against the public JSON Schemas (schemas/0.1) ─────────────
+// The schema validator is the vendored Poppy kit's JSON Schema 2020-12 subset, not reference code.
+const SCHEMAS = join(import.meta.dirname, "..", "schemas", "0.1");
+const refs: Record<string, object> = Object.fromEntries(readdirSync(SCHEMAS).filter((f) => f.endsWith(".schema.json")).map((f) => [f, JSON.parse(readFileSync(join(SCHEMAS, f), "utf8"))]));
+const formas: { schema: string; where: string; errors: string[] }[] = [];
+function forma(schema: string, value: unknown, where: string) {
+	if (value === null || value === undefined) return;
+	const errors = validateSchema(refs[schema], value, refs).map((e) => `${e.path || "/"} ${e.message}`);
+	formas.push({ schema, where, errors });
+}
 
 // ── JOSE with node:crypto ───────────────────────────────────────────────────────────────────────
 const b64u = (b: Buffer | string) => Buffer.from(b).toString("base64url");
@@ -164,6 +176,10 @@ async function main() {
 	} finally {
 		agente.server.close();
 	}
+	const malas = formas.filter((f) => f.errors.length);
+	const titulo = "every object the company returned matches the VXP 0.1 JSON Schemas";
+	if (!formas.length) check("S1", ["schemas"], titulo, "skipped", "nothing was received");
+	else ok(malas.length === 0, "S1", ["schemas"], titulo, malas.length ? malas.slice(0, 3).map((f) => `${f.where} (${f.schema}): ${f.errors.slice(0, 2).join("; ")}`).join(" · ") : `${formas.length} objects against ${new Set(formas.map((f) => f.schema)).size} schemas`);
 	const resumen = Object.fromEntries((["pass", "fail", "optional", "manual", "skipped"] as Status[]).map((s) => [s, C.filter((c) => c.status === s).length]));
 	console.log(`\n${JSON.stringify(resumen)}`);
 	const report = { validator: "vxp-conformance 0.1", spec: "VXP draft 0.1", company: `${scheme}://${cfg.domain}`, at: new Date().toISOString(), summary: resumen, checks: C };
@@ -201,6 +217,7 @@ async function validar(cfg: Config, scheme: string, ag: Agente) {
 	const d = await http("GET", `${base}/.well-known/vxp.json`);
 	if (!ok(d.status === 200 && d.json?.protocol === "vxp", "D1", ["native-discovery"], "vxp.json is served on the company domain with protocol vxp", `HTTP ${d.status}`)) return;
 	const vxp = d.json;
+	forma("vxp.schema.json", vxp, "GET /.well-known/vxp.json");
 	ok(vxp.version === "0.1", "D2", ["versioning"], "vxp.json declares version 0.1", String(vxp.version));
 	ok(vxp.organization?.domain === new URL(base).host || vxp.organization?.domain === new URL(base).hostname, "D3", ["native-discovery"], "organization.domain is the host that served the document", String(vxp.organization?.domain));
 	ok(typeof vxp.issuer === "string" && typeof vxp.endpoint === "string" && vxp.endpoint.startsWith(vxp.issuer), "D4", ["native-discovery"], "issuer and endpoint are declared, endpoint under the issuer", `${vxp.issuer} · ${vxp.endpoint}`);
@@ -212,6 +229,7 @@ async function validar(cfg: Config, scheme: string, ag: Agente) {
 	const m = await http("GET", metaUrl);
 	if (!ok(m.status === 200 && m.json?.issuer === vxp.issuer, "D7", ["issuer-anchoring"], "RFC 8414 metadata answers at the issuer's well-known path with an identical issuer", `HTTP ${m.status}`)) return;
 	const meta = m.json;
+	forma("issuer-metadata.schema.json", meta, "issuer metadata");
 	const vp = meta.vxp_proof;
 	ok(!!vp && vp.company === vxp.issuer && String(vp.jwks_uri ?? "").startsWith(vxp.issuer), "D8", ["issuer-anchoring", "P7"], "vxp_proof names the company issuer and keeps its keys under it");
 	ok(Array.isArray(vp?.domains) && vp.domains.some((x: string) => x.toLowerCase() === new URL(base).host.toLowerCase() || x.toLowerCase() === new URL(base).hostname.toLowerCase()), "D9", ["native-discovery"], "the discovery domain is listed in vxp_proof.domains");
@@ -229,6 +247,7 @@ async function validar(cfg: Config, scheme: string, ag: Agente) {
 	const s = await pedirToken({ grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer" });
 	if (!ok(s.status === 200 && typeof s.json?.access_token === "string" && /dpop/i.test(String(s.json.token_type)), "A1", ["native-authorization", "ID3"], "a session token is issued to a private_key_jwt client, bound with DPoP", `HTTP ${s.status} ${s.json?.error ?? ""}`)) return;
 	ag.token = s.json.access_token;
+	forma("token-response.schema.json", s.json, "session token");
 	const sinDpop = await http("POST", `${vxp.endpoint}/requests`, { body: cfg.operation, headers: { authorization: `Bearer ${ag.token}`, "idempotency-key": jti() } });
 	ok(sinDpop.status === 401 || sinDpop.status === 400 || sinDpop.status === 403, "A2", ["native-endpoints", "native-authorization"], "a request without a DPoP proof is refused", `HTTP ${sinDpop.status}`);
 	const pedir = (method: string, url: string, body?: unknown, headers: Record<string, string> = {}) =>
@@ -236,16 +255,19 @@ async function validar(cfg: Config, scheme: string, ag: Agente) {
 
 	// ── Requests and authority (§8, O2) ──
 	const sinLlave = await pedir("POST", `${vxp.endpoint}/requests`, cfg.operation);
+	forma("error.schema.json", sinLlave.json, "request without Idempotency-Key");
 	ok(sinLlave.status === 400 && sinLlave.json?.error === "idempotency_key_required", "Q1", ["native-endpoints", "native-idempotency"], "a request without Idempotency-Key gets 400 idempotency_key_required", `HTTP ${sinLlave.status} ${sinLlave.json?.error ?? ""}`);
 	const idem = jti();
 	const r0 = await pedir("POST", `${vxp.endpoint}/requests`, cfg.operation, { "idempotency-key": idem });
 	const faltan = r0.json?.authorization?.authorization_details ?? r0.json?.authorization_details;
+	forma("request.schema.json", r0.json, "request held as authorization_required");
 	if (!ok(r0.status === 202 && r0.json?.state === "authorization_required" && Array.isArray(faltan), "Q2", ["O2", "native-authorization"], "without authority, the request is held as authorization_required with exactly what is missing", `HTTP ${r0.status} ${r0.json?.state ?? r0.json?.error ?? ""}`)) return;
 	// Another body under the same key: one parameter value changed (a date or number moves by one).
 	const variante = JSON.parse(JSON.stringify(cfg.operation));
 	const k0 = Object.keys(variante.parameters).find((k) => typeof variante.parameters[k] === "string" && /\d$/.test(variante.parameters[k]) || typeof variante.parameters[k] === "number");
 	if (k0) variante.parameters[k0] = typeof variante.parameters[k0] === "number" ? variante.parameters[k0] + 1 : variante.parameters[k0].replace(/\d$/, (d: string) => String((Number(d) + 1) % 10 || 1));
 	const otro = await pedir("POST", `${vxp.endpoint}/requests`, variante, { "idempotency-key": idem });
+	forma("error.schema.json", otro.json, "Idempotency-Key reused");
 	ok(otro.status === 409 && otro.json?.error === "idempotency_key_reused", "Q3", ["native-idempotency"], "the same Idempotency-Key with another body gets 409 idempotency_key_reused", `HTTP ${otro.status} ${otro.json?.error ?? ""}`);
 
 	// ── The person approves (RFC 8628 + RFC 9396) ──
@@ -269,12 +291,15 @@ async function validar(cfg: Config, scheme: string, ag: Agente) {
 	}
 	if (!ok(t!.status === 200 && typeof t!.json?.access_token === "string", "A5", ["native-authorization"], "after the person approves, the token carries the granted authority", `HTTP ${t!.status} ${t!.json?.error ?? ""}`)) return;
 	ag.token = t!.json.access_token;
+	forma("token-response.schema.json", t!.json, "token after the person approved");
+	for (const r of t!.json.relationships ?? []) if (typeof r.agreement === "string") forma("relationship-agreement.schema.json", decode(r.agreement), "relationship agreement");
 	ok(Array.isArray(t!.json.authorization_details), "A6", ["native-authorization"], "the token response returns the authorization_details granted");
 
 	// ── The operation (§6 P1, O4, O6, O7) ──
 	const r1 = await pedir("POST", `${vxp.endpoint}/requests`, cfg.operation, { "idempotency-key": idem });
 	if (!ok((r1.status === 200 || r1.status === 201) && r1.json?.state === "proposed" && r1.json?.request_id === r0.json?.request_id, "Q4", ["native-idempotency", "O2"], "the same request, re-evaluated with the new authority, becomes proposed", `HTTP ${r1.status} ${r1.json?.state ?? ""} ${r1.json?.error ?? r1.json?.reason ?? ""}`)) return;
 	const reqId = r1.json.request_id;
+	forma("request.schema.json", r1.json, "proposed request");
 	let prop = r1.json.proposal;
 	ok(!!prop?.id && Number.isInteger(prop?.revision) && typeof prop?.summary === "string" && prop?.terms && typeof prop.terms.vxp_salt === "string", "P1", ["P1", "O4"], "the proposal carries a revision, a summary and exact terms with a fresh vxp_salt");
 	ok(["firm", "conditional"].includes(prop?.commitment?.mode) && Array.isArray(prop?.commitment?.requires) && (prop.commitment.mode === "firm") === (prop.commitment.requires.length === 0), "P2", ["commitment", "O4"], "the revision declares its commitment: firm with no conditions, or conditional with them", JSON.stringify(prop?.commitment));
@@ -289,8 +314,10 @@ async function validar(cfg: Config, scheme: string, ag: Agente) {
 
 	if (cfg.counter) {
 		const c = await pedir("POST", `${vxp.endpoint}/proposals/${prop.id}/counter`, cfg.counter);
+		forma(c.status === 200 ? "request.schema.json" : "error.schema.json", c.json, "counter-proposal answer");
 		if (ok(c.status === 200 && c.json?.proposal?.revision > prop.revision, "N1", ["native-endpoints", "P1"], "a counter-proposal produces a new revision", `HTTP ${c.status} ${c.json?.error ?? ""}`)) {
 			const vieja = await pedir("POST", `${vxp.endpoint}/proposals/${prop.id}/accept`, { approved_by: "user" });
+			forma("error.schema.json", vieja.json, "accept on a superseded revision");
 			ok(vieja.status === 409 && vieja.json?.error === "terms_changed", "N2", ["O4", "P1"], "accepting the superseded revision gets 409 terms_changed and runs nothing", `HTTP ${vieja.status} ${vieja.json?.error ?? ""}`);
 			prop = c.json.proposal;
 		}
@@ -299,6 +326,7 @@ async function validar(cfg: Config, scheme: string, ag: Agente) {
 	const a = await pedir("POST", `${vxp.endpoint}/proposals/${prop.id}/accept`, { approved_by: "user" });
 	if (!ok((a.status === 200 || a.status === 202) && !a.json?.error, "X1", ["O6", "native-endpoints"], "accepting the current revision runs the operation", `HTTP ${a.status} ${a.json?.state ?? a.json?.error ?? ""}`)) return;
 	let fin = a.json;
+	forma("request.schema.json", a.json, "accept answer");
 	for (let i = 0; i < 30 && !["succeeded", "failed", "cancelled", "expired"].includes(fin?.state); i++) {
 		await new Promise((r) => setTimeout(r, 1000));
 		fin = (await pedir("GET", `${vxp.endpoint}/requests/${reqId}`)).json;
@@ -306,12 +334,20 @@ async function validar(cfg: Config, scheme: string, ag: Agente) {
 	ok(fin?.state === "succeeded", "X2", ["O7", "P6"], "the operation reaches succeeded only after the company reads its system", String(fin?.state));
 	const otra = await pedir("POST", `${vxp.endpoint}/proposals/${prop.id}/accept`, { approved_by: "user" });
 	ok(otra.status === 200 && otra.json?.state === fin?.state, "X3", ["O6", "native-idempotency"], "accepting again returns the same result and runs nothing more", `HTTP ${otra.status}`);
+	forma("request.schema.json", fin, "final request");
 	const ev = await pedir("GET", `${vxp.endpoint}/requests/${reqId}/events`);
+	forma("events.schema.json", ev.json, "request events");
 	ok(ev.status === 200 && Array.isArray(ev.json?.events) && ev.json.events.length > 1, "X4", ["E1", "state-transitions"], "the request's transitions can be read", `${ev.json?.events?.length ?? 0} events`);
 
 	// ── The proof (§6, §10), checked with the independent browser verifier ──
 	const pq = await pedir("GET", `${vxp.endpoint}/requests/${reqId}/proof`);
 	if (!ok(pq.status === 200 && Array.isArray(pq.json?.statements), "V1", ["proof", "native-endpoints"], "the proof package can be fetched", `HTTP ${pq.status}`)) return;
+	forma("proof-package.schema.json", pq.json, "proof package");
+	pq.json.statements.forEach((x: string, n: number) => {
+		forma("statement-header.schema.json", JSON.parse(Buffer.from(x.split(".")[0], "base64url").toString()), `statement ${n} header`);
+		forma("statement.schema.json", decode(x), `statement ${n}`);
+	});
+	if (typeof pq.json.log?.checkpoint === "string") forma("checkpoint.schema.json", decode(pq.json.log.checkpoint), "log checkpoint");
 	const kinds = pq.json.statements.map((x: string) => decode(x).kind);
 	ok(kinds.includes("execution") && kinds.filter((k: string) => k === "execution").length === 1, "V2", ["O6", "P1"], "the chain records exactly one execution", kinds.join(","));
 	const iRb = kinds.lastIndexOf("read_back");
@@ -346,6 +382,7 @@ async function validar(cfg: Config, scheme: string, ag: Agente) {
 	ok(hAg.typ === "vxp-relationship+jwt" && ag1.iss === vxp.issuer && ag1.aud === ag.clientId && ag1.sub === ag.sub, "R2", ["R4"], "the agreement is a vxp-relationship+jwt from the issuer to this agent and user", `${hAg.typ} iss ${ag1.iss}`);
 	const g = await pedir("GET", `${vxp.endpoint}/relationships/${rel.relationship_id}`);
 	ok(g.status === 200, "R3", ["R11"], "the agent can read its relationship", `HTTP ${g.status}`);
+	forma("relationship.schema.json", g.json, "GET relationship");
 	if (!cfg.companyRequest) {
 		check("R4", ["R6", "R7", "R8"], "a company-initiated request reaches the agent's inbox, signed", "skipped", "no companyRequest command configured: starting one is a company action");
 	} else {
@@ -356,6 +393,8 @@ async function validar(cfg: Config, scheme: string, ag: Agente) {
 		if (ok(code === 0 && !!msg, "R4", ["R7"], "a company-initiated request reaches the agent's inbox", `exit ${code}, ${ag.buzon.length} message(s)`)) {
 			const hm = JSON.parse(Buffer.from(msg!.split(".")[0], "base64url").toString());
 			const pm = decode(msg!);
+			forma("inbox-delivery.schema.json", ag.buzon.at(-1), "inbox delivery");
+			forma("company-request.schema.json", pm, "company-initiated proposal");
 			const jw = JSON.parse((await http("GET", relMeta.jwks_uri)).text);
 			const { createPublicKey, verify } = await import("node:crypto");
 			const k = jw.keys.find((x: any) => x.kid === hm.kid);
@@ -371,18 +410,24 @@ async function validar(cfg: Config, scheme: string, ag: Agente) {
 			const n0 = ag.buzon.length;
 			await correr(cfg.companyRequest.command, { VXP_RELATIONSHIP_ID: rel.relationship_id, VXP_ACTION: cfg.companyRequest.questionAction, VXP_KIND: "question" });
 			await new Promise((r) => setTimeout(r, 500));
+			if (ag.buzon.length > n0) forma("company-request.schema.json", decode(ag.buzon.at(-1)!.message), "company question");
 			const q = ag.buzon.length > n0 ? decode(ag.buzon.at(-1)!.message).content : null;
 			if (ok(!!q?.alert_id && Array.isArray(q?.options), "R7", ["R17"], "a closed question arrives with alert_id and options")) {
 				const r1x = await pedir("POST", `${vxp.endpoint}/relationships/${rel.relationship_id}/replies`, { alert_id: q.alert_id, decision: "__not_an_option__" });
+				forma("error.schema.json", r1x.json, "answer outside the options");
 				ok(r1x.status === 400 && r1x.json?.error === "option_not_allowed", "R8", ["R17"], "an answer outside the options gets 400 option_not_allowed", `HTTP ${r1x.status} ${r1x.json?.error ?? ""}`);
 				const r2x = await pedir("POST", `${vxp.endpoint}/relationships/${rel.relationship_id}/replies`, { alert_id: q.alert_id, decision: q.options[0] });
+				forma("reply-response.schema.json", r2x.json, "accepted answer");
+				if (typeof r2x.json?.receipt === "string") forma("reply-receipt.schema.json", decode(r2x.json.receipt), "reply receipt");
 				ok(r2x.status === 200 && typeof r2x.json?.receipt === "string", "R9", ["R17"], "a valid answer gets a signed receipt", `HTTP ${r2x.status}`);
 				const r3x = await pedir("POST", `${vxp.endpoint}/relationships/${rel.relationship_id}/replies`, { alert_id: q.alert_id, decision: q.options[0] });
+				forma("error.schema.json", r3x.json, "answer given twice");
 				ok(r3x.status === 409 && r3x.json?.error === "already_answered", "R10", ["R17"], "answering twice gets 409 already_answered", `HTTP ${r3x.status} ${r3x.json?.error ?? ""}`);
 			}
 		} else check("R7", ["R17"], "closed questions answered over HTTP", "optional", "no question action configured");
 	}
 	const del = await pedir("DELETE", `${vxp.endpoint}/relationships/${rel.relationship_id}`);
+	forma("relationship.schema.json", del.json, "revoked relationship");
 	ok(del.status === 200, "R11", ["R10"], "the agent can revoke the relationship", `HTTP ${del.status}`);
 	if (cfg.companyRequest) {
 		const n0 = ag.buzon.length;

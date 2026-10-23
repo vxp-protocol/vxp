@@ -40,6 +40,7 @@
 		<p class="lead">SOVRAS ran each test below on 22 October 2026 against the reference implementation, after that day's revision of the specification. The tests fall in three classes, as in <a href="../spec/#conformance">specification §12</a>, and their results are never added together. Each figure links to the log that produced it.</p>
 		<p class="page-meta"><span>Runs: 22 Oct 2026, 22:13 to 22:34 UTC, against the repository</span><span>Windows 11 · Node.js 22.20.0 · Python 3.14.0, cryptography 50.0.2</span></p>
 		<ul class="toc" aria-label="On this page">
+			<li><a href="#yours">Check your own implementation</a></li>
 			<li><a href="#official">1 · Official tools of other protocols</a></li>
 			<li><a href="#adapters">2 · Own adapter tests</a></li>
 			<li><a href="#vxp">3 · VXP tests</a></li>
@@ -47,6 +48,16 @@
 			<li><a href="#run">Run the kit</a></li>
 			<li><a href="#files">Downloads</a></li>
 		</ul>
+	</div>
+</section>
+
+<section class="sec sec--tight" aria-labelledby="yours">
+	<div class="wrap">
+		<h2 class="sub-h" id="yours">Check your own implementation</h2>
+		<div class="ctx">
+			<p><b>The conformance validator</b> acts as a personal agent against your company's server and reports each check with the rule it tests: passed, failed, optional or manual. It also checks every object your server returns against the <a href="../docs/schemas/">JSON Schemas</a> (check S1). Against the reference implementation: 51 passed, 0 failed, 3 manual.</p>
+			<p><code>node conformance/validate.ts my-config.json --report my-report.json</code> · <a href="../docs/conformance/">How to configure it</a> · <a href="../docs/failures/">Failures and the tests that cover them</a> · <a href="../schemas/0.1/index.json">Schemas index</a></p>
+		</div>
 	</div>
 </section>
 

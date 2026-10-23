@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JSON Schemas · VXP docs</title>
+<meta name="description" content="JSON Schemas (2020-12) for every object of VXP 0.1, published under vxpprotocol.org/schemas/0.1/, checked against the reference implementation and usable to validate your own.">
+<link rel="alternate" type="text/markdown" href="../../docs/schemas.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/vxp.css">
+<link rel="stylesheet" href="../../assets/docs.css">
+<link rel="stylesheet" href="../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../architecture/">Architecture</a></li>
+			<li><a href="../../spec/">Specification</a></li>
+			<li><a href="../../examples/">Examples</a></li>
+			<li><a href="../../verify/">Verify</a></li>
+			<li><a href="../../conformance/">Conformance</a></li>
+			<li><a href="../../implement/">Implement</a></li>
+			<li><a href="../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../docs/">VXP documentation</a></li><li><a href="../../docs/introduction/">Introduction</a></li><li><a href="../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../docs/proof/">VXP Proof</a></li><li><a href="../../docs/relationship/">VXP Relationship</a></li><li><a href="../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../docs/guides/company/">Guide for companies</a></li><li><a href="../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../docs/examples/">Examples and messages</a></li><li><a href="../../docs/schemas/" aria-current="page">JSON Schemas</a></li><li><a href="../../docs/failures/">Failures and how VXP behaves</a></li><li><a href="../../docs/specification/">Specification and versions</a></li><li><a href="../../docs/conformance/">Tests and conformance</a></li><li><a href="../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">JSON Schemas</h1>
+		<p class="lead">JSON Schemas (2020-12) for every object of VXP 0.1, published under vxpprotocol.org/schemas/0.1/, checked against the reference implementation and usable to validate your own.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#the-schemas">The schemas</a></li><li><a href="#how-they-are-checked">How they are checked</a></li><li><a href="#use-them">Use them</a></li></ul></nav>
+		<p>The schemas restate the specification as JSON Schema 2020-12, so a company or an agent can check its objects mechanically. Where a schema and the <a href="../../spec/">specification</a> differ, the specification governs. They are versioned with the protocol: <code>https://vxpprotocol.org/schemas/0.1/&lt;name&gt;.schema.json</code>, each with that URL as its <code>$id</code>. <code>common.schema.json</code> holds the shared definitions (digests, states, authorization details, commitment).</p>
+<h2 id="the-schemas">The schemas<a class="anchor" href="#the-schemas" aria-label="Link to The schemas">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Schema</th><th>Object</th><th>Rules</th></tr></thead><tbody><tr><td><code>vxp.schema.json</code></td><td><code>GET /.well-known/vxp.json</code></td><td><a class="rule" href="../../spec/#native-discovery">native-discovery</a></td></tr><tr><td><code>issuer-metadata.schema.json</code></td><td><code>vxp_proof</code> and <code>vxp_relationship</code> in the issuer's RFC 8414 metadata</td><td><a class="rule" href="../../spec/#issuer-anchoring">issuer-anchoring</a>, <a class="rule" href="../../spec/#r1">R1</a>, <a class="rule" href="../../spec/#r5">R5</a></td></tr><tr><td><code>client-metadata.schema.json</code></td><td>The agent's Client ID Metadata Document, with its inbox</td><td><a class="rule" href="../../spec/#native-authorization">native-authorization</a>, <a class="rule" href="../../spec/#r2">R2</a></td></tr><tr><td><code>token-response.schema.json</code></td><td>The token response: <code>authorization_details</code> granted and <code>relationships[]</code></td><td><a class="rule" href="../../spec/#native-authorization">native-authorization</a>, <a class="rule" href="../../spec/#r4">R4</a></td></tr><tr><td><code>request-body.schema.json</code></td><td><code>POST {endpoint}/requests</code> body</td><td><a class="rule" href="../../spec/#native-endpoints">native-endpoints</a></td></tr><tr><td><code>request.schema.json</code></td><td>A request: state, projections, missing authority, proposal, effects, result</td><td><a class="rule" href="../../spec/#native-endpoints">native-endpoints</a>, <a class="rule" href="../../spec/#o2">O2</a>, <a class="rule" href="../../spec/#o4">O4</a></td></tr><tr><td><code>read-response.schema.json</code></td><td>The answer to a read capability</td><td><a class="rule" href="../../spec/#native-endpoints">native-endpoints</a></td></tr><tr><td><code>accept-body.schema.json</code>, <code>counter-body.schema.json</code></td><td>Accept and counter-proposal bodies</td><td><a class="rule" href="../../spec/#native-endpoints">native-endpoints</a></td></tr><tr><td><code>events.schema.json</code></td><td><code>GET {endpoint}/requests/{id}/events</code></td><td><a class="rule" href="../../spec/#native-endpoints">native-endpoints</a>, <a class="rule" href="../../spec/#e1">E1</a></td></tr><tr><td><code>error.schema.json</code></td><td>An error answer</td><td><a class="rule" href="../../spec/#errors">errors</a></td></tr><tr><td><code>proof-package.schema.json</code></td><td><code>GET {endpoint}/requests/{id}/proof</code></td><td><a class="rule" href="../../spec/#proof">proof</a></td></tr><tr><td><code>statement-header.schema.json</code>, <code>statement.schema.json</code></td><td>Each statement's header, and its payload by kind</td><td><a class="rule" href="../../spec/#proof">proof</a>, <a class="rule" href="../../spec/#p1">P1</a>–<a class="rule" href="../../spec/#p6">P6</a></td></tr><tr><td><code>checkpoint.schema.json</code></td><td>The log checkpoint</td><td><a class="rule" href="../../spec/#issuer-anchoring">issuer-anchoring</a></td></tr><tr><td><code>relationship.schema.json</code>, <code>relationship-agreement.schema.json</code></td><td>A relationship and its signed agreement</td><td><a class="rule" href="../../spec/#r4">R4</a>, <a class="rule" href="../../spec/#r10">R10</a>, <a class="rule" href="../../spec/#r11">R11</a></td></tr><tr><td><code>company-request.schema.json</code>, <code>inbox-delivery.schema.json</code></td><td>A company-initiated request and its delivery</td><td><a class="rule" href="../../spec/#r7">R7</a>, <a class="rule" href="../../spec/#r8">R8</a></td></tr><tr><td><code>reply-body.schema.json</code>, <code>reply-response.schema.json</code>, <code>reply-receipt.schema.json</code></td><td>Answering a closed question and its receipt</td><td><a class="rule" href="../../spec/#r17">R17</a></td></tr></tbody></table></div>
+<p>A schema checks shape. Signatures, digests and the order of a chain are the verifier's job (<a href="../../docs/guides/verifier/">Guide for verifiers</a>).</p>
+<h2 id="how-they-are-checked">How they are checked<a class="anchor" href="#how-they-are-checked" aria-label="Link to How they are checked">#</a></h2>
+<ul><li><code>node schemas/check.ts</code> validates the objects of a real native run, every proof package kept in the repository, every statement in the test vectors and the personal agent's run, and requires each object in <code>schemas/invalid.json</code> (one per broken rule) to be rejected. With <code>--run &lt;dir&gt;</code> it also validates a fresh run of <code>reference/scripts/recorrido-nativo.test.ts</code>. CI runs both.</li><li>The conformance validator checks every object an implementation returns against the schemas, in check <b>S1</b>, including the messages that reach the validator's inbox. See <a href="../../docs/conformance/">Conformance</a>.</li></ul>
+<h2 id="use-them">Use them<a class="anchor" href="#use-them" aria-label="Link to Use them">#</a></h2>
+<div class="code"><div class="code__head"><b>Validate one object with any JSON Schema 2020-12 validator, for example</b><span>sh</span></div><pre data-copy tabindex="0">npx --yes ajv-cli@5 validate --spec=draft2020 -r "schemas/0.1/common.schema.json" \
+  -s schemas/0.1/vxp.schema.json -d my-vxp.json</pre></div>
+<p>Or import them by URL once the site is published: every <code>$ref</code> is relative, so a validator that resolves <code>$id</code> loads the rest by itself.</p>
+		<div class="dfoot">
+			<a href="../../docs/schemas.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/schemas.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../docs/examples/"><span>Previous</span>Examples and messages</a>
+			<a href="../../docs/failures/"><span>Next</span>Failures and how VXP behaves</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../docs/quickstart/">Quickstart</a></li><li><a href="../../spec/">Specification</a></li><li><a href="../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../verify/">Verifier</a></li><li><a href="../../demos/">Demos</a></li><li><a href="../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../docs/changelog/">Changelog</a></li><li><a href="../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../assets/site.js" defer></script>
+<script src="../../assets/docs-site.js" defer></script>
+</body>
+</html>

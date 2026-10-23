@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/read-response.schema.json",
+  "title": "VXP 0.1 read answer",
+  "description": "200 answer of POST {endpoint}/requests for a capability with effect read: answered at once, with no request, no operation and no proof (spec §8, Endpoints). The shape of result is the company's own.",
+  "type": "object",
+  "required": [
+    "operation",
+    "effect",
+    "result"
+  ],
+  "properties": {
+    "operation": {
+      "$ref": "common.schema.json#/$defs/capabilityId"
+    },
+    "effect": {
+      "const": "read"
+    },
+    "result": {}
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "request_id"
+        ]
+      },
+      {
+        "required": [
+          "operation_id"
+        ]
+      }
+    ]
+  }
+}

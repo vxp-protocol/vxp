@@ -1,0 +1,577 @@
+[
+ {
+  "why": "vxp.json carries a proof trust member (spec §8, Discovery)",
+  "schema": "vxp.schema.json",
+  "value": {
+   "protocol": "vxp",
+   "version": "0.1",
+   "organization": {
+    "name": "Store Demo",
+    "domain": "store.example"
+   },
+   "issuer": "https://store.example/e/s",
+   "endpoint": "https://store.example/e/s/v1",
+   "capabilities": [],
+   "status": "experimental",
+   "jwks_uri": "https://store.example/jwks.json"
+  }
+ },
+ {
+  "why": "vxp.json declares another protocol version",
+  "schema": "vxp.schema.json",
+  "value": {
+   "protocol": "vxp",
+   "version": "0.2",
+   "organization": {
+    "name": "Store Demo",
+    "domain": "store.example"
+   },
+   "issuer": "https://store.example/e/s",
+   "endpoint": "https://store.example/e/s/v1",
+   "capabilities": [],
+   "status": "experimental"
+  }
+ },
+ {
+  "why": "vxp.json without status experimental (spec §8)",
+  "schema": "vxp.schema.json",
+  "value": {
+   "protocol": "vxp",
+   "version": "0.1",
+   "organization": {
+    "name": "Store Demo",
+    "domain": "store.example"
+   },
+   "issuer": "https://store.example/e/s",
+   "endpoint": "https://store.example/e/s/v1",
+   "capabilities": []
+  }
+ },
+ {
+  "why": "a capability with an access that does not exist",
+  "schema": "vxp.schema.json",
+  "value": {
+   "protocol": "vxp",
+   "version": "0.1",
+   "organization": {
+    "name": "Store Demo",
+    "domain": "store.example"
+   },
+   "issuer": "https://store.example/e/s",
+   "endpoint": "https://store.example/e/s/v1",
+   "capabilities": [
+    {
+     "id": "pedido.consultar",
+     "effect": "read",
+     "access": "open",
+     "admission": "static",
+     "authorization_details_type": "https://vxpprotocol.org/rar/capability"
+    }
+   ],
+   "status": "experimental"
+  }
+ },
+ {
+  "why": "a statement after seq 0 without prev (chain rules)",
+  "schema": "statement.schema.json",
+  "value": {
+   "v": "0.1",
+   "kind": "execution",
+   "iss": "https://store.example/e/s",
+   "company": "https://store.example/e/s",
+   "op": "op_x1",
+   "seq": 1,
+   "prev": null,
+   "iat": 1,
+   "aud": "https://agent.example/agent.json",
+   "user": "usr_1",
+   "body": {
+    "revision": 1,
+    "terms_digest": "sha-256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "attempt": 1,
+    "capability": "pedido.reprogramar_despacho"
+   }
+  }
+ },
+ {
+  "why": "seq 0 that names a previous statement",
+  "schema": "statement.schema.json",
+  "value": {
+   "v": "0.1",
+   "kind": "request",
+   "iss": "https://store.example/e/s",
+   "company": "https://store.example/e/s",
+   "op": "op_x1",
+   "seq": 0,
+   "prev": "sha-256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "iat": 1,
+   "aud": "https://agent.example/agent.json",
+   "user": "usr_1",
+   "body": {
+    "channel": "vxp",
+    "client_id": "https://agent.example/agent.json",
+    "request_digest": "sha-256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+   }
+  }
+ },
+ {
+  "why": "an approval through the company channel without display_code (P2)",
+  "schema": "statement.schema.json",
+  "value": {
+   "v": "0.1",
+   "kind": "user_approval",
+   "iss": "https://store.example/e/s",
+   "company": "https://store.example/e/s",
+   "op": "op_x1",
+   "seq": 1,
+   "prev": "sha-256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "iat": 1,
+   "aud": "https://agent.example/agent.json",
+   "user": "usr_1",
+   "body": {
+    "revision": 1,
+    "terms_digest": "sha-256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "method": "company_channel",
+    "channel": "sms"
+   }
+  }
+ },
+ {
+  "why": "an approval method that does not exist (P2)",
+  "schema": "statement.schema.json",
+  "value": {
+   "v": "0.1",
+   "kind": "user_approval",
+   "iss": "https://store.example/e/s",
+   "company": "https://store.example/e/s",
+   "op": "op_x1",
+   "seq": 1,
+   "prev": "sha-256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "iat": 1,
+   "aud": "https://agent.example/agent.json",
+   "user": "usr_1",
+   "body": {
+    "revision": 1,
+    "terms_digest": "sha-256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "method": "phone_call"
+   }
+  }
+ },
+ {
+  "why": "a statement kind that does not exist",
+  "schema": "statement.schema.json",
+  "value": {
+   "v": "0.1",
+   "kind": "approval",
+   "iss": "https://store.example/e/s",
+   "company": "https://store.example/e/s",
+   "op": "op_x1",
+   "seq": 1,
+   "prev": "sha-256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "iat": 1,
+   "aud": "https://agent.example/agent.json",
+   "user": "usr_1",
+   "body": {}
+  }
+ },
+ {
+  "why": "an outcome state that does not exist (P3)",
+  "schema": "statement.schema.json",
+  "value": {
+   "v": "0.1",
+   "kind": "outcome",
+   "iss": "https://store.example/e/s",
+   "company": "https://store.example/e/s",
+   "op": "op_x1",
+   "seq": 1,
+   "prev": "sha-256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "iat": 1,
+   "aud": "https://agent.example/agent.json",
+   "user": "usr_1",
+   "body": {
+    "state": "done"
+   }
+  }
+ },
+ {
+  "why": "a read_back with a method and no observed terms (P1)",
+  "schema": "statement.schema.json",
+  "value": {
+   "v": "0.1",
+   "kind": "read_back",
+   "iss": "https://store.example/e/s",
+   "company": "https://store.example/e/s",
+   "op": "op_x1",
+   "seq": 1,
+   "prev": "sha-256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "iat": 1,
+   "aud": "https://agent.example/agent.json",
+   "user": "usr_1",
+   "body": {
+    "method": "system_read_back"
+   }
+  }
+ },
+ {
+  "why": "a digest that is not SHA-256 base64url (spec §6, Format)",
+  "schema": "statement.schema.json",
+  "value": {
+   "v": "0.1",
+   "kind": "execution",
+   "iss": "https://store.example/e/s",
+   "company": "https://store.example/e/s",
+   "op": "op_x1",
+   "seq": 1,
+   "prev": "sha-256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "iat": 1,
+   "aud": "https://agent.example/agent.json",
+   "user": "usr_1",
+   "body": {
+    "revision": 1,
+    "terms_digest": "md5:abc",
+    "attempt": 1,
+    "capability": "pedido.reprogramar_despacho"
+   }
+  }
+ },
+ {
+  "why": "a statement header with the pre-0.1 typ",
+  "schema": "statement-header.schema.json",
+  "value": {
+   "alg": "ES256",
+   "kid": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "typ": "sovras-stmt+sd-jwt"
+  }
+ },
+ {
+  "why": "a statement signed with another algorithm",
+  "schema": "statement-header.schema.json",
+  "value": {
+   "alg": "RS256",
+   "kid": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "typ": "vxp-stmt+sd-jwt"
+  }
+ },
+ {
+  "why": "a conditional commitment with no conditions (spec §8, Commitment)",
+  "schema": "request.schema.json",
+  "value": {
+   "request_id": "req_x",
+   "operation": "pedido.reprogramar_despacho",
+   "state": "proposed",
+   "projections": {
+    "poppy": "proposed",
+    "a2a": "TASK_STATE_INPUT_REQUIRED"
+   },
+   "operation_id": "op_x1",
+   "proposal": {
+    "id": "prop_op_x1_r1",
+    "revision": 1,
+    "state": "proposed",
+    "summary": "s",
+    "terms": {
+     "vxp_salt": "mA5d1-bWAw0cLRfqa0yoPw"
+    },
+    "commitment": {
+     "mode": "conditional",
+     "requires": []
+    },
+    "expires_at": "2026-10-23T10:00:00Z",
+    "user_approval_required": true
+   },
+   "effects": [],
+   "cancellation": null,
+   "result": null,
+   "proof_url": "https://store.example/e/s/v1/requests/req_x/proof"
+  }
+ },
+ {
+  "why": "a firm commitment with conditions (spec §8, Commitment)",
+  "schema": "request.schema.json",
+  "value": {
+   "request_id": "req_x",
+   "operation": "pedido.reprogramar_despacho",
+   "state": "proposed",
+   "projections": {
+    "poppy": "proposed",
+    "a2a": "TASK_STATE_INPUT_REQUIRED"
+   },
+   "operation_id": "op_x1",
+   "proposal": {
+    "id": "prop_op_x1_r1",
+    "revision": 1,
+    "state": "proposed",
+    "summary": "s",
+    "terms": {
+     "vxp_salt": "mA5d1-bWAw0cLRfqa0yoPw"
+    },
+    "commitment": {
+     "mode": "firm",
+     "requires": [
+      "despacho_nuevo"
+     ]
+    },
+    "expires_at": "2026-10-23T10:00:00Z",
+    "user_approval_required": true
+   },
+   "effects": [],
+   "cancellation": null,
+   "result": null,
+   "proof_url": "https://store.example/e/s/v1/requests/req_x/proof"
+  }
+ },
+ {
+  "why": "terms without vxp_salt (spec §6, Format)",
+  "schema": "request.schema.json",
+  "value": {
+   "request_id": "req_x",
+   "operation": "pedido.reprogramar_despacho",
+   "state": "proposed",
+   "projections": {
+    "poppy": "proposed",
+    "a2a": "TASK_STATE_INPUT_REQUIRED"
+   },
+   "operation_id": "op_x1",
+   "proposal": {
+    "id": "prop_op_x1_r1",
+    "revision": 1,
+    "state": "proposed",
+    "summary": "s",
+    "terms": {
+     "total": 1000
+    },
+    "commitment": {
+     "mode": "firm",
+     "requires": []
+    },
+    "expires_at": "2026-10-23T10:00:00Z",
+    "user_approval_required": true
+   },
+   "effects": [],
+   "cancellation": null,
+   "result": null,
+   "proof_url": "https://store.example/e/s/v1/requests/req_x/proof"
+  }
+ },
+ {
+  "why": "authorization_required without what is missing (O2)",
+  "schema": "request.schema.json",
+  "value": {
+   "request_id": "req_x",
+   "operation": "pedido.reprogramar_despacho",
+   "state": "authorization_required",
+   "projections": {
+    "poppy": null,
+    "a2a": "TASK_STATE_AUTH_REQUIRED"
+   }
+  }
+ },
+ {
+  "why": "a Poppy projection outside Poppy's enum (E2)",
+  "schema": "request.schema.json",
+  "value": {
+   "request_id": "req_x",
+   "operation": "pedido.reprogramar_despacho",
+   "state": "proposed",
+   "projections": {
+    "poppy": "authorization_required",
+    "a2a": "TASK_STATE_AUTH_REQUIRED"
+   }
+  }
+ },
+ {
+  "why": "a read answer that created a request (spec §8, Endpoints)",
+  "schema": "read-response.schema.json",
+  "value": {
+   "operation": "catalogo.consultar",
+   "effect": "read",
+   "result": {},
+   "request_id": "req_x"
+  }
+ },
+ {
+  "why": "accepting with an approval basis that does not exist",
+  "schema": "accept-body.schema.json",
+  "value": {
+   "approved_by": "agent"
+  }
+ },
+ {
+  "why": "an answer without its decision (R17)",
+  "schema": "reply-body.schema.json",
+  "value": {
+   "alert_id": "alr_1"
+  }
+ },
+ {
+  "why": "a closed question without options (R17)",
+  "schema": "company-request.schema.json",
+  "value": {
+   "iss": "https://store.example/e/s",
+   "aud": "https://agent.example/agent.json",
+   "sub": "u",
+   "rel": "rel_1",
+   "action": "alerta.confirmar_o_bloquear",
+   "content": {
+    "alert_id": "alr_1",
+    "reply_url": "https://store.example/e/s/v1/relationships/rel_1/replies",
+    "expires_at": "2026-10-23T10:00:00Z"
+   },
+   "iat": 1,
+   "exp": 2,
+   "jti": "j"
+  }
+ },
+ {
+  "why": "a company proposal without terms_digest (R8)",
+  "schema": "company-request.schema.json",
+  "value": {
+   "iss": "https://store.example/e/s",
+   "aud": "https://agent.example/agent.json",
+   "sub": "u",
+   "rel": "rel_1",
+   "action": "alerta.confirmar_o_bloquear",
+   "content": {
+    "proposal_id": "prop_op_x1_r1",
+    "request_url": "https://store.example/e/s/v1/requests/req_x"
+   },
+   "iat": 1,
+   "exp": 2,
+   "jti": "j"
+  }
+ },
+ {
+  "why": "a company request without jti (R7)",
+  "schema": "company-request.schema.json",
+  "value": {
+   "iss": "https://store.example/e/s",
+   "aud": "https://agent.example/agent.json",
+   "sub": "u",
+   "rel": "rel_1",
+   "action": "alerta.confirmar_o_bloquear",
+   "content": {
+    "summary": "x"
+   },
+   "iat": 1,
+   "exp": 2
+  }
+ },
+ {
+  "why": "an agreement without exp (R4)",
+  "schema": "relationship-agreement.schema.json",
+  "value": {
+   "iss": "https://store.example/e/s",
+   "aud": "https://agent.example/agent.json",
+   "sub": "u",
+   "rel": "rel_1",
+   "actions": [
+    "incidencia.avisar"
+   ],
+   "limits": {
+    "max_per_day": 2
+   },
+   "iat": 1,
+   "jti": "j"
+  }
+ },
+ {
+  "why": "a relationship detail not identified as relationship (spec §7, Birth)",
+  "schema": "token-response.schema.json",
+  "value": {
+   "access_token": "t",
+   "token_type": "DPoP",
+   "authorization_details": [
+    {
+     "type": "https://vxpprotocol.org/rar/relationship",
+     "actions": [
+      "incidencia.avisar"
+     ],
+     "identifier": "P-1",
+     "limits": {
+      "max_per_day": 1,
+      "duration_seconds": 60
+     }
+    }
+   ]
+  }
+ },
+ {
+  "why": "a granted relationship without its signed agreement (R4)",
+  "schema": "token-response.schema.json",
+  "value": {
+   "access_token": "t",
+   "token_type": "DPoP",
+   "relationships": [
+    {
+     "relationship_id": "rel_1",
+     "state": "active",
+     "actions": [
+      "incidencia.avisar"
+     ],
+     "limits": {
+      "max_per_day": 2
+     },
+     "expires_at": "2026-11-01T00:00:00Z"
+    }
+   ]
+  }
+ },
+ {
+  "why": "an inbox delivery whose message is not a JWS (R7)",
+  "schema": "inbox-delivery.schema.json",
+  "value": {
+   "message": "hello"
+  }
+ },
+ {
+  "why": "an agent that declares its inbox without the version (R2)",
+  "schema": "client-metadata.schema.json",
+  "value": {
+   "client_id": "https://agent.example/agent.json",
+   "jwks_uri": "https://agent.example/jwks.json",
+   "token_endpoint_auth_method": "private_key_jwt",
+   "extensions": {
+    "vxpprotocol.org/relationship": {
+     "inbox_uri": "https://agent.example/inbox"
+    }
+   }
+  }
+ },
+ {
+  "why": "an agent that authenticates with a shared secret (spec §8, Authorization)",
+  "schema": "client-metadata.schema.json",
+  "value": {
+   "client_id": "https://agent.example/agent.json",
+   "jwks_uri": "https://agent.example/jwks.json",
+   "token_endpoint_auth_method": "client_secret_basic"
+  }
+ },
+ {
+  "why": "a proof package without statements",
+  "schema": "proof-package.schema.json",
+  "value": {
+   "v": "0.1",
+   "company": "https://store.example/e/s",
+   "op": "op_x1",
+   "statements": []
+  }
+ },
+ {
+  "why": "issuer metadata without vxp_proof (spec §10)",
+  "schema": "issuer-metadata.schema.json",
+  "value": {
+   "issuer": "https://store.example/e/s",
+   "token_endpoint": "https://store.example/e/s/oauth/token",
+   "device_authorization_endpoint": "https://store.example/e/s/oauth/device",
+   "dpop_signing_alg_values_supported": [
+    "ES256"
+   ],
+   "token_endpoint_auth_methods_supported": [
+    "private_key_jwt"
+   ],
+   "authorization_details_types_supported": [
+    "https://vxpprotocol.org/rar/capability"
+   ]
+  }
+ }
+]

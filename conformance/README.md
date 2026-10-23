@@ -19,7 +19,7 @@ node conformance/reference/run.ts --report conformance-report.json
 
 It starts the reference implementation as a native-only gateway (no Poppy, no PACT) on port 3740 with
 persistent keys in a temporary directory, serves the validator's agent on port 3890, and runs every check.
-Expected summary: `{"pass":50,"fail":0,"optional":0,"manual":3,"skipped":0}`. It writes
+Expected summary: `{"pass":51,"fail":0,"optional":0,"manual":3,"skipped":0}`. It writes
 `conformance-report.json` and `conformance-report.md`.
 
 ## Run it against your implementation

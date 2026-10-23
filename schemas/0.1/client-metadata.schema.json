@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/client-metadata.schema.json",
+  "title": "VXP 0.1 members of the agent's Client ID Metadata Document",
+  "description": "The agent's Client ID Metadata Document, served at its client_id URL, with the members VXP relies on: private_key_jwt with a JWKS (spec §8, Authorization) and, for VXP Relationship, an inbox on the same origin as client_id (R2).",
+  "type": "object",
+  "required": [
+    "client_id",
+    "jwks_uri",
+    "token_endpoint_auth_method"
+  ],
+  "properties": {
+    "client_id": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "jwks_uri": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "token_endpoint_auth_method": {
+      "const": "private_key_jwt"
+    },
+    "extensions": {
+      "type": "object",
+      "properties": {
+        "vxpprotocol.org/proof": {
+          "type": "object",
+          "required": [
+            "version"
+          ],
+          "properties": {
+            "version": {
+              "const": "0.1"
+            }
+          }
+        },
+        "vxpprotocol.org/relationship": {
+          "type": "object",
+          "required": [
+            "version",
+            "inbox_uri"
+          ],
+          "properties": {
+            "version": {
+              "const": "0.1"
+            },
+            "inbox_uri": {
+              "$ref": "common.schema.json#/$defs/url"
+            }
+          }
+        }
+      }
+    }
+  }
+}

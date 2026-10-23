@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/reply-response.schema.json",
+  "title": "VXP 0.1 answer accepted",
+  "description": "200 answer of POST {reply_url}: the answer and the company's signed receipt (typ vxp-reply-receipt+jwt; reply-receipt.schema.json) (R17).",
+  "type": "object",
+  "required": [
+    "alert_id",
+    "decision",
+    "receipt"
+  ],
+  "properties": {
+    "alert_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receipt": {
+      "$ref": "common.schema.json#/$defs/jws"
+    }
+  }
+}

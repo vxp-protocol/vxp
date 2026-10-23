@@ -1,5 +1,5 @@
 # Runs the VXP checks on every push and pull request: reference suite, network tests, vectors and verifiers,
-# the conformance validator against the reference, the personal-agent tools, and generated files kept in sync
+# the JSON Schemas, the conformance validator against the reference, the personal-agent tools, and generated files kept in sync
 # with their sources.
 name: CI
 on:
@@ -39,6 +39,12 @@ jobs:
       - name: Browser verifier against the Python verifier
         run: node verifier/tests/test-vxp-verify.mjs
 
+      - name: JSON Schemas against a fresh native run, the proofs, the vectors and the invalid objects
+        run: |
+          RUN=$(mktemp -d); KEYS=$(mktemp -d)
+          (cd reference && VXP_RECORRIDO_DIR=$RUN VXP_KEYS_DIR=$KEYS node --test scripts/recorrido-nativo.test.ts)
+          node schemas/check.ts --run $RUN
+
       - name: Conformance validator against the native-only reference
         run: node conformance/reference/run.ts --report conformance-report.json
       - uses: actions/upload-artifact@v7
@@ -56,4 +62,4 @@ jobs:
           python spec/build.py
           node conformance/matrix.ts
           node docs/build.ts
-          git diff --exit-code -- site/spec conformance/MATRIX.md site/docs site/llms.txt site/llms-full.txt
+          git diff --exit-code -- site/spec conformance/MATRIX.md site/docs site/llms.txt site/llms-full.txt site/schemas

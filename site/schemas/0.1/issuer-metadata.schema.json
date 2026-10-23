@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/issuer-metadata.schema.json",
+  "title": "VXP 0.1 members of the issuer's RFC 8414 metadata",
+  "description": "GET {origin}/.well-known/oauth-authorization-server{issuer path}. Only the members VXP relies on are constrained (spec §8, Authorization; §10, Anchoring the issuer and its keys; R1, R5); the rest is RFC 8414.",
+  "type": "object",
+  "required": [
+    "issuer",
+    "token_endpoint",
+    "device_authorization_endpoint",
+    "dpop_signing_alg_values_supported",
+    "token_endpoint_auth_methods_supported",
+    "authorization_details_types_supported",
+    "vxp_proof"
+  ],
+  "properties": {
+    "issuer": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "token_endpoint": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "device_authorization_endpoint": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "revocation_endpoint": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "dpop_signing_alg_values_supported": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "token_endpoint_auth_methods_supported": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "grant_types_supported": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "authorization_details_types_supported": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "vxp_proof": {
+      "description": "Where a verifier anchors the proof: the company, its domains, its key set, the operator and the log (spec §10). Paths are the implementation's own (spec §8, Implementation paths).",
+      "type": "object",
+      "required": [
+        "version",
+        "company",
+        "domains",
+        "jwks_uri"
+      ],
+      "properties": {
+        "version": {
+          "const": "0.1"
+        },
+        "company": {
+          "$ref": "common.schema.json#/$defs/url"
+        },
+        "domains": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "jwks_uri": {
+          "$ref": "common.schema.json#/$defs/url"
+        },
+        "pact": {
+          "type": "array"
+        },
+        "operator": {
+          "type": "object",
+          "required": [
+            "issuer",
+            "jwks_uri"
+          ],
+          "properties": {
+            "issuer": {
+              "$ref": "common.schema.json#/$defs/url"
+            },
+            "jwks_uri": {
+              "$ref": "common.schema.json#/$defs/url"
+            }
+          }
+        },
+        "custody": {
+          "type": "string"
+        },
+        "log": {
+          "type": "object",
+          "required": [
+            "origin",
+            "checkpoint_url",
+            "jwks_uri"
+          ],
+          "properties": {
+            "origin": {
+              "type": "string",
+              "minLength": 1
+            },
+            "checkpoint_url": {
+              "$ref": "common.schema.json#/$defs/url"
+            },
+            "consistency_url": {
+              "$ref": "common.schema.json#/$defs/url"
+            },
+            "jwks_uri": {
+              "$ref": "common.schema.json#/$defs/url"
+            },
+            "witnesses": {
+              "type": "array"
+            }
+          }
+        }
+      }
+    },
+    "vxp_relationship": {
+      "description": "VXP Relationship: its own key set (R5) and the actions a company may start (R1).",
+      "type": "object",
+      "required": [
+        "version",
+        "jwks_uri",
+        "company_initiated_actions"
+      ],
+      "properties": {
+        "version": {
+          "const": "0.1"
+        },
+        "jwks_uri": {
+          "$ref": "common.schema.json#/$defs/url"
+        },
+        "company_initiated_actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "common.schema.json#/$defs/capabilityId"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/accept-body.schema.json",
+  "title": "VXP 0.1 accept body",
+  "description": "Body of POST {endpoint}/proposals/{id}/accept (spec §8, Endpoints). standing_permission is valid only for a revision with user_approval_required: false; otherwise the company answers 403 user_approval_required.",
+  "type": "object",
+  "properties": {
+    "approved_by": {
+      "enum": [
+        "user",
+        "standing_permission"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

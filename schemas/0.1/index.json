@@ -1,0 +1,117 @@
+{
+  "version": "0.1",
+  "base": "https://vxpprotocol.org/schemas/0.1/",
+  "about": "JSON Schemas (2020-12) for the objects of VXP 0.1. They restate the specification; where they differ, the specification governs. common.schema.json holds the shared definitions.",
+  "schemas": [
+    {
+      "file": "vxp.schema.json",
+      "for": "GET /.well-known/vxp.json",
+      "spec": "native-discovery"
+    },
+    {
+      "file": "issuer-metadata.schema.json",
+      "for": "the issuer's RFC 8414 metadata: vxp_proof and vxp_relationship",
+      "spec": "issuer-anchoring"
+    },
+    {
+      "file": "client-metadata.schema.json",
+      "for": "the agent's Client ID Metadata Document",
+      "spec": "native-authorization"
+    },
+    {
+      "file": "token-response.schema.json",
+      "for": "the token response: authorization_details and relationships",
+      "spec": "native-authorization"
+    },
+    {
+      "file": "request-body.schema.json",
+      "for": "POST {endpoint}/requests body",
+      "spec": "native-endpoints"
+    },
+    {
+      "file": "request.schema.json",
+      "for": "a request: POST and GET requests, accept, counter, cancel",
+      "spec": "native-endpoints"
+    },
+    {
+      "file": "read-response.schema.json",
+      "for": "POST {endpoint}/requests for a read capability",
+      "spec": "native-endpoints"
+    },
+    {
+      "file": "accept-body.schema.json",
+      "for": "POST {endpoint}/proposals/{id}/accept body",
+      "spec": "native-endpoints"
+    },
+    {
+      "file": "counter-body.schema.json",
+      "for": "POST {endpoint}/proposals/{id}/counter body",
+      "spec": "native-endpoints"
+    },
+    {
+      "file": "events.schema.json",
+      "for": "GET {endpoint}/requests/{id}/events",
+      "spec": "native-endpoints"
+    },
+    {
+      "file": "error.schema.json",
+      "for": "an error answer",
+      "spec": "errors"
+    },
+    {
+      "file": "proof-package.schema.json",
+      "for": "GET {endpoint}/requests/{id}/proof",
+      "spec": "proof"
+    },
+    {
+      "file": "statement-header.schema.json",
+      "for": "the header of each statement",
+      "spec": "proof"
+    },
+    {
+      "file": "statement.schema.json",
+      "for": "the payload of each statement, by kind",
+      "spec": "proof"
+    },
+    {
+      "file": "checkpoint.schema.json",
+      "for": "the log checkpoint payload",
+      "spec": "issuer-anchoring"
+    },
+    {
+      "file": "relationship.schema.json",
+      "for": "a relationship: token response, GET and DELETE {endpoint}/relationships/{id}",
+      "spec": "r4"
+    },
+    {
+      "file": "relationship-agreement.schema.json",
+      "for": "the signed agreement payload (vxp-relationship+jwt)",
+      "spec": "r4"
+    },
+    {
+      "file": "company-request.schema.json",
+      "for": "a company-initiated request payload (vxp-company-request+jwt)",
+      "spec": "r7"
+    },
+    {
+      "file": "inbox-delivery.schema.json",
+      "for": "POST {inbox_uri} body",
+      "spec": "r7"
+    },
+    {
+      "file": "reply-body.schema.json",
+      "for": "POST {reply_url} body",
+      "spec": "r17"
+    },
+    {
+      "file": "reply-response.schema.json",
+      "for": "POST {reply_url} answer",
+      "spec": "r17"
+    },
+    {
+      "file": "reply-receipt.schema.json",
+      "for": "the reply receipt payload (vxp-reply-receipt+jwt)",
+      "spec": "r17"
+    }
+  ]
+}

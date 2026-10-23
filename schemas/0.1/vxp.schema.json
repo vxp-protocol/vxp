@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/vxp.schema.json",
+  "title": "VXP 0.1 discovery document",
+  "description": "GET https://<domain>/.well-known/vxp.json (spec §8, Discovery). organization.domain is the host that served the document, and the issuer's RFC 8414 metadata carries the proof's trust members, never this document.",
+  "type": "object",
+  "required": [
+    "protocol",
+    "version",
+    "organization",
+    "issuer",
+    "endpoint",
+    "capabilities",
+    "status"
+  ],
+  "properties": {
+    "protocol": {
+      "const": "vxp"
+    },
+    "version": {
+      "const": "0.1"
+    },
+    "organization": {
+      "type": "object",
+      "required": [
+        "name",
+        "domain"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^/\\s]+$"
+        }
+      }
+    },
+    "issuer": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "endpoint": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "capabilities": {
+      "description": "Only what the company decided to offer to external agents.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "effect",
+          "access",
+          "admission",
+          "authorization_details_type"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/capabilityId"
+          },
+          "effect": {
+            "enum": [
+              "read",
+              "write"
+            ]
+          },
+          "access": {
+            "enum": [
+              "public",
+              "delegated"
+            ]
+          },
+          "admission": {
+            "enum": [
+              "static",
+              "dynamic"
+            ]
+          },
+          "authorization_details_type": {
+            "const": "https://vxpprotocol.org/rar/capability"
+          },
+          "commitment_modes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "enum": [
+                "firm",
+                "conditional"
+              ]
+            }
+          },
+          "outcome_proof": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "limits": {
+      "description": "Negotiation limits (spec §8, Negotiation limits).",
+      "type": "object",
+      "properties": {
+        "max_revisions": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "proposal_ttl_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_accept_attempts": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "outcome_proof": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1"
+        },
+        "trust": {
+          "const": "issuer_metadata"
+        }
+      }
+    },
+    "status": {
+      "const": "experimental"
+    },
+    "vxp": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1"
+        },
+        "relationship": {
+          "type": "object",
+          "properties": {
+            "authorization_details_type": {
+              "const": "https://vxpprotocol.org/rar/relationship"
+            },
+            "company_initiated_actions": {
+              "type": "array",
+              "items": {
+                "$ref": "common.schema.json#/$defs/capabilityId"
+              }
+            }
+          }
+        },
+        "proof": {
+          "type": "object",
+          "properties": {
+            "trust": {
+              "const": "issuer_metadata"
+            }
+          }
+        }
+      }
+    }
+  },
+  "not": {
+    "description": "The proof's trust members live only in the issuer metadata.",
+    "anyOf": [
+      {
+        "required": [
+          "jwks_uri"
+        ]
+      },
+      {
+        "required": [
+          "operator"
+        ]
+      },
+      {
+        "required": [
+          "custody"
+        ]
+      },
+      {
+        "required": [
+          "vxp_proof"
+        ]
+      }
+    ]
+  }
+}

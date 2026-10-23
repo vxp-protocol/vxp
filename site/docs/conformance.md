@@ -40,9 +40,11 @@ What it checks, in order:
 - the proof verified by issuer anchoring, cross-checked with the operation, and a tampered copy rejected;
 - the relationship agreement and its signature;
 - a company-initiated proposal and a closed question;
-- revocation.
+- revocation;
+- every object your company returned, against the [JSON Schemas](https://vxpprotocol.org/docs/schemas/) (S1).
 
-Against the reference implementation it reports 50 pass, 0 fail and 3 manual.
+Against the reference implementation it reports 51 pass, 0 fail and 3 manual. What each failure looks like, and
+which test covers it, is in [Failures and how VXP behaves](https://vxpprotocol.org/docs/failures/).
 
 ## The checklist
 

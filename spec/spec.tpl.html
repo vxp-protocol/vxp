@@ -269,7 +269,7 @@
 			<tr><td><code>request</code></td><td>Operator</td><td>At <code>seq</code> 0: channel, <code>client_id</code>, digest of what was asked, optional idempotency key digest</td></tr>
 			<tr><td><code>terms</code></td><td>Company</td><td>Each revision: <code>terms_digest</code>, <code>capability</code>, <code>commitment</code>, <code>expires_at</code>, <code>company_review_required</code>, <code>read_back_terms</code></td></tr>
 			<tr><td><code>counter</code></td><td>Operator</td><td>A counter-proposal from the agent, by digest</td></tr>
-			<tr><td><code>user_approval</code></td><td>Operator</td><td>Approval of the latest revision and its <code>method</code></td></tr>
+			<tr><td><code>user_approval</code></td><td>Operator</td><td>Approval of the latest revision and its <code>method</code>; <code>basis: "standing_permission"</code> when the person authorized it beforehand, within a limit</td></tr>
 			<tr><td><code>company_review</code></td><td>Company</td><td>A decision by a person at the company, by role, after the customer's approval and before execution</td></tr>
 			<tr><td><code>execution</code></td><td>Operator</td><td>The single execution, on the approved revision and digest</td></tr>
 			<tr><td><code>read_back</code></td><td>Operator</td><td>What the company's system showed afterwards, named by term</td></tr>
@@ -434,10 +434,10 @@
 	<div class="tbl"><table>
 		<thead><tr><th>Method and path</th><th>What it does</th><th>Responses</th></tr></thead>
 		<tbody>
-			<tr><td><code>POST /v1/requests</code></td><td>Creates a request <code>{operation, target, parameters}</code>. <span class="kw">MUST</span> carry <code>Idempotency-Key</code></td><td>201 <code>proposed</code>; 202 <code>authorization_required</code> with what is missing; 400 <code>idempotency_key_required</code>, <code>invalid_request</code>; 404 <code>target_not_found</code>; 409 <code>idempotency_key_reused</code>, <code>request_exists</code>, <code>resource_busy</code></td></tr>
+			<tr><td><code>POST /v1/requests</code></td><td>Creates a request <code>{operation, target, parameters}</code>. <span class="kw">MUST</span> carry <code>Idempotency-Key</code>, except for a capability with <code>effect: "read"</code>, which is answered at once and creates no request, no operation and no proof</td><td>200 <code>{operation, effect: "read", result}</code> for a read; 403 <code>authorization_required</code> for a delegated read without the grant; 201 <code>proposed</code>; 202 <code>authorization_required</code> with what is missing; 400 <code>idempotency_key_required</code>, <code>invalid_request</code>; 404 <code>target_not_found</code>; 409 <code>idempotency_key_reused</code>, <code>request_exists</code>, <code>resource_busy</code></td></tr>
 			<tr><td><code>GET /v1/requests/{id}</code></td><td>Internal state, <code>projections {poppy, a2a}</code>, <code>proposal</code>, <code>effects</code>, <code>cancellation</code>, <code>result</code>, <code>proof_url</code></td><td>200; 404 <code>request_not_found</code></td></tr>
 			<tr><td><code>GET /v1/requests/{id}/events</code></td><td>Transitions <code>{seq, from, to, at, reason, poppy, a2a}</code></td><td>200</td></tr>
-			<tr><td><code>POST /v1/proposals/{id}/accept</code></td><td>Accepts that revision (<code>{approved_by}</code>)</td><td>202 if not final; 200 if finished; 409 <code>terms_changed</code>, <code>proposal_expired</code>, <code>proposal_not_acceptable</code>, <code>attempt_limit_exceeded</code>; 403 <code>authorization_required</code></td></tr>
+			<tr><td><code>POST /v1/proposals/{id}/accept</code></td><td>Accepts that revision (<code>{approved_by}</code>: <code>"user"</code>, or <code>"standing_permission"</code> only when the revision says <code>user_approval_required: false</code>, which the company sets only when the terms fall within a limit the person approved in advance)</td><td>202 if not final; 200 if finished; 409 <code>terms_changed</code>, <code>proposal_expired</code>, <code>proposal_not_acceptable</code>, <code>attempt_limit_exceeded</code>; 403 <code>authorization_required</code>, <code>user_approval_required</code>; 400 <code>invalid_request</code></td></tr>
 			<tr><td><code>POST /v1/proposals/{id}/counter</code></td><td>Counter-proposal <code>{proposed_terms, note?}</code></td><td>200 with the new revision; 409 <code>counter_rejected</code>, <code>negotiation_limit_exceeded</code></td></tr>
 			<tr><td><code>POST /v1/requests/{id}/cancel</code></td><td>Asks to stop (<a href="#cancellation">Cancellation</a>)</td><td>200, 202</td></tr>
 			<tr><td><code>GET /v1/requests/{id}/proof</code></td><td>The proof package</td><td>200</td></tr>
@@ -616,7 +616,7 @@
 		<thead><tr><th>Where</th><th>Codes</th></tr></thead>
 		<tbody>
 			<tr><td>Native requests</td><td><code>idempotency_key_required</code>, <code>invalid_request</code>, <code>target_not_found</code>, <code>idempotency_key_reused</code>, <code>request_exists</code>, <code>resource_busy</code>, <code>request_not_found</code>, <code>authorization_required</code></td></tr>
-			<tr><td>Proposals</td><td><code>terms_changed</code>, <code>proposal_expired</code>, <code>proposal_not_acceptable</code>, <code>attempt_limit_exceeded</code>, <code>counter_rejected</code>, <code>negotiation_limit_exceeded</code></td></tr>
+			<tr><td>Proposals</td><td><code>terms_changed</code>, <code>proposal_expired</code>, <code>proposal_not_acceptable</code>, <code>attempt_limit_exceeded</code>, <code>user_approval_required</code>, <code>counter_rejected</code>, <code>negotiation_limit_exceeded</code></td></tr>
 			<tr><td>Authorization</td><td><code>invalid_authorization_details</code></td></tr>
 			<tr><td>Relationship</td><td><code>relationship_not_found</code>, <code>relationship_revoked</code>, <code>relationship_expired</code>, <code>action_not_authorized</code>, <code>relationship_limit_exceeded</code>, <code>target_not_found</code></td></tr>
 			<tr><td>Closed-question answers</td><td><code>alert_not_found</code>, <code>already_answered</code>, <code>alert_expired</code>, <code>option_not_allowed</code></td></tr>
@@ -756,13 +756,16 @@ python ../verifier/verificar_paquete.py vectores ../vectors/vectores-0.1.json
 python ../verifier/verificar_paquete.py pact ../vectors/vectores-pact-0.1.json
 python scripts/cruce-verificadores.py
 python scripts/fuzz-diferencial.py 20000</pre></div>
-	<p>A third party checks its own implementation of the native profile with the conformance validator: it acts as a personal agent against any company endpoint, cites the rule behind each check and reports each one as passed, failed, optional or manual (<code>conformance/validate.ts</code>, <code>conformance/CHECKLIST.md</code>, <code>conformance/MATRIX.md</code>). Against the reference implementation: 50 passed, 0 failed, 3 manual.</p>
+	<p>A third party checks its own implementation of the native profile with the conformance validator: it acts as a personal agent against any company endpoint, cites the rule behind each check and reports each one as passed, failed, optional or manual (<code>conformance/validate.ts</code>, <code>conformance/CHECKLIST.md</code>, <code>conformance/MATRIX.md</code>). Against the reference implementation: 51 passed, 0 failed, 3 manual.</p>
+
+	<h3 id="schemas">JSON Schemas<a class="anchor" href="#schemas" aria-label="Link to JSON Schemas">#</a></h3>
+	<p><span class="mk mk--info">Informative</span> Every object of this draft has a JSON Schema (2020-12) at <code>https://vxpprotocol.org/schemas/0.1/</code>: the discovery document, the members of the issuer metadata and of the agent's Client ID Metadata Document, the token response, the native requests, proposals, events and errors, the proof package and each statement by kind, the log checkpoint, and the relationship, its agreement, the company's requests, the answers and their receipts. They restate §6 to §8; where they differ, this text governs. A schema checks shape; signatures, digests and the order of a chain are checked by a verifier (§10). The conformance validator checks every object an implementation returns against them (check S1).</p>
 </section>
 
 <!-- ═══ 13 ══════════════════════════════════════════════════════════════════ -->
 <section class="dsec" id="versions" aria-labelledby="versions-h">
 	<h2 id="versions-h"><span class="n">13</span>Specification and versions<a class="anchor" href="#versions" aria-label="Link to section 13">#</a></h2>
-	<p>Draft 0.1, 21 October 2026. Revised 22 October 2026, first for names <code>vxp</code>, rule I1 and Poppy §4.4 conformance, and again that evening for two public components and operation requirements O1 to O7; native-only gateway; implementation paths; key rotation and historical verification.</p>
+	<p>Draft 0.1, 21 October 2026. Revised 22 October 2026, first for names <code>vxp</code>, rule I1 and Poppy §4.4 conformance, and again that evening for two public components and operation requirements O1 to O7; native-only gateway; implementation paths; key rotation and historical verification. Revised 23 October 2026: read capabilities and <code>standing_permission</code> in the native endpoints, and the JSON Schemas (§12).</p>
 	<ul>
 		<li><b>Poppy draft 0.2</b>, official kit at commit <code>39b35bd</code>. Poppy can break compatibility before its 1.0.</li>
 		<li><b>PACT 1.0 over A2A 1.0.1</b>, official suite at commit <code>838c6bd</code>.</li>

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/relationship-agreement.schema.json",
+  "title": "VXP 0.1 relationship agreement payload",
+  "description": "Payload of the signed agreement (typ vxp-relationship+jwt), signed with the relationship key published in vxp_relationship.jwks_uri (R4, R5).",
+  "type": "object",
+  "required": [
+    "iss",
+    "aud",
+    "sub",
+    "rel",
+    "actions",
+    "limits",
+    "iat",
+    "exp",
+    "jti"
+  ],
+  "properties": {
+    "iss": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "aud": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "sub": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rel": {
+      "type": "string",
+      "pattern": "^rel_[A-Za-z0-9_-]+$"
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/capabilityId"
+      }
+    },
+    "limits": {
+      "type": "object",
+      "required": [
+        "max_per_day"
+      ],
+      "properties": {
+        "max_per_day": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "iat": {
+      "$ref": "common.schema.json#/$defs/numericDate"
+    },
+    "exp": {
+      "$ref": "common.schema.json#/$defs/numericDate"
+    },
+    "jti": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

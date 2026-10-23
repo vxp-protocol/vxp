@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/token-response.schema.json",
+  "title": "VXP 0.1 token response members",
+  "description": "The token endpoint's answer, with the members VXP adds: the authorization_details granted (spec §8, Authorization) and, when the person approved one, relationships[] with each signed agreement (R4). The token is DPoP-bound (RFC 9449).",
+  "type": "object",
+  "required": [
+    "access_token",
+    "token_type"
+  ],
+  "properties": {
+    "access_token": {
+      "type": "string",
+      "minLength": 1
+    },
+    "token_type": {
+      "type": "string",
+      "pattern": "^[Dd][Pp][Oo][Pp]$"
+    },
+    "expires_in": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "authorization_details": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/authorizationDetail"
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "relationship.schema.json"
+          },
+          {
+            "required": [
+              "agreement"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

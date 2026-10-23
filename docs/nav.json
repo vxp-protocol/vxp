@@ -19,6 +19,8 @@
     ] },
     { "title": "Reference", "pages": [
       { "slug": "examples", "file": "examples.md" },
+      { "slug": "schemas", "file": "schemas.md" },
+      { "slug": "failures", "file": "failures.md" },
       { "slug": "specification", "file": "specification.md" },
       { "slug": "conformance", "file": "conformance.md" },
       { "slug": "security", "file": "security.md" },

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Failures and how VXP behaves · VXP docs</title>
+<meta name="description" content="What a company, an agent and a verifier do when authority is missing, a permission is revoked, terms change, a request repeats or a result is unknown. Every row is covered by a test in the repository.">
+<link rel="alternate" type="text/markdown" href="../../docs/failures.md">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/vxp.css">
+<link rel="stylesheet" href="../../assets/docs.css">
+<link rel="stylesheet" href="../../assets/docs-site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-root="../../">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+	<div class="nav__in">
+		<a class="mark" href="../../"><b>VXP</b><span>Verifiable eXchange Protocol</span></a>
+		<button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+		<ul id="menu">
+			<li><a href="../../docs/" aria-current="page">Docs</a></li>
+			<li><a href="../../architecture/">Architecture</a></li>
+			<li><a href="../../spec/">Specification</a></li>
+			<li><a href="../../examples/">Examples</a></li>
+			<li><a href="../../verify/">Verify</a></li>
+			<li><a href="../../conformance/">Conformance</a></li>
+			<li><a href="../../implement/">Implement</a></li>
+			<li><a href="../../videos/">Videos</a></li>
+		</ul>
+		<a class="nav__ver" href="../../status/">Draft 0.1</a>
+	</div>
+</header>
+<div class="dlay">
+<aside class="dnav" aria-label="Documentation">
+	<div class="dsearch" role="search">
+		<label class="sr" for="dsearch-q">Search the docs</label>
+		<input id="dsearch-q" type="search" placeholder="Search the docs" autocomplete="off" aria-controls="dsearch-r">
+		<ul id="dsearch-r" class="dsearch__r" hidden></ul>
+	</div>
+	<details class="dnav__wrap" open>
+		<summary>Documentation</summary>
+		<div class="dnav__sec"><p class="dnav__h">Start</p><ul><li><a href="../../docs/">VXP documentation</a></li><li><a href="../../docs/introduction/">Introduction</a></li><li><a href="../../docs/quickstart/">Quickstart</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">The protocol</p><ul><li><a href="../../docs/proof/">VXP Proof</a></li><li><a href="../../docs/relationship/">VXP Relationship</a></li><li><a href="../../docs/native-profile/">Native profile and discovery</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Guides</p><ul><li><a href="../../docs/guides/company/">Guide for companies</a></li><li><a href="../../docs/guides/agent/">Guide for personal agents</a></li><li><a href="../../docs/guides/verifier/">Guide for verifiers</a></li><li><a href="../../docs/guides/interoperability/">Interoperability with Poppy and PACT</a></li></ul></div><div class="dnav__sec"><p class="dnav__h">Reference</p><ul><li><a href="../../docs/examples/">Examples and messages</a></li><li><a href="../../docs/schemas/">JSON Schemas</a></li><li><a href="../../docs/failures/" aria-current="page">Failures and how VXP behaves</a></li><li><a href="../../docs/specification/">Specification and versions</a></li><li><a href="../../docs/conformance/">Tests and conformance</a></li><li><a href="../../docs/security/">Security, errors, recovery and versions</a></li><li><a href="../../docs/changelog/">Changelog</a></li></ul></div>
+	</details>
+</aside>
+<main id="main" class="dmain">
+	<article class="dsec dpage">
+		<p class="kicker">VXP docs · draft 0.1</p>
+		<h1 class="h2">Failures and how VXP behaves</h1>
+		<p class="lead">What a company, an agent and a verifier do when authority is missing, a permission is revoked, terms change, a request repeats or a result is unknown. Every row is covered by a test in the repository.</p>
+		<nav class="dontoc" aria-label="On this page"><p>On this page</p><ul><li><a href="#missing-or-wrong-authority">Missing or wrong authority</a></li><li><a href="#revocation-and-expiry">Revocation and expiry</a></li><li><a href="#changed-or-altered-terms">Changed or altered terms</a></li><li><a href="#duplicates-and-lost-answers">Duplicates and lost answers</a></li><li><a href="#results-nobody-can-confirm-yet">Results nobody can confirm yet</a></li><li><a href="#inside-a-relationship">Inside a relationship</a></li></ul></nav>
+		<p>Each row names the test that covers it. Tests in <code>reference/</code> run with <code>npm test</code> (and <code>npm run test:network</code> for <code>test-red/</code>); tests in <code>agent/</code> with <code>npm test</code> in that folder; the conformance validator runs the same checks against any implementation (<a href="../../docs/conformance/">Conformance</a>). Error codes are those of <a class="rule" href="../../spec/#errors">the specification</a>.</p>
+<h2 id="missing-or-wrong-authority">Missing or wrong authority<a class="anchor" href="#missing-or-wrong-authority" aria-label="Link to Missing or wrong authority">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Situation</th><th>What happens</th><th>Covered by</th></tr></thead><tbody><tr><td>An agent asks without authority</td><td><code>202</code> with <code>state: authorization_required</code> and exactly the <code>authorization_details</code> to ask the person for; nothing runs (<a class="rule" href="../../spec/#o2">O2</a>)</td><td><code>reference/test/nativo.test.ts</code> 7 · validator Q2</td></tr><tr><td>A grant for one resource is used for another</td><td>Refused, both to ask and to accept; a resource of another customer is not granted</td><td><code>reference/test/vxp.test.ts</code> B2 · <code>reference/test/nativo.test.ts</code> 5</td></tr><tr><td>An agent with read-only scope tries to change something</td><td>The company asks for the missing scope; nothing changes</td><td><code>reference/test/poppy-flujo.test.ts</code> «con sólo lectura»</td></tr><tr><td>Another user of the same agent reads or accepts someone else's request</td><td><code>404</code>: for that identity the request does not exist (<a class="rule" href="../../spec/#id3">ID3</a>)</td><td>validator O3 · <code>reference/test/exigencia.test.ts</code> NH-I</td></tr><tr><td>The total is above what the person approved</td><td><code>403 authorization_required</code> with the amount to authorize; the agent does not accept above the person's own cap and does not ask for more</td><td><code>reference/test/vxp.test.ts</code> G3 · <code>agent/test/negatives.test.ts</code> «cap exceeded»</td></tr><tr><td><code>approved_by: "standing_permission"</code> on a revision that requires the person</td><td><code>403 user_approval_required</code></td><td><code>reference/test/exigencia.test.ts</code> NH-P · <code>reference/test/poppy-flujo.test.ts</code> «un permiso permanente no basta»</td></tr><tr><td>The person denies the exact terms</td><td>Nothing runs</td><td><code>agent/test/negatives.test.ts</code> «person denies»</td></tr><tr><td>A token of one company at another</td><td>Not valid; nothing crosses between companies</td><td><code>reference/test/poppy-flujo.test.ts</code> «nada cruza» · <code>reference/test/exigencia.test.ts</code> HO-A5</td></tr></tbody></table></div>
+<h2 id="revocation-and-expiry">Revocation and expiry<a class="anchor" href="#revocation-and-expiry" aria-label="Link to Revocation and expiry">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Situation</th><th>What happens</th><th>Covered by</th></tr></thead><tbody><tr><td>The person revokes between the proposal and the acceptance</td><td>Accepting no longer runs anything (<a class="rule" href="../../spec/#o5">O5</a>)</td><td><code>reference/test/vxp.test.ts</code> B4 · <code>reference/test/exigencia.test.ts</code> HO-A7</td></tr><tr><td>The proposal, the device code or the session expires</td><td><code>409 proposal_expired</code> or a refused token; nothing runs</td><td><code>reference/test/nativo.test.ts</code> 2 · <code>reference/test/vxp.test.ts</code> F4 · <code>reference/test/exigencia.test.ts</code> HO-A7</td></tr><tr><td>A relationship is revoked by the person, the company or the agent</td><td>The company cannot start anything (<code>relationship_revoked</code>); a pending proposal from it is no longer accepted; a late answer is refused (<a class="rule" href="../../spec/#r6">R6</a>, <a class="rule" href="../../spec/#r9">R9</a>, <a class="rule" href="../../spec/#r10">R10</a>)</td><td><code>reference/test/vxp.test.ts</code> E4, E5 · <code>reference/test/relacion-poppy.test.ts</code> RP3 · validator R11, R12 · <code>agent/test/negatives.test.ts</code> «relationship revoked…»</td></tr><tr><td>A relationship expires</td><td><code>relationship_expired</code>; the agent's inbox and reply refuse it too</td><td><code>reference/test/vxp.test.ts</code> E5 · <code>agent/test/negatives.test.ts</code> «relationship expired»</td></tr></tbody></table></div>
+<h2 id="changed-or-altered-terms">Changed or altered terms<a class="anchor" href="#changed-or-altered-terms" aria-label="Link to Changed or altered terms">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Situation</th><th>What happens</th><th>Covered by</th></tr></thead><tbody><tr><td>The agent accepts a revision that a counter-proposal superseded</td><td><code>409 terms_changed</code>; nothing runs (<a class="rule" href="../../spec/#o4">O4</a>)</td><td><code>reference/test/vxp.test.ts</code> B1 · validator N2 · <code>reference/test/poppy-flujo.test.ts</code> «si cambian los términos»</td></tr><tr><td>Too many revisions or acceptance attempts</td><td><code>negotiation_limit_exceeded</code> or <code>attempt_limit_exceeded</code>; the request ends <code>failed</code> without effect</td><td><code>reference/test/nativo.test.ts</code> 2</td></tr><tr><td>A signed statement is changed without signing it again</td><td>The verifier answers <code>signature_invalid</code></td><td><code>reference/test/prueba-resultado.test.ts</code> «una prueba alterada» · validator V7</td></tr><tr><td>The agent was shown other terms than the ones the company signed</td><td><code>operation_terms_mismatch</code> (<a class="rule" href="../../spec/#p8">P8</a>)</td><td><code>reference/test/prueba-resultado.test.ts</code> «términos cambiados» · <a href="../../docs/quickstart/">Quickstart</a> step 3</td></tr><tr><td>The operator re-signs the execution on another revision</td><td><code>execution_terms_mismatch</code> (<a class="rule" href="../../spec/#p1">P1</a>)</td><td><code>reference/test/prueba-resultado.test.ts</code> «el operador re-firma»</td></tr><tr><td><code>succeeded</code> without a matching read of the company's system</td><td><code>succeeded_without_matching_read_back</code> (<a class="rule" href="../../spec/#o7">O7</a>)</td><td><code>reference/test/prueba-resultado.test.ts</code> «resultado succeeded sin lectura»</td></tr><tr><td>A package or statement of another company, a replayed result, or another chain of the same size</td><td>Rejected by the verifier</td><td><code>reference/test/prueba-resultado.test.ts</code> «otra empresa», «replay», «equivocación»</td></tr></tbody></table></div>
+<h2 id="duplicates-and-lost-answers">Duplicates and lost answers<a class="anchor" href="#duplicates-and-lost-answers" aria-label="Link to Duplicates and lost answers">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Situation</th><th>What happens</th><th>Covered by</th></tr></thead><tbody><tr><td>A write without <code>Idempotency-Key</code></td><td><code>400 idempotency_key_required</code></td><td><code>reference/test/nativo.test.ts</code> 7 · validator Q1</td></tr><tr><td>The same key with another body</td><td><code>409 idempotency_key_reused</code>; the same key and body return the same request</td><td><code>reference/test/nativo.test.ts</code> 7 · validator Q3</td></tr><tr><td>The agent accepts twice</td><td>One execution; the second answer is the same result (<a class="rule" href="../../spec/#o6">O6</a>)</td><td><code>reference/test/vxp.test.ts</code> B3 · validator X3</td></tr><tr><td>The connection drops while accepting and the agent retries</td><td>The retry sees the same state; one booking</td><td><code>reference/test/exigencia.test.ts</code> HO-A6 · <code>reference/test-red/exigencia-red.test.ts</code> RX1</td></tr><tr><td>The payment provider does not answer</td><td>The company reconciles by idempotency; never two charges</td><td><code>reference/test/exigencia.test.ts</code> HO-C4</td></tr><tr><td>The same order asked through Poppy, PACT and the native profile</td><td>Three operations, one execution; the others fail without effect</td><td><code>reference/test/vxp.test.ts</code> A1</td></tr></tbody></table></div>
+<h2 id="results-nobody-can-confirm-yet">Results nobody can confirm yet<a class="anchor" href="#results-nobody-can-confirm-yet" aria-label="Link to Results nobody can confirm yet">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Situation</th><th>What happens</th><th>Covered by</th></tr></thead><tbody><tr><td>The company's system does not answer after executing</td><td>The company signs <code>unknown</code>, does not retry; a later read adds a correction to <code>succeeded</code> citing it (<a class="rule" href="../../spec/#p3">P3</a>, <a class="rule" href="../../spec/#p4">P4</a>)</td><td><code>reference/test/prueba-resultado.test.ts</code> «timeout» · <code>reference/test/exigencia.test.ts</code> HO-C3</td></tr><tr><td>The read of the system contradicts what was approved</td><td><code>matches_terms: false</code>, the result stays <code>unknown</code>, the operation waits for a person (<a class="rule" href="../../spec/#p5">P5</a>)</td><td><code>reference/test/exigencia.test.ts</code> HO-A2 · <code>reference/test/ataques-ronda-3.test.ts</code> M1</td></tr><tr><td>A capability that cannot read its result back</td><td>Never <code>succeeded</code>; at most <code>unknown</code> (<a class="rule" href="../../spec/#p6">P6</a>)</td><td><code>reference/test/vxp.test.ts</code> C3</td></tr></tbody></table></div>
+<h2 id="inside-a-relationship">Inside a relationship<a class="anchor" href="#inside-a-relationship" aria-label="Link to Inside a relationship">#</a></h2>
+<div class="tbl tbl--fit"><table><thead><tr><th>Situation</th><th>What happens</th><th>Covered by</th></tr></thead><tbody><tr><td>An action outside the relationship, another customer's resource, or over the daily limit</td><td>Rejected before signing or sending anything: <code>action_not_authorized</code>, <code>target_not_found</code>, <code>relationship_limit_exceeded</code> (<a class="rule" href="../../spec/#r6">R6</a>)</td><td><code>reference/test/vxp.test.ts</code> E3 · <code>reference/test/exigencia.test.ts</code> RE-A</td></tr><tr><td>An answer outside the question's options, or a second answer</td><td><code>400 option_not_allowed</code>, <code>409 already_answered</code> (<a class="rule" href="../../spec/#r17">R17</a>)</td><td>validator R8, R10</td></tr><tr><td>A company message with a forged signature or a repeated <code>jti</code></td><td>The agent's inbox rejects it (<a class="rule" href="../../spec/#r7">R7</a>)</td><td><code>agent/test/negatives.test.ts</code> «forged signature or a repeated jti»</td></tr><tr><td>A company returns identifiers with an unexpected shape, or the id of another company's request</td><td>The agent refuses them and keeps the other company's request intact</td><td><code>agent/test/untrusted-ids.test.ts</code></td></tr></tbody></table></div>
+<p>The objects of every row match the <a href="../../docs/schemas/">JSON Schemas</a>; the conformance validator checks that with S1.</p>
+		<div class="dfoot">
+			<a href="../../docs/failures.md">View as Markdown</a>
+			<a href="https://github.com/vxp-protocol/vxp/blob/main/docs/failures.md">Source</a>
+		</div>
+		<nav class="dprevnext" aria-label="Previous and next">
+			<a href="../../docs/schemas/"><span>Previous</span>JSON Schemas</a>
+			<a href="../../docs/specification/"><span>Next</span>Specification and versions</a>
+		</nav>
+	</article>
+</main>
+</div>
+<footer class="foot">
+	<div class="foot__in">
+		<div><b>VXP</b><p style="margin-top:8px;max-width:44ch">An open protocol, developed by SOVRAS. Anyone can implement it; the specification, reference implementation and tools are Apache 2.0.</p></div>
+		<div><b>Docs</b><ul><li><a href="../../docs/quickstart/">Quickstart</a></li><li><a href="../../spec/">Specification</a></li><li><a href="../../llms.txt">llms.txt</a></li></ul></div>
+		<div><b>Tools</b><ul><li><a href="../../verify/">Verifier</a></li><li><a href="../../demos/">Demos</a></li><li><a href="../../conformance/">Conformance</a></li></ul></div>
+		<div><b>Project</b><ul><li><a href="https://github.com/vxp-protocol/vxp">Repository</a></li><li><a href="../../docs/changelog/">Changelog</a></li><li><a href="../../status/">Status</a></li></ul></div>
+	</div>
+</footer>
+<script src="../../assets/site.js" defer></script>
+<script src="../../assets/docs-site.js" defer></script>
+</body>
+</html>

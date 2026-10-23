@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/error.schema.json",
+  "title": "VXP 0.1 error",
+  "description": "An error answer of the native endpoints. error is a code from the specification's table (spec §9, Errors), such as authorization_required, terms_changed or relationship_revoked; other members are allowed (for example authorization_details next to authorization_required, or options next to option_not_allowed).",
+  "type": "object",
+  "required": [
+    "error"
+  ],
+  "properties": {
+    "error": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "authorization_details": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/authorizationDetail"
+      }
+    }
+  }
+}

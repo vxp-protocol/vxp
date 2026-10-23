@@ -249,7 +249,7 @@ node conformance/reference/run.ts --report conformance-report.json
 ```
 
 It starts its own native-only reference company, acts as a personal agent against it, and reports every check
-with the rule it tests. Expected: `{"pass":50,"fail":0,"optional":0,"manual":3,"skipped":0}`. The report is in
+with the rule it tests. Expected: `{"pass":51,"fail":0,"optional":0,"manual":3,"skipped":0}`. The report is in
 `conformance-report.md`. To check your own company, see [Conformance](https://vxpprotocol.org/docs/conformance/).
 
 ## Where next
@@ -1632,6 +1632,136 @@ relationship:
 
 ---
 
+# JSON Schemas
+
+> JSON Schemas (2020-12) for every object of VXP 0.1, published under vxpprotocol.org/schemas/0.1/, checked against the reference implementation and usable to validate your own.
+
+The schemas restate the specification as JSON Schema 2020-12, so a company or an agent can check its objects
+mechanically. Where a schema and the [specification](https://vxpprotocol.org/spec/) differ, the specification governs. They are
+versioned with the protocol: `https://vxpprotocol.org/schemas/0.1/<name>.schema.json`, each with that URL as its
+`$id`. `common.schema.json` holds the shared definitions (digests, states, authorization details, commitment).
+
+## The schemas
+
+| Schema | Object | Rules |
+|---|---|---|
+| `vxp.schema.json` | `GET /.well-known/vxp.json` | [native-discovery](https://vxpprotocol.org/spec/#native-discovery) |
+| `issuer-metadata.schema.json` | `vxp_proof` and `vxp_relationship` in the issuer's RFC 8414 metadata | [issuer-anchoring](https://vxpprotocol.org/spec/#issuer-anchoring), [R1](https://vxpprotocol.org/spec/#r1), [R5](https://vxpprotocol.org/spec/#r5) |
+| `client-metadata.schema.json` | The agent's Client ID Metadata Document, with its inbox | [native-authorization](https://vxpprotocol.org/spec/#native-authorization), [R2](https://vxpprotocol.org/spec/#r2) |
+| `token-response.schema.json` | The token response: `authorization_details` granted and `relationships[]` | [native-authorization](https://vxpprotocol.org/spec/#native-authorization), [R4](https://vxpprotocol.org/spec/#r4) |
+| `request-body.schema.json` | `POST {endpoint}/requests` body | [native-endpoints](https://vxpprotocol.org/spec/#native-endpoints) |
+| `request.schema.json` | A request: state, projections, missing authority, proposal, effects, result | [native-endpoints](https://vxpprotocol.org/spec/#native-endpoints), [O2](https://vxpprotocol.org/spec/#o2), [O4](https://vxpprotocol.org/spec/#o4) |
+| `read-response.schema.json` | The answer to a read capability | [native-endpoints](https://vxpprotocol.org/spec/#native-endpoints) |
+| `accept-body.schema.json`, `counter-body.schema.json` | Accept and counter-proposal bodies | [native-endpoints](https://vxpprotocol.org/spec/#native-endpoints) |
+| `events.schema.json` | `GET {endpoint}/requests/{id}/events` | [native-endpoints](https://vxpprotocol.org/spec/#native-endpoints), [E1](https://vxpprotocol.org/spec/#e1) |
+| `error.schema.json` | An error answer | [errors](https://vxpprotocol.org/spec/#errors) |
+| `proof-package.schema.json` | `GET {endpoint}/requests/{id}/proof` | [proof](https://vxpprotocol.org/spec/#proof) |
+| `statement-header.schema.json`, `statement.schema.json` | Each statement's header, and its payload by kind | [proof](https://vxpprotocol.org/spec/#proof), [P1](https://vxpprotocol.org/spec/#p1)–[P6](https://vxpprotocol.org/spec/#p6) |
+| `checkpoint.schema.json` | The log checkpoint | [issuer-anchoring](https://vxpprotocol.org/spec/#issuer-anchoring) |
+| `relationship.schema.json`, `relationship-agreement.schema.json` | A relationship and its signed agreement | [R4](https://vxpprotocol.org/spec/#r4), [R10](https://vxpprotocol.org/spec/#r10), [R11](https://vxpprotocol.org/spec/#r11) |
+| `company-request.schema.json`, `inbox-delivery.schema.json` | A company-initiated request and its delivery | [R7](https://vxpprotocol.org/spec/#r7), [R8](https://vxpprotocol.org/spec/#r8) |
+| `reply-body.schema.json`, `reply-response.schema.json`, `reply-receipt.schema.json` | Answering a closed question and its receipt | [R17](https://vxpprotocol.org/spec/#r17) |
+
+A schema checks shape. Signatures, digests and the order of a chain are the verifier's job
+([Guide for verifiers](https://vxpprotocol.org/docs/guides/verifier/)).
+
+## How they are checked
+
+- `node schemas/check.ts` validates the objects of a real native run, every proof package kept in the repository,
+  every statement in the test vectors and the personal agent's run, and requires each object in
+  `schemas/invalid.json` (one per broken rule) to be rejected. With `--run <dir>` it also validates a fresh run of
+  `reference/scripts/recorrido-nativo.test.ts`. CI runs both.
+- The conformance validator checks every object an implementation returns against the schemas, in check **S1**,
+  including the messages that reach the validator's inbox. See [Conformance](https://vxpprotocol.org/docs/conformance/).
+
+## Use them
+
+```sh title="Validate one object with any JSON Schema 2020-12 validator, for example"
+npx --yes ajv-cli@5 validate --spec=draft2020 -r "schemas/0.1/common.schema.json" \
+  -s schemas/0.1/vxp.schema.json -d my-vxp.json
+```
+
+Or import them by URL once the site is published: every `$ref` is relative, so a validator that resolves `$id`
+loads the rest by itself.
+
+
+---
+
+# Failures and how VXP behaves
+
+> What a company, an agent and a verifier do when authority is missing, a permission is revoked, terms change, a request repeats or a result is unknown. Every row is covered by a test in the repository.
+
+Each row names the test that covers it. Tests in `reference/` run with `npm test` (and `npm run test:network`
+for `test-red/`); tests in `agent/` with `npm test` in that folder; the conformance validator runs the same checks
+against any implementation ([Conformance](https://vxpprotocol.org/docs/conformance/)). Error codes are those of [the specification](https://vxpprotocol.org/spec/#errors).
+
+## Missing or wrong authority
+
+| Situation | What happens | Covered by |
+|---|---|---|
+| An agent asks without authority | `202` with `state: authorization_required` and exactly the `authorization_details` to ask the person for; nothing runs ([O2](https://vxpprotocol.org/spec/#o2)) | `reference/test/nativo.test.ts` 7 · validator Q2 |
+| A grant for one resource is used for another | Refused, both to ask and to accept; a resource of another customer is not granted | `reference/test/vxp.test.ts` B2 · `reference/test/nativo.test.ts` 5 |
+| An agent with read-only scope tries to change something | The company asks for the missing scope; nothing changes | `reference/test/poppy-flujo.test.ts` «con sólo lectura» |
+| Another user of the same agent reads or accepts someone else's request | `404`: for that identity the request does not exist ([ID3](https://vxpprotocol.org/spec/#id3)) | validator O3 · `reference/test/exigencia.test.ts` NH-I |
+| The total is above what the person approved | `403 authorization_required` with the amount to authorize; the agent does not accept above the person's own cap and does not ask for more | `reference/test/vxp.test.ts` G3 · `agent/test/negatives.test.ts` «cap exceeded» |
+| `approved_by: "standing_permission"` on a revision that requires the person | `403 user_approval_required` | `reference/test/exigencia.test.ts` NH-P · `reference/test/poppy-flujo.test.ts` «un permiso permanente no basta» |
+| The person denies the exact terms | Nothing runs | `agent/test/negatives.test.ts` «person denies» |
+| A token of one company at another | Not valid; nothing crosses between companies | `reference/test/poppy-flujo.test.ts` «nada cruza» · `reference/test/exigencia.test.ts` HO-A5 |
+
+## Revocation and expiry
+
+| Situation | What happens | Covered by |
+|---|---|---|
+| The person revokes between the proposal and the acceptance | Accepting no longer runs anything ([O5](https://vxpprotocol.org/spec/#o5)) | `reference/test/vxp.test.ts` B4 · `reference/test/exigencia.test.ts` HO-A7 |
+| The proposal, the device code or the session expires | `409 proposal_expired` or a refused token; nothing runs | `reference/test/nativo.test.ts` 2 · `reference/test/vxp.test.ts` F4 · `reference/test/exigencia.test.ts` HO-A7 |
+| A relationship is revoked by the person, the company or the agent | The company cannot start anything (`relationship_revoked`); a pending proposal from it is no longer accepted; a late answer is refused ([R6](https://vxpprotocol.org/spec/#r6), [R9](https://vxpprotocol.org/spec/#r9), [R10](https://vxpprotocol.org/spec/#r10)) | `reference/test/vxp.test.ts` E4, E5 · `reference/test/relacion-poppy.test.ts` RP3 · validator R11, R12 · `agent/test/negatives.test.ts` «relationship revoked…» |
+| A relationship expires | `relationship_expired`; the agent's inbox and reply refuse it too | `reference/test/vxp.test.ts` E5 · `agent/test/negatives.test.ts` «relationship expired» |
+
+## Changed or altered terms
+
+| Situation | What happens | Covered by |
+|---|---|---|
+| The agent accepts a revision that a counter-proposal superseded | `409 terms_changed`; nothing runs ([O4](https://vxpprotocol.org/spec/#o4)) | `reference/test/vxp.test.ts` B1 · validator N2 · `reference/test/poppy-flujo.test.ts` «si cambian los términos» |
+| Too many revisions or acceptance attempts | `negotiation_limit_exceeded` or `attempt_limit_exceeded`; the request ends `failed` without effect | `reference/test/nativo.test.ts` 2 |
+| A signed statement is changed without signing it again | The verifier answers `signature_invalid` | `reference/test/prueba-resultado.test.ts` «una prueba alterada» · validator V7 |
+| The agent was shown other terms than the ones the company signed | `operation_terms_mismatch` ([P8](https://vxpprotocol.org/spec/#p8)) | `reference/test/prueba-resultado.test.ts` «términos cambiados» · [Quickstart](https://vxpprotocol.org/docs/quickstart/) step 3 |
+| The operator re-signs the execution on another revision | `execution_terms_mismatch` ([P1](https://vxpprotocol.org/spec/#p1)) | `reference/test/prueba-resultado.test.ts` «el operador re-firma» |
+| `succeeded` without a matching read of the company's system | `succeeded_without_matching_read_back` ([O7](https://vxpprotocol.org/spec/#o7)) | `reference/test/prueba-resultado.test.ts` «resultado succeeded sin lectura» |
+| A package or statement of another company, a replayed result, or another chain of the same size | Rejected by the verifier | `reference/test/prueba-resultado.test.ts` «otra empresa», «replay», «equivocación» |
+
+## Duplicates and lost answers
+
+| Situation | What happens | Covered by |
+|---|---|---|
+| A write without `Idempotency-Key` | `400 idempotency_key_required` | `reference/test/nativo.test.ts` 7 · validator Q1 |
+| The same key with another body | `409 idempotency_key_reused`; the same key and body return the same request | `reference/test/nativo.test.ts` 7 · validator Q3 |
+| The agent accepts twice | One execution; the second answer is the same result ([O6](https://vxpprotocol.org/spec/#o6)) | `reference/test/vxp.test.ts` B3 · validator X3 |
+| The connection drops while accepting and the agent retries | The retry sees the same state; one booking | `reference/test/exigencia.test.ts` HO-A6 · `reference/test-red/exigencia-red.test.ts` RX1 |
+| The payment provider does not answer | The company reconciles by idempotency; never two charges | `reference/test/exigencia.test.ts` HO-C4 |
+| The same order asked through Poppy, PACT and the native profile | Three operations, one execution; the others fail without effect | `reference/test/vxp.test.ts` A1 |
+
+## Results nobody can confirm yet
+
+| Situation | What happens | Covered by |
+|---|---|---|
+| The company's system does not answer after executing | The company signs `unknown`, does not retry; a later read adds a correction to `succeeded` citing it ([P3](https://vxpprotocol.org/spec/#p3), [P4](https://vxpprotocol.org/spec/#p4)) | `reference/test/prueba-resultado.test.ts` «timeout» · `reference/test/exigencia.test.ts` HO-C3 |
+| The read of the system contradicts what was approved | `matches_terms: false`, the result stays `unknown`, the operation waits for a person ([P5](https://vxpprotocol.org/spec/#p5)) | `reference/test/exigencia.test.ts` HO-A2 · `reference/test/ataques-ronda-3.test.ts` M1 |
+| A capability that cannot read its result back | Never `succeeded`; at most `unknown` ([P6](https://vxpprotocol.org/spec/#p6)) | `reference/test/vxp.test.ts` C3 |
+
+## Inside a relationship
+
+| Situation | What happens | Covered by |
+|---|---|---|
+| An action outside the relationship, another customer's resource, or over the daily limit | Rejected before signing or sending anything: `action_not_authorized`, `target_not_found`, `relationship_limit_exceeded` ([R6](https://vxpprotocol.org/spec/#r6)) | `reference/test/vxp.test.ts` E3 · `reference/test/exigencia.test.ts` RE-A |
+| An answer outside the question's options, or a second answer | `400 option_not_allowed`, `409 already_answered` ([R17](https://vxpprotocol.org/spec/#r17)) | validator R8, R10 |
+| A company message with a forged signature or a repeated `jti` | The agent's inbox rejects it ([R7](https://vxpprotocol.org/spec/#r7)) | `agent/test/negatives.test.ts` «forged signature or a repeated jti» |
+| A company returns identifiers with an unexpected shape, or the id of another company's request | The agent refuses them and keeps the other company's request intact | `agent/test/untrusted-ids.test.ts` |
+
+The objects of every row match the [JSON Schemas](https://vxpprotocol.org/docs/schemas/); the conformance validator checks that with S1.
+
+
+---
+
 # Specification and versions
 
 > Where the normative text lives, how its rules are identified, and how versions work.
@@ -1718,9 +1848,11 @@ What it checks, in order:
 - the proof verified by issuer anchoring, cross-checked with the operation, and a tampered copy rejected;
 - the relationship agreement and its signature;
 - a company-initiated proposal and a closed question;
-- revocation.
+- revocation;
+- every object your company returned, against the [JSON Schemas](https://vxpprotocol.org/docs/schemas/) (S1).
 
-Against the reference implementation it reports 50 pass, 0 fail and 3 manual.
+Against the reference implementation it reports 51 pass, 0 fail and 3 manual. What each failure looks like, and
+which test covers it, is in [Failures and how VXP behaves](https://vxpprotocol.org/docs/failures/).
 
 ## The checklist
 
@@ -1853,9 +1985,18 @@ with each other until 1.0.
   log and proof bundle are discovered through the issuer metadata.
 - Reading a verdict, key rotation and historical verification (§10).
 - WhatsApp no longer named in normative rules: «a channel the company has linked to the customer».
+- Native endpoints (§8): read capabilities answer at once with `{operation, effect: "read", result}` and
+  create no request; `approved_by` is `user`, or `standing_permission` only for a revision with
+  `user_approval_required: false` (otherwise `403 user_approval_required`); `user_approval` statements may
+  carry `basis: "standing_permission"`.
+- JSON Schemas (§12, informative) for every object of the draft.
 
 ### Repository
-- `docs/`: documentation in Markdown, built into the site, with `llms.txt`.
+- `docs/`: documentation in Markdown, built into the site, with `llms.txt`; a page of failures with the test
+  that covers each one.
+- `schemas/0.1/`: JSON Schemas (2020-12), published at `vxpprotocol.org/schemas/0.1/`; `schemas/check.ts`
+  validates real runs, proof packages, vectors and the agent's run against them and requires a set of invalid
+  objects to be rejected; the conformance validator checks every object an implementation returns (S1).
 - `conformance/`: a validator that acts as an agent against any native-profile implementation and
   reports every check with its rule; a conformance matrix and a checklist of what only a person can check.
 - `agent/`: client library, CLI, MCP server and example personal agent.

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/statement-header.schema.json",
+  "title": "VXP 0.1 statement header",
+  "description": "Protected header of each statement's SD-JWT (spec §6, Format): ES256, the RFC 7638 thumbprint of the signing key, and typ vxp-stmt+sd-jwt. No Key Binding JWT in 0.1.",
+  "type": "object",
+  "required": [
+    "alg",
+    "kid",
+    "typ"
+  ],
+  "properties": {
+    "alg": {
+      "const": "ES256"
+    },
+    "kid": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "typ": {
+      "const": "vxp-stmt+sd-jwt"
+    }
+  },
+  "additionalProperties": false
+}

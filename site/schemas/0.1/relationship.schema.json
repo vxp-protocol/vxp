@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/relationship.schema.json",
+  "title": "VXP 0.1 relationship",
+  "description": "A relationship as the agent sees it: in the token response's relationships[] with its signed agreement (R4), and from GET or DELETE {endpoint}/relationships/{id} (R10, R11).",
+  "type": "object",
+  "required": [
+    "relationship_id",
+    "state",
+    "actions",
+    "limits",
+    "expires_at"
+  ],
+  "properties": {
+    "relationship_id": {
+      "type": "string",
+      "pattern": "^rel_[A-Za-z0-9_-]+$"
+    },
+    "state": {
+      "enum": [
+        "active",
+        "revoked",
+        "expired"
+      ]
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/capabilityId"
+      }
+    },
+    "limits": {
+      "type": "object",
+      "required": [
+        "max_per_day"
+      ],
+      "properties": {
+        "max_per_day": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "expires_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "revoked": {
+      "type": "object",
+      "required": [
+        "by",
+        "at"
+      ],
+      "properties": {
+        "by": {
+          "type": "string"
+        },
+        "at": {
+          "$ref": "common.schema.json#/$defs/dateTime"
+        }
+      }
+    },
+    "agreement": {
+      "description": "The signed agreement: a JWS with typ vxp-relationship+jwt (relationship-agreement.schema.json).",
+      "$ref": "common.schema.json#/$defs/jws"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/reply-body.schema.json",
+  "title": "VXP 0.1 answer to a closed question",
+  "description": "Body of POST {reply_url} = {endpoint}/relationships/{id}/replies (R17). decision is one of the question's options.",
+  "type": "object",
+  "required": [
+    "alert_id",
+    "decision"
+  ],
+  "properties": {
+    "alert_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": false
+}

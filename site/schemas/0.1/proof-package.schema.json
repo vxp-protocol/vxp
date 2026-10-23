@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/proof-package.schema.json",
+  "title": "VXP 0.1 proof package",
+  "description": "GET {endpoint}/requests/{id}/proof: the chain of signed statements of one operation, in seq order, with the log material if the implementation keeps a log (spec §6, VXP Proof; §10). Each statement is an SD-JWT; its header is statement-header.schema.json and its payload statement.schema.json.",
+  "type": "object",
+  "required": [
+    "v",
+    "company",
+    "op",
+    "statements"
+  ],
+  "properties": {
+    "v": {
+      "const": "0.1"
+    },
+    "company": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "op": {
+      "type": "string",
+      "pattern": "^op_[A-Za-z0-9_-]+$"
+    },
+    "statements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/sdJwt"
+      }
+    },
+    "log": {
+      "type": "object",
+      "required": [
+        "origin",
+        "checkpoint",
+        "inclusion"
+      ],
+      "properties": {
+        "origin": {
+          "type": "string",
+          "minLength": 1
+        },
+        "checkpoint": {
+          "$ref": "common.schema.json#/$defs/jws"
+        },
+        "cosignatures": {
+          "type": "array"
+        },
+        "inclusion": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "seq",
+              "leaf_index",
+              "salt",
+              "tag",
+              "path"
+            ],
+            "properties": {
+              "seq": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "leaf_index": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "salt": {
+                "$ref": "common.schema.json#/$defs/b64u"
+              },
+              "tag": {
+                "$ref": "common.schema.json#/$defs/b64u"
+              },
+              "path": {
+                "type": "array",
+                "items": {
+                  "$ref": "common.schema.json#/$defs/b64u"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

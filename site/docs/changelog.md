@@ -15,9 +15,18 @@ with each other until 1.0.
   log and proof bundle are discovered through the issuer metadata.
 - Reading a verdict, key rotation and historical verification (§10).
 - WhatsApp no longer named in normative rules: «a channel the company has linked to the customer».
+- Native endpoints (§8): read capabilities answer at once with `{operation, effect: "read", result}` and
+  create no request; `approved_by` is `user`, or `standing_permission` only for a revision with
+  `user_approval_required: false` (otherwise `403 user_approval_required`); `user_approval` statements may
+  carry `basis: "standing_permission"`.
+- JSON Schemas (§12, informative) for every object of the draft.
 
 ### Repository
-- `docs/`: documentation in Markdown, built into the site, with `llms.txt`.
+- `docs/`: documentation in Markdown, built into the site, with `llms.txt`; a page of failures with the test
+  that covers each one.
+- `schemas/0.1/`: JSON Schemas (2020-12), published at `vxpprotocol.org/schemas/0.1/`; `schemas/check.ts`
+  validates real runs, proof packages, vectors and the agent's run against them and requires a set of invalid
+  objects to be rejected; the conformance validator checks every object an implementation returns (S1).
 - `conformance/`: a validator that acts as an agent against any native-profile implementation and
   reports every check with its rule; a conformance matrix and a checklist of what only a person can check.
 - `agent/`: client library, CLI, MCP server and example personal agent.

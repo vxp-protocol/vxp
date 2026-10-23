@@ -124,7 +124,7 @@ node conformance/reference/run.ts --report conformance-report.json
 ```
 
 It starts its own native-only reference company, acts as a personal agent against it, and reports every check
-with the rule it tests. Expected: `{"pass":50,"fail":0,"optional":0,"manual":3,"skipped":0}`. The report is in
+with the rule it tests. Expected: `{"pass":51,"fail":0,"optional":0,"manual":3,"skipped":0}`. The report is in
 `conformance-report.md`. To check your own company, see [Conformance](https://vxpprotocol.org/docs/conformance/).
 
 ## Where next

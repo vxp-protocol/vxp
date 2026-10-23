@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/checkpoint.schema.json",
+  "title": "VXP 0.1 log checkpoint payload",
+  "description": "Payload of the log's signed checkpoint (typ vxp-checkpoint+jwt), carried in the proof package's log.checkpoint and served at vxp_proof.log.checkpoint_url (spec §10).",
+  "type": "object",
+  "required": [
+    "origin",
+    "tree_size",
+    "root_hash",
+    "iat"
+  ],
+  "properties": {
+    "origin": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tree_size": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "root_hash": {
+      "$ref": "common.schema.json#/$defs/b64u"
+    },
+    "iat": {
+      "$ref": "common.schema.json#/$defs/numericDate"
+    }
+  }
+}

@@ -26,6 +26,8 @@ The specification is the only normative text; the docs restate it and link to it
 ## Reference
 
 - [Examples and messages](https://vxpprotocol.org/docs/examples.md): One complete operation with every message, as the reference implementation produced it in a native-only run, and where to find more.
+- [JSON Schemas](https://vxpprotocol.org/docs/schemas.md): JSON Schemas (2020-12) for every object of VXP 0.1, published under vxpprotocol.org/schemas/0.1/, checked against the reference implementation and usable to validate your own.
+- [Failures and how VXP behaves](https://vxpprotocol.org/docs/failures.md): What a company, an agent and a verifier do when authority is missing, a permission is revoked, terms change, a request repeats or a result is unknown. Every row is covered by a test in the repository.
 - [Specification and versions](https://vxpprotocol.org/docs/specification.md): Where the normative text lives, how its rules are identified, and how versions work.
 - [Tests and conformance](https://vxpprotocol.org/docs/conformance.md): How to check an implementation against VXP, with the validator, the conformance matrix and the checklist, and which tests are whose.
 - [Security, errors, recovery and versions](https://vxpprotocol.org/docs/security.md): The threats VXP addresses and the ones it does not, every error code, how operations recover from failures, and how keys and versions evolve.
@@ -34,6 +36,7 @@ The specification is the only normative text; the docs restate it and link to it
 ## Normative
 
 - [Specification, draft 0.1](https://vxpprotocol.org/spec/): the rules, with stable identifiers (I, ID, E, P, R, O).
+- [JSON Schemas 0.1](https://vxpprotocol.org/schemas/0.1/index.json): every object of the protocol as JSON Schema 2020-12.
 
 ## Code
 

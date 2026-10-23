@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/events.schema.json",
+  "title": "VXP 0.1 request events",
+  "description": "GET {endpoint}/requests/{id}/events: the transitions of the request, each with its projections (spec §8, Endpoints; §4, Legal transitions).",
+  "type": "object",
+  "required": [
+    "request_id",
+    "events"
+  ],
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "pattern": "^req_[A-Za-z0-9_-]+$"
+    },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "seq",
+          "from",
+          "to",
+          "at",
+          "reason"
+        ],
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "from": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/state"
+              }
+            ]
+          },
+          "to": {
+            "$ref": "common.schema.json#/$defs/state"
+          },
+          "at": {
+            "$ref": "common.schema.json#/$defs/dateTime"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "poppy": {
+            "$ref": "common.schema.json#/$defs/poppyState"
+          },
+          "a2a": {
+            "$ref": "common.schema.json#/$defs/a2aState"
+          }
+        }
+      }
+    }
+  }
+}

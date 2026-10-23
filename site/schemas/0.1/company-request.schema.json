@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/company-request.schema.json",
+  "title": "VXP 0.1 company-initiated request payload",
+  "description": "Payload of the message a company sends inside a relationship (typ vxp-company-request+jwt), delivered by POST {inbox_uri} with {\"message\": \"<jws>\"} (R7). A proposal cites request_url, proposal_id and terms_digest (R8); a closed question carries alert_id, options, reply_url and expires_at (R17); a notice carries a summary.",
+  "type": "object",
+  "required": [
+    "iss",
+    "aud",
+    "sub",
+    "rel",
+    "action",
+    "content",
+    "iat",
+    "exp",
+    "jti"
+  ],
+  "properties": {
+    "iss": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "aud": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "sub": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rel": {
+      "type": "string",
+      "pattern": "^rel_[A-Za-z0-9_-]+$"
+    },
+    "action": {
+      "$ref": "common.schema.json#/$defs/capabilityId"
+    },
+    "content": {
+      "$ref": "#/$defs/content"
+    },
+    "iat": {
+      "$ref": "common.schema.json#/$defs/numericDate"
+    },
+    "exp": {
+      "$ref": "common.schema.json#/$defs/numericDate"
+    },
+    "jti": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$defs": {
+    "content": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "pattern": "^req_[A-Za-z0-9_-]+$"
+        },
+        "request_url": {
+          "$ref": "common.schema.json#/$defs/url"
+        },
+        "proposal_id": {
+          "type": "string",
+          "pattern": "^prop_[A-Za-z0-9_-]+$"
+        },
+        "operation_id": {
+          "type": "string",
+          "pattern": "^op_[A-Za-z0-9_-]+$"
+        },
+        "terms_digest": {
+          "$ref": "common.schema.json#/$defs/digest"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "alert_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "reply_url": {
+          "$ref": "common.schema.json#/$defs/url"
+        },
+        "expires_at": {
+          "$ref": "common.schema.json#/$defs/dateTime"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "proposal_id"
+            ]
+          },
+          "then": {
+            "required": [
+              "request_url",
+              "terms_digest"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "alert_id"
+            ]
+          },
+          "then": {
+            "required": [
+              "options",
+              "reply_url",
+              "expires_at"
+            ]
+          }
+        }
+      ],
+      "description": "What the message is about: a proposal (R8), a closed question (R17) or a notice."
+    }
+  }
+}

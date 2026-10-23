@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vxpprotocol.org/schemas/0.1/reply-receipt.schema.json",
+  "title": "VXP 0.1 reply receipt payload",
+  "description": "Payload of the company's receipt of an answer (typ vxp-reply-receipt+jwt), signed with the relationship key (R17, R5).",
+  "type": "object",
+  "required": [
+    "iss",
+    "aud",
+    "sub",
+    "rel",
+    "alert",
+    "decision",
+    "iat",
+    "jti"
+  ],
+  "properties": {
+    "iss": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "aud": {
+      "$ref": "common.schema.json#/$defs/url"
+    },
+    "sub": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rel": {
+      "type": "string",
+      "pattern": "^rel_[A-Za-z0-9_-]+$"
+    },
+    "alert": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "order_ref": {
+      "type": "string"
+    },
+    "answered_at": {
+      "$ref": "common.schema.json#/$defs/numericDate"
+    },
+    "iat": {
+      "$ref": "common.schema.json#/$defs/numericDate"
+    },
+    "jti": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

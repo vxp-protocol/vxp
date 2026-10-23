@@ -48,14 +48,20 @@ export class Store {
 		return r;
 	}
 
+	/** Files under proofs/ only: a name with a path separator or «..» is refused. */
+	private proofPath(name: string) {
+		if (!/^[A-Za-z0-9_.-]+$/.test(name) || name.includes("..")) throw new Error(`refused file name ${JSON.stringify(name)}`);
+		return join(this.dir, "proofs", name);
+	}
+
 	saveFile(name: string, value: unknown): string {
-		const p = join(this.dir, "proofs", name);
+		const p = this.proofPath(name);
 		writeFileSync(p, JSON.stringify(value, null, 1));
 		return p;
 	}
 
 	readFile<T>(name: string): T | null {
-		const p = join(this.dir, "proofs", name);
+		const p = this.proofPath(name);
 		return existsSync(p) ? (JSON.parse(readFileSync(p, "utf8")) as T) : null;
 	}
 }

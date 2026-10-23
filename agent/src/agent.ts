@@ -104,6 +104,8 @@ export type ApprovalProof = { via: "cli" } | { via: "page"; code: string } | { v
 export type PublicApproval = { approval_id: string; kind: Approval["kind"]; summary: string; amount_clp: number | null; approval_status: Approval["status"]; approval_url: string | null };
 
 export const MAX_CODE_ATTEMPTS = 5;
+/** Shape accepted for identifiers a company returns (request and proposal ids). */
+export const SAFE_ID = /^[A-Za-z0-9_-]{1,128}$/;
 
 export type AcceptOutcome =
 	| { status: "accepted"; approved_by: "user" | "standing_permission"; view: any }
@@ -290,7 +292,12 @@ export class VxpAgent {
 	}
 
 	private record(c: Company, view: any, base: Partial<RequestRecord> & Pick<RequestRecord, "operation" | "target" | "parameters" | "idempotency_key" | "origin">): RequestRecord {
+		// Identifiers come from the company: they become file names and URL segments, so only a safe shape is kept.
+		if (typeof view?.request_id !== "string" || !SAFE_ID.test(view.request_id)) throw new Error("the company returned a request_id with an unexpected shape");
+		if (view.proposal?.id !== undefined && (typeof view.proposal.id !== "string" || !SAFE_ID.test(view.proposal.id))) throw new Error("the company returned a proposal id with an unexpected shape");
 		const prev = this.store.read<Record<string, RequestRecord>>("requests", {})[view.request_id];
+		// A company can only update its own requests: the same id from another issuer is refused, not merged.
+		if (prev && prev.issuer !== c.issuer) throw new Error(`request ${view.request_id} belongs to another company`);
 		const rec: RequestRecord = { request_id: view.request_id, issuer: c.issuer, ...base, state: String(view.state ?? prev?.state ?? "unknown"), view, created_at: prev?.created_at ?? new Date().toISOString(), updated_at: new Date().toISOString() };
 		this.saveRequest(rec);
 		return rec;
@@ -552,6 +559,11 @@ export class VxpAgent {
 		if (!rel.actions.includes(String(claims.action))) return this.reject(403, "action_not_authorized");
 		const content = (claims.content ?? {}) as Record<string, any>;
 		for (const k of ["reply_url", "request_url"]) if (content[k] !== undefined && !String(content[k]).startsWith(`${c.endpoint}/`)) return this.reject(400, `${k}_outside_endpoint`);
+		if (content.request_id !== undefined || content.proposal_id !== undefined) {
+			if (typeof content.request_id !== "string" || !SAFE_ID.test(content.request_id) || typeof content.proposal_id !== "string" || !SAFE_ID.test(content.proposal_id)) return this.reject(400, "malformed_identifiers");
+			const prev = this.store.read<Record<string, RequestRecord>>("requests", {})[content.request_id];
+			if (prev && prev.issuer !== issuer) return this.reject(409, "request_of_another_company");
+		}
 		const fresh = this.store.update<Inbox, boolean>("inbox", { messages: [], seen_jti: {}, rejected: [] }, (ib) => {
 			for (const [k, exp] of Object.entries(ib.seen_jti)) if (exp < t - 86_400) delete ib.seen_jti[k];
 			const key = `${issuer}|${claims!.jti}`;

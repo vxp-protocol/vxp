@@ -3,6 +3,13 @@
 All notable changes to the VXP specification and to this repository. Draft versions are incompatible
 with each other until 1.0.
 
+## 0.1.0-rc.3 · 23 October 2026
+
+### Repository
+- `agent/`: a URL a company gives is accepted only in canonical form, so no server can resolve it differently
+  from the agent; under PACT, the interface that receives the delegation must be on the authorization server's
+  origin. Tests in `agent/test/untrusted-ids.test.ts`.
+
 ## 0.1.0-rc.2 · 23 October 2026
 
 ### Specification

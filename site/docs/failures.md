@@ -67,8 +67,8 @@ against any implementation ([Conformance](https://vxpprotocol.org/docs/conforman
 | An answer outside the question's options, or a second answer | `400 option_not_allowed`, `409 already_answered` ([R17](https://vxpprotocol.org/spec/#r17)) | validator R8, R10 |
 | A company message with a forged signature or a repeated `jti` | The agent's inbox rejects it ([R7](https://vxpprotocol.org/spec/#r7)) | `agent/test/negatives.test.ts` «forged signature or a repeated jti» |
 | A company returns identifiers with an unexpected shape, or the id of another company's request | The agent refuses them and keeps the other company's request intact | `agent/test/untrusted-ids.test.ts` |
-| A company gives a URL outside its own base (dot segments, encoded separators, a look-alike host) | The agent sends no credential there | `agent/test/untrusted-ids.test.ts` |
+| A company gives a URL outside its own base, or one not in canonical form (dot segments, backslashes, encoded separators, a look-alike host) | The agent sends no credential there | `agent/test/untrusted-ids.test.ts` |
 | An approval given at one company is presented for the same proposal text at another | It does not count: approvals are bound to the company | `agent/test/untrusted-ids.test.ts` |
-| A PACT Agent Card points the token endpoint at another server, or tries to rewrite a known company | The agent ignores the Card; tokens are only refreshed where they were issued | `agent/test/untrusted-ids.test.ts` |
+| A PACT Agent Card points the token endpoint or the interface at another server, or tries to rewrite a known company | The agent ignores the Card; tokens are only refreshed where they were issued | `agent/test/untrusted-ids.test.ts` |
 
 The objects of every row match the [JSON Schemas](https://vxpprotocol.org/docs/schemas/); the conformance validator checks that with S1.

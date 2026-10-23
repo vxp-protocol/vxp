@@ -113,7 +113,8 @@ export class PactAdapter implements ProfileAdapter {
 		const metaAt = [metadataUrlFor(as.issuer), `${as.issuer.replace(/\/$/, "")}/.well-known/oauth-authorization-server`];
 		const origin = new URL(as.issuer).origin;
 		if (!metaAt.includes(scheme.oauth2MetadataUrl) || as.token_endpoint !== flow.tokenUrl || as.device_authorization_endpoint !== flow.deviceAuthorizationUrl) return null;
-		if (new URL(flow.tokenUrl).origin !== origin || new URL(flow.deviceAuthorizationUrl).origin !== origin) return null;
+		// The interface that will receive the delegation is on the authorization server's origin too.
+		if (new URL(flow.tokenUrl).origin !== origin || new URL(flow.deviceAuthorizationUrl).origin !== origin || new URL(iface).origin !== origin) return null;
 		const c: PactCompany = { profile: "pact-1.0", domain: d, name: String(card.name ?? d), interface: iface, deviceUrl: flow.deviceAuthorizationUrl, tokenUrl: flow.tokenUrl, asIssuer: as.issuer, scopes: flow.scopes ?? {}, companyIssuer: String(ext.params.company) };
 		// A company already known under this interface keeps its endpoints: another Card cannot rewrite them.
 		const prev = this.state().companies[iface];

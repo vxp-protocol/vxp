@@ -46,6 +46,10 @@ test("a URL a company gives is under its base only after parsing: no dot segment
 		"http://hotel.example/e/hotel/v1",
 		"https://hotel.example/e/hotel",
 		"not a url",
+		String.raw`https:\\hotel.example\e\hotel\v1`,
+		String.raw`https://hotel.example/e/hotel\..\..\other`,
+		"HTTPS://HOTEL.EXAMPLE/e/hotel/v1",
+		"https://hotel.example/e/hotel/./v1",
 	])
 		assert.equal(isUnder(bad, base), false, bad);
 });
@@ -73,12 +77,14 @@ test("PACT: a Card cannot point the agent's credentials at another server, nor r
 		"https://hotel.example/.well-known/agent-card.json": card("hotel.example", `${IFACE}/oauth/token`),
 		"https://redirect.example/.well-known/agent-card.json": card("redirect.example", "https://attacker.example/token"),
 		"https://lookalike.example/.well-known/agent-card.json": card("lookalike.example", `${IFACE}/oauth/token`),
+		"https://elsewhere.example/.well-known/agent-card.json": { ...card("elsewhere.example", `${IFACE}/oauth/token`), supportedInterfaces: [{ url: "https://attacker.example/pact", protocolBinding: "HTTP+JSON", protocolVersion: "1.0" }] },
 		[`${IFACE}/oauth/.well-known/oauth-authorization-server`]: meta,
 	};
 	const fetch = async (u: string) => new Response(JSON.stringify(docs[u] ?? {}), { status: docs[u] ? 200 : 404, headers: { "content-type": "application/json" } });
 	const a = VxpAgent.open({ stateDir: mkdtempSync(join(tmpdir(), "vxp-agent-pact-")), publicOrigin: "https://agent.example", net: { fetch } });
 	const pact = new PactAdapter(a, { audience: "aud" });
 	assert.equal(await pact.detect("redirect.example"), null, "token endpoint that the authorization server does not publish");
+	assert.equal(await pact.detect("elsewhere.example"), null, "an interface outside the authorization server's origin would receive the delegation");
 	const ok = await pact.detect("hotel.example");
 	assert.equal(ok?.tokenUrl, `${IFACE}/oauth/token`);
 	assert.equal(await pact.detect("lookalike.example"), null, "another brand domain cannot take over the known interface");

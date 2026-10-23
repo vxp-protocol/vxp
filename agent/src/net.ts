@@ -23,9 +23,9 @@ export class VxpHttpError extends Error {
 const MAX_BYTES = 2_000_000;
 
 /**
- * True when `url` is under `base`, decided on parsed URLs rather than on text: the same origin, no
- * credentials, a path below the base path on a segment boundary, and no dot segments or encoded separators
- * that a server could resolve elsewhere. Used before sending a company's credentials to a URL it gave us.
+ * True when `url` is under `base`: written in canonical form, the same origin, no credentials, no encoded
+ * separators, and a path below the base path on a segment boundary. Used before sending a company's
+ * credentials to a URL it gave us.
  */
 export function isUnder(url: string, base: string): boolean {
 	let u: URL;
@@ -37,9 +37,10 @@ export function isUnder(url: string, base: string): boolean {
 		return false;
 	}
 	if (u.origin !== b.origin || u.username || u.password) return false;
-	// The path as written, before the URL parser resolves dot segments away.
-	const path = String(url).match(/^[a-z][a-z0-9+.-]*:\/\/[^/?#]*([^?#]*)/i)?.[1] ?? "";
-	if (/(^|\/)\.{1,2}(\/|$)|%2e|%2f|%5c|\\/i.test(path)) return false;
+	// Only a URL already in canonical form: what the parser reads is exactly what was written, so no server
+	// can resolve it differently (dot segments, backslashes and case would otherwise be normalized away).
+	if (u.href !== String(url)) return false;
+	if (/%2e|%2f|%5c/i.test(u.pathname)) return false;
 	const prefix = b.pathname.endsWith("/") ? b.pathname : `${b.pathname}/`;
 	return u.pathname.startsWith(prefix);
 }

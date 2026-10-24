@@ -219,6 +219,20 @@ function pagina(p: Pagina) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(p.title)} · VXP docs</title>
 <meta name="description" content="${esc(p.description)}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VXP">
+<meta property="og:title" content="${esc(p.title)} · VXP docs">
+<meta property="og:description" content="${esc(p.description)}">
+<meta property="og:url" content="https://vxpprotocol.org/docs/${p.slug ? p.slug + "/" : ""}">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://vxpprotocol.org/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="VXP, Verifiable eXchange Protocol: an open protocol for the work personal agents do for people inside companies.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="alternate" type="text/markdown" href="${r}docs/${p.slug || "index"}.md">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
